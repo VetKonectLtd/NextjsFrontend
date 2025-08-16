@@ -2,6 +2,18 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { AuthState, User } from '@/types';
 
+interface SignupFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  countryCode: string;
+  state: string;
+  agreeTerms: boolean;
+}
+
 interface AuthStore extends AuthState {
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
@@ -9,7 +21,7 @@ interface AuthStore extends AuthState {
   clearError: () => void;
   logout: () => void;
   login: (credentials: { email: string; password: string }) => Promise<void>;
-  signup: (credentials: { name: string; email: string; password: string; confirmPassword: string }) => Promise<void>;
+  signup: (credentials: SignupFormData) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -57,17 +69,17 @@ export const useAuthStore = create<AuthStore>()(
             
             // This is where you would typically make an API call
             // For now, we'll just simulate a successful signup with a mock user
-            const mockUser: User = { 
-              id: '1', 
-              email: credentials.email, 
-              name: credentials.name,
-              role: 'user',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            };
+            // const mockUser: User = { 
+            //   id: '1', 
+            //   email: credentials.email, 
+            //   name: credentials.name,
+            //   role: 'user',
+            //   createdAt: new Date().toISOString(),
+            //   updatedAt: new Date().toISOString()
+            // };
             
             set({
-              user: mockUser,
+              // user: mockUser,
               isAuthenticated: true,
               isLoading: false,
               error: null,

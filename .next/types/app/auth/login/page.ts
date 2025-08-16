@@ -1,4 +1,4 @@
-// File: /Users/macuser/Development/vetkonnect/src/app/auth/login/page.tsx
+// File: /home/petnacode/Desktop/NextjsFrontend/src/app/auth/login/page.tsx
 import * as entry from '../../../../../src/app/auth/login/page.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

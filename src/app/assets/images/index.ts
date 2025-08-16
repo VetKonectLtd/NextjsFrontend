@@ -2,4 +2,4 @@
 export { default as VetKonnectLogo } from './vetkonectLogo.svg';
 
 // Example:
-// export { default as hero } from './hero.jpg';
+export { default as AuthBg } from './authbg.svg';

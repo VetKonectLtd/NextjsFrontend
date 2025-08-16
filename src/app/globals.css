@@ -68,3 +68,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.filter-green {
+  filter: invert(29%) sepia(96%) saturate(400%) hue-rotate(90deg) brightness(90%) contrast(85%);
+}
+.filter-gray {
+  filter: grayscale(100%);
+}
+
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #2b2b2c; 
+  border-radius: 9999px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #2b2b2c; 
+}
+
+::-webkit-scrollbar-track {
+  background-color: #111213;
+}
+
