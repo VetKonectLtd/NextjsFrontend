@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // Add any other configurations you need here
-}
+  images: {
+    domains: ['flagcdn.com', 'ui-avatars.com', 'images.unsplash.com'],
+  },
+  experimental: {
+    suppressHydrationWarning: true,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

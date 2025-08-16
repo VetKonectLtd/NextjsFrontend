@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  /* Custom Search Bar Styles */
+  .search-bar {
+    @apply border-4 rounded-4xl shadow-lg;
+    border-color: #1D24321F;
+    box-shadow: 0px 11.23px 34.54px 0px #1B19560F;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
