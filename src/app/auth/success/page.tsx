@@ -26,7 +26,7 @@ const SuccessPage = () => {
 	return (
 		<div
 			style={{ backgroundImage: `url(${AuthBg.src})` }}
-			className="md:min-h-screen bg-white -mt-24 bg-cover bg-no-repeat flex flex-col justify-center items-center py-12 px-4"
+			className="md:min-h-screen bg-white bg-center bg-cover bg-no-repeat flex flex-col justify-center items-center py-12 px-4"
 		>
 			{renderSuccessComponent()}
 		</div>

@@ -29,7 +29,7 @@ const StepOne = ({ setStep, isLoading, error, setForm, form }: any) => {
 			<button
 				type="submit"
 				disabled={isLoading || !form.email}
-				className="w-full py-3 rounded-md text-white text-base font-semibold  bg-[#0B6614] disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
+				className="w-full py-3 rounded-md text-white text-base font-semibold  bg-primary-400 disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
 			>
 				{isLoading ? "Processing..." : "Proceed"}
 			</button>

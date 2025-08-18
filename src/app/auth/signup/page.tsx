@@ -2,57 +2,95 @@
 
 import { useState } from "react";
 import { AuthBg } from "@/app/assets/images";
-import Icone1 from "@/app/assets/icons/auth/icon1.png";
-import Icone2 from "@/app/assets/icons/auth/icon2.png";
-import Icone3 from "@/app/assets/icons/auth/icon3.png";
-import Arrow from "@/app/assets/icons/auth/arrow.png";
+import { Icon1, Icon2, Icon3, Arrow, Linkedin } from "@/app/assets/icons/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useAuthStore } from "@/store/authStore";
-import Linkedin from "@/app/assets/icons/auth/linkedin.png";
 import AccountDetailsStep from "@/components/signup/AccountDetailsStep";
 import PersonalInfoStep from "@/components/signup/PersonalInfoStep";
 import VericationPage from "@/components/signup/VericationPage";
-
-
-type FormValues = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  countryCode: string;
-  state: string;
-  agreeTerms: boolean;
-};
+import { SignupCredentials } from "@/types";
 
 export default function SignupPage() {
 	const router = useRouter();
-	const { signup, isLoading } = useAuthStore();
+	const { signup, isLoading, error, clearError } = useAuthStore();
 	const [step, setStep] = useState(0);
-	const [infoForm, setInfoForm] = useState({
-		firstName: "",
-		lastName: "",
-		category: "",
-		phone: "",
-		xHandle: "",
-		instagramHandle: "",
-		facebookHandle: "",
-		linkedinHandle: "",
-		address: "",
-		agreeTerms: false,
+
+	const {
+		register,
+		handleSubmit,
+		getValues,
+		trigger,
+		setValue,
+		control,
+		formState: { errors },
+		clearErrors,
+	} = useForm<SignupCredentials>({
+		defaultValues: {
+			email: "",
+			password: "",
+			confirmPassword: "",
+			firstName: "",
+			lastName: "",
+			phone: "",
+			countryCode: "",
+			state: "",
+			agreeTerms: false,
+		},
+		mode: "onChange",
+	});
+
+	const watchedCountryCode = useWatch({
+		control,
+		name: "countryCode",
 	});
 
 	const handleNext = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (step < 2) {
-			setStep((prev) => prev + 1);
-		} else {
-			// Final submit
-			router.push("/auth/success?form=Signup");
+		switch (step) {
+			case 0: {
+				const stepOneFields: (keyof SignupCredentials)[] = [
+					"email",
+					"password",
+					"confirmPassword",
+				];
+				const isValid = await trigger(stepOneFields, { shouldFocus: true });
+				if (isValid) {
+					setStep((prev) => prev + 1);
+				}
+				break;
+			}
+			case 1: {
+				const stepTwoFields: (keyof SignupCredentials)[] = [
+					"firstName",
+					"lastName",
+					"phone",
+					"countryCode",
+					"state",
+					"agreeTerms",
+				];
+				const isValid = await trigger(stepTwoFields, { shouldFocus: true });
+				if (isValid) {
+					handleSubmit(onSubmit)();
+					setStep((prev) => prev + 1);
+				}
+				break;
+			}
+			case 2:{
+				router.push("/auth/success?form=Signup");
+			}
+			default: {
+				break;
+			}
+		}
+	};
+	const onSubmit = async (data: SignupCredentials) => {
+		try {
+			await signup(data);
+		} catch {
+			// error already handled in store
 		}
 	};
 
@@ -64,10 +102,10 @@ export default function SignupPage() {
 		<div
 			className={`flex flex-col items-center space-y-3 justify-center ${
 				step === index
-					? "text-[#0B6614]"
+					? "text-primary-400"
 					: step > index
-						? "text-[#0B6614]"
-						: "text-[#555555]"
+						? "text-primary-400"
+						: "text-gray-500"
 			}`}
 		>
 			<Image
@@ -88,11 +126,11 @@ export default function SignupPage() {
 	return (
 		<div
 			style={{ backgroundImage: `url(${AuthBg.src})` }}
-			className="md:min-h-screen bg-white bg-cente -mt-24 bg-cover bg-no-repeat flex flex-col py-12 px-4"
+			className="md:min-h-screen bg-white bg-center bg-cover bg-no-repeat flex flex-col py-12 px-4"
 		>
 			<div className="w-full pt-36 max-w-md mx-auto">
 				<div className="text-center mb-8">
-					<h1 className="text-4xl font-extrabold mb-2 text-[#1D2432]">
+					<h1 className="text-4xl font-extrabold mb-2 text-gray-55">
 						Create Account
 					</h1>
 					<p className="text-base max-w-sm m-auto font-normal text-[#666666] mb-6">
@@ -105,7 +143,7 @@ export default function SignupPage() {
 			<div>
 				<div className="w-full max-w-sm mx-auto">
 					<div className="flex items-center max-w-xs m-auto text-center justify-center gap-8 mb-8">
-						{progressItem(Icone1, "Account Details", 0)}
+						{progressItem(Icon1, "Account Details", 0)}
 						<Image
 							src={Arrow}
 							alt="arrow"
@@ -117,7 +155,7 @@ export default function SignupPage() {
 										: "filter-gray"
 							}`}
 						/>
-						{progressItem(Icone2, "Personal Info", 1)}
+						{progressItem(Icon2, "Personal Info", 1)}
 						<Image
 							src={Arrow}
 							alt="arrow"
@@ -129,23 +167,31 @@ export default function SignupPage() {
 										: "filter-gray"
 							}`}
 						/>
-						{progressItem(Icone3, "Verify Account", 2)}
+						{progressItem(Icon3, "Verify Account", 2)}
 					</div>
 
-					<form onSubmit={handleNext}>
-						{step === 0 && <AccountDetailsStep />}
+					<form>
+						{step === 0 && (
+							<AccountDetailsStep
+								error={error}
+								errors={errors}
+								register={register}
+								clearError={clearError}
+								clearErrors={clearErrors}
+								getValues={getValues}
+							/>
+						)}
 						{step === 1 && (
 							<PersonalInfoStep
-								form={infoForm}
-								onChange={(e: any) => {
-									const { name, value, type, checked } = e.target;
-									setInfoForm((f) => ({
-										...f,
-										[name]: type === "checkbox" ? checked : value,
-									}));
-								}}
-								isLoading={isLoading}
-								onBack={() => setStep(1)}
+								error={error}
+								errors={errors}
+								register={register}
+								clearError={clearError}
+								clearErrors={clearErrors}
+								getValues={getValues}
+								control={control}
+								watchedCountryCode={watchedCountryCode}
+								setValue={setValue}
 							/>
 						)}
 						{step === 2 && <VericationPage />}
@@ -154,13 +200,14 @@ export default function SignupPage() {
 							<button
 								type="submit"
 								disabled={isLoading}
-								className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-[#0B6614] disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+								onClick={step < 2 ? handleNext : handleSubmit(onSubmit)}
+								className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
 							>
 								{step < 2 ? "Proceed" : "Verify"}
 							</button>
 							{step > 0 && (
 								<button
-									type="button" 
+									type="button"
 									onClick={handleBack}
 									className="flex-1 py-3 rounded-lg bg-[#FFDAB0] hover:bg-[#ffdab0ef] transition"
 								>
@@ -193,18 +240,18 @@ export default function SignupPage() {
 								</button>
 							</div>
 							<div className="flex items-center w-full">
-								<hr className="flex-grow border-[#1D2432]" />
-								<span className="px-1 py-0.5 border border-[#1D2432] rounded-md bg-white text-[#1D2432] text-[10px] font-semibold">
+								<hr className="flex-grow border-gray-55" />
+								<span className="px-1 py-0.5 border border-gray-55 rounded-md bg-white text-gray-55 text-[10px] font-semibold">
 									OR
 								</span>
-								<hr className="flex-grow border-[#1D2432]" />
+								<hr className="flex-grow border-gray-55" />
 							</div>
 						</div>
 					)}
 					{step === 0 && (
 						<button
 							type="button"
-							className="w-full py-3 rounded-md border border-[#1D2432] text-base font-semibold bg-white hover:bg-gray-100 transition"
+							className="w-full py-3 rounded-md border border-gray-55 text-base font-semibold bg-white hover:bg-gray-100 transition"
 							onClick={() => router.push("/auth/login")}
 						>
 							Login

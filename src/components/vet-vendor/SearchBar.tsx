@@ -1,7 +1,7 @@
 
 import Image from "next/image";
 import { Search } from "lucide-react"; 
-import Map from "@/app/assets/icons/vet-vendor/map.svg"
+import {Map} from "@/app/assets/icons/vet-vendor"
 
 const SearchBar = () => {
   return (
@@ -12,7 +12,7 @@ const SearchBar = () => {
           placeholder="Type in your location"
           className="flex-1 bg-transparent outline-none text-sm px-2"
         />
-        <button className="bg-[#555555] rounded-r-full p-3 flex items-center justify-center">
+        <button className="bg-gray-500 rounded-r-full p-3 flex items-center justify-center">
           <Search size={15} color="#fff" />
         </button>
       </div>

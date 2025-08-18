@@ -33,13 +33,13 @@ const StepThree = ({ setStep, isLoading, setForm, form }: any) => {
 					type="submit"
 					disabled={isLoading}
 					onClick={() => router.push("/auth/success?form=restPassword")}
-					className="w-full py-3 rounded-md text-white text-base font-semibold  bg-[#0B6614] disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
+					className="w-full py-3 rounded-md text-white text-base font-semibold  bg-primary-400 disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
 				>
 					Confirm
 				</button>
 				<button
 					type="button"
-					className="w-full py-3 rounded-md text-base font-semibold bg-[#FFDAB0] text-[#1D2432] mt-1"
+					className="w-full py-3 rounded-md text-base font-semibold bg-[#FFDAB0] text-gray-55 mt-1"
 					onClick={() => setStep(1)}
 				>
 					Back

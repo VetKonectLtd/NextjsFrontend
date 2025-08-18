@@ -1,8 +1,5 @@
 import Image from "next/image";
-import Icon6 from "@/app/assets/icons/vet-vendor/icon6.svg";
-import Icon7 from "@/app/assets/icons/vet-vendor/icon7.svg";
-import Icon9 from "@/app/assets/icons/vet-vendor/icon9.svg";
-import Icon10 from "@/app/assets/icons/vet-vendor/icon10.svg";
+import {Icon6, Icon10, Icon7, Icon9} from "@/app/assets/icons/vet-vendor";
 
 const categories = [
 	{ id: 1, name: "Veterinarian", icon: Icon7, active: false },
@@ -20,7 +17,7 @@ const CategorySelector = () => {
 				return (
 					<div
 						key={cat.id}
-						className={`flex items-center border hover:border-4 border-[#EBEBEB] hover:border-[#52CE06] justify-center gap-2 shadow-md rounded-sm px-4 py-3 cursor-pointer transition-colors
+						className={`flex items-center border hover:border-4 border-gray-225 hover:border-green-50 justify-center gap-2 shadow-md rounded-sm px-4 py-3 cursor-pointer transition-colors
         ${isFirst ? "rounded-l-xl" : ""}
         ${isLast ? "rounded-r-xl " : ""}
       `}

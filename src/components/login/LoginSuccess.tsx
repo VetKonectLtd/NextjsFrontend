@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
-import Success from "@/app/assets/icons/auth/success.svg";
+import {Success} from "@/app/assets/icons/auth";
 
 const LoginSuccess = () => {
     const router = useRouter();
@@ -17,7 +17,7 @@ const LoginSuccess = () => {
 					</span>
 				</div>
 
-				<h1 className="text-2xl font-bold text-center text-[#1D2432] mb-2">
+				<h1 className="text-2xl font-bold text-center text-gray-55 mb-2">
 					Congratulations!
 				</h1>
 				<p className="text-base font-normal text-center text-[#666666] mb-8">
@@ -26,7 +26,7 @@ const LoginSuccess = () => {
 
 				<button
 					type="button"
-					className="w-full py-3 rounded-md text-white text-base font-semibold bg-[#0B6614] hover:bg-[#0b6614dc] transition"
+					className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 hover:bg-primary-400 transition"
 					onClick={() => router.push("#")}
 				>
 					Go to Dashboard

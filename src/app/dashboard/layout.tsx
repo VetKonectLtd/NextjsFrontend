@@ -1,13 +1,13 @@
-import Sidebar from "@/lib/constant/Sidebar";
+import Sidebar from "@/components/constant/Sidebar";
 import { ReactNode } from "react";
 
 export default function DashboardLayout({
 	children,
 }: Readonly<{ children: ReactNode }>) {
 	return (
-		<div className="flex w-full min-h-screen">
+		<div className="flex w-full mt-20 pt-2 min-h-screen">
 			<Sidebar />
-			<div className="flex-grow ml-16">{children}</div>
+			<div className="flex-grow md:ml-16">{children}</div>
 		</div>
 	);
 }

@@ -29,7 +29,7 @@ const StepTwo = ({ setStep, isLoading, setForm, form }: any) => {
 				/>
 
 				<div className="flex justify-center items-center">
-					<button type="button" className="text-xs text-[#1D2432] underline">
+					<button type="button" className="text-xs text-gray-55 underline">
 						Resend Code
 					</button>
 				</div>
@@ -38,13 +38,13 @@ const StepTwo = ({ setStep, isLoading, setForm, form }: any) => {
 					<button
 						type="submit"
 						disabled={isLoading || !form.pin || form.pin.length !== 6}
-						className="w-full py-3 rounded-md text-white text-base font-semibold  bg-[#0B6614] disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
+						className="w-full py-3 rounded-md text-white text-base font-semibold  bg-primary-400 disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
 					>
 						Verify
 					</button>
 					<button
 						type="button"
-						className="w-full py-3 rounded-md text-base font-semibold bg-[#FFDAB0] text-[#1D2432] mt-2"
+						className="w-full py-3 rounded-md text-base font-semibold bg-[#FFDAB0] text-gray-55 mt-2"
 						onClick={() => setStep(0)}
 					>
 						Back

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { AuthBg } from "@/app/assets/images";
-import Linkedin from "@/app/assets/icons/auth/linkedin.png";
+import {Linkedin} from "@/app/assets/icons/auth";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form/FormInput";
@@ -36,11 +36,11 @@ export default function LoginPage() {
 	return (
 		<div
 			style={{ backgroundImage: `url(${AuthBg.src})` }}
-			className="md:min-h-screen -mt-24 bg-white bg-cover bg-no-repeat flex flex-col justify-center items-center py-12 px-4"
+			className="md:min-h-screen bg-white bg-center bg-cover bg-no-repeat flex flex-col justify-center items-center py-12 px-4"
 		>
 			<div className="w-full  pt-36  max-w-sm mx-auto">
 				<div className="text-center mb-8">
-					<h1 className="text-4xl font-extrabold mb-2 text-[#1D2432]">Login</h1>
+					<h1 className="text-4xl font-extrabold mb-2 text-gray-55">Login</h1>
 					<p className="text-base font-normal text-[#666666] mb-6">
 						Secure access to your account
 					</p>
@@ -107,7 +107,7 @@ export default function LoginPage() {
 							disabled={
 								isLoading || !register("email") || !register("password")
 							}
-							className="w-full py-3 rounded-md text-white text-base font-semibold bg-[#0B6614] disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+							className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
 						>
 							{isLoading ? "Logging in..." : "Login"}
 						</button>
@@ -136,16 +136,16 @@ export default function LoginPage() {
 						</button>
 					</div>
 					<div className="flex items-center w-full">
-						<hr className="flex-grow border-[#1D2432]" />
-						<span className="px-1 py-0.5 border border-[#1D2432] rounded-md bg-white text-[#1D2432] text-[10px] font-semibold">
+						<hr className="flex-grow border-gray-55" />
+						<span className="px-1 py-0.5 border border-gray-55] rounded-md bg-white text-gray-55 text-[10px] font-semibold">
 							OR
 						</span>
-						<hr className="flex-grow border-[#1D2432]" />
+						<hr className="flex-grow border-gray-55" />
 					</div>
 				</div>
 				<button
 					type="button"
-					className="w-full py-3 rounded-md border border-[#1D2432] text-base font-semibold bg-white hover:bg-gray-100 transition"
+					className="w-full py-3 rounded-md border border-gray-55 text-base font-semibold bg-white hover:bg-gray-100 transition"
 					onClick={() => router.push("/auth/signup")}
 				>
 					Create Account

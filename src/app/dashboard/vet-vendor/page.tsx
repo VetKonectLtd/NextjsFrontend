@@ -1,12 +1,9 @@
 import CategorySelector from "@/components/vet-vendor/CategorySelector";
 import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
-import ProductCard from "@/components/vet-vendor/ProductCard";
-import Dog from "@/app/assets/icons/vet-vendor/dog.jpg";
-import Shop from "@/app/assets/icons/vet-vendor/shop.jpg";
+import ProductCard from "@/components/shared/ProductCard";
+import {Dog, Shop, Cart, Message} from "@/app/assets/icons/vet-vendor";
 import Image from "next/image";
-import Cart from "@/app/assets/icons/vet-vendor/cart.png";
-import Message from "@/app/assets/icons/vet-vendor/message.png";
 import Link from "next/link";
 
 export default function VetVendorPage() {
@@ -63,7 +60,7 @@ export default function VetVendorPage() {
 			rating: 4,
 			seller: "Chanel",
 			location: "Abuja",
-			open: true,
+			open: false,
 		},
 		{
 			title: "Dog Mouth Guard",
@@ -112,14 +109,14 @@ export default function VetVendorPage() {
 						/>
 					</Link>
 
-					<button className="px-5 py-2 rounded-lg border border-[#0B6614] text-[#0B6614] font-medium bg-white">
+					<button className="px-5 py-2 rounded-lg border border-primary-400 text-primary-400 font-medium bg-white">
 						Sell
 					</button>
 				</div>
 			</div>
 
 			<CategoryTabs />
-			<div className="grid grid-cols-1 py-5 sm:grid-cols-2 md:grid-cols-4 gap-5">
+			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
 				{products.map((p, i) => (
 					<ProductCard key={i} {...p} />
 				))}

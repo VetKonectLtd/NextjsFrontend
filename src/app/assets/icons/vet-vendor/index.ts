@@ -1,0 +1,16 @@
+export { default as Icon6 } from './icon6.svg';
+export { default as Icon7 } from './icon7.svg';
+export { default as Icon9 } from './icon9.svg';
+export { default as Icon10 } from './icon10.svg';
+export { default as Icon11 } from './icon11.png';
+export { default as Icon12 } from './icon12.png';
+export { default as Icon13 } from './icon13.png';
+export { default as Cart } from './cart.png';
+export { default as Cart2 } from './cart2.png';
+export { default as Dog } from './dog.jpg';
+export { default as ButtonBg } from './button-bg.svg';
+export { default as Map } from './map.svg';
+export { default as Message } from './message.png';
+export { default as Paws } from './paws.png';
+export { default as Shop } from './shop.jpg';
+export { default as Cow } from './cow.svg';
