@@ -42,7 +42,7 @@ const PhoneInput = ({
 				onChange={(e) =>
 					onChange({ phone: value, countryCode: e.target.value })
 				}
-				className="pl-2 pr-1 py-[17px] text-sm bg-transparent outline-none"
+				className="pl-2 pr-1 pt-5 py-[13px] text-sm bg-transparent outline-none"
 			>
 				{countries.map((c) => (
 					<option key={c.code} value={c.code}>

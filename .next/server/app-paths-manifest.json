@@ -1,8 +1,7 @@
 {
-  "/auth/login/page": "app/auth/login/page.js",
-  "/auth/signup/page": "app/auth/signup/page.js",
-  "/page": "app/page.js",
-  "/root/pages/about/page": "app/root/pages/about/page.js",
-  "/auth/success/page": "app/auth/success/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/not-found": "app/not-found.js",
+  "/dashboard/stores/new/page": "app/dashboard/stores/new/page.js",
+  "/dashboard/vet-vendor/page": "app/dashboard/vet-vendor/page.js",
+  "/dashboard/stores/page": "app/dashboard/stores/page.js",
+  "/dashboard/stores/[id]/page": "app/dashboard/stores/[id]/page.js"
 }

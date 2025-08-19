@@ -101,7 +101,6 @@ const PersonalInfoStep = ({
 							onChange={({ phone, countryCode }) => {
 								field.onChange(phone); 
 								setValue("countryCode", countryCode);
-								setValue("state", "");
 							}}
 						/>
 					)}

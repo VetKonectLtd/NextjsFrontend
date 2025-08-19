@@ -17,7 +17,7 @@ export const navItems = [
 	{ id: 2, label: "Dashboard", icon: Dashboard, href: "#" },
 	{ id: 3, label: "Pets & Livestock", icon: Cow, href: "#" },
 	{ id: 4, label: "Clients", icon: Client, href: "#" },
-	{ id: 5, label: "Stores", icon: Store, href: "#" },
+	{ id: 5, label: "My Stores", icon: Store, href: "/dashboard/stores" },
 	{ id: 6, label: "Chat Forum", icon: Chat, href: "#" },
 	{ id: 7, label: "Feed Calculator", icon: Feed, href: "#" },
 	{ id: 8, label: "Disease Prediction", icon: Disease, href: "#" },
