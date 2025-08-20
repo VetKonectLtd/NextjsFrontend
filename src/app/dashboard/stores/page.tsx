@@ -55,7 +55,7 @@ const StorePage = () => {
 				href="/dashboard/stores/new"
 				className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition"
 			>
-				<span className="text-gray-55 font-bold">Add New Store</span>
+				<span className="text-gray-55 text-sm font-semibold">Add New Store</span>
 				<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
 					<PlusIcon className="w-5 h-5 font-bold text-white " />
 				</div>

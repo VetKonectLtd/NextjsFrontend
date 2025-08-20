@@ -9,6 +9,7 @@ import PhoneInput from "@/components/form/PhoneInput";
 import FormSelect from "@/components/form/FormSelect";
 import { Country } from "country-state-city";
 import { Controller, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 export default function NewStorePage() {
 	const [available, setAvailable] = useState(true);
@@ -35,6 +36,7 @@ export default function NewStorePage() {
 	const handleRemoveImage = () => {
 		setPreview(null);
 	};
+	const router = useRouter();
 
 	return (
 		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
@@ -169,6 +171,7 @@ export default function NewStorePage() {
 					<div className=" pt-8">
 						<button
 							type="button"
+							onClick={() => router.push(`/dashboard/stores/1`)}
 							className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
 						>
 							Add

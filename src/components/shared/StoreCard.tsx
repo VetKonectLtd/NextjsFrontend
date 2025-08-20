@@ -118,7 +118,7 @@ const StoreCard = ({
 					</div>
 					<button
 						style={{ backgroundImage: `url(${ButtonBg.src})` }}
-						onClick={() => router.push(`/dashboard/stores/${id}`)}
+						onClick={() => router.push(`/dashboard/stores/${id}/products`)}
 						className="rounded-xl bg-cover bg-center bg-no-repeat p-2 flex items-center justify-center"
 					>
 						<ArrowRight size={20} color="#fff" />

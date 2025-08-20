@@ -8,7 +8,6 @@ import Image from "next/image";
 import { Hand, Lock } from "@/app/assets/icons";
 import {
 	Share2,
-	ShoppingBag,
 	Plus,
 	ChevronLeft,
 	SquarePen,
@@ -94,7 +93,7 @@ export default function StoreDetailsPage() {
 				<div className="flex max-w-sm items-center justify-between w-full border-2 bg-white border-green-50 rounded-xl p-2 pl-3 mt-8 transition">
 					<span className="text-gray-55 text-sm font-bold">Add New Store</span>
 					<Link
-						href="/dashboard/stores/new"
+						href="/dashboard/stores/1/add"
 						className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl"
 					>
 						<Plus className="w-5 h-5 font-bold text-white " />

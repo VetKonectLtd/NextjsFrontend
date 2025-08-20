@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {Icon6, Icon10, Icon7, Icon9} from "@/app/assets/icons/vet-vendor";
+import { Icon6, Icon10, Icon7, Icon9 } from "@/app/assets/icons/vet-vendor";
 
 const categories = [
 	{ id: 1, name: "Veterinarian", icon: Icon7, active: false },
@@ -8,19 +8,30 @@ const categories = [
 	{ id: 4, name: "Vet Clinic", icon: Icon9, active: false },
 ];
 
-const CategorySelector = () => {
+interface CategorySelectorProps {
+	activeCategory: string;
+	onSelect: (category: string) => void;
+}
+
+const CategorySelector = ({
+	activeCategory,
+	onSelect,
+}: CategorySelectorProps) => {
 	return (
 		<div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full py-4">
 			{categories.map((cat, idx) => {
+				const isActive = activeCategory === cat.name;
 				const isFirst = idx === 0;
 				const isLast = idx === categories.length - 1;
 				return (
 					<div
 						key={cat.id}
-						className={`flex items-center border hover:border-4 border-gray-225 hover:border-green-50 justify-center gap-2 shadow-md rounded-sm px-4 py-3 cursor-pointer transition-colors
-        ${isFirst ? "rounded-l-xl" : ""}
-        ${isLast ? "rounded-r-xl " : ""}
-      `}
+						onClick={() => onSelect(cat.name)}
+						className={`flex items-center justify-center gap-2 shadow-md rounded-sm px-4 py-3 cursor-pointer transition-colors
+						${isFirst ? "rounded-l-xl" : ""}
+						${isLast ? "rounded-r-xl " : ""}
+						${isActive ? "border-4 border-green-50" : "border border-gray-225 hover:border-green-50"}
+					`}
 					>
 						<Image src={cat.icon} alt={cat.name} width={20} height={20} />
 						<span className="text-sm font-medium">{cat.name}</span>
