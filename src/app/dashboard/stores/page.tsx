@@ -51,15 +51,15 @@ const StorePage = () => {
 		<div className="min-h-screen w-11/12 mt-3 m-auto bg-white">
 			<h1 className="text-xl text-gray-55 font-bold mb-4">My Store</h1>
 
-			<div className="flex items-center justify-between w-full border-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition">
+			<Link
+				href="/dashboard/stores/new"
+				className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition"
+			>
 				<span className="text-gray-55 font-bold">Add New Store</span>
-				<Link
-					href="/dashboard/stores/new"
-					className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl"
-				>
+				<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
 					<PlusIcon className="w-5 h-5 font-bold text-white " />
-				</Link>
-			</div>
+				</div>
+			</Link>
 
 			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
 				{stores.map((p, i) => (

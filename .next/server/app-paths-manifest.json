@@ -1,7 +1,20 @@
 {
-  "/not-found": "app/not-found.js",
+  "/_not-found": "app/_not-found.js",
+  "/assets/icons/auth/icon2.png/route": "app/assets/icons/auth/icon2.png/route.js",
+  "/assets/icons/vet-vendor/icon6.svg/route": "app/assets/icons/vet-vendor/icon6.svg/route.js",
+  "/assets/icons/auth/icon1.png/route": "app/assets/icons/auth/icon1.png/route.js",
+  "/assets/icons/vet-vendor/icon7.svg/route": "app/assets/icons/vet-vendor/icon7.svg/route.js",
+  "/assets/icons/auth/icon3.png/route": "app/assets/icons/auth/icon3.png/route.js",
+  "/assets/icons/vet-vendor/icon9.svg/route": "app/assets/icons/vet-vendor/icon9.svg/route.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/auth/reset-password/page": "app/auth/reset-password/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/auth/success/page": "app/auth/success/page.js",
+  "/root/pages/about/page": "app/root/pages/about/page.js",
+  "/page": "app/page.js",
+  "/dashboard/stores/[id]/page": "app/dashboard/stores/[id]/page.js",
   "/dashboard/stores/new/page": "app/dashboard/stores/new/page.js",
-  "/dashboard/vet-vendor/page": "app/dashboard/vet-vendor/page.js",
   "/dashboard/stores/page": "app/dashboard/stores/page.js",
-  "/dashboard/stores/[id]/page": "app/dashboard/stores/[id]/page.js"
+  "/dashboard/vet-vendor/page": "app/dashboard/vet-vendor/page.js"
 }
