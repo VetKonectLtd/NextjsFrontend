@@ -1,7 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/dashboard/vet-vendor/[vendordetails]/page": "app/dashboard/vet-vendor/[vendordetails]/page.js",
-  "/dashboard/stores/page": "app/dashboard/stores/page.js",
-  "/dashboard/vet-vendor/page": "app/dashboard/vet-vendor/page.js"
-}
