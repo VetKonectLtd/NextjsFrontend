@@ -18,3 +18,6 @@ export { default as LinkedIn } from './linkedIn.svg';
 export { default as Pinterest } from './pinterest.svg';
 export { default as X } from './x.svg';
 export { default as YouTube } from './youtube.svg';
+export { default as Hand } from './hand.svg';
+export { default as Lock } from './lock.svg';
+

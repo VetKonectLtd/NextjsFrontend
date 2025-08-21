@@ -1,182 +1,264 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/authStore';
+import { useState } from "react";
+import { AuthBg } from "@/app/assets/images";
+import { Icon1, Icon2, Icon3, Arrow, Linkedin } from "@/app/assets/icons/auth";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useForm, useWatch } from "react-hook-form";
+import { useAuthStore } from "@/store/authStore";
+import AccountDetailsStep from "@/components/signup/AccountDetailsStep";
+import PersonalInfoStep from "@/components/signup/PersonalInfoStep";
+import VericationPage from "@/components/signup/VericationPage";
+import { SignupCredentials } from "@/types";
 
 export default function SignupPage() {
-  const router = useRouter();
-  const { signup, isLoading, error } = useAuthStore();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+	const router = useRouter();
+	const { signup, isLoading, error, clearError } = useAuthStore();
+	const [step, setStep] = useState(0);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      return; // Handle password mismatch
-    }
+	const {
+		register,
+		handleSubmit,
+		getValues,
+		trigger,
+		setValue,
+		control,
+		formState: { errors },
+		clearErrors,
+	} = useForm<SignupCredentials>({
+		defaultValues: {
+			email: "",
+			password: "",
+			confirmPassword: "",
+			firstName: "",
+			lastName: "",
+			phone: "",
+			countryCode: "",
+			state: "",
+			agreeTerms: false,
+		},
+		mode: "onChange",
+	});
 
-    try {
-      await signup(formData);
-      router.push('/root/dashboard');
-    } catch (error) {
-      // Error is handled by the store
-    }
-  };
+	const watchedCountryCode = useWatch({
+		control,
+		name: "countryCode",
+	});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+	const handleNext = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary-600">VetKonnect</h1>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Or{' '}
-            <Link
-              href="/auth/login"
-              className="font-medium text-primary-600 hover:text-primary-500"
-            >
-              sign in to your existing account
-            </Link>
-          </p>
-        </div>
-      </div>
+		switch (step) {
+			case 0: {
+				const stepOneFields: (keyof SignupCredentials)[] = [
+					"email",
+					"password",
+					"confirmPassword",
+				];
+				const isValid = await trigger(stepOneFields, { shouldFocus: true });
+				if (isValid) {
+					setStep((prev) => prev + 1);
+				}
+				break;
+			}
+			case 1: {
+				const stepTwoFields: (keyof SignupCredentials)[] = [
+					"firstName",
+					"lastName",
+					"phone",
+					"countryCode",
+					"state",
+					"agreeTerms",
+				];
+				const isValid = await trigger(stepTwoFields, { shouldFocus: true });
+				if (isValid) {
+					handleSubmit(onSubmit)();
+					setStep((prev) => prev + 1);
+				}
+				break;
+			}
+			case 2:{
+				router.push("/auth/success?form=Signup");
+			}
+			default: {
+				break;
+			}
+		}
+	};
+	const onSubmit = async (data: SignupCredentials) => {
+		try {
+			await signup(data);
+		} catch {
+			// error already handled in store
+		}
+	};
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-                {error}
-              </div>
-            )}
+	const handleBack = () => {
+		setStep((prev) => Math.max(prev - 1, 0));
+	};
 
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Enter your full name"
-                />
-              </div>
-            </div>
+	const progressItem = (icon: any, label: string, index: number) => (
+		<div
+			className={`flex flex-col items-center space-y-3 justify-center ${
+				step === index
+					? "text-primary-400"
+					: step > index
+						? "text-primary-400"
+						: "text-gray-500"
+			}`}
+		>
+			<Image
+				src={icon}
+				alt={label}
+				className={`object-contain w-10 h-10 ${
+					step === index
+						? "filter-green"
+						: step > index
+							? "scale-110 filter-green"
+							: "filter-gray"
+				}`}
+			/>
+			<span className="text-xs font-normal">{label}</span>
+		</div>
+	);
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Enter your email"
-                />
-              </div>
-            </div>
+	return (
+		<div
+			style={{ backgroundImage: `url(${AuthBg.src})` }}
+			className="md:min-h-screen bg-white bg-center bg-cover bg-no-repeat flex flex-col py-12 px-4"
+		>
+			<div className="w-full pt-36 max-w-md mx-auto">
+				<div className="text-center mb-8">
+					<h1 className="text-4xl font-extrabold mb-2 text-gray-55">
+						Create Account
+					</h1>
+					<p className="text-base max-w-sm m-auto font-normal text-[#666666] mb-6">
+						Create a new account to become a user or a veterinarian on Vet
+						Konect by clicking on one of the cards below
+					</p>
+				</div>
+			</div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Create a password"
-                />
-              </div>
-            </div>
+			<div>
+				<div className="w-full max-w-sm mx-auto">
+					<div className="flex items-center max-w-xs m-auto text-center justify-center gap-8 mb-8">
+						{progressItem(Icon1, "Account Details", 0)}
+						<Image
+							src={Arrow}
+							alt="arrow"
+							className={`object-contain w-3 h-3 ${
+								step === 0
+									? "filter-green"
+									: step > 0
+										? "scale-110 filter-green"
+										: "filter-gray"
+							}`}
+						/>
+						{progressItem(Icon2, "Personal Info", 1)}
+						<Image
+							src={Arrow}
+							alt="arrow"
+							className={`object-contain w-3 h-3 ${
+								step === 1
+									? "filter-green"
+									: step > 1
+										? "scale-110 filter-green"
+										: "filter-gray"
+							}`}
+						/>
+						{progressItem(Icon3, "Verify Account", 2)}
+					</div>
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Confirm your password"
-                />
-              </div>
-              {formData.password !== formData.confirmPassword && formData.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">Passwords do not match</p>
-              )}
-            </div>
+					<form>
+						{step === 0 && (
+							<AccountDetailsStep
+								error={error}
+								errors={errors}
+								register={register}
+								clearError={clearError}
+								clearErrors={clearErrors}
+								getValues={getValues}
+							/>
+						)}
+						{step === 1 && (
+							<PersonalInfoStep
+								error={error}
+								errors={errors}
+								register={register}
+								clearError={clearError}
+								clearErrors={clearErrors}
+								getValues={getValues}
+								control={control}
+								watchedCountryCode={watchedCountryCode}
+								setValue={setValue}
+							/>
+						)}
+						{step === 2 && <VericationPage />}
 
-            <div className="flex items-center">
-              <input
-                id="agree-terms"
-                name="agree-terms"
-                type="checkbox"
-                required
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-              />
-              <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-900">
-                I agree to the{' '}
-                <Link href="/terms" className="text-primary-600 hover:text-primary-500">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-primary-600 hover:text-primary-500">
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
+						<div className="flex flex-col mt-4 gap-3">
+							<button
+								type="submit"
+								disabled={isLoading}
+								onClick={step < 2 ? handleNext : handleSubmit(onSubmit)}
+								className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+							>
+								{step < 2 ? "Proceed" : "Verify"}
+							</button>
+							{step > 0 && (
+								<button
+									type="button"
+									onClick={handleBack}
+									className="flex-1 py-3 rounded-lg bg-[#FFDAB0] hover:bg-[#ffdab0ef] transition"
+								>
+									Back
+								</button>
+							)}
+						</div>
+					</form>
+					{step === 0 && (
+						<div className="flex flex-col items-center my-6">
+							<div className="flex space-x-3">
+								<button
+									type="button"
+									className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-400 text-white text-xl font-bold mb-4 shadow-md"
+									aria-label="Login with LinkedIn"
+								>
+									<Image
+										src={Linkedin}
+										alt="LinkedIn Logo"
+										className="object-contain"
+									/>
+								</button>
 
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading || formData.password !== formData.confirmPassword}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? 'Creating account...' : 'Create account'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
+								<button
+									type="button"
+									className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 text-white text-xl font-bold mb-4 shadow-md"
+									aria-label="Login with Google"
+								>
+									G
+								</button>
+							</div>
+							<div className="flex items-center w-full">
+								<hr className="flex-grow border-gray-55" />
+								<span className="px-1 py-0.5 border border-gray-55 rounded-md bg-white text-gray-55 text-[10px] font-semibold">
+									OR
+								</span>
+								<hr className="flex-grow border-gray-55" />
+							</div>
+						</div>
+					)}
+					{step === 0 && (
+						<button
+							type="button"
+							className="w-full py-3 rounded-md border border-gray-55 text-base font-semibold bg-white hover:bg-gray-100 transition"
+							onClick={() => router.push("/auth/login")}
+						>
+							Login
+						</button>
+					)}
+				</div>
+			</div>
+		</div>
+	);
 }

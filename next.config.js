@@ -5,9 +5,9 @@ const nextConfig = {
   images: {
     domains: ['flagcdn.com', 'ui-avatars.com', 'images.unsplash.com'],
   },
-  experimental: {
-    suppressHydrationWarning: true,
-  },
+  // experimental: {
+  //   suppressHydrationWarning: true,
+  // },
 };
 
 module.exports = nextConfig;

@@ -1,5 +1,8 @@
 // Export all images here
 export { default as VetKonnectLogo } from './vetkonectLogo.svg';
+
+// Example:
+export { default as AuthBg } from './authbg.svg';
 export { default as globeflat } from './globeflat.png';
 export { default as GooglePlay } from './Google.svg';
 export { default as AppStore } from './AppStore.svg';
@@ -30,3 +33,4 @@ export { default as Team2 } from './team2.jpg';
 export { default as EyaboGodwin } from './eyabogodwin.png';
 export { default as Isa } from './isa.jpg';
 export { default as Lucy } from './lucy.jpg';
+
