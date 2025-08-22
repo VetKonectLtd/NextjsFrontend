@@ -84,7 +84,7 @@ function Counter({ end, suffix, duration }: CounterProps) {
 
   return (
     <motion.span 
-      className="text-4xl font-black font-nunito"
+      className="text-2xl md:text-4xl font-black font-nunito"
       onViewportEnter={() => {
         setDisplayCount(0);
         controls.start({
@@ -118,9 +118,9 @@ function Counter({ end, suffix, duration }: CounterProps) {
 
 export default function StatisticsSection() {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-12 md:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
           {statistics.map((stat, index) => (
             <motion.div
               key={stat.id}
@@ -135,7 +135,7 @@ export default function StatisticsSection() {
                 }
               }}
               viewport={{ once: true, amount: 0.3 }}
-              className="relative h-48 flex flex-col items-center justify-center text-center p-6 rounded-3xl overflow-hidden"
+              className="relative h-36 md:h-48 flex flex-col items-center justify-center text-center p-4 md:p-6 rounded-2xl md:rounded-3xl overflow-hidden"
             >
               {/* Background Image */}
               <div className="absolute inset-0">
@@ -158,10 +158,10 @@ export default function StatisticsSection() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium leading-tight">
+                  <p className="text-xs md:text-sm font-medium leading-tight">
                     {stat.title}
                   </p>
-                  <p className="text-sm font-medium leading-tight">
+                  <p className="text-xs md:text-sm font-medium leading-tight">
                     {stat.subtitle}
                   </p>
                 </div>

@@ -34,22 +34,24 @@ export default function ChatForumSection() {
         <div className="flex flex-col md:flex-row items-center gap-12">
           {/* Content Section */}
           <motion.div 
-            className="md:w-1/2 space-y-6"
+            className="md:w-1/2 space-y-6 text-center md:text-left"
             variants={leftVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ amount: 0.3 }}
             transition={transitionConfig}
           >
-            <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md">
+            <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md mx-auto md:mx-0">
               Chat Forum
             </h2>
-            <p className="text-lg text-gray-600 max-w-md">
+            <p className="text-lg text-gray-600 max-w-md mx-auto md:mx-0">
               Join a growing community of animal owners and animal health professionals.
             </p>
-            <Button className="px-6 py-3 border border-primary-600 bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-medium rounded-lg transition-colors duration-200">
-              Get Started
-            </Button>
+            <div className="flex justify-center md:justify-start">
+              <Button className="px-6 py-3 border border-primary-600 bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-medium rounded-lg transition-colors duration-200">
+                Get Started
+              </Button>
+            </div>
           </motion.div>
 
           {/* Animated Chat Section */}

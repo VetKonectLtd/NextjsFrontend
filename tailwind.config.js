@@ -10,6 +10,7 @@ module.exports = {
 		extend: {
 			boxShadow: {
 				custom: "0px 9.29px 28.57px 0px rgba(27, 25, 86, 0.06)",
+				"active-link": "0px 13px 40px 0px rgba(27, 25, 86, 0.06)",
 			},
 			colors: {
 				gradient: {
@@ -128,6 +129,19 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		function({ addUtilities }) {
+			addUtilities({
+				'.scrollbar-hide': {
+					'-ms-overflow-style': 'none',
+					'scrollbar-width': 'none',
+					'&::-webkit-scrollbar': {
+						display: 'none'
+					}
+				}
+			})
+		}
+	],
 	darkMode: ["class", "class"],
 };

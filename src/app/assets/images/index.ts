@@ -3,6 +3,7 @@ export { default as VetKonnectLogo } from './vetkonectLogo.svg';
 
 // Example:
 export { default as AuthBg } from './authbg.svg';
+export { default as HeroBg } from './herobg.svg';
 export { default as globeflat } from './globeflat.png';
 export { default as GooglePlay } from './Google.svg';
 export { default as AppStore } from './AppStore.svg';
