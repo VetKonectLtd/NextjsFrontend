@@ -9,11 +9,23 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Map, Shop, Dog } from "@/app/assets/icons/vet-vendor";
-import { ChevronLeft, ChevronRight, CircleAlert } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	CircleAlert,
+	Minus,
+	Plus,
+} from "lucide-react";
 
 const VendorDetailsPage = () => {
 	const [images] = useState([Shop.src, Dog.src]);
 	const [available] = useState(true);
+	const [units, setUnits] = useState(1);
+
+	const increment = () => setUnits(units + 1);
+	const decrement = () => {
+		if (units > 1) setUnits(units - 1);
+	};
 
 	return (
 		<div className="w-11/12 m-auto mt-3">
@@ -48,16 +60,15 @@ const VendorDetailsPage = () => {
 											sizes="(max-width: 768px) 100vw, 900px"
 											className="object-cover w-full h-full"
 										/>
-										
+
 										<div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
-										
+
 										<span className="absolute bottom-2 right-4 text-white font-bold text-lg">
 											$7.99
 										</span>
 									</div>
 								</SwiperSlide>
 							))}
-							
 
 							<button
 								className="swiper-button-prev-custom absolute top-1/2 left-4 z-10 -translate-y-1/2 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow"
@@ -128,7 +139,8 @@ const VendorDetailsPage = () => {
 								mollit non deserunt ullamco est sit aliqua dolor do amet sint.
 							</p>
 						</div>
-						<div className="flex flex-wrap gap-2 mb-4">
+
+						<div className="flex flex-wrap gap-2 mb-1">
 							<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
 								Dog Kits
 							</span>
@@ -141,6 +153,18 @@ const VendorDetailsPage = () => {
 							<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
 								Dog Poops
 							</span>
+						</div>
+						<div className="flex text-gray-55 py-2 justify-end space-x-2 items-center">
+							<span>Units</span>
+							<div className="flex items-center space-x-2">
+								<button onClick={decrement}>
+									<Minus className="w-4 h-4 cursor-pointer hover:text-gray-700" />
+								</button>
+								<span>{units}</span>
+								<button onClick={increment}>
+									<Plus className="w-4 h-4 cursor-pointer hover:text-gray-700" />
+								</button>
+							</div>
 						</div>
 						<div className="flex items-center justify-center bg-[#F1F1F1] rounded-lg px-4 py-2 mb-4">
 							<span className="text-gray-55 text-center text-sm">
