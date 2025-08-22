@@ -1,3 +1,6 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import CategorySelector from "@/components/vet-vendor/CategorySelector";
 import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
@@ -7,8 +10,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function VetVendorPage() {
+	const router = useRouter();
+	
 	const products = [
 		{
+			id: "1",
 			title: "German Shepherd",
 			price: 50.99,
 			image: Shop.src,
@@ -18,6 +24,7 @@ export default function VetVendorPage() {
 			open: true,
 		},
 		{
+			id: "2",
 			title: "German Shepherd",
 			price: 50.99,
 			image: Dog.src,
@@ -27,6 +34,7 @@ export default function VetVendorPage() {
 			open: true,
 		},
 		{
+			id: "3",
 			title: "Dog Mouth Guard",
 			price: 7.99,
 			image: Shop.src,
@@ -36,6 +44,7 @@ export default function VetVendorPage() {
 			open: true,
 		},
 		{
+			id: "4",
 			title: "Dog Chain",
 			price: 23.99,
 			image: Dog.src,
@@ -45,6 +54,7 @@ export default function VetVendorPage() {
 			open: true,
 		},
 		{
+			id: "5",
 			title: "Dog Chain",
 			price: 23.99,
 			image: Dog.src,
@@ -54,6 +64,7 @@ export default function VetVendorPage() {
 			open: true,
 		},
 		{
+			id: "6",
 			title: "Dog Chain",
 			price: 23.99,
 			image: Dog.src,
@@ -63,6 +74,7 @@ export default function VetVendorPage() {
 			open: false,
 		},
 		{
+			id: "7",
 			title: "Dog Mouth Guard",
 			price: 7.99,
 			image: Shop.src,
@@ -72,6 +84,7 @@ export default function VetVendorPage() {
 			open: true,
 		},
 		{
+			id: "8",
 			title: "Dog Mouth Guard",
 			price: 7.99,
 			image: Shop.src,
@@ -118,7 +131,7 @@ export default function VetVendorPage() {
 			<CategoryTabs />
 			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
 				{products.map((p, i) => (
-					<ProductCard key={i} {...p} />
+					<ProductCard key={p.id} {...p} onViewProduct={(id) => router.push(`/dashboard/products/${id}`)} />
 				))}
 			</div>
 		</div>
