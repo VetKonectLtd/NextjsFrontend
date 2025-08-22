@@ -43,7 +43,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
 					onChange={handleChange}
-					className={`peer block w-full px-4 pt-6 font-medium py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
+					className={`peer block w-full px-4 pt-6 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
             ${error ? "border-red-500" : ""}
           `}
 					placeholder={label}

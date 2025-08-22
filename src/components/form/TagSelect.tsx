@@ -3,34 +3,31 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
-interface TagInputProps {
+interface TagSelectProps {
   label: string;
   focusLabel?: string;
   isRequired?: boolean;
   error?: string;
+  options: string[];
   onChange?: (tags: string[]) => void;
 }
 
-const TagInput: React.FC<TagInputProps> = ({
+const TagSelect: React.FC<TagSelectProps> = ({
   label,
   focusLabel,
   isRequired,
   error,
+  options,
   onChange,
 }) => {
   const [tags, setTags] = useState<string[]>([]);
-  const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === "Enter" || e.key === ",") && input.trim() !== "") {
-      e.preventDefault();
-      if (!tags.includes(input.trim())) {
-        const newTags = [...tags, input.trim()];
-        setTags(newTags);
-        onChange?.(newTags);
-      }
-      setInput("");
+  const addTag = (value: string) => {
+    if (value && !tags.includes(value)) {
+      const newTags = [...tags, value];
+      setTags(newTags);
+      onChange?.(newTags);
     }
   };
 
@@ -42,20 +39,26 @@ const TagInput: React.FC<TagInputProps> = ({
 
   return (
     <div className="relative w-full font-sans">
-      {/* Input field */}
+      {/* Select field */}
       <div className="relative">
-        <input
-          type="text"
-          value={input}
+        <select
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={label}
-          className={`peer block w-full px-4 pt-6 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
+          onChange={(e) => addTag(e.target.value)}
+          className={`peer block w-full px-4 pt-6 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-sm focus:outline-none
             ${error ? "border-red-500" : ""}
           `}
-        />
+          defaultValue=""
+        >
+          <option value="" disabled hidden>
+            {""}
+          </option>
+          {options.map((opt, i) => (
+            <option key={i} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
 
         <label
           className={`absolute left-4 top-3 text-[#555555] text-xs transition-all
@@ -85,9 +88,10 @@ const TagInput: React.FC<TagInputProps> = ({
           ))}
         </div>
       )}
+
       {error && <span className="text-red-600 text-sm mt-1">{error}</span>}
     </div>
   );
 };
 
-export default TagInput;
+export default TagSelect;

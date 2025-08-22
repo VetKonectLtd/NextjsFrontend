@@ -115,8 +115,7 @@ export default function NewStorePage() {
 						focusLabel="Product Tags:"
 						isRequired
 					/>
-
-					<Controller
+					{/* <Controller
 						name="country"
 						control={control}
 						defaultValue=""
@@ -131,6 +130,13 @@ export default function NewStorePage() {
 								onChange={field.onChange}
 							/>
 						)}
+					/> */}
+
+					<FormInput
+						label="Country"
+						type="number"
+						focusLabel="Country (Required):"
+						isRequired
 					/>
 
 					<FormInput

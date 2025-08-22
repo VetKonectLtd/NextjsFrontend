@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import CategorySelector from "@/components/vet-vendor/CategorySelector";
 import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
@@ -16,8 +17,11 @@ export default function VetVendorPage() {
 	const [activeCategory, setActiveCategory] = useState("Vet Vendor");
 	const [activeTab, setActiveTab] = useState("All");
 
+	const router = useRouter();
+	
 	const products = [
 		{
+			id: "1",
 			title: "German Shepherd",
 			price: 50.99,
 			image: Shop.src,
@@ -28,8 +32,9 @@ export default function VetVendorPage() {
 			category: "Pets",
 		},
 		{
-			title: "Dog Chain",
-			price: 23.99,
+			id: "2",
+			title: "German Shepherd",
+			price: 50.99,
 			image: Dog.src,
 			rating: 4,
 			seller: "Chanel",
@@ -38,6 +43,7 @@ export default function VetVendorPage() {
 			category: "Tools and materials",
 		},
 		{
+			id: "3",
 			title: "Dog Feed",
 			price: 15.99,
 			image: Shop.src,
@@ -48,6 +54,7 @@ export default function VetVendorPage() {
 			category: "Feed",
 		},
 		{
+			id: "4",
 			title: "Cattle Injection",
 			price: 99.99,
 			image: Dog.src,
@@ -112,7 +119,7 @@ export default function VetVendorPage() {
 
 			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
 				{filteredProducts.length > 0 ? (
-					filteredProducts.map((p, i) => <ProductCard key={i} {...p} />)
+					filteredProducts.map((p, i) => <ProductCard key={i} {...p}  onViewProduct={(id) => router.push(`/dashboard/products/${id}`)}/>)
 				) : (
 					<p className="col-span-full text-center text-gray-500">
 						No products found for {activeCategory} in {activeTab}

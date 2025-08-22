@@ -12,9 +12,15 @@ import {
 	ChevronLeft,
 	SquarePen,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function StoreDetailsPage() {
 	const [available, setAvailable] = useState(true);
+	const router = useRouter();
+	
+		const handleBack = () => {
+			router.back();
+		};
 
 	return (
 		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
@@ -22,15 +28,15 @@ export default function StoreDetailsPage() {
 				style={{ backgroundImage: `url(${AuthBg.src})` }}
 				className="flex  bg-gray-100 h-32 bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 			>
-				<Link
-					href="/dashboard/stores"
+				<div
+					onClick={handleBack}
 					className="flex items-center text-sm text-gray-55 hover:text-green-50"
 				>
 					<span className="bg-white border cursor-pointer text-gray-500 border-gray-225 shadow-md rounded-full p-1 mr-2">
 						<ChevronLeft className="w-5 h-5" />
 					</span>{" "}
 					Back
-				</Link>
+				</div>
 
 				<button className="flex items-center text-sm text-gray-55 hover:text-green-50">
 					Edit

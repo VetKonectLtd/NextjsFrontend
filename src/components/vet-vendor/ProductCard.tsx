@@ -7,29 +7,38 @@ import {
 	Check,
 	Mail,
 } from "lucide-react";
-import {ButtonBg, Map} from "@/app/assets/icons/vet-vendor";
-import { useRouter } from "next/navigation";
+import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
+import { GreenButton } from "@/app/assets/icons";
 
 interface ProductCardProps {
 	title: string;
+	id: string;
 	price: number;
 	image: string;
-	rating: number;
-	seller: string;
+	rating?: number;
+	seller?: string;
 	location: string;
 	open: boolean;
+	onViewProduct?: (id: string) => void;
 }
 
 const ProductCard = ({
 	title,
 	price,
 	image,
-	rating,
 	seller,
+	rating = 0,
 	location,
 	open,
+	id,
+	onViewProduct,
 }: ProductCardProps) => {
-	const router = useRouter();
+
+	const handleViewProduct = () => {
+		if (onViewProduct && id) {
+			onViewProduct(id);
+		}
+	};
 	return (
 		<div className="bg-white rounded-2xl shadow-md flex flex-col relative">
 
@@ -42,7 +51,7 @@ const ProductCard = ({
 						</div> : <div className="flex items-center bg-white rounded-lg px-5 py-1 shadow text-xs font-medium">
 							<span className="w-2 h-2 rounded-full bg-red-700 mr-2 inline-block" />
 							Closed
-						</div> 
+						</div>
 					}
 				</div>
 				<div className="absolute rounded-full text-white p-1 bg-green-50 top-3 right-3 z-10">
@@ -67,10 +76,10 @@ const ProductCard = ({
 								fill="#FACC15"
 							/>
 						</svg>
-					<span className="text-white text-xs font-medium">{rating} of 5</span>	
+						<span className="text-white text-xs font-medium">{rating} of 5</span>
 					</span>
 					<span className="text-lg font-bold text-white">
-						${price.toFixed(2)}
+						${price?.toFixed(2) || '0.00'}
 					</span>
 				</div>
 			</div>
@@ -81,7 +90,7 @@ const ProductCard = ({
 						<div className="flex flex-col">
 							<div className="flex">
 								<span className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
-									{title.length > 15 ? `${title.slice(0, 15)}...` : title}
+									{title && title.length > 15 ? `${title.slice(0, 15)}...` : title || 'Untitled'}
 								</span>
 								<span className="ml-3">
 									<ShoppingCart size={16} color="#64748B" />
@@ -117,12 +126,16 @@ const ProductCard = ({
 							<Mail size={14} color="#1D2432" />
 						</button>
 					</div>
+					{/* View Full Profile Button */}
 					<button
-						style={{ backgroundImage: `url(${ButtonBg.src})` }}
-						onClick={() => router.push(`/dashboard/vet-vendor/1`)}
-						className="rounded-xl bg-cover bg-center bg-no-repeat p-2 flex items-center justify-center"
+						onClick={handleViewProduct}
+						className="group transition-transform duration-200 hover:scale-105"
 					>
-						<ArrowRight size={20} color="#fff" />
+						<Image
+							src={GreenButton}
+							alt="View profile"
+							className="w-12 h-12"
+						/>
 					</button>
 				</div>
 			</div>

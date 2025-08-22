@@ -8,7 +8,6 @@ import {
 	Mail,
 } from "lucide-react";
 import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
-import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
 	name: string;
@@ -18,7 +17,8 @@ interface ProductCardProps {
 	phone: string;
 	location: string;
 	open: boolean;
-	id: number;
+	id: string;
+	onViewProduct?: (id: string) => void;
 }
 
 const StoreCard = ({
@@ -29,9 +29,15 @@ const StoreCard = ({
 	email,
 	location,
 	open,
-	id
+	id,
+	onViewProduct
 }: ProductCardProps) => {
-	const router = useRouter();
+
+	const handleViewProduct = () => {
+		if (onViewProduct && id) {
+			onViewProduct(id);
+		}
+	};
 
 	return (
 		<div className="bg-white rounded-2xl shadow-md flex flex-col relative">
@@ -118,7 +124,7 @@ const StoreCard = ({
 					</div>
 					<button
 						style={{ backgroundImage: `url(${ButtonBg.src})` }}
-						onClick={() => router.push(`/dashboard/stores/${id}/products`)}
+						onClick={handleViewProduct}
 						className="rounded-xl bg-cover bg-center bg-no-repeat p-2 flex items-center justify-center"
 					>
 						<ArrowRight size={20} color="#fff" />

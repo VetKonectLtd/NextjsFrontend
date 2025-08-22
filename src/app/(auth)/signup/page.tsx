@@ -79,7 +79,7 @@ export default function SignupPage() {
 				break;
 			}
 			case 2:{
-				router.push("/auth/success?form=Signup");
+				router.push("/success?form=Signup");
 			}
 			default: {
 				break;
@@ -252,7 +252,7 @@ export default function SignupPage() {
 						<button
 							type="button"
 							className="w-full py-3 rounded-md border border-gray-55 text-base font-semibold bg-white hover:bg-gray-100 transition"
-							onClick={() => router.push("/auth/login")}
+							onClick={() => router.push("/login")}
 						>
 							Login
 						</button>

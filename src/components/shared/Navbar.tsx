@@ -10,6 +10,7 @@ import { XMarkIcon, Bars3Icon, UserIcon, InformationCircleIcon, CalculatorIcon, 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -17,6 +18,14 @@ const Navbar = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleAccountDropdown = () => {
+    setIsAccountDropdownOpen(!isAccountDropdownOpen);
+  };
+
+  const closeAccountDropdown = () => {
+    setIsAccountDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -121,10 +130,74 @@ const Navbar = () => {
             </button>
 
             {/* User Profile */}
-            <div className="hidden md:flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+            <div className="hidden md:block relative">
+              <button
+                onClick={toggleAccountDropdown}
+                className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50"
+                aria-label="Account menu"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
+
+              {/* Account Dropdown Menu */}
+              <AnimatePresence>
+                {isAccountDropdownOpen && (
+                  <>
+                    {/* Backdrop */}
+                    <div
+                      className="fixed inset-0 z-[9998]"
+                      onClick={closeAccountDropdown}
+                    />
+                    
+                    {/* Dropdown */}
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl border border-gray-200 z-[9999] overflow-hidden"
+                      style={{ position: 'fixed', right: '1rem', top: '4rem' }}
+                    >
+                      <div className="p-4 space-y-2">
+                        {/* Login */}
+                        <Link
+                          href="/login"
+                          onClick={closeAccountDropdown}
+                          className="flex items-center px-4 py-3 rounded-xl text-gray-700 bg-gray-50 border border-gray-200 shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                        >
+                          <UserIcon className="w-5 h-5 mr-3" />
+                          <span className="text-sm font-medium">Login</span>
+                        </Link>
+
+                        {/* Signup */}
+                        <Link
+                          href="/signup"
+                          onClick={closeAccountDropdown}
+                          className="flex items-center px-4 py-3 rounded-xl text-white bg-green-600 hover:bg-green-700 shadow-sm hover:shadow-md transition-all duration-200"
+                        >
+                          <UserIcon className="w-5 h-5 mr-3" />
+                          <span className="text-sm font-medium">Sign Up</span>
+                        </Link>
+
+                        {/* Divider */}
+                        <div className="border-t border-gray-200 my-2"></div>
+
+                        {/* Customer Support */}
+                        <Link
+                          href="/support"
+                          onClick={closeAccountDropdown}
+                          className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:border hover:border-gray-200 transition-all duration-200"
+                        >
+                          <PhoneIcon className="w-5 h-5 mr-3" />
+                          <span className="text-sm font-medium">Customer Support</span>
+                        </Link>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>

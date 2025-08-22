@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Dog, Shop } from "@/app/assets/icons/vet-vendor";
 import { PlusIcon } from "lucide-react";
 import StoreCard from "@/components/shared/StoreCard";
+import { useRouter } from "next/navigation";
 
 const stores = [
 	{
-		id: 1,
+		id: "1",
 		name: "Goodislorn Store",
 		location: "Cross River, Nigeria",
 		rating: 3.2,
@@ -16,7 +17,7 @@ const stores = [
 		open: true,
 	},
 	{
-		id: 2,
+		id: "2",
 		name: "Nam-Zim Store",
 		location: "Abuja, Nigeria",
 		rating: 4.0,
@@ -26,7 +27,7 @@ const stores = [
 		open: true,
 	},
 	{
-		id: 3,
+		id: "3",
 		name: "Lexipet Store",
 		location: "Oyo, Nigeria",
 		rating: 4.0,
@@ -36,7 +37,7 @@ const stores = [
 		open: false,
 	},
 	{
-		id: 4,
+		id: "4",
 		name: "Treequote Store",
 		location: "Lagos, Nigeria",
 		rating: 4.0,
@@ -47,6 +48,9 @@ const stores = [
 	},
 ];
 const StorePage = () => {
+
+	const router = useRouter();
+	
 	return (
 		<div className="min-h-screen w-11/12 mt-3 m-auto bg-white">
 			<h1 className="text-xl text-gray-55 font-bold mb-4">My Store</h1>
@@ -60,10 +64,10 @@ const StorePage = () => {
 					<PlusIcon className="w-5 h-5 font-bold text-white " />
 				</div>
 			</Link>
-
+			
 			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
 				{stores.map((p, i) => (
-					<StoreCard key={i} {...p} />
+					<StoreCard key={i} {...p} onViewProduct={(id) => router.push(`/dashboard/stores/${id}/products`)}/>
 				))}
 			</div>
 		</div>
