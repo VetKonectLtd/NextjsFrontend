@@ -44,7 +44,7 @@ export default function CallToAction({
     <section className={`py-16 ${backgroundClass}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex flex-col md:flex-row items-center gap-12 ${isReversed ? 'md:flex-row-reverse' : ''}`}>
-          <motion.div 
+          <motion.div
             className="md:w-1/2 flex justify-center"
             variants={isReversed ? rightVariants : leftVariants}
             initial="hidden"
@@ -54,10 +54,10 @@ export default function CallToAction({
           >
             <div className="relative h-80 w-80">
               <div className="relative h-full w-full rounded-full overflow-hidden border-4 border-primary-100">
-                <Image 
-                  src={image} 
-                  alt="Call to action image" 
-                  fill 
+                <Image
+                  src={image}
+                  alt="Call to action image"
+                  fill
                   className="object-cover"
                   priority
                 />
@@ -73,9 +73,9 @@ export default function CallToAction({
               )}
               {showLocationIcon && (
                 <div className="absolute bottom-6 -left-12">
-                  <Image 
-                    src={locationIcon} 
-                    alt="Location" 
+                  <Image
+                    src={locationIcon}
+                    alt="Location"
                     width={100}
                     height={100}
                     className="drop-shadow-sm"
@@ -84,19 +84,21 @@ export default function CallToAction({
               )}
             </div>
           </motion.div>
-          <motion.div 
-            className="md:w-1/2 space-y-6"
+          <motion.div
+            className="md:w-1/2 space-y-6 text-center md:text-left"
             variants={isReversed ? leftVariants : rightVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ amount: 0.3 }}
             transition={transitionConfig}
           >
-            <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md">{heading}</h2>
-            <p className="text-lg text-gray-600 max-w-md">{description}</p>
-            <Button className="px-6 py-3 bg-transparent border border-primary-600 hover:bg-primary-600 text-primary-600 font-medium rounded-lg transition-colors duration-200 ">
-              Get Started
-            </Button>
+            <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md mx-auto md:mx-0">{heading}</h2>
+            <p className="text-lg text-gray-600 max-w-md mx-auto md:mx-0">{description}</p>
+            <div className="flex justify-center md:justify-start">
+              <Button className="px-6 py-3 bg-transparent border border-primary-600 hover:bg-primary-600 text-primary-600 font-medium rounded-lg transition-colors duration-200 ">
+                Get Started
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>

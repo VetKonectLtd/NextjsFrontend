@@ -15,10 +15,11 @@ const countries = [
 
 const CountryFlags: React.FC = () => {
   return (
-    <div className="mt-6">
-      <div className="flex flex-wrap gap-2">
+    <div className="mt-6 w-full">
+      {/* Desktop: flex-wrap, Mobile: horizontal scroll */}
+      <div className="flex lg:flex-wrap gap-2 overflow-x-auto lg:overflow-x-visible scrollbar-hide pb-2 px-2 lg:px-0">
         {countries.map(({ code, name }, index) => (
-          <div key={code} className="group relative flex flex-col items-center">
+          <div key={code} className="group relative flex flex-col items-center flex-shrink-0">
             <div 
               className={`w-12 h-12 rounded-full border-2 border-white bg-white shadow-md overflow-hidden transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ${index === 0 ? 'z-10' : 'z-0'}`}
             >
