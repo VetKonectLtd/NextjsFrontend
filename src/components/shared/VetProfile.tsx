@@ -3,9 +3,7 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import {
-    Mail,
     Message,
-    Phone,
     StarFill,
     StarEmpty,
     Green,
@@ -15,6 +13,7 @@ import {
     GreenButton
 } from '@/app/assets/icons';
 import { RecOverlay } from '@/app/assets/images';
+import { MessageCircle, Phone, Mail } from 'lucide-react';
 
 export interface VetProfileProps {
     id: string;
@@ -150,41 +149,29 @@ const VetProfile: React.FC<VetProfileProps> = ({
 
                 {/* Contact Icons and View Profile Button */}
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center md:gap-3 gap-2">
                         <button
                             onClick={() => handleContact('phone')}
-                            className="p-1 transition-transform duration-200 hover:scale-110"
+                            className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2"
                             title="Call"
                         >
-                            <Image
-                                src={Phone}
-                                alt="phone"
-                                className="w-18 h-18"
-                            />
+                            <Phone size={14} color="#1D2432" />
                         </button>
 
                         <button
                             onClick={() => handleContact('message')}
-                            className="p-1 transition-transform duration-200 hover:scale-110"
+                            className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2"
                             title="Message"
                         >
-                            <Image
-                                src={Message}
-                                alt="message"
-                                className="w-18 h-18"
-                            />
+                            <MessageCircle size={14} color="#1D2432" />
                         </button>
 
                         <button
                             onClick={() => handleContact('mail')}
-                            className="p-1 transition-transform duration-200 hover:scale-110"
+                            className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2"
                             title="Email"
                         >
-                            <Image
-                                src={Mail}
-                                alt="mail"
-                                className="w-18 h-18"
-                            />
+                            <Mail size={14} color="#1D2432" />
                         </button>
                     </div>
 

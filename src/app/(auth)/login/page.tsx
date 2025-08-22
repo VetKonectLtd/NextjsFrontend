@@ -27,7 +27,7 @@ export default function LoginPage() {
 	const onSubmit = async (data: LoginCredentials) => {
 		try {
 			await login(data);
-			router.push("/auth/success?form=Login");
+			router.push("/dashboard/vet-vendor");
 		} catch {
 			// error already handled in store
 		}
