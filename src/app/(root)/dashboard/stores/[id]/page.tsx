@@ -8,14 +8,19 @@ import Image from "next/image";
 import { Hand, Lock } from "@/app/assets/icons";
 import {
 	Share2,
-	ShoppingBag,
 	Plus,
 	ChevronLeft,
 	SquarePen,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function StoreDetailsPage() {
 	const [available, setAvailable] = useState(true);
+	const router = useRouter();
+	
+		const handleBack = () => {
+			router.back();
+		};
 
 	return (
 		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
@@ -23,15 +28,15 @@ export default function StoreDetailsPage() {
 				style={{ backgroundImage: `url(${AuthBg.src})` }}
 				className="flex  bg-gray-100 h-32 bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 			>
-				<Link
-					href="/dashboard/stores"
+				<div
+					onClick={handleBack}
 					className="flex items-center text-sm text-gray-55 hover:text-green-50"
 				>
 					<span className="bg-white border cursor-pointer text-gray-500 border-gray-225 shadow-md rounded-full p-1 mr-2">
 						<ChevronLeft className="w-5 h-5" />
 					</span>{" "}
 					Back
-				</Link>
+				</div>
 
 				<button className="flex items-center text-sm text-gray-55 hover:text-green-50">
 					Edit
@@ -94,7 +99,7 @@ export default function StoreDetailsPage() {
 				<div className="flex max-w-sm items-center justify-between w-full border-2 bg-white border-green-50 rounded-xl p-2 pl-3 mt-8 transition">
 					<span className="text-gray-55 text-sm font-bold">Add New Store</span>
 					<Link
-						href="/dashboard/stores/new"
+						href="/dashboard/stores/1/add"
 						className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl"
 					>
 						<Plus className="w-5 h-5 font-bold text-white " />

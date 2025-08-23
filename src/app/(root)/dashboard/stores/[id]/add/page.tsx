@@ -9,14 +9,15 @@ import PhoneInput from "@/components/form/PhoneInput";
 import FormSelect from "@/components/form/FormSelect";
 import { Country } from "country-state-city";
 import { Controller, useForm } from "react-hook-form";
+import TagInput from "@/components/form/TagInput";
 import { useRouter } from "next/navigation";
 
 export default function NewStorePage() {
 	const [available, setAvailable] = useState(true);
-	const [preview, setPreview] = useState<string | null>(null);
-	const router = useRouter();
+	const [previews, setPreviews] = useState<string[]>([]);
 
-	const { control, getValues, setValue } = useForm();
+	const { control, handleSubmit, register, setValue } = useForm();
+	const router = useRouter();
 
 	const countries = Country.getAllCountries().map((c) => ({
 		value: c.isoCode,
@@ -24,79 +25,97 @@ export default function NewStorePage() {
 	}));
 
 	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
+		const files = Array.from(e.target.files || []);
+		const allowedFiles = files.slice(0, 3 - previews.length);
+
+		allowedFiles.forEach((file) => {
 			const reader = new FileReader();
 			reader.onloadend = () => {
-				setPreview(reader.result as string);
+				setPreviews((prev) => [...prev, reader.result as string]);
 			};
 			reader.readAsDataURL(file);
+		});
+	};
+
+	const handleRemoveImage = (idx: number) => {
+		setPreviews((prev) => prev.filter((_, i) => i !== idx));
+	};
+
+	const onSubmit = async (data: any) => {
+		try {
+			// const payload = {
+			// 	...data,
+			// 	available,
+			// 	images: previews,
+			// };
+
+			// // Example API call (replace with your backend route)
+			// const res = await fetch("/api/products", {
+			// 	method: "POST",
+			// 	headers: { "Content-Type": "application/json" },
+			// 	body: JSON.stringify(payload),
+			// });
+
+			// if (!res.ok) throw new Error("Failed to create product");
+
+			// const newProduct = await res.json();
+
+			// Navigate to product details page with returned product ID
+			router.push(`/dashboard/stores/1/products/1`);
+		} catch (error) {
+			console.error(error);
+			alert("Something went wrong while creating product.");
 		}
-	};
-
-	const handleRemoveImage = () => {
-		setPreview(null);
-	};
-	
-
-	const handleBack = () => {
-		router.back();
 	};
 
 	return (
 		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
-			<div
-				onClick={handleBack}
+			<Link
+				href="/dashboard/stores/1/products"
 				className="flex items-center text-sm text-gray-55 hover:text-green-50 ml-4 mt-4"
 			>
 				<span className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-1 mr-3">
 					<ChevronLeft className="w-5 h-5" />
 				</span>{" "}
 				Back
-			</div>
+			</Link>
 
 			<div className="max-w-xs mt-5 mx-auto">
 				<h1 className="text-3xl font-bold text-gray-55 text-center">
-					Store Details
+					Product Details
 				</h1>
 				<p className="text-gray-500 text-sm w-1/2 m-auto text-center mb-6">
-					You can add a new store to your store list
+					You can add a new Item to your product list
 				</p>
 
-				<form className="space-y-1">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-1">
 					<FormInput
-						label="Store Name"
+						label="Product Title"
 						type="text"
-						focusLabel="Store Name:"
+						focusLabel="Product Title:"
 						isRequired
 					/>
 
 					<FormInput
-						label="Email"
-						type="email"
-						focusLabel="Email (Required):"
+						label="Product Category"
+						type="text"
+						focusLabel="Product Category:"
 						isRequired
 					/>
-					<Controller
-						name="phone"
-						control={control}
-						defaultValue=""
-						render={({ field }) => (
-							<PhoneInput
-								label="Phone Number."
-								isRequired
-								focusLabel="Phone Number (Optional)"
-								value={field.value || ""}
-								countryCode={getValues("countryCode")}
-								onChange={({ phone, countryCode }) => {
-									field.onChange(phone);
-									setValue("countryCode", countryCode);
-								}}
-							/>
-						)}
+
+					<FormInput
+						label="Product Description"
+						type="text"
+						focusLabel="Product Description:"
+						isRequired
 					/>
 
-					<Controller
+					<TagInput
+						label="Product Tags"
+						focusLabel="Product Tags:"
+						isRequired
+					/>
+					{/* <Controller
 						name="country"
 						control={control}
 						defaultValue=""
@@ -111,8 +130,21 @@ export default function NewStorePage() {
 								onChange={field.onChange}
 							/>
 						)}
+					/> */}
+
+					<FormInput
+						label="Country"
+						type="number"
+						focusLabel="Country (Required):"
+						isRequired
 					/>
-					
+
+					<FormInput
+						label="Price in US Dollars"
+						type="number"
+						focusLabel="Price in US Dollars:"
+						isRequired
+					/>
 
 					<div className="flex w-11/12 m-auto items-center py-5 justify-between">
 						<span className="text-sm font-medium text-gray-700">
@@ -133,26 +165,48 @@ export default function NewStorePage() {
 						</button>
 					</div>
 
-					{/* Image Upload */}
+					<FormInput
+						label="Available Units"
+						type="number"
+						focusLabel="Available Units:"
+						isRequired
+					/>
+
 					<div className="flex flex-col">
-						{preview ? (
+						{previews.length > 0 ? (
 							<>
-								<div className="w-full h-[150px] border-2 border-gray-200 rounded-md overflow-hidden mb-2 cursor-pointer flex items-center justify-center">
+								<div className="w-full h-[150px] border-2 border-gray-200 rounded-md overflow-hidden mb-2 flex items-center justify-center">
 									<Image
-										src={preview}
+										src={previews[0]}
 										alt="Preview"
 										width={200}
 										height={150}
 										className="object-cover w-full h-full"
 									/>
 								</div>
-								<button
-									type="button"
-									onClick={handleRemoveImage}
-									className="text-sm text-left text-gray-55 underline"
-								>
-									Remove Image
-								</button>
+								{/* Thumbnails */}
+								<div className="flex gap-3">
+									{previews.map((img, idx) => (
+										<div key={idx} className="flex flex-col items-center">
+											<div className="w-[100px] h-[70px] border-2 border-gray-200 rounded-md overflow-hidden flex items-center justify-center mb-1">
+												<Image
+													src={img}
+													alt={`Preview ${idx + 1}`}
+													width={100}
+													height={70}
+													className="object-cover w-full h-full"
+												/>
+											</div>
+											<button
+												type="button"
+												onClick={() => handleRemoveImage(idx)}
+												className="text-xs text-gray-55 underline"
+											>
+												Remove Image
+											</button>
+										</div>
+									))}
+								</div>
 							</>
 						) : (
 							<>
@@ -161,13 +215,14 @@ export default function NewStorePage() {
 									className="w-full h-[150px] flex flex-col items-center justify-center border border-gray-55 rounded-md cursor-pointer mb-2"
 								>
 									<span className="text-gray-400 text-sm">
-										Click to upload image
+										Click to upload images
 									</span>
 								</label>
 								<input
 									id="store-image-upload"
 									type="file"
 									accept="image/*"
+									multiple
 									onChange={handleImageUpload}
 									className="hidden"
 								/>
@@ -177,7 +232,7 @@ export default function NewStorePage() {
 					<div className=" pt-8">
 						<button
 							type="button"
-							onClick={() => router.push(`/dashboard/stores/1`)}
+							onClick={() => router.push(`/dashboard/stores/1/products/1`)}
 							className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
 						>
 							Add
