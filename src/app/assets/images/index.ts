@@ -34,4 +34,7 @@ export { default as Team2 } from './team2.jpg';
 export { default as EyaboGodwin } from './eyabogodwin.png';
 export { default as Isa } from './isa.jpg';
 export { default as Lucy } from './lucy.jpg';
+export { default as Card1 } from './card1.svg';
+export { default as Card2 } from './card2.svg';
+export { default as Card3 } from './card3.svg';
 

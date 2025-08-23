@@ -5,8 +5,8 @@ import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronLeft, ChevronRight, Edit, Star, Info, Minus, Plus } from 'lucide-react';
-import ProductCard from '@/components/shared/ProductCard';
 import { Map } from '@/app/assets/icons/vet-vendor';
+import ProductCard from '@/components/vet-vendor/ProductCard';
 
 // Mock data - replace with actual data fetching
 const productData = {
