@@ -34,4 +34,5 @@ export { default as Team2 } from './team2.jpg';
 export { default as EyaboGodwin } from './eyabogodwin.png';
 export { default as Isa } from './isa.jpg';
 export { default as Lucy } from './lucy.jpg';
+export { default as FullMap } from './FullMap.svg';
 

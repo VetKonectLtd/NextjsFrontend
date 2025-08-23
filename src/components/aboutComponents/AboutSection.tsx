@@ -50,12 +50,12 @@ const statistics: StatisticItem[] = [
 
 export default function AboutSection() {
   return (
-    <section className="py-16 bg-white mt-32">
+    <section className="py-16 bg-white mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Standalone Heading */}
         <motion.div
-          className="text-left"
+          className="text-left mb-8"
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -66,16 +66,36 @@ export default function AboutSection() {
           </h1>
         </motion.div>
 
-        {/* Overview and Image Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-          {/* Left Content - Overview and Statistics */}
+        {/* Mobile: Image first, then content */}
+        <div className="lg:hidden space-y-8">
+          {/* Mobile Image */}
           <motion.div
-            className="space-y-8"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            className="flex justify-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
+          >
+            <div className="relative w-80 h-80">
+              <div className="relative rounded-full overflow-hidden w-full h-full">
+                <Image
+                  src={AboutImage}
+                  alt="About Vet Konect - Veterinarian with pet"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Mobile Content */}
+          <motion.div
+            className="space-y-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-800 font-nunito">
@@ -87,12 +107,12 @@ export default function AboutSection() {
               </p>
             </div>
 
-            {/* Statistics Grid */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Mobile Statistics Grid */}
+            <div className="grid grid-cols-2">
               {statistics.map((stat, index) => (
                 <motion.div
                   key={stat.id}
-                  className="relative h-32 flex flex-col items-center justify-center text-center p-4 rounded-2xl overflow-hidden"
+                  className="relative h-40 flex flex-col items-center justify-center text-center p-4 rounded-2xl overflow-hidden"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{
                     opacity: 1,
@@ -117,7 +137,7 @@ export default function AboutSection() {
 
                   {/* Content */}
                   <div className="relative z-10 space-y-1">
-                    <div className="text-2xl font-black font-nunito text-gray-900">
+                    <div className="text-xl font-black font-nunito text-gray-900">
                       {stat.value >= 1000000
                         ? `${(stat.value / 1000000).toFixed(1)}${stat.suffix}`
                         : stat.value >= 1000
@@ -138,27 +158,100 @@ export default function AboutSection() {
               ))}
             </div>
           </motion.div>
+        </div>
+
+        {/* Desktop: Side by side layout */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-16 items-start mt-12">
+          {/* Left Content - Overview and Statistics */}
+          <motion.div
+            className="space-y-8"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-800 font-nunito">
+                Overview
+              </h2>
+              <p className="text-gray-600 leading-relaxed">
+                Vet Konect is a digital animal health company that is leveraging technology to
+                provide access to animal care and social protection for Africa.
+              </p>
+            </div>
+
+            {/* Statistics Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {statistics.map((stat, index) => (
+                <motion.div
+                  key={stat.id}
+                  className="relative h-44 flex flex-col items-center justify-center text-center p-6 rounded-3xl overflow-hidden"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.5,
+                      delay: index * 0.1
+                    }
+                  }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  {/* Background Image */}
+                  <div className="absolute inset-0">
+                    <Image
+                      src={stat.background}
+                      alt=""
+                      fill
+                      className="object-contain"
+                      priority
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 space-y-2">
+                    <div className="text-3xl font-black font-nunito text-gray-900">
+                      {stat.value >= 1000000
+                        ? `${(stat.value / 1000000).toFixed(1)}${stat.suffix}`
+                        : stat.value >= 1000
+                          ? `${(stat.value / 1000).toFixed(1)}${stat.suffix}`
+                          : `${stat.value}${stat.suffix}`
+                      }
+                    </div>
+                    <div className="space-y-0">
+                      <div className="text-sm font-medium text-gray-700">
+                        {stat.label}
+                      </div>
+                      <div className="text-sm font-medium text-gray-700">
+                        {stat.description}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
           {/* Right Image */}
           <motion.div
-            className="flex justify-center lg:justify-end"
+            className="flex justify-center lg:justify-end relative"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="relative">
-              <div className="relative rounded-full overflow-hidden">
-                <Image
-                  src={AboutImage}
-                  alt="About Vet Konect - Veterinarian with pet"
-                  priority
-                />
-              </div>
+            <div className="relative w-[600px] h-[600px] -mt-20">
+              <Image
+                src={AboutImage}
+                alt="About Vet Konect - Veterinarian with pet"
+                fill
+                className="object-cover rounded-full"
+                priority
+              />
             </div>
           </motion.div>
-
         </div>
+
       </div>
     </section>
   );
