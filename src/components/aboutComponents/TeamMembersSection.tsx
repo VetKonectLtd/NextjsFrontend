@@ -66,12 +66,12 @@ const teamMembers: TeamMember[] = [
 
 export default function TeamMembersSection() {
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="py-16 bg-offbrown overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Heading */}
         <motion.div
-          className="mb-12"
+          className="mb-12 flex items-center justify-between"
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: 0.3 }}
@@ -80,100 +80,142 @@ export default function TeamMembersSection() {
           <h2 className="text-3xl lg:text-4xl font-black text-gray-900 font-nunito">
             Team Members
           </h2>
+          
+          {/* Navigation Arrows - Desktop only */}
+          <div className="hidden lg:flex items-center gap-4">
+            <button
+              className="w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
+              aria-label="Previous slide"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <button
+              className="w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
+              aria-label="Next slide"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </motion.div>
 
         {/* Team Members - Circular Overlapping Layout */}
-        <div className="flex justify-center items-center">
-          <div className="relative flex items-center">
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={member.id}
-                className="group relative cursor-pointer"
-                style={{
-                  marginLeft: index > 0 ? '-2rem' : '0',
-                  zIndex: teamMembers.length - index
-                }}
-                initial={{ opacity: 0, x: -50, scale: 0.8 }}
-                whileInView={{
-                  opacity: 1,
-                  x: 0,
-                  scale: 1,
-                  transition: {
-                    duration: 0.6,
-                    delay: index * 0.15,
-                    type: "spring",
-                    stiffness: 120
-                  }
-                }}
-                viewport={{ amount: 0.3 }}
-                whileHover={{ 
-                  scale: 1.1, 
-                  zIndex: 999,
-                  transition: { duration: 0.3 }
-                }}
-              >
-                {/* Circular Image Container */}
-                <div className="relative w-32 h-32 lg:w-40 lg:h-40">
-                  {/* Main Circle with proper masking */}
-                  <div className="relative w-full h-full rounded-full border-4 border-white shadow-lg bg-white group-hover:border-green-400 transition-all duration-300">
-                    <div className="w-full h-full rounded-full overflow-hidden">
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        width={160}
-                        height={160}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        style={{ borderRadius: '50%' }}
-                      />
+        <div className="w-full">
+          {/* Desktop: Overlapping layout */}
+          <div className="hidden lg:flex items-center justify-start w-full">
+            <div className="relative flex items-center">
+              {teamMembers.map((member, index) => (
+                <motion.div
+                  key={member.id}
+                  className="group relative cursor-pointer"
+                  style={{
+                    marginLeft: index > 0 ? '-2rem' : '0',
+                    zIndex: teamMembers.length - index
+                  }}
+                  initial={{ opacity: 0, x: -50, scale: 0.8 }}
+                  whileInView={{
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                    transition: {
+                      duration: 0.6,
+                      delay: index * 0.15,
+                      type: "spring",
+                      stiffness: 120
+                    }
+                  }}
+                  viewport={{ amount: 0.3 }}
+                  whileHover={{
+                    scale: 1.1,
+                    zIndex: 999,
+                    transition: { duration: 0.3 }
+                  }}
+                >
+                  {/* Circular Image Container */}
+                  <div className="relative w-32 h-32 lg:w-40 lg:h-40">
+                    {/* Main Circle with proper masking */}
+                    <div className="relative w-full h-full rounded-full border-4 border-white shadow-lg bg-white group-hover:border-green-400 transition-all duration-300">
+                      <div className="w-full h-full rounded-full overflow-hidden">
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          width={160}
+                          height={160}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          style={{ borderRadius: '50%' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Hover Info Panel */}
+                    <motion.div
+                      className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 ${member.bgColor} rounded-xl p-3 shadow-lg border border-white/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap min-w-max`}
+                      initial={{ y: 20, opacity: 0 }}
+                      whileHover={{ y: 0, opacity: 1 }}
+                    >
+                      <h3 className="text-sm font-bold text-gray-900 font-nunito mb-1">
+                        {member.name}
+                      </h3>
+                      <p className="text-xs font-semibold text-green-600">
+                        {member.role}
+                      </p>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile: Horizontal Scroll with Interlocking */}
+          <div className="lg:hidden overflow-x-auto scrollbar-hide">
+            <div className="flex pb-4" style={{ width: 'max-content', paddingLeft: '1rem', paddingRight: '2rem' }}>
+              {teamMembers.map((member, index) => (
+                <div
+                  key={member.id}
+                  className="group relative cursor-pointer"
+                  style={{
+                    marginLeft: index > 0 ? '-1rem' : '0',
+                    zIndex: teamMembers.length - index,
+                    minWidth: '6rem',
+                    flexShrink: 0
+                  }}
+                >
+                  {/* Circular Image Container */}
+                  <div className="relative w-24 h-24">
+                    {/* Main Circle */}
+                    <div className="relative w-full h-full rounded-full border-4 border-white shadow-lg bg-white group-hover:border-green-400 transition-all duration-300">
+                      <div className="w-full h-full rounded-full overflow-hidden">
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          width={96}
+                          height={96}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          style={{ borderRadius: '50%' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Name and Role below image */}
+                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center whitespace-nowrap">
+                      <h3 className="text-xs font-bold text-gray-900 font-nunito">
+                        {member.name}
+                      </h3>
+                      <p className="text-xs font-medium text-green-600 mt-1">
+                        {member.role}
+                      </p>
                     </div>
                   </div>
-
-                  {/* Hover Info Panel */}
-                  <motion.div
-                    className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 ${member.bgColor} rounded-xl p-3 shadow-lg border border-white/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap min-w-max`}
-                    initial={{ y: 20, opacity: 0 }}
-                    whileHover={{ y: 0, opacity: 1 }}
-                  >
-                    <h3 className="text-sm font-bold text-gray-900 font-nunito mb-1">
-                      {member.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-green-600">
-                      {member.role}
-                    </p>
-                  </motion.div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Navigation Arrows (Optional) */}
-        <motion.div
-          className="flex justify-center mt-8 gap-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <motion.button
-            className="w-12 h-12 rounded-full bg-gray-100 hover:bg-green-100 flex items-center justify-center transition-colors duration-300"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </motion.button>
-          <motion.button
-            className="w-12 h-12 rounded-full bg-gray-100 hover:bg-green-100 flex items-center justify-center transition-colors duration-300"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </motion.button>
-        </motion.div>
 
       </div>
     </section>
