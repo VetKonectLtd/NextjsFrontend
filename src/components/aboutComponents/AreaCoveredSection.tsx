@@ -21,7 +21,7 @@ const countries: Country[] = [
 
 export default function AreaCoveredSection() {
   return (
-    <section className="py-16 bg-cream">
+    <section className="py-16 bg-offwhite">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
