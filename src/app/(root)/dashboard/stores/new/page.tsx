@@ -15,7 +15,7 @@ interface StoreFormValues {
 	email: string;
 	phone: string;
 	country: string;
-	countryCode?: string;
+	countryCode: string;
 	image?: string;
 }
 
@@ -133,10 +133,12 @@ export default function NewStorePage() {
 									field.onChange(phone);
 									setValue("countryCode", countryCode);
 								}}
-								error={errors.phone?.message}
 							/>
 						)}
 					/>
+					{errors.phone && (
+						<p className="text-red-500 text-xs">{errors.phone.message}</p>
+					)}
 
 					<Controller
 						name="country"
