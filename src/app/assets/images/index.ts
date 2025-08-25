@@ -40,4 +40,4 @@ export { default as Card3 } from './card3.svg';
 export { default as Bar } from './bar.png';
 export { default as Bar2 } from './bar2.svg';
 export { default as Map2 } from './map2.svg';
-
+export { default as FullMap } from './FullMap.svg';

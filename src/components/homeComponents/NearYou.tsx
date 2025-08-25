@@ -73,7 +73,7 @@ const sampleVets: VetProfileProps[] = [
 interface NearYouProps {
   vets?: VetProfileProps[];
   onViewProfile?: (id: string) => void;
-  onContact?: (id: string, type: 'phone' | 'message' | 'mail') => void;
+  onContact?: (id: string, type: 'phone' | 'message' | 'mail'| 'location' | 'share' | 'rate') => void;
 }
 
 const NearYou: React.FC<NearYouProps> = ({
@@ -104,7 +104,7 @@ const NearYou: React.FC<NearYouProps> = ({
     }
   };
 
-  const handleContact = (id: string, type: 'phone' | 'message' | 'mail') => {
+  const handleContact = (id: string, type: 'phone' | 'message' | 'mail'| 'location' | 'share' | 'rate') => {
     if (onContact) {
       onContact(id, type);
     } else {
