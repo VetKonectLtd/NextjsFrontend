@@ -3,22 +3,30 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import CategorySelector from "@/components/vet-vendor/CategorySelector";
 import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
 import ProductCard from "@/components/vet-vendor/ProductCard";
 
-
 import { Dog, Shop, Cart, Message } from "@/app/assets/icons/vet-vendor";
-import { Paws, Cow, Icon11, Icon12, Icon13 } from "@/app/assets/icons/vet-vendor";
+import {
+	Paws,
+	Cow,
+	Icon11,
+	Icon12,
+	Icon13,
+} from "@/app/assets/icons/vet-vendor";
+import { Bar, Bar2, Map2 } from "@/app/assets/images";
+import Veterinarian from "@/components/Veterinarian/Veterinarian";
+import VetClinic from "@/components/vetClinic/VetClinic";
 
 export default function VetVendorPage() {
-	const [activeCategory, setActiveCategory] = useState("Vet Vendor");
+	const [activeCategory, setActiveCategory] = useState("Veterinarian");
 	const [activeTab, setActiveTab] = useState("All");
 
 	const router = useRouter();
-	
+
 	const products = [
 		{
 			id: "1",
@@ -65,7 +73,7 @@ export default function VetVendorPage() {
 			category: "Drugs",
 		},
 	];
-
+	// categories
 	const categories = [
 		{ name: "Pets", icon: Paws },
 		{ name: "Livestock", icon: Cow },
@@ -74,6 +82,7 @@ export default function VetVendorPage() {
 		{ name: "Tools and materials", icon: Icon13 },
 	];
 
+	// categories tabs
 	const tabs = categories.map((c) => {
 		const count =
 			c.name === "All"
@@ -83,6 +92,7 @@ export default function VetVendorPage() {
 		return { ...c, count };
 	});
 
+	// products filter
 	const filteredProducts =
 		activeTab === "All"
 			? products
@@ -102,30 +112,67 @@ export default function VetVendorPage() {
 			<div className="flex md:flex-row flex-col items-center gap-4 w-full py-2">
 				<SearchBar />
 
-				<div className="flex items-center gap-4">
-					<Link href="#">
-						<Image src={Cart} alt="Cart" width={36} height={36} />
-					</Link>
-					<Link href="#">
-						<Image src={Message} alt="Chat" width={36} height={36} />
-					</Link>
-					<button className="px-5 py-2 rounded-lg border border-primary-400 text-primary-400 font-medium bg-white">
-						Sell
-					</button>
-				</div>
-			</div>
+				{activeCategory == "Vet Vendor" && (
+					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
+						<Link href="#">
+							<Image src={Cart} alt="Cart" width={36} height={36} />
+						</Link>
 
-			<CategoryTabs tabs={tabs} activeTab={activeTab} onSelect={setActiveTab} />
+						<div className="flex items-center gap-4">
+							<Link href="#">
+								<Image src={Message} alt="Chat" width={36} height={36} />
+							</Link>
+							<button className="px-5 py-2 rounded-lg border border-primary-400 text-primary-400 font-medium bg-white">
+								Sell
+							</button>
+						</div>
+					</div>
+				)}
 
-			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
-				{filteredProducts.length > 0 ? (
-					filteredProducts.map((p, i) => <ProductCard key={i} {...p}  onViewProduct={(id) => router.push(`/dashboard/products/${id}`)}/>)
-				) : (
-					<p className="col-span-full text-center text-gray-500">
-						No products found for {activeCategory} in {activeTab}
-					</p>
+				{(activeCategory === "Veterinarian" ||
+					activeCategory === "Vet Clinic") && (
+					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
+						<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
+							<Image src={Bar} alt="Cart" width={36} height={36} />
+						</Link>
+						<div className="flex items-center gap-4">
+							<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
+								<Image src={Bar2} alt="Chat" width={36} height={36} />
+							</Link>
+							<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
+								<Image src={Map2} alt="Chat" width={36} height={36} />
+							</Link>
+						</div>
+					</div>
 				)}
 			</div>
+
+			{activeCategory == "Vet Vendor" && (
+				<CategoryTabs
+					tabs={tabs}
+					activeTab={activeTab}
+					onSelect={setActiveTab}
+				/>
+			)}
+			{activeCategory == "Vet Vendor" && (
+				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
+					{filteredProducts.length > 0 ? (
+						filteredProducts.map((p, i) => (
+							<ProductCard
+								key={i}
+								{...p}
+								onViewProduct={(id) => router.push(`/dashboard/products/${id}`)}
+							/>
+						))
+					) : (
+						<p className="col-span-full text-center text-gray-500">
+							No products found for {activeCategory} in {activeTab}
+						</p>
+					)}
+				</div>
+			)}
+			{activeCategory == "Veterinarian" && <Veterinarian />}
+			{activeCategory == "Vet Clinic" && <VetClinic />}
 		</div>
 	);
 }

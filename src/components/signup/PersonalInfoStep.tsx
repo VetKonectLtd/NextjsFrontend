@@ -148,7 +148,7 @@ const PersonalInfoStep = ({
 				)}
 				{/* Terms */}{" "}
 				<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
-					{" "}
+					
 					<input
 						id="agree-terms"
 						type="checkbox"

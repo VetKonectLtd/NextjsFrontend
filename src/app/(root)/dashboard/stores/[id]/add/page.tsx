@@ -12,11 +12,44 @@ import { Controller, useForm } from "react-hook-form";
 import TagInput from "@/components/form/TagInput";
 import { useRouter } from "next/navigation";
 
+export interface Product {
+	id: string;
+	name: string;
+	category: string;
+	description: string;
+	tags: string[];
+	location: string;
+	price: number;
+	imageUrl: string;
+	availableUnits: number;
+	inStock: boolean;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export default function NewStorePage() {
 	const [available, setAvailable] = useState(true);
 	const [previews, setPreviews] = useState<string[]>([]);
 
-	const { control, handleSubmit, register, setValue } = useForm();
+	const {
+		register,
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<Product>({
+		defaultValues: {
+			name: "",
+			category: "",
+			description: "",
+			tags: [],
+			location: "",
+			price: 0,
+			availableUnits: 0,
+			inStock: false,
+		},
+		mode: "onBlur",
+	});
+
 	const router = useRouter();
 
 	const countries = Country.getAllCountries().map((c) => ({
@@ -43,24 +76,13 @@ export default function NewStorePage() {
 
 	const onSubmit = async (data: any) => {
 		try {
-			// const payload = {
-			// 	...data,
-			// 	available,
-			// 	images: previews,
-			// };
+			const payload = {
+				...data,
+				available,
+				images: previews,
+			};
 
-			// // Example API call (replace with your backend route)
-			// const res = await fetch("/api/products", {
-			// 	method: "POST",
-			// 	headers: { "Content-Type": "application/json" },
-			// 	body: JSON.stringify(payload),
-			// });
-
-			// if (!res.ok) throw new Error("Failed to create product");
-
-			// const newProduct = await res.json();
-
-			// Navigate to product details page with returned product ID
+			console.log("Form submitted:", payload);
 			router.push(`/dashboard/stores/1/products/1`);
 		} catch (error) {
 			console.error(error);
@@ -94,6 +116,8 @@ export default function NewStorePage() {
 						type="text"
 						focusLabel="Product Title:"
 						isRequired
+						{...register("name", { required: "Product title is required" })}
+						error={errors.name?.message}
 					/>
 
 					<FormInput
@@ -101,6 +125,8 @@ export default function NewStorePage() {
 						type="text"
 						focusLabel="Product Category:"
 						isRequired
+						{...register("category", { required: "Category is required" })}
+						error={errors.category?.message}
 					/>
 
 					<FormInput
@@ -108,35 +134,42 @@ export default function NewStorePage() {
 						type="text"
 						focusLabel="Product Description:"
 						isRequired
+						{...register("description", {
+							required: "Description is required",
+							minLength: {
+								value: 10,
+								message: "Description should be at least 10 characters",
+							},
+						})}
+						error={errors.description?.message}
 					/>
 
-					<TagInput
-						label="Product Tags"
-						focusLabel="Product Tags:"
-						isRequired
-					/>
-					{/* <Controller
-						name="country"
+					<Controller
+						name="tags"
 						control={control}
-						defaultValue=""
+						rules={{ required: "At least one tag is required" }}
 						render={({ field }) => (
-							<FormSelect
-								label="Country"
-								focusLabel="Country (Required) :"
+							<TagInput
+								{...field}
+								label="Product Tags"
+								focusLabel="Product Tags:"
 								isRequired
-								searchable
-								options={countries}
-								value={field.value}
-								onChange={field.onChange}
+								error={errors.tags?.message as string}
 							/>
 						)}
-					/> */}
+					/>
+
 
 					<FormInput
-						label="Country"
-						type="number"
-						focusLabel="Country (Required):"
+						label="Location"
+						type="text"
+						focusLabel="Location:"
 						isRequired
+						{...register("location", {
+							required: "Location is required" ,
+							
+						})}
+						error={errors.location?.message}
 					/>
 
 					<FormInput
@@ -144,8 +177,15 @@ export default function NewStorePage() {
 						type="number"
 						focusLabel="Price in US Dollars:"
 						isRequired
+						{...register("price", {
+							required: "Price is required",
+							valueAsNumber: true,
+							min: { value: 1, message: "Price must be at least 1" },
+						})}
+						error={errors.price?.message}
 					/>
 
+					{/* Availability toggle */}
 					<div className="flex w-11/12 m-auto items-center py-5 justify-between">
 						<span className="text-sm font-medium text-gray-700">
 							Availability Status - {available ? "Open" : "Closed"}
@@ -153,9 +193,7 @@ export default function NewStorePage() {
 						<button
 							type="button"
 							onClick={() => setAvailable(!available)}
-							className={`w-9 h-4 p-1 flex items-center border border-primary-400 rounded-full transition ${
-								available ? "bg-white" : "bg-white"
-							}`}
+							className="w-9 h-4 p-1 flex items-center border border-primary-400 rounded-full transition"
 						>
 							<span
 								className={`w-3 h-3 bg-primary-400 rounded-full shadow transform transition ${
@@ -165,11 +203,18 @@ export default function NewStorePage() {
 						</button>
 					</div>
 
+					{/* Units */}
 					<FormInput
 						label="Available Units"
 						type="number"
 						focusLabel="Available Units:"
 						isRequired
+						{...register("availableUnits", {
+							required: "Available units is required",
+							valueAsNumber: true,
+							min: { value: 1, message: "Units must be at least 1" },
+						})}
+						error={errors.availableUnits?.message}
 					/>
 
 					<div className="flex flex-col">
@@ -231,8 +276,8 @@ export default function NewStorePage() {
 					</div>
 					<div className=" pt-8">
 						<button
-							type="button"
-							onClick={() => router.push(`/dashboard/stores/1/products/1`)}
+							type="submit"
+							
 							className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
 						>
 							Add
