@@ -18,7 +18,7 @@ const CategorySelector = ({
 	onSelect,
 }: CategorySelectorProps) => {
 	return (
-		<div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full py-4">
+		<div className="grid grid-cols-4 text-center md:grid-cols-4 md:gap-4 gap-2 w-full py-4">
 			{categories.map((cat, idx) => {
 				const isActive = activeCategory === cat.name;
 				const isFirst = idx === 0;
@@ -27,14 +27,14 @@ const CategorySelector = ({
 					<div
 						key={cat.id}
 						onClick={() => onSelect(cat.name)}
-						className={`flex items-center justify-center gap-2 shadow-md rounded-sm px-4 py-3 cursor-pointer transition-colors
+						className={`flex md:flex-row flex-col items-center justify-center gap-2 shadow-md rounded-sm px-4 py-3 cursor-pointer transition-colors
 						${isFirst ? "rounded-l-xl" : ""}
 						${isLast ? "rounded-r-xl " : ""}
 						${isActive ? "border-4 border-green-50" : "border border-gray-225 hover:border-green-50"}
 					`}
 					>
 						<Image src={cat.icon} alt={cat.name} width={20} height={20} />
-						<span className="text-sm font-medium">{cat.name}</span>
+						<span className="md:text-sm text-xs font-medium">{cat.name}</span>
 					</div>
 				);
 			})}

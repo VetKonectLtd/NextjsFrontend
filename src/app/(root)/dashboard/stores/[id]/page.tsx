@@ -23,10 +23,10 @@ export default function StoreDetailsPage() {
 		};
 
 	return (
-		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
+		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-2xl border-gray-225 bg-white">
 			<div
 				style={{ backgroundImage: `url(${AuthBg.src})` }}
-				className="flex  bg-gray-100 h-32 bg-no-repeat bg-top bg-cover justify-between items-start p-4"
+				className="flex  bg-gray-100 h-32 bg-no-repeat bg-top rounded-t-2xl bg-cover justify-between items-start p-4"
 			>
 				<div
 					onClick={handleBack}
@@ -76,7 +76,7 @@ export default function StoreDetailsPage() {
 				{/* Action Buttons */}
 				<div className="flex gap-2 mt-6 w-full items-center justify-center  border-b py-7">
 					<button className="flex flex-col items-center text-gray-700 space-y-3 ">
-						<span className="bg-white border mb-2 hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 mr-3 flex items-center justify-center">
+						<span className="bg-white border mb-2 hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
 							<Image
 								src={Lock.src}
 								alt="lock"
@@ -89,7 +89,7 @@ export default function StoreDetailsPage() {
 						<span className="text-xs">Products</span>
 					</button>
 					<button className="flex flex-col justify-center items-center space-y-3 text-gray-500">
-						<span className="bg-white border mb-2 hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 mr-3 flex items-center justify-center">
+						<span className="bg-white border mb-2 hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
 							<Share2 className="w-6 h-6" />
 						</span>
 						<span className="text-xs">Share</span>

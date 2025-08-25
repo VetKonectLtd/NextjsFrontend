@@ -59,7 +59,7 @@ const TagInput: React.FC<TagInputProps> = ({
 
         <label
           className={`absolute left-4 top-3 text-[#555555] text-xs transition-all
-            peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-2 peer-focus:text-sm
+            peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-2 peer-focus:text-xs
           `}
         >
           {isFocused && focusLabel ? focusLabel : label}
