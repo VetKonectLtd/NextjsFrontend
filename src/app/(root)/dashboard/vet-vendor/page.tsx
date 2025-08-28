@@ -17,7 +17,7 @@ import {
 	Icon12,
 	Icon13,
 } from "@/app/assets/icons/vet-vendor";
-import { Bar, Bar2, Map2 } from "@/app/assets/images";
+import { Bar, Bar2, FullMap, Map2 } from "@/app/assets/images";
 import Veterinarian from "@/components/Veterinarian/Veterinarian";
 import VetClinic from "@/components/vetClinic/VetClinic";
 
@@ -171,6 +171,17 @@ export default function VetVendorPage() {
 					)}
 				</div>
 			)}
+
+			<div className="relative w-full hidden bg-white shadow-md p-2 h-screen rounded-lg overflow-hidden">
+				<Image
+					src={FullMap}
+					alt="VetKonnect Location Map"
+					fill
+					className="object-cover"
+					sizes="(max-width: 768px) 100vw, 50vw"
+				/>
+			</div>
+
 			{activeCategory == "Veterinarian" && <Veterinarian />}
 			{activeCategory == "Vet Clinic" && <VetClinic />}
 		</div>

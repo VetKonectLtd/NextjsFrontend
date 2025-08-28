@@ -4,6 +4,8 @@ import { VetProfileProps } from "../shared/VetProfile";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
 import { useState } from "react";
+import ChatBox from "./ChatBox";
+import ReactStars from "react-stars";
 
 interface VeterinarianProps {
 	selectedVet: VetProfileProps | null;
@@ -12,6 +14,10 @@ interface VeterinarianProps {
 
 const VetAccount = ({ selectedVet, selectedAction }: VeterinarianProps) => {
 	const [copied, setCopied] = useState<string | null>(null);
+
+	const ratingChanged = (newRating: any) => {
+		console.log(newRating);
+	};
 
 	const handleCopy = async (text: string) => {
 		try {
@@ -62,61 +68,7 @@ const VetAccount = ({ selectedVet, selectedAction }: VeterinarianProps) => {
 				</>
 			)}
 
-			{selectedAction === "message" && (
-				<div className="w-full border rounded-lg shadow-md bg-white">
-					{" "}
-					<div className="flex justify-between border-b p-2">
-						{" "}
-						<div className="flex w-full items-center gap-2">
-							{" "}
-							<div className="w-7 h-7 rounded-full border border-gray-225 overflow-hidden">
-								{" "}
-								<Image
-									src={selectedVet?.image || "/default-vet.png"}
-									alt={selectedVet?.name || "Vet"}
-									width={40}
-									height={40}
-									className="object-cover w-full h-full"
-								/>{" "}
-							</div>{" "}
-							<div className="flex items-start text-left flex-col text-gray-55">
-								{" "}
-								<p className="text-sm font-semibold">
-									{selectedVet?.name}
-								</p>{" "}
-								<p className="text-xs">Veterinarian</p>{" "}
-							</div>{" "}
-						</div>{" "}
-						<div className="flex items-center justify-between">
-							{" "}
-							<div className="flex items-center gap-2">
-								{" "}
-								<button className="p-2 shadow-sm border border-gray-225 hover:bg-gray-100 rounded-full">
-									{" "}
-									<Smile size={16} />{" "}
-								</button>{" "}
-								<button className="p-2 shadow-sm border border-gray-225 hover:bg-gray-100 rounded-full">
-									{" "}
-									<Link size={16} />{" "}
-								</button>{" "}
-							</div>{" "}
-						</div>{" "}
-					</div>{" "}
-					<div className="">
-						{" "}
-						<textarea
-							className="w-full resize-none min-h-[140px] border-none p-2 text-sm outline-none"
-							rows={3}
-							placeholder="What are we discussing?"
-						/>{" "}
-					</div>{" "}
-					<div className="bg-gray-225 h-6 w-full"></div>{" "}
-					<button className="flex font-medium px-3 py-2 justify-center items-center text-center w-full bg-primary-400 text-white rounded-b-lg">
-						{" "}
-						Send <Send className="ml-3" size={14} />{" "}
-					</button>{" "}
-				</div>
-			)}
+			{selectedAction === "message" && <ChatBox selectedVet={selectedVet} />}
 
 			{selectedAction === "mail" && (
 				<>
@@ -202,7 +154,15 @@ const VetAccount = ({ selectedVet, selectedAction }: VeterinarianProps) => {
 					<p className="text-sm mt-2 w-60 m-auto text-gray-55 font-normal ">
 						{" "}
 						We would like for you to rate this user on a scale of 1 to 5{" "}
-					</p>{" "}
+					</p>
+					<div className="flex justify-center items-center mt-3">
+						<ReactStars
+							count={5}
+							onChange={ratingChanged}
+							size={24}
+							color2={"#ffd700"}
+						/>
+					</div>
 				</>
 			)}
 		</div>
