@@ -5,7 +5,7 @@ import {Map} from "@/app/assets/icons/vet-vendor"
 
 const SearchBar = () => {
   return (
-      <div className="flex items-center flex-1 bg-white rounded-full shadow-sm border border-gray-200 pl-4 pr-1 py-1">
+      <div className="flex items-center md:flex-1 w-full bg-white rounded-full shadow-sm border border-gray-200 pl-4 pr-1 py-1">
         <Image src={Map} alt="Location" width={20} height={20} className="mr-2" />
         <input
           type="text"

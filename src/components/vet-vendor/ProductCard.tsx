@@ -134,7 +134,7 @@ const ProductCard = ({
 						<Image
 							src={GreenButton}
 							alt="View profile"
-							className="w-12 h-12"
+							 className="md:w-12 w-9  md:h-12 h-9" 
 						/>
 					</button>
 				</div>

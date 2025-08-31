@@ -8,6 +8,7 @@ import {
 	Mail,
 } from "lucide-react";
 import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
+import { GreenButton } from "@/app/assets/icons";
 
 interface ProductCardProps {
 	name: string;
@@ -30,9 +31,8 @@ const StoreCard = ({
 	location,
 	open,
 	id,
-	onViewProduct
+	onViewProduct,
 }: ProductCardProps) => {
-
 	const handleViewProduct = () => {
 		if (onViewProduct && id) {
 			onViewProduct(id);
@@ -107,7 +107,6 @@ const StoreCard = ({
 							</span>
 						</div>
 					</div>
-					
 				</div>
 
 				<div className="flex items-center justify-between px-2 mt-3">
@@ -123,11 +122,14 @@ const StoreCard = ({
 						</button>
 					</div>
 					<button
-						style={{ backgroundImage: `url(${ButtonBg.src})` }}
 						onClick={handleViewProduct}
-						className="rounded-xl bg-cover bg-center bg-no-repeat p-2 flex items-center justify-center"
+						className="group transition-transform duration-200 hover:scale-105"
 					>
-						<ArrowRight size={20} color="#fff" />
+						<Image
+							src={GreenButton}
+							alt="View profile"
+							className="md:w-12 w-9  md:h-12 h-9"
+						/>
 					</button>
 				</div>
 			</div>

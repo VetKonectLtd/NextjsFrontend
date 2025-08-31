@@ -9,7 +9,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { useAuthStore } from "@/store/authStore";
 import AccountDetailsStep from "@/components/signup/AccountDetailsStep";
 import PersonalInfoStep from "@/components/signup/PersonalInfoStep";
-import VericationPage from "@/components/signup/VericationPage";
+import VericationPage from "@/components/signup/VerificationPage";
 import { SignupCredentials } from "@/types";
 
 export default function SignupPage() {

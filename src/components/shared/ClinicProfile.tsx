@@ -15,7 +15,7 @@ import {
 import { RecOverlay } from '@/app/assets/images';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
 
-export interface VetProfileProps {
+export interface ClinicProfileProps {
     id: string;
     name: string;
     location: string;
@@ -29,7 +29,7 @@ export interface VetProfileProps {
 }
 
 
-const VetProfile: React.FC<VetProfileProps> = ({
+const ClinicProfile: React.FC<ClinicProfileProps> = ({
     id,
     name,
     location,
@@ -193,4 +193,4 @@ const VetProfile: React.FC<VetProfileProps> = ({
     );
 };
 
-export default VetProfile;
+export default ClinicProfile;

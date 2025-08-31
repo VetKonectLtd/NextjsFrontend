@@ -7,12 +7,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogDescription,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { Success } from "@/app/assets/icons/auth";
 import SuccessModal from "./SuccessModal";
 import VeterinarianFormModal from "./VeterinarianFormModal";
 import VetClinicFormModal from "./VetClinicFormModal";
