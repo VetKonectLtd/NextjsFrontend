@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { FormControl } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const NewChatPage = () => {
 	const [preview, setPreview] = useState<string | null>(null);
@@ -27,10 +30,14 @@ const NewChatPage = () => {
 		router.back();
 	};
 
-
 	return (
 		<div className="w-11/12 mt-3 m-auto">
-			<h2 className="text-sm pb-4"><span onClick={handleBack} className="font-bold cursor-pointer">Forum Chat </span> / Add to Forum</h2>
+			<h2 className="text-sm pb-4">
+				<span onClick={handleBack} className="font-bold cursor-pointer">
+					Forum Chat{" "}
+				</span>{" "}
+				/ Add to Forum
+			</h2>
 
 			<div className="min-h-screen  shadow-md border rounded-lg border-gray-225 bg-white">
 				<div className="w-full px-6 mt-5 mx-auto">
@@ -39,19 +46,30 @@ const NewChatPage = () => {
 					</h2>
 
 					<form className="space-y-1">
-						<input
+						{/* <input
 							name="Title"
+							type="text"
+							placeholder="Title"
+							className="border outline-none shadow-sm w-full p-4 text-sm font-normal py-3 mb-3 rounded-md border-gray-225"
+						/> */}
+
+						<Input
 							type="text"
 							placeholder="Title"
 							className="border outline-none shadow-sm w-full p-4 text-sm font-normal py-3 mb-3 rounded-md border-gray-225"
 						/>
 
-						<textarea
+						<Textarea className="border outline-none shadow-sm w-full p-4  text-sm font-normal py-3 rounded-md resize-none border-gray-225"
+							placeholder="content"
+							id="content"
+							rows={10}/>
+
+						{/* <textarea
 							className="border outline-none shadow-sm w-full p-4  text-sm font-normal py-3 rounded-md resize-none border-gray-225"
 							name="content"
 							id="content"
 							rows={10}
-						></textarea>
+						></textarea> */}
 
 						{/* Image Upload */}
 						<div className="flex flex-col">

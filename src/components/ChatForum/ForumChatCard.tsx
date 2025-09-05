@@ -106,17 +106,18 @@ const ForumChatCard = () => {
 		<>
 			<div className="px-4">
 				{/* Search Bar */}
-				<div className="flex flex-row items-center md:gap-7 gap-3 w-full  mb-6">
+				<div className="flex flex-row items-center md:gap-7 gap-2 w-full  mb-6">
 					<div className="flex items-center w-full shadow-sm rounded-xl border border-gray-200 overflow-hidden bg-white">
 						<input
 							type="text"
 							placeholder="Type in your keyword here"
-							className="flex-1 px-4 py-2 text-gray-55  focus:outline-none"
+							className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
 						/>
-						<button className="flex items-center py-2 justify-center px-4 bg-primary-400 text-white">
+						<button className="flex items-center md:py-2 py-3 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white">
 							<Search className="w-5 h-5" />
-							<span className="ml-2 md:block hidden">Search</span>
+							<span className="ml-2 hidden md:inline">Search</span>
 						</button>
+
 					</div>
 
 					<div className="flex items-center gap-7">
@@ -133,24 +134,26 @@ const ForumChatCard = () => {
 				{/* Tags */}
 				{!selectedPost && (
 					<>
-						<div className="grid md:grid-cols-7 grid-cols-7 pb-2 md:overflow-hidden overflow-x-scroll gap-3 mb-6">
-							{[
-								"Dogs",
-								"Poultry",
-								"Vet Clinics",
-								"Vet Store",
-								"Vaccination",
-								"Dog Treatment",
-								"Fish Feeding",
-							].map((tag) => (
-								<span
-									key={tag}
-									className=" px-3 py-1 text-sm bg-white border border-gray-225 shadow-md text-gray-700 text-center rounded-full cursor-pointer transition"
-								>
-									{tag}
-								</span>
-							))}
-						</div>
+						
+							<div className="flex pb-6 md:max-w-full max-w-xs  overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
+								{[
+									"Dogs",
+									"Poultry",
+									"Vet Clinics",
+									"Vet Store",
+									"Vaccination",
+									"Dog Treatment",
+									"Fish Feeding",
+								].map((tag) => (
+									<span
+										key={tag}
+										className="px-3 py-1 text-sm bg-white border border-gray-225 shadow-md text-gray-700 text-center rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0"
+									>
+										{tag}
+									</span>
+								))}
+							</div>
+				
 
 						{/* Posts */}
 						{posts.map((post) => (
@@ -207,8 +210,9 @@ const ForumChatCard = () => {
 										>
 											<MessagesSquare size={14} color="#1D2432" />
 										</span>
-										<span className="ml-3 text-sm text-gray-55 font-medium">
-											{post.comments.length} Comments
+										<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+											{post.comments.length} 
+											<span className="hidden md:block">Comments</span>
 										</span>
 									</div>
 
@@ -216,8 +220,8 @@ const ForumChatCard = () => {
 										<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
 											<ThumbsUp size={14} color="#1D2432" />
 										</span>
-										<span className="ml-3 text-sm text-gray-55 font-medium">
-											{post.likes} Likes
+										<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+											{post.likes} <span className="hidden md:block">Likes</span>
 										</span>
 									</div>
 

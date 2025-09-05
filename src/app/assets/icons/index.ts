@@ -21,3 +21,5 @@ export { default as YouTube } from './youtube.svg';
 export { default as Hand } from './hand.svg';
 export { default as Lock } from './lock.svg';
 export {default as Messages} from './Messages.png'
+export {default as Bag} from './Bag.svg'
+export {default as Arrow} from './arrow.svg'

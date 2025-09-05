@@ -54,16 +54,16 @@ const DirectMessage = () => {
 	return (
 		<div className="px-4">
 			{/* Search Bar */}
-			<div className="flex flex-row items-center md:gap-7 gap-3 w-full  mb-6">
+			<div className="flex flex-row items-center md:gap-7 gap-2 w-full  mb-6">
 				<div className="flex items-center w-full shadow-sm rounded-xl border border-gray-200 overflow-hidden bg-white">
 					<input
 						type="text"
 						placeholder="Type in your keyword here"
-						className="flex-1 px-4 py-2 text-gray-55  focus:outline-none"
+						className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
 					/>
-					<button className="flex items-center py-2 justify-center px-4 bg-primary-400 text-white">
+					<button className="flex items-center md:py-2 py-3 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white">
 						<Search className="w-5 h-5" />
-						<span className="ml-2 md:block hidden">Search</span>
+						<span className="ml-2 hidden md:inline">Search</span>
 					</button>
 				</div>
 
@@ -75,7 +75,7 @@ const DirectMessage = () => {
 			</div>
 
 			<div className="flex mb-3">
-				<button className="px-4 py-2 text-sm font-medium border-b-2 border-green-600">
+				<button className="px-4 py-2 text-sm font-medium">
 					Sents
 				</button>
 				<button className="px-4 py-2 text-sm font-medium text-gray-500">
@@ -134,20 +134,20 @@ const DirectMessage = () => {
 				</div>
 
 				{/* Right: Chat Box */}
-				{selectedVet && (
-					<div className="md:col-span-1 col-span-2">
-						<div
-							onClick={() => setSelectedVet(null)}
-							className="flex items-center md:hidden text-sm mb-4 text-gray-55 hover:text-green-50"
-						>
-							<span className="bg-white border cursor-pointer text-gray-500 border-gray-225 shadow-md rounded-full p-1 mr-2">
-								<ChevronLeft className="w-5 h-5" />
-							</span>{" "}
-							Back
-						</div>
-						<ChatBox selectedVet={selectedVet} />
+				<div
+					className={`md:col-span-1 ${selectedVet ? "block" : "hidden md:block"} col-span-2`}
+				>
+					<div
+						onClick={() => setSelectedVet(null)}
+						className="flex items-center md:hidden text-sm mb-4 text-gray-55 hover:text-green-50"
+					>
+						<span className="bg-white border cursor-pointer text-gray-500 border-gray-225 shadow-md rounded-full p-1 mr-2">
+							<ChevronLeft className="w-5 h-5" />
+						</span>{" "}
+						Back
 					</div>
-				)}
+					<ChatBox selectedVet={selectedVet} />
+				</div>
 			</div>
 		</div>
 	);

@@ -134,14 +134,12 @@ const ChatBox = ({ selectedVet }: any) => {
 			)}
 
 			{!selectedVet && (
-			
-					
 					<div className="w-full h-full border flex flex-col text-center px-10 items-center justify-center border-gray-225 rounded-lg shadow-md bg-white relative">
 						<div className="max-w-xs m-auto">
 							<div className="w-10 h-10 mb-3 m-auto overflow-hidden">
 								<Image
 									src={Messages}
-									alt={"Messages"}
+									alt={"Messages"} 
 									width={40}
 									height={40}
 									className="object-cover w-full h-full"

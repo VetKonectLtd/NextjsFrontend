@@ -63,7 +63,7 @@ const ChatForum = () => {
 	};
 
 	return (
-		<div className=" w-11/12 mt-3 m-auto">
+		<div className="w-11/12 mt-3 m-auto">
 			<Link
 				href="/dashboard/chat-forum/add-chat"
 				className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition"
@@ -76,7 +76,7 @@ const ChatForum = () => {
 				</div>
 			</Link>
 
-			<div className="min-h-screen bg-white py-3 shadow-md rounded-xl border border-gray-200">
+			<div className="bg-white py-3 shadow-md rounded-xl border border-gray-200">
 				{/* Tabs Header */}
 				<Tabs
 					defaultValue={tab}
@@ -85,13 +85,13 @@ const ChatForum = () => {
 				>
 					<TabsList className="mb-4 bg-transparent">
 						<TabsTrigger
-							className="data-[state=active]:font-bold text-lg data-[state=active]:bg-transparent data-[state=active]:shadow-none font-normal"
+							className="data-[state=active]:font-bold text-base data-[state=active]:bg-transparent data-[state=active]:shadow-none font-normal"
 							value="chat"
 						>
 							Forum Chat
 						</TabsTrigger>
 						<TabsTrigger
-							className="data-[state=active]:font-bold text-lg data-[state=active]:bg-transparent data-[state=active]:shadow-none font-normal"
+							className="data-[state=active]:font-bold text-base data-[state=active]:bg-transparent data-[state=active]:shadow-none font-normal"
 							value="message"
 						>
 							Direct Messaging

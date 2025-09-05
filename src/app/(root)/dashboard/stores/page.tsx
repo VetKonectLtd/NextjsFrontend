@@ -52,7 +52,7 @@ const StorePage = () => {
 	const router = useRouter();
 	
 	return (
-		<div className="min-h-screen w-11/12 mt-3 m-auto bg-white">
+		<div className="w-11/12 mt-3 m-auto bg-white">
 			<h1 className="text-xl text-gray-55 font-bold mb-4">My Store</h1>
 
 			<Link

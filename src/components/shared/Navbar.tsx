@@ -81,25 +81,25 @@ const Navbar = () => {
               About Us
             </Link>
             <Link
-              href="/feed-calculator"
+              href="/dashboard/feed-calculator"
               className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
             >
               Feed Calculator
             </Link>
             <Link
-              href="/disease-predictor"
+              href="/dashboard/disease-predictor"
               className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
             >
               Disease Predictor
             </Link>
             <Link
-              href="/blog"
+              href="/dashboard/blog"
               className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
             >
               Blog
             </Link>
             <Link
-              href="/chat-forum"
+              href="/dashboard/chat-forum"
               className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
             >
               Chat Forum
