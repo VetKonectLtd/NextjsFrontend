@@ -5,12 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { VetKonnectLogo } from '@/app/assets/images';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { XMarkIcon, Bars3Icon, UserIcon, InformationCircleIcon, CalculatorIcon, HeartIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, LanguageIcon, PhoneIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { Notification, MessageNav } from '@/app/assets/icons';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -22,6 +25,29 @@ const Navbar = () => {
 
   const toggleAccountDropdown = () => {
     setIsAccountDropdownOpen(!isAccountDropdownOpen);
+  };
+
+  // Helper function to check if a link is active
+  const isActiveLink = (href: string) => {
+    return pathname === href;
+  };
+
+  // Helper function to get link classes based on active state
+  const getLinkClasses = (href: string) => {
+    const baseClasses = "px-3 py-2 text-sm font-medium transition-colors";
+    const activeClasses = "text-green-600 underline";
+    const inactiveClasses = "text-gray-800 hover:text-green-600";
+    
+    return `${baseClasses} ${isActiveLink(href) ? activeClasses : inactiveClasses}`;
+  };
+
+  // Helper function to get mobile link classes based on active state
+  const getMobileLinkClasses = (href: string) => {
+    const baseClasses = "flex items-center px-4 py-4 rounded-2xl transition-colors";
+    const activeClasses = "text-green-600 underline";
+    const inactiveClasses = "text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link";
+    
+    return `${baseClasses} ${isActiveLink(href) ? activeClasses : inactiveClasses}`;
   };
 
   const closeAccountDropdown = () => {
@@ -82,13 +108,13 @@ const Navbar = () => {
             </Link>
             <Link
               href="/dashboard/feed-calculator"
-              className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+              className={getLinkClasses("/dashboard/feed-calculator")}
             >
               Feed Calculator
             </Link>
             <Link
               href="/dashboard/disease-predictor"
-              className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+              className={getLinkClasses("/dashboard/disease-predictor")}
             >
               Disease Predictor
             </Link>
@@ -108,6 +134,26 @@ const Navbar = () => {
 
           {/* Right-side Icons */}
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
+            {/* Notifications */}
+            <div className="hidden md:block relative">
+              <Link href="/dashboard/notifications">
+                <button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50 relative">
+                  <Image src={Notification} alt="Notifications" width={20} height={20} />
+                  {/* Notification Badge */}
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                    1
+                  </span>
+                </button>
+              </Link>
+            </div>
+
+            {/* Messages */}
+            <div className="hidden md:block relative">
+              <button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
+                <Image src={MessageNav} alt="Messages" width={20} height={20} />
+              </button>
+            </div>
+
             {/* Language Selector */}
             <div className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600">
               <span className="text-sm font-medium">EN</span>
@@ -280,9 +326,9 @@ const Navbar = () => {
 
               {/* Feed Calculator */}
               <Link
-                href="/feed-calculator"
+                href="/dashboard/feed-calculator"
                 onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+                className={getMobileLinkClasses("/dashboard/feed-calculator")}
               >
                 <CalculatorIcon className="w-6 h-6 mr-4" />
                 <span className="text-base font-medium">Feed Calculator</span>
@@ -290,9 +336,9 @@ const Navbar = () => {
 
               {/* Disease Predictor */}
               <Link
-                href="/disease-predictor"
+                href="/dashboard/disease-predictor"
                 onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+                className={getMobileLinkClasses("/dashboard/disease-predictor")}
               >
                 <HeartIcon className="w-6 h-6 mr-4" />
                 <span className="text-base font-medium">Disease Predictor</span>
