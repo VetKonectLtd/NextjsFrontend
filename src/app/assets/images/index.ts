@@ -41,3 +41,4 @@ export { default as Bar } from './bar.png';
 export { default as Bar2 } from './bar2.svg';
 export { default as Map2 } from './map2.svg';
 export { default as FullMap } from './FullMap.svg';
+export { default as BlogImage } from './blog.jpg';

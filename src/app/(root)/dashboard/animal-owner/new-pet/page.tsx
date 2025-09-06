@@ -36,7 +36,7 @@ const NewPetPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
+		<div className="w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
 			<div
 				onClick={handleBack}
 				className="flex items-center text-sm text-gray-55 hover:text-green-50 ml-4 mt-4"

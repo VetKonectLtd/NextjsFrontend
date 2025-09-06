@@ -52,14 +52,14 @@ const TagInput: React.FC<TagInputProps> = ({
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={label}
-          className={`peer block w-full px-4 pt-6 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
+          className={`peer block w-full px-4 pt-5 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
             ${error ? "border-red-500" : ""}
           `}
         />
 
         <label
-          className={`absolute left-4 top-3 text-[#555555] text-xs transition-all
-            peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-2 peer-focus:text-xs
+          className={`absolute left-4 top-2 text-[#555555] text-xs transition-all
+            peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-1 peer-focus:text-xs
           `}
         >
           {isFocused && focusLabel ? focusLabel : label}

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { XMarkIcon, Bars3Icon, UserIcon, InformationCircleIcon, CalculatorIcon, HeartIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, LanguageIcon, PhoneIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { Notification, MessageNav } from '@/app/assets/icons';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -118,13 +119,13 @@ const Navbar = () => {
               Disease Predictor
             </Link>
             <Link
-              href="/blog"
+              href="/dashboard/blog"
               className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
             >
               Blog
             </Link>
             <Link
-              href="/chat-forum"
+              href="/dashboard/chat-forum"
               className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
             >
               Chat Forum
@@ -133,6 +134,26 @@ const Navbar = () => {
 
           {/* Right-side Icons */}
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
+            {/* Notifications */}
+            <div className="hidden md:block relative">
+              <Link href="/dashboard/notifications">
+                <button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50 relative">
+                  <Image src={Notification} alt="Notifications" width={20} height={20} />
+                  {/* Notification Badge */}
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                    1
+                  </span>
+                </button>
+              </Link>
+            </div>
+
+            {/* Messages */}
+            <div className="hidden md:block relative">
+              <button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
+                <Image src={MessageNav} alt="Messages" width={20} height={20} />
+              </button>
+            </div>
+
             {/* Language Selector */}
             <div className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600">
               <span className="text-sm font-medium">EN</span>

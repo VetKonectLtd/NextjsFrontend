@@ -47,7 +47,7 @@ const AnimalOwner = () => {
 	};
 
 	return (
-		<div className="min-h-screen w-11/12 mt-3 m-auto bg-white">
+		<div className="w-11/12 mt-3 m-auto bg-white">
 			{/* Tabs Header */}
 			<Tabs
 				defaultValue={tab}
