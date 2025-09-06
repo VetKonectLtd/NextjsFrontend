@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import FormInput from "../form/FormInput";
 import FormSelect from "../form/FormSelect";
 import PlanSelector, { Plan } from "./PlanSelector";
@@ -15,7 +15,7 @@ const ads = [
 		price: 50.99,
 		category: "Pets",
 		tags: ["dog", "puppy", "golden retriever"],
-		images: [Dog, Shop, Dog],
+		images: [Dog.src, Shop.src, Dog.src],
 		rating: 4.5,
 		location: "Lagos, Nigeria",
 		units: 20,
@@ -29,7 +29,7 @@ const ads = [
 		price: 120.0,
 		category: "Pets",
 		tags: ["cat", "persian", "feline"],
-		images: [Dog, Shop, Dog],
+		images: [Dog.src, Shop.src, Dog.src],
 		rating: 4.8,
 		location: "Abuja, Nigeria",
 		units: 10,
@@ -43,7 +43,7 @@ const ads = [
 		price: 299.99,
 		category: "Birds",
 		tags: ["parrot", "african grey", "bird"],
-		images: [Dog, Shop, Dog],
+		images: [Dog.src, Shop.src, Dog.src],
 		rating: 4.3,
 		location: "Oyo, Nigeria",
 		units: 5,
@@ -59,7 +59,7 @@ export interface Product {
 	category: string;
 	tags: string[];
 	price: number;
-	images: string[];
+	images:string[]; 
 	location: string;
 	units: number;
 	open: boolean;
