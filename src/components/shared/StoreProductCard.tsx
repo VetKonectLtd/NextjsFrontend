@@ -67,7 +67,7 @@ const StoreProductCard = ({
 							className="object-cover"
 							onClick={nextImage}
 						/>
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
+						<div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
 					</motion.div>
 				</AnimatePresence>
 
@@ -84,13 +84,16 @@ const StoreProductCard = ({
 				{/* Indicator dots */}
 				<div className="absolute bottom-2 left-2 flex justify-center gap-1">
 					{images.map((_, i) => (
-						<motion.div
+						<motion.button
 							key={i}
-							className={`h-2 rounded-full ${
-								i === index ? "w-2 bg-white " : "w-2 bg-transparent border"
+							onClick={() => setIndex(i)}
+							whileHover={{ scale: 1.2 }}
+							whileTap={{ scale: 0.9 }}
+							className={`w-2 h-2 rounded-full transition-all duration-200 ${
+								index === i
+									? "bg-white scale-125"
+									: "bg-transparent border hover:bg-white/75"
 							}`}
-							layout
-							transition={{ type: "spring", stiffness: 300, damping: 20 }}
 						/>
 					))}
 				</div>

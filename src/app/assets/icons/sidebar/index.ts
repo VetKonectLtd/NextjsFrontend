@@ -9,3 +9,4 @@ export { default as Disease } from './disease.svg';
 export { default as Feed } from './feed.svg';
 export { default as Home } from './home.svg';
 export { default as Store } from './stores.svg';
+export { default as Search } from './search.svg';

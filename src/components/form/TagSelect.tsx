@@ -45,7 +45,7 @@ const TagSelect: React.FC<TagSelectProps> = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onChange={(e) => addTag(e.target.value)}
-          className={`peer block w-full px-4 pt-6 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-sm focus:outline-none
+          className={`peer block w-full px-4 pt-5 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-sm focus:outline-none
             ${error ? "border-red-500" : ""}
           `}
           defaultValue=""
@@ -61,7 +61,7 @@ const TagSelect: React.FC<TagSelectProps> = ({
         </select>
 
         <label
-          className={`absolute left-4 top-3 text-[#555555] text-xs transition-all
+          className={`absolute left-4 top-2 text-[#555555] text-xs transition-all
             peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-2 peer-focus:text-xs
           `}
         >

@@ -139,7 +139,7 @@ export default function ProductDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-12">
+    <div className="bg-gray-50 px-12">
       {/* Header */}
       <div className="px-4 py-4 flex items-center mb-6">
         <button 
