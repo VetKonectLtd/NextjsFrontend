@@ -1,33 +1,29 @@
 "use client";
+
 import { useState } from "react";
 import {
-	ChevronLeft,
 	Search,
 	SlidersVertical,
-	MessageCircle,
-	Heart,
 	Share2,
 	MessagesSquare,
 	ThumbsUp,
 	Eye,
-	Send,
 	ArrowRight,
 	ArrowLeft,
-	X,
-	EllipsisVertical,
-	ArrowUpRight,
 } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hand } from "@/app/assets/icons";
 import { BlogImage, Vet1, Vet2 } from "@/app/assets/images";
-import { ButtonBg, Dog } from "@/app/assets/icons/vet-vendor";
-import MobileComments from "@/components/blog/MobileComments";
+import {  Dog } from "@/app/assets/icons/vet-vendor";
+import MobileDrawal from "@/components/blog/MobileDrawal";
+import HotNews from "@/components/blog/HotNews";
+import CommentSection from "@/components/blog/CommentSection";
 
 // --- Blog Data ---
 const blogPosts = [
 	{
-		id: 1,
+		id: "1",
 		title: "Anti-Microbial Resistance",
 		image: BlogImage,
 		content:
@@ -39,14 +35,14 @@ const blogPosts = [
 		views: 3,
 		commentsList: [
 			{
-				id: 1,
+				id: "1",
 				avatar: Vet1,
 				name: "Jade Cosgrove",
 				text: "Great insights! Really helpful.",
 				time: "10 Apr",
 			},
 			{
-				id: 2,
+				id: "2",
 				avatar: Vet2,
 				name: "Tola Williams",
 				text: "I agree, this is a huge concern.",
@@ -55,7 +51,7 @@ const blogPosts = [
 		],
 	},
 	{
-		id: 2,
+		id: "2",
 		title: "Anthrax Outbreak",
 		image: Dog,
 		content:
@@ -117,22 +113,13 @@ const Blog = () => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [showFull, setShowFull] = useState(true);
 	const [showComments, setShowComments] = useState(false);
-	const [currentIndex, setCurrentIndex] = useState(0);
+	const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
-	const next = () => {
-		if (currentIndex < hotNews.length - 1) {
-			setCurrentIndex(currentIndex + 1);
-		}
-	};
-
-	const prev = () => {
-		if (currentIndex > 0) {
-			setCurrentIndex(currentIndex - 1);
-		}
+	const toggleDropdown = (id: string) => {
+		setOpenDropdownId((prev) => (prev === id ? null : id));
 	};
 
 	const handleNext = () => {
-		// Only cycle through blogPosts, not hotNews
 		const nextIndex = (activeIndex + 1) % blogPosts.length;
 		setActiveIndex(nextIndex);
 		setActivePost(blogPosts[nextIndex]);
@@ -309,134 +296,34 @@ const Blog = () => {
 								</p>
 							</div>
 						) : (
-							<div>
-								<h4 className="font-semibold mb-4">Comments</h4>
-								<div className="space-y-4 mb-4 max-h-[400px] scrollbar-hide overflow-y-auto">
-									{activePost.commentsList.length > 0 ? (
-										activePost.commentsList.map((c) => (
-											<div key={c.id} className="pb-2">
-												<div className="flex justify-between">
-													<div className="flex w-full mb-2 items-center gap-2">
-														<div className="w-10 h-10 rounded-full border border-gray-225 overflow-hidden">
-															<Image
-																src={c?.avatar || "/default-vet.png"}
-																alt={c?.name || "Vet"}
-																width={40}
-																height={40}
-																className="object-cover w-full h-full"
-															/>
-														</div>
-														<div className="flex items-start text-left flex-col text-gray-55">
-															<p className="text-sm font-semibold">{c.name}</p>
-															<p className="text-xs text-gray-55">{c.time}</p>
-														</div>
-													</div>
-													<button className="">
-														<EllipsisVertical className="w-4 h-4" />
-													</button>
-												</div>
-												<p className="text-sm text-gray-600">{c.text}</p>
-											</div>
-										))
-									) : (
-										<p className="text-sm text-gray-500">No comments yet</p>
-									)}
-								</div>
-
-								{/* Input */}
-								<div className="flex absolute bottom-0 w-full left-0 border-t border-gray-225 right-0">
-									<input
-										type="text"
-										placeholder="Write a comment..."
-										className="flex-1  rounded-bl-xl outline-none  px-3 py-3 text-sm"
-									/>
-									<button
-										style={{ backgroundImage: `url(${ButtonBg.src})` }}
-										className="px-3 py-2 bg-no-repeat bg-contain bg-primary-400 text-white rounded-xl"
-									>
-										<Send className="w-5 h-5" />
-									</button>
-								</div>
-							</div>
+							<CommentSection
+								comments={activePost.commentsList}
+								openDropdownId={openDropdownId}
+								toggleDropdown={toggleDropdown}
+								setOpenDropdownId={setOpenDropdownId}
+							/>
 						)}
 					</div>
 
 					{/* Mobile Comments Drawer */}
-					<MobileComments
+					<MobileDrawal
+						toggleDropdown={toggleDropdown}
 						showComments={showComments}
 						setShowComments={setShowComments}
 						activePost={activePost}
+						openDropdownId={openDropdownId}
+						setOpenDropdownId={setOpenDropdownId}
 					/>
 				</div>
 
 				{/* Hot News Section */}
 				<h3 className="font-semibold text-2xl pb-7 pt-12">Hot News</h3>
-				<div className="overflow-hidden">
-					<AnimatePresence mode="wait">
-						<motion.div
-							className="flex gap-4"
-							initial={{ opacity: 0, x: -50 }}
-							key={currentIndex}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0, x: 50 }}
-								transition={{ duration: 0.4 }}
-						>
-							{hotNews.map((news: any) => (
-								<div
-									key={news.id}
-									className="w-full md:w-1/2 flex-shrink-0 bg-white grid grid-cols-2 p-2 border rounded-lg shadow-md cursor-pointer hover:shadow-lg"
-								>
-									<div className="h-36">
-										<Image
-											src={news.image}
-											alt={news.title}
-											width={400}
-											height={200}
-											className="rounded-md w-full h-full object-cover mb-2"
-										/>
-									</div>
-									<div className="ml-3">
-										<div className="flex justify-between items-center mb-3">
-											<h4 className="font-semibold md:text-lg text-sm">
-												{news.title}
-											</h4>
-											<span
-												onClick={() => {
-													setActivePost(news);
-													setShowFull(true);
-													setShowComments(false);
-												}}
-												className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-1 flex items-center justify-center"
-											>
-												<ArrowUpRight size={12} color="#1D2432" />
-											</span>
-										</div>
-										<p className="md:text-sm text-xs font-normal text-gray-55">
-											{news.content.slice(0, 100)}...
-										</p>
-									</div>
-								</div>
-							))}
-						</motion.div>
-					</AnimatePresence>
-
-					<div className="m-auto mt-7 flex items-center gap-3 justify-center">
-						<button
-							onClick={prev}
-							disabled={currentIndex === 0}
-							className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center disabled:opacity-50"
-						>
-							<ArrowLeft size={12} color="#1D2432" />
-						</button>
-						<button
-							onClick={next}
-							disabled={currentIndex >= hotNews.length - 1}
-							className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center disabled:opacity-50"
-						>
-							<ArrowRight size={12} color="#1D2432" />
-						</button>
-					</div>
-				</div>
+				<HotNews
+					news={hotNews}
+					setShowFull={setShowFull}
+					setActivePost={setActivePost}
+					setShowComments={setShowComments}
+				/>
 			</div>
 		</div>
 	);
