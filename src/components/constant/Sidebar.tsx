@@ -13,7 +13,7 @@ const Sidebar = () => {
 				className="hidden w-24 overflow-y-scroll scrollbar-hide pb-8 transition-all duration-300 h-vhs  fixed items-center  md:flex flex-col gap-2"
 			>
 				{navItems.map((item) => {
-					const isActive = pathname === item.href;
+					const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
 					return (
 						<div className="px-2 w-full" key={item.id}>
 							<Link

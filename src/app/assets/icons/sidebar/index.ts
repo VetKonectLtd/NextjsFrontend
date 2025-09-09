@@ -3,6 +3,7 @@ export { default as Activities } from './activities.svg';
 export { default as Ads } from './ads.svg';
 export { default as Chat } from './chat.svg';
 export { default as Client } from './clients.svg';
+export { default as Cases } from './cases.svg';
 
 export { default as Dashboard } from './dashboard.svg';
 export { default as Disease } from './disease.svg';
