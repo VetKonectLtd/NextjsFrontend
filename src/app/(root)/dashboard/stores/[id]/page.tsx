@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AuthBg } from "@/app/assets/images";
 import { Shop } from "@/app/assets/icons/vet-vendor";
 import Image from "next/image";
-import { Hand, Lock } from "@/app/assets/icons";
+import { Bg22, Hand, Lock } from "@/app/assets/icons";
 import {
 	Share2,
 	Plus,
@@ -25,7 +25,7 @@ export default function StoreDetailsPage() {
 	return (
 		<div className="min-h-screen w-11/12 mt-3 m-auto shadow-md border rounded-2xl border-gray-225 bg-white">
 			<div
-				style={{ backgroundImage: `url(${AuthBg.src})` }}
+				style={{ backgroundImage: `url(${Bg22.src})` }}
 				className="flex  bg-gray-100 h-32 bg-no-repeat bg-top rounded-t-2xl bg-cover justify-between items-start p-4"
 			>
 				<div
