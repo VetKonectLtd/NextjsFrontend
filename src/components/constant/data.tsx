@@ -15,7 +15,7 @@ import {Cow} from "@/app/assets/icons/vet-vendor";
 
 export const navItems = [
 	{ id: 1, label: "Home", icon: Home, href: "/dashboard/vet-vendor" },
-	{ id: 2, label: "Dashboard", icon: Dashboard, href: "/dashboard" },
+	{ id: 2, label: "Dashboard", icon: Dashboard, href: "/dashboard/dashboard" },
 	{ id: 3, label: "Pets & Livestock", icon: Cow, href: "/dashboard/animal-owner" },
 	{ id: 4, label: "Cases", icon: Cases, href: "/dashboard/cases" },
 	{ id: 5, label: "Clients", icon: Client, href: "/dashboard/client" },
