@@ -27,7 +27,7 @@ const LoginSuccess = () => {
 				<button
 					type="button"
 					className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 hover:bg-primary-400 transition"
-					onClick={() => router.push("#")}
+					onClick={() => router.push("/dashboard")}
 				>
 					Go to Dashboard
 				</button>
