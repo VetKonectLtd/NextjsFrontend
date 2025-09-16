@@ -2,7 +2,17 @@
 export interface User {
 	id: string;
 	email: string;
-	name: string;
+	first_name: string;
+    last_name: string;
+	phone_num?: string;
+	state?: string;
+	country?: string;
+	email_verified_at?: string | null;
+	password_algorithm: string;
+	provider?: string | null;
+	provider_id?: string | null;
+	old_id?: number | null;
+	old_table?: string | null;
 	avatar?: string;
 	role: "user" | "admin";
 	createdAt: string;
@@ -20,18 +30,6 @@ export interface AuthState {
 export interface LoginCredentials {
 	email: string;
 	password: string;
-}
-
-export interface SignupCredentials {
-	email: string;
-	password: string;
-	confirmPassword: string;
-	firstName: string;
-	lastName: string;
-	phone: string;
-	countryCode: string;
-	state: string;
-	agreeTerms: boolean;
 }
 
 // API Response types
@@ -64,3 +62,18 @@ export interface Store {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface SignupCredentials {
+	email: string;
+	password: string;
+	password_confirmation: string;
+}
+
+export interface PersonalInfoForm{
+	first_name: string;
+    last_name: string;
+	phone_num?: string;
+	country: string;
+	state: string;
+	agreeTerms: boolean;
+};

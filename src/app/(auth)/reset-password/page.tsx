@@ -91,7 +91,7 @@ const ResetPasswordPage = () => {
 						<button
 							type="button"
 							className="w-full py-3 rounded-md border border-gray-55 text-base font-semibold bg-white hover:bg-gray-100 transition"
-							onClick={() => router.push("/signup")}
+							onClick={() => router.push("/signup/account")}
 						>
 							Create Account
 						</button>

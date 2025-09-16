@@ -10,14 +10,14 @@ const Sidebar = () => {
 	return (
 		<>
 			<div className="hidden w-24 overflow-y-scroll scrollbar-hide pb-8 transition-all duration-300 h-vhs  fixed items-center  md:flex flex-col gap-2">
-				{navItems.map((item) => {
+				{navItems.map((item, index) => {
 					const isActive =
 						pathname === item.href ||
 						(pathname.startsWith(item.href + "/") &&
 							item.href !== "/dashboard") ||
 						(pathname === "/dashboard" && item.href === "/dashboard");
 					return (
-						<div className="px-2 w-full" key={item.id}>
+						<div className="px-2 w-full" key={index}>
 							<Link
 								href={item.href}
 								className={`flex flex-col items-center justify-center px-1 border-gray-225 hover:border-green-50 py-3 border-2 rounded-lg shadow-md text-center gap-2 mx-auto ${

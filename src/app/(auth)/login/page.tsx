@@ -4,15 +4,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { AuthBg } from "@/app/assets/images";
-import {Linkedin} from "@/app/assets/icons/auth";
+import { Linkedin } from "@/app/assets/icons/auth";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form/FormInput";
 import { LoginCredentials } from "@/types";
+import {
+	useGoogleLogin,
+	useLinkedInLogin,
+	useLogin,
+} from "@/services/authService";
+import { Loader2 } from "lucide-react";
+import Cookies from "js-cookie";
 
 export default function LoginPage() {
 	const router = useRouter();
-	const { login, isLoading, error, clearError } = useAuthStore();
+	const loginMutation = useLogin();
+	const googleLogin = useGoogleLogin(false);
+	const linkedinLogin = useLinkedInLogin(false);
 
 	const {
 		register,
@@ -25,12 +34,31 @@ export default function LoginPage() {
 	});
 
 	const onSubmit = async (data: LoginCredentials) => {
-		try {
-			await login(data);
-			router.push("/dashboard");
-		} catch {
-			// error already handled in store
-		}
+		loginMutation.mutate(data, {
+			onSuccess: () => {
+				router.replace("/success?form=Login");
+			},
+		});
+	};
+
+	const handleGoogleLogin = () => {
+		googleLogin.refetch().then((res) => {
+			if (res.data?.data?.token) {
+				localStorage.setItem("auth-token", res.data.data.token);
+				Cookies.set("auth-token", res.data.data.token); 
+				router.push("/dashboard");
+			}
+		});
+	};
+
+	const handleLinkedInLogin = () => {
+		linkedinLogin.refetch().then((res) => {
+			if (res.data?.data?.token) {
+				localStorage.setItem("auth-token", res.data.data.token);
+				Cookies.set("auth-token", res.data.data.token); 
+				router.push("/dashboard");
+			}
+		});
 	};
 
 	return (
@@ -46,9 +74,9 @@ export default function LoginPage() {
 					</p>
 				</div>
 				<form className="space-y-1" onSubmit={handleSubmit(onSubmit)}>
-					{error && (
+					{loginMutation.error && (
 						<div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-2">
-							{error}
+							{(loginMutation.error as Error).message || "Login failed"}
 						</div>
 					)}
 
@@ -63,10 +91,7 @@ export default function LoginPage() {
 								message: "Invalid email address",
 							},
 						})}
-						onChange={(e) => {
-							if (error) clearError();
-							clearErrors("email");
-						}}
+						onChange={() => clearErrors("email")}
 						isRequired
 					/>
 					{errors.email && (
@@ -78,13 +103,8 @@ export default function LoginPage() {
 						type="password"
 						{...register("password", {
 							required: "Password is required",
-							minLength: {
-								value: 6,
-								message: "Password must be at least 6 characters",
-							},
 						})}
-						onChange={(e) => {
-							if (error) clearError();
+						onChange={() => {
 							clearErrors("password");
 						}}
 						isRequired
@@ -96,7 +116,7 @@ export default function LoginPage() {
 					<div className="space-y-3 pt-4">
 						<div className="text-left mb-2">
 							<Link
-								href="/auth/reset-password"
+								href="/reset-password"
 								className="text-sm text-gray-700 underline"
 							>
 								Forgot your password?
@@ -104,12 +124,17 @@ export default function LoginPage() {
 						</div>
 						<button
 							type="submit"
-							disabled={
-								isLoading || !register("email") || !register("password")
-							}
-							className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+							disabled={loginMutation.isLoading}
+							className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 						>
-							{isLoading ? "Logging in..." : "Login"}
+							{loginMutation.isLoading ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Processing...
+								</>
+							) : (
+								"Login"
+							)}
 						</button>
 					</div>
 				</form>
@@ -117,6 +142,7 @@ export default function LoginPage() {
 					<div className="flex space-x-3">
 						<button
 							type="button"
+							onClick={handleLinkedInLogin}
 							className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-400 text-white text-xl font-bold mb-4 shadow-md"
 							aria-label="Login with LinkedIn"
 						>
@@ -129,6 +155,7 @@ export default function LoginPage() {
 
 						<button
 							type="button"
+							onClick={handleGoogleLogin}
 							className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 text-white text-xl font-bold mb-4 shadow-md"
 							aria-label="Login with Google"
 						>
@@ -146,7 +173,7 @@ export default function LoginPage() {
 				<button
 					type="button"
 					className="w-full py-3 rounded-md border border-gray-55 text-base font-semibold bg-white hover:bg-gray-100 transition"
-					onClick={() => router.push("/signup")}
+					onClick={() => router.push("/signup/account")}
 				>
 					Create Account
 				</button>

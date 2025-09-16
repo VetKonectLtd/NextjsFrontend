@@ -76,6 +76,7 @@ const Dashboard = () => {
 	const initialTab = searchParams.get("tab") || "recent";
 	const [tab, setTab] = useState(initialTab);
 
+
 	useEffect(() => {
 		const urlTab = searchParams.get("tab");
 		if (urlTab && urlTab !== tab) {
