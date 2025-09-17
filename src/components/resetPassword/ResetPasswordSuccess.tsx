@@ -28,7 +28,7 @@ const ResetPasswordSuccess = () => {
 				<button
 					type="button"
 					className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 hover:bg-primary-400 transition"
-					onClick={() => router.push("/auth/login")}
+					onClick={() => router.push("/login")}
 				>
 					Login
 				</button>

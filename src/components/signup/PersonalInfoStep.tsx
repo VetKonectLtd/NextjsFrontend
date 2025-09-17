@@ -3,7 +3,7 @@ import { Country, State } from "country-state-city";
 import FormInput from "../form/FormInput";
 import FormSelect from "../form/FormSelect";
 import PhoneInput from "../form/PhoneInput";
-import { PersonalInfoForm, SignupCredentials } from "@/types";
+import { PersonalInfoForm } from "@/types";
 import {
 	UseFormClearErrors,
 	UseFormGetValues,
@@ -62,8 +62,8 @@ const PersonalInfoStep = ({
 					focusLabel="First Name (Required):"
 					isRequired
 				/>
-				{errors.firstName && (
-					<p className="text-red-500 text-xs">{errors.firstName.message}</p>
+				{errors.first_name && (
+					<p className="text-red-500 text-xs">{errors.first_name.message}</p>
 				)}
 				{/* Last Name */}
 				<FormInput
@@ -78,8 +78,8 @@ const PersonalInfoStep = ({
 					focusLabel="Last Name (Required):"
 					isRequired
 				/>
-				{errors.lastName && (
-					<p className="text-red-500 text-xs">{errors.lastName.message}</p>
+				{errors.last_name && (
+					<p className="text-red-500 text-xs">{errors.last_name.message}</p>
 				)}
 				<Controller
 					name="phone_num"
@@ -99,8 +99,8 @@ const PersonalInfoStep = ({
 						/>
 					)}
 				/>
-				{errors.phone && (
-					<p className="text-red-500 text-xs">{errors.phone.message}</p>
+				{errors.phone_num && (
+					<p className="text-red-500 text-xs">{errors.phone_num.message}</p>
 				)}
 				<Controller
 					name="country"
@@ -118,8 +118,8 @@ const PersonalInfoStep = ({
 						/>
 					)}
 				/>
-				{errors.countryCode && (
-					<p className="text-red-500 text-xs">{errors.countryCode.message}</p>
+				{errors.country && (
+					<p className="text-red-500 text-xs">{errors.country.message}</p>
 				)}
 				<Controller
 					name="state"

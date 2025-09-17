@@ -219,7 +219,7 @@ const Navbar = () => {
 
                         {/* Signup */}
                         <Link
-                          href="/signup/account"
+                          href="/signup"
                           onClick={closeAccountDropdown}
                           className="flex items-center px-4 py-3 rounded-xl text-white bg-green-600 hover:bg-green-700 shadow-sm hover:shadow-md transition-all duration-200"
                         >

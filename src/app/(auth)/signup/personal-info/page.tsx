@@ -18,6 +18,8 @@ export default function PersonalInfoPage() {
 		const urlToken = searchParams.get("token");
 		const savedToken = localStorage.getItem("auth-token");
 
+		localStorage.removeItem("signup-email");
+
 		if (urlToken) {
 			localStorage.setItem("auth-token", urlToken);
 		}

@@ -31,7 +31,10 @@ export default function AccountPage() {
 
 	const onSubmit = (data: SignupCredentials) => {
 		signupMutation.mutate(data, {
-			onSuccess: () => router.push("/signup/verification"),
+			onSuccess: () => {
+				localStorage.setItem("signup-email", data.email);
+				router.replace("/signup/verification");
+			},
 		});
 	};
 
@@ -39,7 +42,7 @@ export default function AccountPage() {
 		googleLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
 				localStorage.setItem("auth-token", res.data.data.token);
-                Cookies.set("auth-token", res.data.data.token); 
+				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
 		});
@@ -49,7 +52,7 @@ export default function AccountPage() {
 		linkedinLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
 				localStorage.setItem("auth-token", res.data.data.token);
-                Cookies.set("auth-token", res.data.data.token); 
+				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
 		});
@@ -57,14 +60,13 @@ export default function AccountPage() {
 
 	return (
 		<div className="w-full max-w-sm mx-auto">
-            {(signupMutation.error ) && (
-							<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
-								{signupMutation.error?.message ||
-									"Something went wrong, please try again."}
-							</div>
-						)}
+			{signupMutation.error && (
+				<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
+					{signupMutation.error?.message ||
+						"Something went wrong, please try again."}
+				</div>
+			)}
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-
 				<AccountDetailsStep
 					register={register}
 					getValues={getValues}
@@ -75,7 +77,7 @@ export default function AccountPage() {
 				<button
 					type="submit"
 					className="w-full py-3 bg-primary-400 text-white disabled:bg-[#555555] rounded-md flex items-center justify-center"
-					disabled={signupMutation.isLoading }
+					disabled={signupMutation.isLoading}
 				>
 					{signupMutation.isLoading ? (
 						<Loader2 className="animate-spin h-4 w-4" />

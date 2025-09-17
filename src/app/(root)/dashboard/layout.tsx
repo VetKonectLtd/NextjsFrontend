@@ -1,14 +1,21 @@
+"use client";
 import Sidebar from "@/components/constant/Sidebar";
 import CategoryModal from "@/components/modals/CategoryModal";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 export default function DashboardLayout({
 	children,
 }: Readonly<{ children: ReactNode }>) {
+	useEffect(() => {
+		const token = localStorage.getItem("auth-token");
+		if (token) {
+			localStorage.removeItem("signup-email");
+		}
+	}, []);
 	return (
 		<div className="flex w-full mt-20 pt-2 min-h-screen">
 			<Sidebar />
-			<CategoryModal/>
+			<CategoryModal />
 			<div className="flex-grow md:ml-16">{children}</div>
 		</div>
 	);

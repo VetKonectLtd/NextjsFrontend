@@ -1,39 +1,33 @@
 "use client";
+import { ForgotPassword } from "@/types";
 import FormInput from "../form/FormInput";
+import { UseFormClearErrors, UseFormRegister } from "react-hook-form";
 
-const StepOne = ({ setStep, isLoading, error, setForm, form }: any) => {
+interface ForgotPasswordProps {
+	register: UseFormRegister<ForgotPassword>;
+	clearErrors: UseFormClearErrors<ForgotPassword>;
+	errors: any;
+}
+
+const StepOne = ({register, errors, clearErrors }: ForgotPasswordProps) => {
 	return (
-		<form
-			className="space-y-6"
-			onSubmit={(e) => {
-				e.preventDefault();
-				setStep(1);
-			}}
-		>
-			{error && (
-				<div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-2">
-					{error}
-				</div>
-			)}
-
+		<div className="space-y-6">
 			<FormInput
-				label="Email"
-				name="email-reset"
-				type="email"
+				label="Email Address"
+				type="text"
+				{...register("email", {
+					required: "email is required",
+				})}
+				onChange={(e) => {
+					clearErrors("email");
+				}}
 				focusLabel="Email Address (Required):"
-				// value={formData.email}
-				onChange={(e) => setForm((f: any) => ({ ...f, email: e.target.value }))}
 				isRequired
 			/>
-
-			<button
-				type="submit"
-				disabled={isLoading || !form.email}
-				className="w-full py-3 rounded-md text-white text-base font-semibold  bg-primary-400 disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
-			>
-				{isLoading ? "Processing..." : "Proceed"}
-			</button>
-		</form>
+			{errors.email && (
+				<p className="text-red-500 text-xs">{errors.email.message}</p>
+			)}
+		</div>
 	);
 };
 

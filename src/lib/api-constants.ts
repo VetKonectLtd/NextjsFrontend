@@ -9,8 +9,9 @@ export const AUTH_ENDPOINTS = {
   LINKEDIN_LOGIN: '/linkedin/loginUsingLinkedin',
   LOGOUT: '/v3/logout',
   REFRESH: '/v3/refresh',
+  RESENDVERIFICATION: '/v3/resendVerificationEmail',
   ME: '/v3/me',
-  FORGOT_PASSWORD: '/v3/forgot-password',
+  FORGOT_PASSWORD: '/v3/reset-mail',
   RESET_PASSWORD: '/v3/reset-password',
 } as const;
 

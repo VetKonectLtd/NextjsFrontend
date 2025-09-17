@@ -11,7 +11,7 @@ export default function SignupLayout({
 }) {
 	const pathname = usePathname();
 	const steps = [
-		{ path: "/signup/account", label: "Account Details", icon: Icon1 },
+		{ path: "/signup", label: "Account Details", icon: Icon1 },
 		{ path: "/signup/verification", label: "Verify Account", icon: Icon3 },
 		{ path: "/signup/personal-info", label: "Personal Info", icon: Icon2 },
 	];

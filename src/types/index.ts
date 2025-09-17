@@ -32,6 +32,17 @@ export interface LoginCredentials {
 	password: string;
 }
 
+export interface ResetPasswordCredentials {
+	email: string;
+	password: string;
+	password_confirmation: string;
+	token: string;
+}
+
+export interface ForgotPassword {
+	email: string;
+}
+
 // API Response types
 export interface ApiResponse<T = any> {
 	success: boolean;

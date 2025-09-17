@@ -82,9 +82,9 @@ const AccountDetailsStep = ({
 					focusLabel="Confirm Password (Required):"
 					isRequired
 				/>
-				{errors.confirmPassword && (
+				{errors.password_confirmation && (
 					<p className="text-red-500 text-xs">
-						{errors.confirmPassword.message}
+						{errors.password_confirmation.message}
 					</p>
 				)}
 			</div>

@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 export const useAuthService = () => {
 	// Login mutation
 	const useLogin = () => {
-		return usePost<{ user: User; token: string }, LoginCredentials>(
+		return usePost<{ user: LoginCredentials; token: string }, LoginCredentials>(
 			AUTH_ENDPOINTS.LOGIN,
 			{
 				onSuccess: (response: any) => {
@@ -31,8 +31,8 @@ export const useAuthService = () => {
 			{
 				onSuccess: (response: any) => {
 					if (response.token) {
-						// Store token in localStorage
-						// localStorage.setItem("auth-token", response.token);
+						// Store email in localStorage
+						
 					}
 				},
 				onError: (error) => {
@@ -128,10 +128,18 @@ export const useAuthService = () => {
 		);
 	};
 
+	// Resend verification mutation
+	const useResendVerification = () => {
+		return usePost<{ message: string }, { email: string  }>(
+			AUTH_ENDPOINTS.RESENDVERIFICATION,
+		);
+	};
+
 	return {
 		useLogin,
 		useSignup,
 		useCompleteProfile,
+		useResendVerification,
 		useGoogleLogin,
 		useLinkedInLogin,
 		useCurrentUser,
@@ -149,6 +157,7 @@ export const {
 	useCompleteProfile,
 	useGoogleLogin,
 	useLinkedInLogin,
+	useResendVerification,
 	useCurrentUser,
 	useLogout,
 	useRefreshToken,
