@@ -10,15 +10,14 @@ import { useForm } from "react-hook-form";
 import FormInput from "@/components/form/FormInput";
 import { LoginCredentials } from "@/types";
 import {
-	useGoogleLogin,
-	useLinkedInLogin,
-	useLogin,
+	useAuthService
 } from "@/services/authService";
 import { Loader2 } from "lucide-react";
 import Cookies from "js-cookie";
 
 export default function LoginPage() {
 	const router = useRouter();
+	const { useLogin, useGoogleLogin, useLinkedInLogin } = useAuthService();
 	const loginMutation = useLogin();
 	const googleLogin = useGoogleLogin(false);
 	const linkedinLogin = useLinkedInLogin(false);
@@ -45,7 +44,7 @@ export default function LoginPage() {
 		googleLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
 				localStorage.setItem("auth-token", res.data.data.token);
-				Cookies.set("auth-token", res.data.data.token); 
+				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
 		});
@@ -55,7 +54,7 @@ export default function LoginPage() {
 		linkedinLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
 				localStorage.setItem("auth-token", res.data.data.token);
-				Cookies.set("auth-token", res.data.data.token); 
+				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
 		});
@@ -74,11 +73,11 @@ export default function LoginPage() {
 					</p>
 				</div>
 				<form className="space-y-1" onSubmit={handleSubmit(onSubmit)}>
-					{loginMutation.error && (
+					{/* {loginMutation.error && (
 						<div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-2">
 							{(loginMutation.error as Error).message || "Login failed"}
 						</div>
-					)}
+					)} */}
 
 					<FormInput
 						label="Email"

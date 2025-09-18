@@ -1,10 +1,19 @@
 import { usePost, useGet } from "@/lib/hooks";
 import { AUTH_ENDPOINTS, USER_ENDPOINTS } from "@/lib/api-constants";
-import { PersonalInfoForm, LoginCredentials, User, SignupCredentials } from "@/types";
+import {
+	PersonalInfoForm,
+	LoginCredentials,
+	User,
+	SignupCredentials,
+} from "@/types";
 import Cookies from "js-cookie";
+import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
 // Auth service using hooks
 export const useAuthService = () => {
+	const handleSuccess = useHandleSuccess();
+	const handleError = useHandleError();
+
 	// Login mutation
 	const useLogin = () => {
 		return usePost<{ user: LoginCredentials; token: string }, LoginCredentials>(
@@ -14,11 +23,12 @@ export const useAuthService = () => {
 					if (response?.token) {
 						// Store token in localStorage
 						localStorage.setItem("auth-token", response.token);
-						Cookies.set("auth-token", response.token); 
+						Cookies.set("auth-token", response.token);
+						handleSuccess("Login successfully!");
 					}
 				},
 				onError: (error) => {
-					console.error("Login failed:", error.message);
+					handleError(error.message || "Login failed");
 				},
 			},
 		);
@@ -30,13 +40,10 @@ export const useAuthService = () => {
 			AUTH_ENDPOINTS.SIGNUP,
 			{
 				onSuccess: (response: any) => {
-					if (response.token) {
-						// Store email in localStorage
-						
-					}
+					handleSuccess("Signup successfully!");
 				},
 				onError: (error) => {
-					console.error("Signup failed:", error.message);
+					handleError(error.message || "Signup failed");
 				},
 			},
 		);
@@ -48,13 +55,10 @@ export const useAuthService = () => {
 			USER_ENDPOINTS.COMPLETE_PROFILE,
 			{
 				onSuccess: (response: any) => {
-					if (response.token) {
-						// Store token in localStorage
-						// console.log(response.token);
-					}
+					handleSuccess("Profile completed successfully!");
 				},
 				onError: (error) => {
-					console.error("Signup failed:", error.message);
+					handleError(error.message || "Profile completion failed");
 				},
 			},
 		);
@@ -98,7 +102,8 @@ export const useAuthService = () => {
 			onSuccess: () => {
 				// Remove token from localStorage
 				localStorage.removeItem("auth-token");
-				Cookies.remove("auth-token"); 
+				Cookies.remove("auth-token");
+				handleSuccess("Logout successfully!");
 			},
 		});
 	};
@@ -118,6 +123,14 @@ export const useAuthService = () => {
 	const useForgotPassword = () => {
 		return usePost<{ message: string }, { email: string }>(
 			AUTH_ENDPOINTS.FORGOT_PASSWORD,
+			{
+				onSuccess: (response) => {
+					handleSuccess(response.message || "Password reset link sent!");
+				},
+				onError: (error) => {
+					handleError(error, "Failed to send reset link.");
+				},
+			},
 		);
 	};
 
@@ -125,12 +138,20 @@ export const useAuthService = () => {
 	const useResetPassword = () => {
 		return usePost<{ message: string }, { token: string; password: string }>(
 			AUTH_ENDPOINTS.RESET_PASSWORD,
+			{
+				onSuccess: (response) => {
+					handleSuccess("Password reset successfully!");
+				},
+				onError: (error) => {
+					handleError(error, "Failed to reset password.");
+				},
+			},
 		);
 	};
 
 	// Resend verification mutation
 	const useResendVerification = () => {
-		return usePost<{ message: string }, { email: string  }>(
+		return usePost<{ message: string }, { email: string }>(
 			AUTH_ENDPOINTS.RESENDVERIFICATION,
 		);
 	};
@@ -149,18 +170,3 @@ export const useAuthService = () => {
 		useResetPassword,
 	};
 };
-
-// Export individual hooks for convenience
-export const {
-	useLogin,
-	useSignup,
-	useCompleteProfile,
-	useGoogleLogin,
-	useLinkedInLogin,
-	useResendVerification,
-	useCurrentUser,
-	useLogout,
-	useRefreshToken,
-	useForgotPassword,
-	useResetPassword,
-} = useAuthService();

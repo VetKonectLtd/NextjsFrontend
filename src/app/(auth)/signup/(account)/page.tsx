@@ -1,11 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { SignupCredentials } from "@/types";
-import {
-	useGoogleLogin,
-	useLinkedInLogin,
-	useSignup,
-} from "@/services/authService";
+import { useAuthService } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import AccountDetailsStep from "@/components/signup/AccountDetailsStep";
 import { Loader2 } from "lucide-react";
@@ -15,6 +11,7 @@ import Cookies from "js-cookie";
 
 export default function AccountPage() {
 	const router = useRouter();
+	const { useSignup, useGoogleLogin, useLinkedInLogin } = useAuthService();
 	const signupMutation = useSignup();
 	const googleLogin = useGoogleLogin(false);
 	const linkedinLogin = useLinkedInLogin(false);
@@ -60,12 +57,12 @@ export default function AccountPage() {
 
 	return (
 		<div className="w-full max-w-sm mx-auto">
-			{signupMutation.error && (
+			{/* {signupMutation.error && (
 				<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
 					{signupMutation.error?.message ||
 						"Something went wrong, please try again."}
 				</div>
-			)}
+			)} */}
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 				<AccountDetailsStep
 					register={register}

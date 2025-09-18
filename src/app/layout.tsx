@@ -3,6 +3,7 @@ import './globals.css';
 import { ReactQueryProvider } from '@/lib/react-query';
 import Navbar from '@/components/shared/Navbar';
 import { fontVariables } from '@/lib/fonts';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
   title: 'VetKonect - Veterinary Practice Management',
@@ -24,6 +25,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <Toaster />
         </ReactQueryProvider>
       </body>
     </html>

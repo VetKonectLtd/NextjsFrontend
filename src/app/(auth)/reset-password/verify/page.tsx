@@ -1,19 +1,20 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import {  useResetPassword } from "@/services/authService";
+import { useAuthService } from "@/services/authService";
 import StepTwo from "@/components/resetPassword/StepTwo";
 
 const Verify = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const { useResetPassword } = useAuthService();
 
 	const resetPasswordMutation = useResetPassword();
 
 	return (
 		<div>
-            <StepTwo />
-        </div>
+			<StepTwo />
+		</div>
 	);
 };
 

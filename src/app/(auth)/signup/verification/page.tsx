@@ -2,10 +2,11 @@
 import { useRouter } from "next/navigation";
 import VericationPage from "@/components/signup/VerificationPage";
 import { useEffect, useState } from "react";
-import { useResendVerification } from "@/services/authService";
+import { useAuthService } from "@/services/authService";
 
 const Verification = () => {
 	const router = useRouter();
+	const { useResendVerification } = useAuthService();
 	const resendVerification = useResendVerification();
 	const [message, setMessage] = useState<string | null>(null);
 
@@ -53,7 +54,9 @@ const Verification = () => {
 						: "Resend Verification Email"}
 				</button>
 
-				{message && <p className="mt-3 text-sm text-center text-gray-700">{message}</p>}
+				{message && (
+					<p className="mt-3 text-sm text-center text-gray-700">{message}</p>
+				)}
 			</div>
 		</div>
 	);

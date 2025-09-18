@@ -2,7 +2,7 @@
 
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCompleteProfile } from "@/services/authService";
+import { useAuthService } from "@/services/authService";
 import PersonalInfoStep from "@/components/signup/PersonalInfoStep";
 import { Loader2 } from "lucide-react";
 import { PersonalInfoForm } from "@/types";
@@ -11,6 +11,7 @@ import { useEffect } from "react";
 export default function PersonalInfoPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const { useCompleteProfile } = useAuthService();
 
 	const completeProfileMutation = useCompleteProfile();
 
@@ -77,12 +78,12 @@ export default function PersonalInfoPage() {
 				onSubmit={handleSubmit(onSubmit)}
 				className="flex flex-col gap-6 w-full max-w-sm mx-auto"
 			>
-				{completeProfileMutation.error && (
+				{/* {completeProfileMutation.error && (
 					<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
 						{completeProfileMutation.error?.message ||
 							"Something went wrong, please try again."}
 					</div>
-				)}
+				)} */}
 				<PersonalInfoStep
 					errors={errors}
 					register={register}
