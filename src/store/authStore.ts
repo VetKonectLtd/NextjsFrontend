@@ -43,10 +43,15 @@ export const useAuthStore = create<AuthStore>()(
             const mockUser: User = { 
               id: '1', 
               email: credentials.email, 
-              name: 'Test User',
-              role: 'user',
+              first_name: 'Test User',
+              last_name: 'Test User',
+              phone_num: '1234567890',
+              country: 'US',
+              state: 'CA',
+              password_algorithm: 'bcrypt',
               createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
+              updatedAt: new Date().toISOString(),
+              role: 'user',
             };
             set({
               user: mockUser,
