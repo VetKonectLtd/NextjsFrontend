@@ -12,18 +12,14 @@ interface AccountDetailsProps {
 	register: UseFormRegister<SignupCredentials>;
 	getValues: UseFormGetValues<SignupCredentials>;
 	clearErrors: UseFormClearErrors<SignupCredentials>;
-	clearError: () => void;
 	errors: any;
-	error: string | null;
 }
 
 const AccountDetailsStep = ({
 	register,
 	getValues,
 	clearErrors,
-	clearError,
 	errors,
-	error,
 }: AccountDetailsProps) => {
 	return (
 		<div className="flex flex-col items-center w-full">
@@ -38,7 +34,6 @@ const AccountDetailsStep = ({
 						},
 					})}
 					onChange={(e) => {
-						if (error) clearError();
 						clearErrors("email");
 					}}
 					type="email"
@@ -64,7 +59,6 @@ const AccountDetailsStep = ({
 						},
 					})}
 					onChange={(e) => {
-						if (error) clearError();
 						clearErrors("password");
 					}}
 					focusLabel="Password (Required):"
@@ -77,21 +71,20 @@ const AccountDetailsStep = ({
 				<FormInput
 					label="Confirm Password"
 					type="password"
-					{...register("confirmPassword", {
+					{...register("password_confirmation", {
 						required: "confirm password is required",
 						validate: (value: any) =>
 							value === getValues("password") || "Passwords do not match",
 					})}
 					onChange={(e) => {
-						if (error) clearError();
-						clearErrors("confirmPassword");
+						clearErrors("password_confirmation");
 					}}
 					focusLabel="Confirm Password (Required):"
 					isRequired
 				/>
-				{errors.confirmPassword && (
+				{errors.password_confirmation && (
 					<p className="text-red-500 text-xs">
-						{errors.confirmPassword.message}
+						{errors.password_confirmation.message}
 					</p>
 				)}
 			</div>

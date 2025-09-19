@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
 import { motion, AnimatePresence } from "framer-motion";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 import { Map, Shop, Dog } from "@/app/assets/icons/vet-vendor";
 import { ChevronLeft, ChevronRight, Edit } from "lucide-react";
 import { useRouter } from "next/navigation";

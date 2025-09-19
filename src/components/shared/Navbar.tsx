@@ -346,7 +346,7 @@ const Navbar = () => {
 
               {/* Blog */}
               <Link
-                href="/blog"
+                href="/dashboard/blog"
                 onClick={closeMobileMenu}
                 className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
               >
@@ -356,7 +356,7 @@ const Navbar = () => {
 
               {/* Chat Forum */}
               <Link
-                href="/chat-forum"
+                href="/dashboard/chat-forum"
                 onClick={closeMobileMenu}
                 className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
               >

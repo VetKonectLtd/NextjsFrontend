@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { VetProfileProps } from "../shared/VetProfile";
 import VetAccount from "./VetAction";
-import { StarEmpty, StarFill } from "@/app/assets/icons";
+import { Bg22, StarEmpty, StarFill } from "@/app/assets/icons";
 
 interface VeterinarianProps {
 	handleContact?: (
@@ -60,7 +60,7 @@ const SelectedVet = ({
 
 					<div className="lg:col-span-2 mb-4 shadow-md border rounded-2xl border-gray-225 bg-white">
 						<div
-							style={{ backgroundImage: `url(${AuthBg.src})` }}
+							style={{ backgroundImage: `url(${Bg22.src})` }}
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">

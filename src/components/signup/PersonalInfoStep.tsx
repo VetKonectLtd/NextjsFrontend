@@ -3,7 +3,7 @@ import { Country, State } from "country-state-city";
 import FormInput from "../form/FormInput";
 import FormSelect from "../form/FormSelect";
 import PhoneInput from "../form/PhoneInput";
-import { SignupCredentials } from "@/types";
+import { PersonalInfoForm } from "@/types";
 import {
 	UseFormClearErrors,
 	UseFormGetValues,
@@ -14,14 +14,12 @@ import {
 } from "react-hook-form";
 
 interface PersonalInfoProps {
-	register: UseFormRegister<SignupCredentials>;
-	getValues: UseFormGetValues<SignupCredentials>;
-	clearErrors: UseFormClearErrors<SignupCredentials>;
-	clearError: () => void;
+	register: UseFormRegister<PersonalInfoForm>;
+	getValues: UseFormGetValues<PersonalInfoForm>;
+	clearErrors: UseFormClearErrors<PersonalInfoForm>;
 	errors: any;
-	error: string | null;
-	control: Control<SignupCredentials>;
-	setValue:UseFormSetValue<SignupCredentials>;
+	control: Control<PersonalInfoForm>;
+	setValue:UseFormSetValue<PersonalInfoForm>;
 	watchedCountryCode: any
 }
 
@@ -29,9 +27,7 @@ const PersonalInfoStep = ({
 	register,
 	getValues,
 	clearErrors,
-	clearError,
 	errors,
-	error,
 	control,
 	setValue,
 	watchedCountryCode,
@@ -44,8 +40,8 @@ const PersonalInfoStep = ({
 
 	// State options based on selected country
 	const states =
-		getValues("countryCode") &&
-		State.getStatesOfCountry(getValues("countryCode")).map((s) => ({
+		getValues("country") &&
+		State.getStatesOfCountry(getValues("country")).map((s) => ({
 			value: s.name,
 			label: s.name,
 		}));
@@ -57,38 +53,36 @@ const PersonalInfoStep = ({
 				<FormInput
 					label="First Name"
 					type="text"
-					{...register("firstName", {
+					{...register("first_name", {
 						required: "first name is required",
 					})}
 					onChange={(e) => {
-						if (error) clearError();
-						clearErrors("firstName");
+						clearErrors("first_name");
 					}}
 					focusLabel="First Name (Required):"
 					isRequired
 				/>
-				{errors.firstName && (
-					<p className="text-red-500 text-xs">{errors.firstName.message}</p>
+				{errors.first_name && (
+					<p className="text-red-500 text-xs">{errors.first_name.message}</p>
 				)}
 				{/* Last Name */}
 				<FormInput
 					label="Last Name"
 					type="text"
-					{...register("lastName", {
+					{...register("last_name", {
 						required: "Last name is required",
 					})}
 					onChange={(e) => {
-						if (error) clearError();
-						clearErrors("lastName");
+						clearErrors("last_name");
 					}}
 					focusLabel="Last Name (Required):"
 					isRequired
 				/>
-				{errors.lastName && (
-					<p className="text-red-500 text-xs">{errors.lastName.message}</p>
+				{errors.last_name && (
+					<p className="text-red-500 text-xs">{errors.last_name.message}</p>
 				)}
 				<Controller
-					name="phone"
+					name="phone_num"
 					control={control}
 					rules={{ required: "Phone number is required" }}
 					render={({ field }) => (
@@ -100,16 +94,16 @@ const PersonalInfoStep = ({
 							countryCode={watchedCountryCode || "US"}
 							onChange={({ phone, countryCode }) => {
 								field.onChange(phone); 
-								setValue("countryCode", countryCode);
+								setValue("country", countryCode);
 							}}
 						/>
 					)}
 				/>
-				{errors.phone && (
-					<p className="text-red-500 text-xs">{errors.phone.message}</p>
+				{errors.phone_num && (
+					<p className="text-red-500 text-xs">{errors.phone_num.message}</p>
 				)}
 				<Controller
-					name="countryCode"
+					name="country"
 					control={control}
 					rules={{ required: "Country is required" }}
 					render={({ field }) => (
@@ -124,8 +118,8 @@ const PersonalInfoStep = ({
 						/>
 					)}
 				/>
-				{errors.countryCode && (
-					<p className="text-red-500 text-xs">{errors.countryCode.message}</p>
+				{errors.country && (
+					<p className="text-red-500 text-xs">{errors.country.message}</p>
 				)}
 				<Controller
 					name="state"
@@ -156,7 +150,6 @@ const PersonalInfoStep = ({
 							required: " You must agree to the terms and conditions",
 						})}
 						onChange={(e) => {
-							if (error) clearError();
 							clearErrors("agreeTerms");
 						}}
 						className="h-5 w-5 text-primary-400 cursor-pointer accent-primary-400 focus:ring-primary-400 border-gray-300 rounded"

@@ -25,7 +25,7 @@ export function useGet<T>(
 export function usePost<TData, TVariables = any>(
   endpoint: string,
   options?: {
-    onSuccess?: (data: ApiResponse<TData>) => void;
+    onSuccess?: (data: ApiResponse<TData>,  variables: TVariables) => void;
     onError?: (error: Error) => void;
     invalidateQueries?: string[][];
   }
@@ -33,10 +33,10 @@ export function usePost<TData, TVariables = any>(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: TVariables) => apiClient.post<TData>(endpoint, data),
-    onSuccess: (response) => {
+    mutationFn: (variables: TVariables) => apiClient.post<TData>(endpoint, variables),
+    onSuccess: (response, variables) => {
       if (options?.onSuccess) {
-        options.onSuccess(response);
+        options.onSuccess(response, variables);
       }
       
       // Invalidate specified queries

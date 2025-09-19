@@ -1,11 +1,19 @@
-import Image from 'next/image'
-import { useRouter } from 'next/navigation';
-import {Success} from "@/app/assets/icons/auth";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Success } from "@/app/assets/icons/auth";
 
 const LoginSuccess = () => {
-    const router = useRouter();
-  return (
-    <>
+	const router = useRouter();
+	const handleGoToDashboard = () => {
+		let token = localStorage.getItem("auth-token");
+		if (token) {
+			router.replace("/dashboard");
+		} else {
+			router.replace("/success?form=Login");
+		}
+	};
+	return (
+		<>
 			<div className="w-full  pt-36  max-w-sm mx-auto flex flex-col items-center">
 				<div className="mb-6">
 					<span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600">
@@ -27,13 +35,13 @@ const LoginSuccess = () => {
 				<button
 					type="button"
 					className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 hover:bg-primary-400 transition"
-					onClick={() => router.push("#")}
+					onClick={handleGoToDashboard}
 				>
 					Go to Dashboard
 				</button>
 			</div>
 		</>
-  )
-}
+	);
+};
 
-export default LoginSuccess
+export default LoginSuccess;

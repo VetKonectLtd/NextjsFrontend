@@ -1,57 +1,17 @@
-"use client";
-import FormInput from "../form/FormInput";
 
-const StepTwo = ({ setStep, isLoading, setForm, form }: any) => {
 
+const StepTwo = () => {
 	return (
-		<>
-			<div>
-				<p className="text-base font-normal text-[#666666] text-center mb-4">
-					Kindly enter the 6 digit code sent to your email in the input field
-					below
-				</p>
-			</div>
-			<form
-				className="space-y-3"
-				onSubmit={(e) => {
-					e.preventDefault();
-					setStep(2);
-				}}
-			>
-				<FormInput
-					label="Pin Code"
-					name="pin-code"
-					type="number"
-					focusLabel="Pin Code :"
-					// onChange={(e) => setForm((f: any) => ({ ...f, pin: e.target.value }))}
-					maxLength={6}
-					isRequired
-				/>
+		<div className="w-full max-w-sm mx-auto flex flex-col items-center">
+			<h1 className="text-2xl font-bold text-center text-gray-55 mb-2">
+				Verify Your Email
+			</h1>
 
-				<div className="flex justify-center items-center">
-					<button type="button" className="text-xs text-gray-55 underline">
-						Resend Code
-					</button>
-				</div>
-
-				<div className="flex flex-col items-center w-full space-y- pt-6">
-					<button
-						type="submit"
-						disabled={isLoading || !form.pin || form.pin.length !== 6}
-						className="w-full py-3 rounded-md text-white text-base font-semibold  bg-primary-400 disabled:bg-[#666666] transition disabled:cursor-not-allowed mb-2"
-					>
-						Verify
-					</button>
-					<button
-						type="button"
-						className="w-full py-3 rounded-md text-base font-semibold bg-[#FFDAB0] text-gray-55 mt-2"
-						onClick={() => setStep(0)}
-					>
-						Back
-					</button>
-				</div>
-			</form>
-		</>
+			<p className="text-base font-normal text-center text-[#666666] mb-8">
+				We’ve sent a verification link to your email address. Please check your
+				inbox and click on the link to change your password.
+			</p>
+		</div>
 	);
 };
 

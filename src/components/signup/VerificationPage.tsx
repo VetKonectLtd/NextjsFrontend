@@ -1,35 +1,20 @@
 "use client";
-import React, { useState } from "react";
-import FormInput from "../form/FormInput";
+import React from "react";
 
-const VericationPage = () => {
+const VerificationPage = () => {
 	return (
-		<div className="flex flex-col items-center w-full">
-			<div className="w-full max-w-sm flex flex-col gap-6">
-				<p className="font-normal text-center text-[#666666]">
-					Kindly enter the 6 digit code sent to your email in the input field
-					below
+		<div className="w-full max-w-sm mx-auto flex flex-col items-center">
+				<h1 className="text-2xl font-bold text-center text-gray-55 mb-2">
+					Verify Your Email
+				</h1>
+
+				<p className="text-base font-normal text-center text-[#666666] mb-8">
+					We’ve sent a verification link to your email address. Please check
+					your inbox and click on the link to activate your account.
 				</p>
-
-				<FormInput
-					label="Pin Code"
-					name="Pin"
-					type="number"
-					focusLabel="Pin Code :"
-					maxLength={6}
-					isRequired
-				/>
-
-				<div className="text-center mb-2">
-					<button
-						className="text-sm text-gray-700 underline"
-					>
-						Resend Code
-					</button>
-				</div>
-			</div>
+			
 		</div>
 	);
 };
 
-export default VericationPage;
+export default VerificationPage;
