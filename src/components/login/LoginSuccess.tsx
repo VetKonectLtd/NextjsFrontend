@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Success } from "@/app/assets/icons/auth";
+import Cookies from "js-cookie";
 
 const LoginSuccess = () => {
 	const router = useRouter();
 	const handleGoToDashboard = () => {
-		let token = localStorage.getItem("auth-token");
+		let token = Cookies.get("auth-token");
 		if (token) {
 			router.replace("/dashboard");
 		} else {

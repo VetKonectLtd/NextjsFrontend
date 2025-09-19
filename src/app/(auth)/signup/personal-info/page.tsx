@@ -7,6 +7,7 @@ import PersonalInfoStep from "@/components/signup/PersonalInfoStep";
 import { Loader2 } from "lucide-react";
 import { PersonalInfoForm } from "@/types";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 export default function PersonalInfoPage() {
 	const router = useRouter();
@@ -17,12 +18,12 @@ export default function PersonalInfoPage() {
 
 	useEffect(() => {
 		const urlToken = searchParams.get("token");
-		const savedToken = localStorage.getItem("auth-token");
+		const savedToken = Cookies.get("auth-token");
 
 		localStorage.removeItem("signup-email");
 
 		if (urlToken) {
-			localStorage.setItem("auth-token", urlToken);
+			Cookies.set("auth-token", urlToken);
 		}
 
 		const finalToken = urlToken || savedToken;
@@ -69,7 +70,7 @@ export default function PersonalInfoPage() {
 
 	return (
 		<>
-			{!localStorage.getItem("auth-token") && (
+			{!Cookies.get("auth-token") && (
 				<div className="inset-0  fixed flex items-center justify-center bg-black/50 z-50">
 					<div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
 				</div>
@@ -78,12 +79,6 @@ export default function PersonalInfoPage() {
 				onSubmit={handleSubmit(onSubmit)}
 				className="flex flex-col gap-6 w-full max-w-sm mx-auto"
 			>
-				{/* {completeProfileMutation.error && (
-					<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
-						{completeProfileMutation.error?.message ||
-							"Something went wrong, please try again."}
-					</div>
-				)} */}
 				<PersonalInfoStep
 					errors={errors}
 					register={register}

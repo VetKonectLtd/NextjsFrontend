@@ -5,11 +5,10 @@ import { useAuthService } from "@/services/authService";
 import StepTwo from "@/components/resetPassword/StepTwo";
 
 const Verify = () => {
-	const router = useRouter();
-	const searchParams = useSearchParams();
-	const { useResetPassword } = useAuthService();
+	// const router = useRouter();
+	// const searchParams = useSearchParams();
+	// const { useResetPassword } = useAuthService();
 
-	const resetPasswordMutation = useResetPassword();
 
 	return (
 		<div>

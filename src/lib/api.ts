@@ -4,6 +4,7 @@ import {
 	LoginCredentials,
 	SignupCredentials,
 } from "@/types";
+import Cookies from "js-cookie";
 
 const API_BASE_URL =
 	process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
@@ -57,20 +58,20 @@ class ApiClient {
 
 	private getAuthToken(): string | null {
 		if (typeof window !== "undefined") {
-			return localStorage.getItem("auth-token");
+			return Cookies.get("auth-token") || null;
 		}
 		return null;
 	}
 
 	private setAuthToken(token: string): void {
 		if (typeof window !== "undefined") {
-			localStorage.setItem("auth-token", token);
+			Cookies.set("auth-token", token);
 		}
 	}
 
 	private removeAuthToken(): void {
 		if (typeof window !== "undefined") {
-			localStorage.removeItem("auth-token");
+			Cookies.remove("auth-token");
 		}
 	}
 
