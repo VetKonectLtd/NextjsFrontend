@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import VericationPage from "@/components/signup/VerificationPage";
 import { useEffect, useState } from "react";
 import { useAuthService } from "@/services/authService";
+import Cookies from "js-cookie";
 
 const Verification = () => {
 	const router = useRouter();
@@ -11,7 +12,7 @@ const Verification = () => {
 	const [message, setMessage] = useState<string | null>(null);
 
 	useEffect(() => {
-		const token = localStorage.getItem("auth-token");
+		const token = Cookies.get("auth-token");
 
 		if (token) {
 			// If token exists, redirect to personal-info

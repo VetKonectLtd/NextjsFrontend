@@ -4,7 +4,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthService } from "@/services/authService";
 import { Loader2 } from "lucide-react";
-import { ForgotPassword, PersonalInfoForm } from "@/types";
+import { ForgotPassword } from "@/types";
 import StepOne from "@/components/resetPassword/StepOne";
 
 export default function ForgetPasswordPage() {
@@ -41,12 +41,6 @@ export default function ForgetPasswordPage() {
 				onSubmit={handleSubmit(onSubmit)}
 				className="flex flex-col gap-6 w-full max-w-sm mx-auto"
 			>
-				{/* {forgetMutation.error && (
-					<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
-						{forgetMutation.error?.message ||
-							"Something went wrong, please try again."}
-					</div>
-				)} */}
 				<StepOne
 					errors={errors}
 					register={register}

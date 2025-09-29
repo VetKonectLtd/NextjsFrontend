@@ -38,7 +38,6 @@ export default function AccountPage() {
 	const handleGoogleLogin = () => {
 		googleLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
-				localStorage.setItem("auth-token", res.data.data.token);
 				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
@@ -48,7 +47,6 @@ export default function AccountPage() {
 	const handleLinkedInLogin = () => {
 		linkedinLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
-				localStorage.setItem("auth-token", res.data.data.token);
 				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
@@ -57,12 +55,6 @@ export default function AccountPage() {
 
 	return (
 		<div className="w-full max-w-sm mx-auto">
-			{/* {signupMutation.error && (
-				<div className="mb-4 p-3 rounded-md bg-red-100 text-red-600 text-sm">
-					{signupMutation.error?.message ||
-						"Something went wrong, please try again."}
-				</div>
-			)} */}
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 				<AccountDetailsStep
 					register={register}

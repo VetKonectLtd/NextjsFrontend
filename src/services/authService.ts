@@ -22,7 +22,6 @@ export const useAuthService = () => {
 				onSuccess: (response: any) => {
 					if (response?.token) {
 						// Store token in localStorage
-						localStorage.setItem("auth-token", response.token);
 						Cookies.set("auth-token", response.token);
 						handleSuccess("Login successfully!");
 					}
@@ -101,7 +100,6 @@ export const useAuthService = () => {
 		return usePost<void, void>(AUTH_ENDPOINTS.LOGOUT, {
 			onSuccess: () => {
 				// Remove token from localStorage
-				localStorage.removeItem("auth-token");
 				Cookies.remove("auth-token");
 				handleSuccess("Logout successfully!");
 			},
@@ -113,7 +111,7 @@ export const useAuthService = () => {
 		return usePost<{ token: string }, void>(AUTH_ENDPOINTS.REFRESH, {
 			onSuccess: (response) => {
 				if (response.success && response.data?.token) {
-					localStorage.setItem("auth-token", response.data.token);
+					Cookies.set("auth-token", response.data.token);
 				}
 			},
 		});

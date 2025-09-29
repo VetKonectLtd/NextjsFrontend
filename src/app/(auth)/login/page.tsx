@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/authStore";
 import { AuthBg } from "@/app/assets/images";
 import { Linkedin } from "@/app/assets/icons/auth";
 import Image from "next/image";
@@ -43,7 +42,6 @@ export default function LoginPage() {
 	const handleGoogleLogin = () => {
 		googleLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
-				localStorage.setItem("auth-token", res.data.data.token);
 				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
@@ -53,7 +51,6 @@ export default function LoginPage() {
 	const handleLinkedInLogin = () => {
 		linkedinLogin.refetch().then((res) => {
 			if (res.data?.data?.token) {
-				localStorage.setItem("auth-token", res.data.data.token);
 				Cookies.set("auth-token", res.data.data.token);
 				router.push("/dashboard");
 			}
