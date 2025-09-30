@@ -3,7 +3,7 @@ export interface User {
 	id: string;
 	email: string;
 	first_name: string;
-    last_name: string;
+	last_name: string;
 	phone_num?: string;
 	state?: string;
 	country?: string;
@@ -53,25 +53,92 @@ export interface ApiResponse<T = any> {
 
 // Store types (example)
 export interface Product {
-	id: string;
-	name: string;
+	store_id: string;
+	product_name: string;
 	description: string;
 	price: number;
-	imageUrl: string;
+	tags: [];
+	id: string;
+	location: string;
+	image1: string;
+	average_rating: string;
+	images: File[] | null;
+	availability: boolean;
+	available_unit: string;
 	category: string;
-	inStock: boolean;
+	createdAt: string;
+	images_url:  string[] | null;
+	updatedAt: string;
+}
+
+export interface Comment {
+	comment: string;
+	parent_id: string;
+}
+
+export interface Activity {
+	id: string;
+	user_id: string;
+	action: string;
+	title: string;
+	detail: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface ReportComment {
+	flag: string;
+}
+
+export interface Store {
+	store_name: string;
+	role: string;
+	email: string;
+	phone_number: string;
+	location: string;
+	availability: string;
+	longitude: string;
+	latitude: string;
+	country: string;
+	countryCode: string;
+	picture: File | null;
+	user_id: string;
+	id: string;
+	average_rating: string;
+	products: Product[];
+	picture_url:string;
 	createdAt: string;
 	updatedAt: string;
 }
 
-export interface Store {
-	id: string;
-	name: string;
+export interface PetOwner {
+	pet_name: string;
+	specie: string;
+	breed: string;
+	sex: string;
+	age: string;
+	pet_id?: string | null;
+	id?: string | null;
+	picture_url?: string;
+	location: string;
+	created_at: string;
+	picture: string | File | null;
+}
+
+export interface LiveStock {
+	farm_name: string;
+	location: string;
+	farm_id?: string | null;
+	id?: string | null;
+	no_of_worker: number;
+	livestock_type: string;
+	no_of_livestock: number;
+	sex: string;
+	picture_url?: string;
+	age: string;
+	created_at: string;
+	picture: string | File | null;
 	description: string;
-	ownerId: string;
-	products: Product[];
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface SignupCredentials {
@@ -80,11 +147,11 @@ export interface SignupCredentials {
 	password_confirmation: string;
 }
 
-export interface PersonalInfoForm{
+export interface PersonalInfoForm {
 	first_name: string;
-    last_name: string;
+	last_name: string;
 	phone_num?: string;
 	country: string;
 	state: string;
 	agreeTerms: boolean;
-};
+}

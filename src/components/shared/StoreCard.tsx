@@ -9,30 +9,22 @@ import {
 } from "lucide-react";
 import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
 import { GreenButton } from "@/app/assets/icons";
+import { Store } from "@/types";
 
-interface ProductCardProps {
-	name: string;
-	image: string;
-	rating: number;
-	email: string;
-	phone: string;
-	location: string;
-	open: boolean;
-	id: string;
-	onViewProduct?: (id: string) => void;
-}
+type StoreCardProps = Store & {
+  onViewProduct?: (id: string) => void;
+};
+
 
 const StoreCard = ({
-	name,
-	phone,
-	image,
-	rating,
-	email,
+	store_name,
+	picture_url,
+	average_rating,
 	location,
-	open,
+	availability,
 	id,
 	onViewProduct,
-}: ProductCardProps) => {
+}: StoreCardProps) => {
 	const handleViewProduct = () => {
 		if (onViewProduct && id) {
 			onViewProduct(id);
@@ -43,7 +35,7 @@ const StoreCard = ({
 		<div className="bg-white rounded-2xl shadow-md flex flex-col relative">
 			<div>
 				<div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-					{open ? (
+					{availability ? (
 						<div className="flex items-center bg-white rounded-lg px-5 py-1 shadow text-xs font-medium">
 							<span className="w-2 h-2 rounded-full bg-green-50 mr-2 inline-block" />
 							Open
@@ -59,8 +51,8 @@ const StoreCard = ({
 
 			<div className="rounded-t-xl overflow-hidden w-full h-[190px] mb-1 relative">
 				<Image
-					src={image}
-					alt={name}
+					src={picture_url}
+					alt={store_name}
 					width={220}
 					height={120}
 					className="object-cover w-full h-full"
@@ -75,7 +67,7 @@ const StoreCard = ({
 							/>
 						</svg>
 						<span className="text-white text-xs font-medium">
-							{rating} of 5
+							{average_rating} of 5
 						</span>
 					</span>
 
@@ -91,7 +83,7 @@ const StoreCard = ({
 						<div className="flex flex-col">
 							<div className="flex">
 								<span className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
-									{name.length > 18 ? `${name.slice(0, 18)}...` : name}
+									{store_name.length > 18 ? `${store_name.slice(0, 18)}...` : store_name}
 								</span>
 							</div>
 

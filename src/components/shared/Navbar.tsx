@@ -1,390 +1,485 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { VetKonnectLogo } from '@/app/assets/images';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { XMarkIcon, Bars3Icon, UserIcon, InformationCircleIcon, CalculatorIcon, HeartIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, LanguageIcon, PhoneIcon, HomeIcon } from '@heroicons/react/24/outline';
-import { Notification, MessageNav } from '@/app/assets/icons';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { VetKonnectLogo } from "@/app/assets/images";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+	XMarkIcon,
+	Bars3Icon,
+	UserIcon,
+	InformationCircleIcon,
+	CalculatorIcon,
+	HeartIcon,
+	DocumentTextIcon,
+	ChatBubbleLeftRightIcon,
+	LanguageIcon,
+	PhoneIcon,
+	HomeIcon,
+} from "@heroicons/react/24/outline";
+import { Notification, MessageNav } from "@/app/assets/icons";
+import Cookies from "js-cookie";
+import { useAuthService } from "@/services/authService";
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-  const pathname = usePathname();
+	const [isScrolled, setIsScrolled] = useState(false);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const {useLogout}= useAuthService();
+  const logoutMutation= useLogout();
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+	const pathname = usePathname();
 
-  const toggleAccountDropdown = () => {
-    setIsAccountDropdownOpen(!isAccountDropdownOpen);
-  };
+	const toggleMobileMenu = () => {
+		setIsMobileMenuOpen(!isMobileMenuOpen);
+	};
 
-  // Helper function to check if a link is active
-  const isActiveLink = (href: string) => {
-    return pathname === href;
-  };
+	const closeMobileMenu = () => {
+		setIsMobileMenuOpen(false);
+	};
 
-  // Helper function to get link classes based on active state
-  const getLinkClasses = (href: string) => {
-    const baseClasses = "px-3 py-2 text-sm font-medium transition-colors";
-    const activeClasses = "text-green-600 underline";
-    const inactiveClasses = "text-gray-800 hover:text-green-600";
-    
-    return `${baseClasses} ${isActiveLink(href) ? activeClasses : inactiveClasses}`;
-  };
+	const toggleAccountDropdown = () => {
+		setIsAccountDropdownOpen(!isAccountDropdownOpen);
+	};
 
-  // Helper function to get mobile link classes based on active state
-  const getMobileLinkClasses = (href: string) => {
-    const baseClasses = "flex items-center px-4 py-4 rounded-2xl transition-colors";
-    const activeClasses = "text-green-600 underline";
-    const inactiveClasses = "text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link";
-    
-    return `${baseClasses} ${isActiveLink(href) ? activeClasses : inactiveClasses}`;
-  };
+	// Helper function to check if a link is active
+	const isActiveLink = (href: string) => {
+		return pathname === href;
+	};
 
-  const closeAccountDropdown = () => {
-    setIsAccountDropdownOpen(false);
-  };
+	// Helper function to get link classes based on active state
+	const getLinkClasses = (href: string) => {
+		const baseClasses = "px-3 py-2 text-sm font-medium transition-colors";
+		const activeClasses = "text-green-600 underline";
+		const inactiveClasses = "text-gray-800 hover:text-green-600";
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+		return `${baseClasses} ${isActiveLink(href) ? activeClasses : inactiveClasses}`;
+	};
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+	// Helper function to get mobile link classes based on active state
+	const getMobileLinkClasses = (href: string) => {
+		const baseClasses =
+			"flex items-center px-4 py-4 rounded-2xl transition-colors";
+		const activeClasses = "text-green-600 underline";
+		const inactiveClasses =
+			"text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link";
 
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMobileMenuOpen]);
+		return `${baseClasses} ${isActiveLink(href) ? activeClasses : inactiveClasses}`;
+	};
 
-  return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${isScrolled
-          ? 'shadow-md bg-gradient-to-r from-[#B2F6B9] via-[#FFE1A6] to-[#E9F6B2]'
-          : 'bg-transparent'
-        }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20 items-center w-full max-w-full overflow-hidden">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0 min-w-0">
-            <div className="h-12 w-auto">
-              <Image
-                src={VetKonnectLogo}
-                alt="VetKonnect Logo"
-                width={180}
-                height={50}
-                className="h-full w-auto max-w-[120px] sm:max-w-[180px]"
-                priority
-              />
-            </div>
-          </Link>
+	const closeAccountDropdown = () => {
+		setIsAccountDropdownOpen(false);
+	};
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/about"
-              className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/dashboard/feed-calculator"
-              className={getLinkClasses("/dashboard/feed-calculator")}
-            >
-              Feed Calculator
-            </Link>
-            <Link
-              href="/dashboard/disease-predictor"
-              className={getLinkClasses("/dashboard/disease-predictor")}
-            >
-              Disease Predictor
-            </Link>
-            <Link
-              href="/dashboard/blog"
-              className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/dashboard/chat-forum"
-              className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
-            >
-              Chat Forum
-            </Link>
-          </div>
+	useEffect(() => {
+		const token = Cookies.get("auth-token");
+		setIsAuthenticated(!!token);
+	}, []);
 
-          {/* Right-side Icons */}
-          <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
-            {/* Notifications */}
-            <div className="hidden md:block relative">
-              <Link href="/dashboard/notifications">
-                <button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50 relative">
-                  <Image src={Notification} alt="Notifications" width={20} height={20} />
-                  {/* Notification Badge */}
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                    1
-                  </span>
-                </button>
-              </Link>
-            </div>
+	useEffect(() => {
+		const handleScroll = () => {
+			setIsScrolled(window.scrollY > 50);
+		};
 
-            {/* Messages */}
-            <div className="hidden md:block relative">
-              <button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
-                <Image src={MessageNav} alt="Messages" width={20} height={20} />
-              </button>
-            </div>
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
 
-            {/* Language Selector */}
-            <div className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600">
-              <span className="text-sm font-medium">EN</span>
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+	// Prevent body scroll when mobile menu is open
+	useEffect(() => {
+		if (isMobileMenuOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "unset";
+		}
+		return () => {
+			document.body.style.overflow = "unset";
+		};
+	}, [isMobileMenuOpen]);
 
-            {/* Menu Button (visible on mobile) */}
-            <button
-              onClick={toggleMobileMenu}
-              className="md:hidden p-2 transition-colors text-gray-800 hover:text-green-600"
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? (
-                <XMarkIcon className="w-5 h-5" />
-              ) : (
-                <Bars3Icon className="w-5 h-5" />
-              )}
-            </button>
+  const handleLogout=()=>{
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        window.location.reload();
+      }
+    });
+  }
 
-            {/* User Profile */}
-            <div className="hidden md:block relative">
-              <button
-                onClick={toggleAccountDropdown}
-                className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50"
-                aria-label="Account menu"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </button>
+	return (
+		<nav
+			className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
+				isScrolled
+					? "shadow-md bg-gradient-to-r from-[#B2F6B9] via-[#FFE1A6] to-[#E9F6B2]"
+					: "bg-transparent"
+			}`}
+		>
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="flex justify-between h-20 items-center w-full max-w-full overflow-hidden">
+					{/* Logo */}
+					<Link href="/" className="flex-shrink-0 min-w-0">
+						<div className="h-12 w-auto">
+							<Image
+								src={VetKonnectLogo}
+								alt="VetKonnect Logo"
+								width={180}
+								height={50}
+								className="h-full w-auto max-w-[120px] sm:max-w-[180px]"
+								priority
+							/>
+						</div>
+					</Link>
 
-              {/* Account Dropdown Menu */}
-              <AnimatePresence>
-                {isAccountDropdownOpen && (
-                  <>
-                    {/* Backdrop */}
-                    <div
-                      className="fixed inset-0 z-[9998]"
-                      onClick={closeAccountDropdown}
-                    />
-                    
-                    {/* Dropdown */}
-                    <motion.div
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl border border-gray-200 z-[9999] overflow-hidden"
-                      style={{ position: 'fixed', right: '1rem', top: '4rem' }}
-                    >
-                      <div className="p-4 space-y-2">
-                        {/* Login */}
-                        <Link
-                          href="/login"
-                          onClick={closeAccountDropdown}
-                          className="flex items-center px-4 py-3 rounded-xl text-gray-700 bg-gray-50 border border-gray-200 shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-200"
-                        >
-                          <UserIcon className="w-5 h-5 mr-3" />
-                          <span className="text-sm font-medium">Login</span>
-                        </Link>
+					{/* Desktop Navigation */}
+					<div className="hidden md:flex items-center space-x-8">
+						<Link
+							href="/about"
+							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+						>
+							About Us
+						</Link>
+						<Link
+							href="/dashboard/feed-calculator"
+							className={getLinkClasses("/dashboard/feed-calculator")}
+						>
+							Feed Calculator
+						</Link>
+						<Link
+							href="/dashboard/disease-predictor"
+							className={getLinkClasses("/dashboard/disease-predictor")}
+						>
+							Disease Predictor
+						</Link>
+						<Link
+							href="/dashboard/blog"
+							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+						>
+							Blog
+						</Link>
+						<Link
+							href="/dashboard/chat-forum"
+							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+						>
+							Chat Forum
+						</Link>
+					</div>
 
-                        {/* Signup */}
-                        <Link
-                          href="/signup"
-                          onClick={closeAccountDropdown}
-                          className="flex items-center px-4 py-3 rounded-xl text-white bg-green-600 hover:bg-green-700 shadow-sm hover:shadow-md transition-all duration-200"
-                        >
-                          <UserIcon className="w-5 h-5 mr-3" />
-                          <span className="text-sm font-medium">Sign Up</span>
-                        </Link>
+					{/* Right-side Icons */}
+					<div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
+						{/* Notifications */}
+						<div className="hidden md:block relative">
+							<Link href="/dashboard/notifications">
+								<button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50 relative">
+									<Image
+										src={Notification}
+										alt="Notifications"
+										width={20}
+										height={20}
+									/>
+									{/* Notification Badge */}
+									<span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+										1
+									</span>
+								</button>
+							</Link>
+						</div>
 
-                        {/* Divider */}
-                        <div className="border-t border-gray-200 my-2"></div>
+						{/* Messages */}
+						<div className="hidden md:block relative">
+							<button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
+								<Image src={MessageNav} alt="Messages" width={20} height={20} />
+							</button>
+						</div>
 
-                        {/* Customer Support */}
-                        <Link
-                          href="/support"
-                          onClick={closeAccountDropdown}
-                          className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:border hover:border-gray-200 transition-all duration-200"
-                        >
-                          <PhoneIcon className="w-5 h-5 mr-3" />
-                          <span className="text-sm font-medium">Customer Support</span>
-                        </Link>
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </div>
+						{/* Language Selector */}
+						<div className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600">
+							<span className="text-sm font-medium">EN</span>
+							<svg
+								className="w-4 h-4 ml-1"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</div>
 
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            onClick={closeMobileMenu}
-          />
-        )}
-      </AnimatePresence>
+						{/* Menu Button (visible on mobile) */}
+						<button
+							onClick={toggleMobileMenu}
+							className="md:hidden p-2 transition-colors text-gray-800 hover:text-green-600"
+							aria-label="Toggle menu"
+						>
+							{isMobileMenuOpen ? (
+								<XMarkIcon className="w-5 h-5" />
+							) : (
+								<Bars3Icon className="w-5 h-5" />
+							)}
+						</button>
 
-      {/* Mobile Sidebar */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 md:hidden overflow-y-auto"
-          >
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <Link href="/" className="flex items-center">
-                <Image
-                  src={VetKonnectLogo}
-                  alt="VetKonnect Logo"
-                  width={180}
-                  height={50}
-                  className="h-full w-auto max-w-[120px] sm:max-w-[180px]"
-                  priority
-                />
-              </Link>
-              <button
-                onClick={closeMobileMenu}
-                className="p-2 rounded-full hover:bg-gray-100"
-                aria-label="Close menu"
-              >
-                <XMarkIcon className="w-6 h-6 text-gray-600" />
-              </button>
-            </div>
+						{/* User Profile */}
+						<div className="hidden md:block relative">
+							<button
+								onClick={toggleAccountDropdown}
+								className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50"
+								aria-label="Account menu"
+							>
+								<svg
+									className="w-5 h-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+									/>
+								</svg>
+							</button>
 
-            <nav className="p-6 space-y-2">
-              {/* Login/Signup */}
-              <Link
-                href="/login"
-                onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 bg-gray-150 border border-gray-225 shadow-active-link transition-colors"
-              >
-                <UserIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Login / Signup</span>
-              </Link>
+							{/* Account Dropdown Menu */}
+							<AnimatePresence>
+								{isAccountDropdownOpen && (
+									<>
+										{/* Backdrop */}
+										<div
+											className="fixed inset-0 z-[9998]"
+											onClick={closeAccountDropdown}
+										/>
 
-              {/* Home */}
-              <Link
-                href="/"
-                onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
-              >
-                <HomeIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Home</span>
-              </Link>
+										{/* Dropdown */}
+										<motion.div
+											initial={{ opacity: 0, y: -10, scale: 0.95 }}
+											animate={{ opacity: 1, y: 0, scale: 1 }}
+											exit={{ opacity: 0, y: -10, scale: 0.95 }}
+											transition={{ duration: 0.2, ease: "easeOut" }}
+											className="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl border border-gray-200 z-[9999] overflow-hidden"
+											style={{ position: "fixed", right: "1rem", top: "4rem" }}
+										>
+											<div className="p-4 space-y-2">
+												{!isAuthenticated ? (
+													<>
+														{/* Login */}
+														<Link
+															href="/login"
+															onClick={closeAccountDropdown}
+															className="flex items-center px-4 py-3 rounded-xl text-gray-700 bg-gray-50 border border-gray-200 shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+														>
+															<UserIcon className="w-5 h-5 mr-3" />
+															<span className="text-sm font-medium">Login</span>
+														</Link>
 
-              {/* About Us */}
-              <Link
-                href="/about"
-                onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
-              >
-                <InformationCircleIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">About Us</span>
-              </Link>
+														{/* Signup */}
+														<Link
+															href="/signup"
+															onClick={closeAccountDropdown}
+															className="flex items-center px-4 py-3 rounded-xl text-white bg-green-600 hover:bg-green-700 shadow-sm hover:shadow-md transition-all duration-200"
+														>
+															<UserIcon className="w-5 h-5 mr-3" />
+															<span className="text-sm font-medium">
+																Sign Up
+															</span>
+														</Link>
+													</>
+												) : (
+													<>
+														{/* Profile */}
+														<Link
+															href="/dashboard/account"
+															onClick={closeAccountDropdown}
+															className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
+														>
+															<UserIcon className="w-5 h-5 mr-3" />
+															<span className="text-sm font-medium">
+																My Account
+															</span>
+														</Link>
 
-              {/* Feed Calculator */}
-              <Link
-                href="/dashboard/feed-calculator"
-                onClick={closeMobileMenu}
-                className={getMobileLinkClasses("/dashboard/feed-calculator")}
-              >
-                <CalculatorIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Feed Calculator</span>
-              </Link>
+														{/* Logout */}
+														<button
+															onClick={handleLogout}
+															className="flex items-center w-full px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200"
+														>
+															<UserIcon className="w-5 h-5 mr-3" />
+															<span className="text-sm font-medium">
+																Logout
+															</span>
+														</button>
+													</>
+												)}
 
-              {/* Disease Predictor */}
-              <Link
-                href="/dashboard/disease-predictor"
-                onClick={closeMobileMenu}
-                className={getMobileLinkClasses("/dashboard/disease-predictor")}
-              >
-                <HeartIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Disease Predictor</span>
-              </Link>
+												{/* Divider */}
+												<div className="border-t border-gray-200 my-2"></div>
 
-              {/* Blog */}
-              <Link
-                href="/dashboard/blog"
-                onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
-              >
-                <DocumentTextIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Blog</span>
-              </Link>
+												{/* Customer Support */}
+												<Link
+													href="/support"
+													onClick={closeAccountDropdown}
+													className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:border hover:border-gray-200 transition-all duration-200"
+												>
+													<PhoneIcon className="w-5 h-5 mr-3" />
+													<span className="text-sm font-medium">
+														Customer Support
+													</span>
+												</Link>
+											</div>
+										</motion.div>
+									</>
+								)}
+							</AnimatePresence>
+						</div>
+					</div>
+				</div>
+			</div>
 
-              {/* Chat Forum */}
-              <Link
-                href="/dashboard/chat-forum"
-                onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
-              >
-                <ChatBubbleLeftRightIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Chat Forum</span>
-              </Link>
+			{/* Mobile Sidebar Overlay */}
+			<AnimatePresence>
+				{isMobileMenuOpen && (
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.2 }}
+						className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+						onClick={closeMobileMenu}
+					/>
+				)}
+			</AnimatePresence>
 
-              {/* Language Option */}
-              <div className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors cursor-pointer">
-                <LanguageIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Language Option</span>
-              </div>
+			{/* Mobile Sidebar */}
+			<AnimatePresence>
+				{isMobileMenuOpen && (
+					<motion.div
+						initial={{ x: "-100%" }}
+						animate={{ x: 0 }}
+						exit={{ x: "-100%" }}
+						transition={{ type: "tween", duration: 0.3 }}
+						className="fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 md:hidden overflow-y-auto"
+					>
+						<div className="flex items-center justify-between p-6 border-b border-gray-200">
+							<Link href="/" className="flex items-center">
+								<Image
+									src={VetKonnectLogo}
+									alt="VetKonnect Logo"
+									width={180}
+									height={50}
+									className="h-full w-auto max-w-[120px] sm:max-w-[180px]"
+									priority
+								/>
+							</Link>
+							<button
+								onClick={closeMobileMenu}
+								className="p-2 rounded-full hover:bg-gray-100"
+								aria-label="Close menu"
+							>
+								<XMarkIcon className="w-6 h-6 text-gray-600" />
+							</button>
+						</div>
 
-              {/* Customer Support */}
-              <Link
-                href="/support"
-                onClick={closeMobileMenu}
-                className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
-              >
-                <PhoneIcon className="w-6 h-6 mr-4" />
-                <span className="text-base font-medium">Customer Support</span>
-              </Link>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
+						<nav className="p-6 space-y-2">
+							{/* Login/Signup */}
+							<Link
+								href="/login"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 bg-gray-150 border border-gray-225 shadow-active-link transition-colors"
+							>
+								<UserIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Login / Signup</span>
+							</Link>
+
+							{/* Home */}
+							<Link
+								href="/"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<HomeIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Home</span>
+							</Link>
+
+							{/* About Us */}
+							<Link
+								href="/about"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<InformationCircleIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">About Us</span>
+							</Link>
+
+							{/* Feed Calculator */}
+							<Link
+								href="/dashboard/feed-calculator"
+								onClick={closeMobileMenu}
+								className={getMobileLinkClasses("/dashboard/feed-calculator")}
+							>
+								<CalculatorIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Feed Calculator</span>
+							</Link>
+
+							{/* Disease Predictor */}
+							<Link
+								href="/dashboard/disease-predictor"
+								onClick={closeMobileMenu}
+								className={getMobileLinkClasses("/dashboard/disease-predictor")}
+							>
+								<HeartIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Disease Predictor</span>
+							</Link>
+
+							{/* Blog */}
+							<Link
+								href="/dashboard/blog"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<DocumentTextIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Blog</span>
+							</Link>
+
+							{/* Chat Forum */}
+							<Link
+								href="/dashboard/chat-forum"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<ChatBubbleLeftRightIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Chat Forum</span>
+							</Link>
+
+							{/* Language Option */}
+							<div className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors cursor-pointer">
+								<LanguageIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Language Option</span>
+							</div>
+
+							{/* Customer Support */}
+							<Link
+								href="/support"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<PhoneIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Customer Support</span>
+							</Link>
+						</nav>
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</nav>
+	);
 };
 
 export default Navbar;

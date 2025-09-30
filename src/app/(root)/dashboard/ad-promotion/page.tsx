@@ -1,7 +1,7 @@
 "use client";
 
 import { Bag } from "@/app/assets/icons";
-import ProductForm from "@/components/Ads-promotions/ProductForm";
+import AdProductForm from "@/components/Ads-promotions/AdProductForm";
 import { ChevronLeft, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -165,7 +165,7 @@ const page = () => {
 							You can add a new promotion to your list
 						</p>
 					</div>
-					<ProductForm />
+					<AdProductForm />
 				</div>
 			</div>
 		</div>

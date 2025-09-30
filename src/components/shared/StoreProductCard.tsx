@@ -5,28 +5,21 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
+import { Product } from "@/types";
 
-interface ProductCardProps {
-	id: string;
-	title: string;
-	price: number;
-	images: string[];
-	rating: number;
-	location: string;
-	units: number;
-	availableUnits?: boolean;
+type ProductCardProps = Product & {
 	onViewProduct?: (id: string) => void;
-}
+};
 
 const StoreProductCard = ({
-	title,
+	product_name,
 	price,
-	images,
-	rating,
+	images_url,
+	average_rating,
 	location,
-	units,
+	availability,
 	id,
-	availableUnits,
+	available_unit,
 	onViewProduct,
 }: ProductCardProps) => {
 	const [index, setIndex] = useState(0);
@@ -37,9 +30,17 @@ const StoreProductCard = ({
 		}
 	};
 
-	const nextImage = () => setIndex((prev) => (prev + 1) % images.length);
 
-	// 🔥 Auto-play every 3s
+
+	const images = Array.isArray(images_url) ? images_url : [];
+
+
+	const nextImage = () => {
+		if (images.length > 0) {
+			setIndex((prev) => (prev + 1) % images.length);
+		}
+	};
+
 	useEffect(() => {
 		const interval = setInterval(() => {
 			nextImage();
@@ -62,7 +63,7 @@ const StoreProductCard = ({
 					>
 						<Image
 							src={images[index]}
-							alt={title}
+							alt={product_name}
 							fill
 							className="object-cover"
 							onClick={nextImage}
@@ -73,12 +74,12 @@ const StoreProductCard = ({
 
 				{/* Rating */}
 				<div className="absolute top-2 left-2 text-white text-xs rounded-md px-2 py-1 flex items-center gap-1">
-					⭐ {rating} of 5
+					⭐ {average_rating} of 5
 				</div>
 
 				{/* Price */}
 				<div className="absolute bottom-2 right-2 text-white font-bold rounded-md">
-					${price.toFixed(2)}
+					${Number(price).toFixed(2)}
 				</div>
 
 				{/* Indicator dots */}
@@ -103,7 +104,9 @@ const StoreProductCard = ({
 			<div className="p-3">
 				<div className="flex">
 					<span className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
-						{title.length > 18 ? `${title.slice(0, 18)}...` : title}
+						{product_name.length > 18
+							? `${product_name.slice(0, 18)}...`
+							: product_name}
 					</span>
 				</div>
 				<span className="flex items-center text-xs text-gray-500 mt-1">
@@ -119,7 +122,7 @@ const StoreProductCard = ({
 
 				<div className="flex items-center justify-between mt-3">
 					<span className="text-xs text-gray-55 font-medium">
-						{units} Units
+						{available_unit} Units
 					</span>
 					<button
 						style={{ backgroundImage: `url(${ButtonBg.src})` }}
@@ -132,11 +135,11 @@ const StoreProductCard = ({
 
 				<div className="flex items-center justify-center shadow-md bg-[#F1F1F1] rounded-lg px-4 mt-3 py-2 mb-4">
 					<span className="text-gray-55 text-center text-sm">
-						{availableUnits ? (
+						{availability ? (
 							<div className="flex items-center rounded-lg  text-xs font-medium">
 								<span className="w-2 h-2 rounded-full bg-green-500 mr-2 inline-block animate-pulse" />
 
-								<span>Available - ({units} Units)</span>
+								<span>Available - ({available_unit} Units)</span>
 							</div>
 						) : (
 							<div className="flex items-center  rounded-lg  text-xs font-medium">

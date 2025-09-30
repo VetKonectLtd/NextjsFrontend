@@ -13,10 +13,15 @@ import {
 	SquarePen,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useStoreService } from "@/services/storeService";
 
-export default function StoreDetailsPage() {
+export default function StoreDetailsPage({ params }: { params: { id: string }}) {
 	const [available, setAvailable] = useState(true);
 	const router = useRouter();
+	const {useGetStoreById}= useStoreService();
+	const storeData:any = useGetStoreById(true, params.id);
+
+	const store = (storeData.data as Record<string, any>)?.store;
 	
 		const handleBack = () => {
 			router.back();
@@ -38,25 +43,25 @@ export default function StoreDetailsPage() {
 					Back
 				</div>
 
-				<button className="flex items-center text-sm text-gray-55 hover:text-green-50">
+				<Link href={`/dashboard/stores/edit/${params.id}`} className="flex items-center text-sm text-gray-55 hover:text-green-50">
 					Edit
 					<span className="bg-white border text-gray-500 cursor-pointer border-gray-225 shadow-md rounded-full p-1 ml-2">
 						<SquarePen className="w-5 h-5" />
 					</span>
-				</button>
+				</Link>
 			</div>
 
 			<div className="flex max-w-sm px-4 md:px-0 m-auto flex-col items-center -mt-12">
 				<div className="w-24 h-24 rounded-full border-4 border-green-50 overflow-hidden">
 					<Image
-						src={Shop.src}
-						alt="Store"
+						src={store?.picture_url}
+						alt={store?.store_name}
 						width={150}
 						height={150}
 						className="object-cover w-full h-full"
 					/>
 				</div>
-				<h1 className="mt-3 text-lg font-semibold">Treequote Store</h1>
+				<h1 className="mt-3 text-lg font-semibold">{store?.store_name}</h1>
 				<p className="text-sm mt-2 text-gray-500">Store</p>
 
 				<div className="flex flex-col items-center gap-2 mt-6">
@@ -67,7 +72,7 @@ export default function StoreDetailsPage() {
 					>
 						<span
 							className={`w-4 h-4 bg-[#51D86F] rounded-full shadow transform transition ${
-								available ? "translate-x-6" : "translate-x-0"
+								store?.availability ? "translate-x-6" : "translate-x-0"
 							}`}
 						/>
 					</button>
@@ -97,9 +102,9 @@ export default function StoreDetailsPage() {
 				</div>
 
 				<div className="flex max-w-sm items-center justify-between w-full border-2 bg-white border-green-50 rounded-xl p-2 pl-3 mt-8 transition">
-					<span className="text-gray-55 text-sm font-bold">Add New Store</span>
+					<span className="text-gray-55 text-sm font-bold">Add New Product</span>
 					<Link
-						href="/dashboard/stores/1/add"
+						href={`/dashboard/stores/${params.id}/add`}
 						className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl"
 					>
 						<Plus className="w-5 h-5 font-bold text-white " />

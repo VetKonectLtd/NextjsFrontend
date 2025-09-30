@@ -6,6 +6,13 @@ import { useRouter } from "next/navigation";
 import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 const NewChatPage = () => {
 	const [preview, setPreview] = useState<string | null>(null);
@@ -45,31 +52,43 @@ const NewChatPage = () => {
 						Add to Forum Chat
 					</h2>
 
-					<form className="space-y-1">
-						{/* <input
-							name="Title"
-							type="text"
-							placeholder="Title"
-							className="border outline-none shadow-sm w-full p-4 text-sm font-normal py-3 mb-3 rounded-md border-gray-225"
-						/> */}
+					<form className="space-y-2">
+						<Select>
+							<SelectTrigger className="border outline-none shadow-sm w-full rounded-md border-gray-225 p-4 text-sm font-normal py-5">
+								<SelectValue placeholder="Visibility of the post" />
+							</SelectTrigger>
+
+							<SelectContent>
+								<SelectItem value="Everyone">Everyone</SelectItem>
+								<SelectItem value="Veterinary Doctors">
+									Veterinary Doctors
+								</SelectItem>
+								<SelectItem value="Veterinary Paraprofessional">
+									Veterinary Paraprofessional
+								</SelectItem>
+								<SelectItem value="Petowner/Livestock farmer">
+									Petowner/Livestock farmer
+								</SelectItem>
+								<SelectItem value="Veterinary Clinic">
+									Veterinary Clinic
+								</SelectItem>
+								<SelectItem value="Vendor">Vendor</SelectItem>
+								<SelectItem value="Students">Students</SelectItem>
+							</SelectContent>
+						</Select>
 
 						<Input
 							type="text"
 							placeholder="Title"
-							className="border outline-none shadow-sm w-full p-4 text-sm font-normal py-3 mb-3 rounded-md border-gray-225"
+							className="border outline-none shadow-sm w-full p-4 text-sm font-normal py-5 rounded-md border-gray-225"
 						/>
 
-						<Textarea className="border outline-none shadow-sm w-full p-4  text-sm font-normal py-3 rounded-md resize-none border-gray-225"
+						<Textarea
+							className="border outline-none shadow-sm w-full p-4  text-sm font-normal py-3 mb-3 rounded-md resize-none border-gray-225"
 							placeholder="content"
 							id="content"
-							rows={10}/>
-
-						{/* <textarea
-							className="border outline-none shadow-sm w-full p-4  text-sm font-normal py-3 rounded-md resize-none border-gray-225"
-							name="content"
-							id="content"
 							rows={10}
-						></textarea> */}
+						/>
 
 						{/* Image Upload */}
 						<div className="flex flex-col">
