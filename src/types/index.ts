@@ -88,3 +88,60 @@ export interface PersonalInfoForm{
 	state: string;
 	agreeTerms: boolean;
 };
+
+// Veterinary types
+export interface VeterinaryDoctor {
+	id: string;
+	name: string;
+	email?: string;
+	phone?: string;
+	specialization?: string;
+	location: string;
+	latitude?: number;
+	longitude?: number;
+	image?: string;
+	rating: number;
+	totalRatings: number;
+	isAvailable: boolean;
+	isVerified: boolean;
+	distance?: number; // Distance in kilometers
+	experience?: number; // Years of experience
+	clinicName?: string;
+	clinicAddress?: string;
+	consultationFee?: number;
+	availableHours?: string;
+	createdAt?: string;
+	updatedAt?: string;
+}
+
+export interface GetNearestVetsRequest {
+	longitude: number;
+	latitude: number;
+	radius?: number; // Search radius in kilometers (optional)
+	limit?: number; // Maximum number of results (optional)
+	page?: number; // Page number for pagination (optional)
+}
+
+export interface GetNearestVetsResponse {
+	message: string;
+	veterinary_doctors: {
+		current_page: number;
+		data: VeterinaryDoctor[];
+		first_page_url: string;
+		from: number | null;
+		last_page: number;
+		last_page_url: string;
+		links: Array<{
+			url: string | null;
+			label: string;
+			page: number | null;
+			active: boolean;
+		}>;
+		next_page_url: string | null;
+		path: string;
+		per_page: number;
+		prev_page_url: string | null;
+		to: number | null;
+		total: number;
+	};
+}

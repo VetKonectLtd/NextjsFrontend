@@ -11,8 +11,12 @@ import { NearYou, CallToAction, CTASlider, FeedCalculatorSection, ChatForumSecti
 import { Footer } from '@/components/shared';
 import { div } from 'framer-motion/client';
 import { Button } from '@/components/ui/button';
+import { useGeolocation } from '@/lib/hooks/useGeolocation';
 
 export default function Home() {
+  // Get user's current location for nearby vets
+  const { coordinates, loading: locationLoading, error: locationError } = useGeolocation();
+
   // CTA data configuration
   const ctaData = [
     {
@@ -136,7 +140,10 @@ export default function Home() {
       {/* Near you section */}
       <section className="pt-16 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <NearYou />
+          <NearYou 
+            userLocation={coordinates ? { latitude: coordinates.latitude, longitude: coordinates.longitude } : undefined}
+            useRealData={true}
+          />
         </div>
       </section>
 
