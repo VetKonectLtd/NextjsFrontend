@@ -1,6 +1,5 @@
 // API Base URL
-export const API_BASE_URL =
-	process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // Auth endpoints
 export const AUTH_ENDPOINTS = {
@@ -115,3 +114,8 @@ export const DIRECT_CHAT = {
 	EDIT_MESSAGE: (Id: string) => `/v3/messages/${Id}/edit`,
 	DELETE_MESSAGE: (Id: string) => `/v3/messages/${Id}/delete`,
 };
+
+// Veterinary endpoints
+export const VETERINARY_ENDPOINTS = {
+  GET_NEAREST_DOCTORS: '/api/v3/get-nearest-veterinary-doctors',
+} as const;
