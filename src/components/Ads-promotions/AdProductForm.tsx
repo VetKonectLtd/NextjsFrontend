@@ -2,81 +2,39 @@
 
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import FormInput from "../form/FormInput";
 import FormSelect from "../form/FormSelect";
 import PlanSelector, { Plan } from "./PlanSelector";
-import { Dog, Shop } from "@/app/assets/icons/vet-vendor";
-
-const ads = [
-	{
-		id: "1",
-		title: "Golden Retriever Puppy",
-		price: 50.99,
-		category: "Pets",
-		tags: ["dog", "puppy", "golden retriever"],
-		images: [Dog.src, Shop.src, Dog.src],
-		rating: 4.5,
-		location: "Lagos, Nigeria",
-		units: 20,
-		status: "active",
-		open: true,
-		availableUnits: true,
-	},
-	{
-		id: "2",
-		title: "Persian Cat",
-		price: 120.0,
-		category: "Pets",
-		tags: ["cat", "persian", "feline"],
-		images: [Dog.src, Shop.src, Dog.src],
-		rating: 4.8,
-		location: "Abuja, Nigeria",
-		units: 10,
-		status: "active",
-		open: true,
-		availableUnits: true,
-	},
-	{
-		id: "3",
-		title: "African Grey Parrot",
-		price: 299.99,
-		category: "Birds",
-		tags: ["parrot", "african grey", "bird"],
-		images: [Dog.src, Shop.src, Dog.src],
-		rating: 4.3,
-		location: "Oyo, Nigeria",
-		units: 5,
-		status: "expired",
-		open: false,
-		availableUnits: false,
-	},
-];
-
-export interface Product {
-	id: string;
-	title: string;
-	category: string;
-	tags: string[];
-	price: number;
-	images:string[]; 
-	location: string;
-	units: number;
-	open: boolean;
-}
+import { useAuthService } from "@/services/authService";
+import { useProductService } from "@/services/productService";
+import { Product } from "@/types";
+import { Loader2 } from "lucide-react";
 
 const plans: Plan[] = [
-	{ value: "free", label: "Free Trial Plan", maxProducts: 1, basePrice: 0 },
 	{ value: "weekly", label: "Weekly Plan", maxProducts: 3, basePrice: 0.99 },
 	{ value: "monthly", label: "Monthly Plan", maxProducts: 10, basePrice: 3.99 },
 	{ value: "yearly", label: "Yearly Plan", maxProducts: 50, basePrice: 29.99 },
 ];
 
-const ProductForm = () => {
+const AdProductForm = () => {
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 	const [previews, setPreviews] = useState<string[]>([]);
-	const [selectedPlan, setSelectedPlan] = useState<string>("free");
+	const [selectedPlan, setSelectedPlan] = useState<string>("weekly");
 	const [factor, setFactor] = useState<number>(1);
+	const { useCurrentUser } = useAuthService();
+	const { useGetProductByUserId } = useProductService();
+	const user = useCurrentUser(true);
+	const getProduct = useGetProductByUserId(
+		true,
+		(user as Record<string, any>).data?.profile?.user_id,
+	);
+
+	const ads = Array.isArray(
+		(getProduct.data as Record<string, any>)?.products?.data,
+	)
+		? (getProduct.data as Record<string, any>)?.products?.data
+		: [];
 
 	const {
 		control,
@@ -86,38 +44,46 @@ const ProductForm = () => {
 	});
 
 	const handleProductChange = (id: string) => {
-		const product = ads.find((p) => p.id === id) || null;
+		const product = ads.find((p: Product) => p.id === id) || null;
 		setSelectedProduct(product);
 		if (product) {
-			setPreviews(product.images.slice(0, 3));
+			setPreviews(product.images_url.slice(0, 3));
 		}
 	};
 
 	return (
 		<form className="space-y-1 max-w-md mx-auto">
 			{/* Select Product */}
-			<Controller
-				name="id"
-				control={control}
-				rules={{ required: "Select Product is required" }}
-				render={({ field }) => (
-					<FormSelect
-						label="Select Product"
-						focusLabel="Select Product (Required):"
-						isRequired
-						searchable
-						options={ads.map((p) => ({
-							value: p.id,
-							label: `${p.id} - ${p.title}`,
-						}))}
-						value={field?.value}
-						onChange={(value) => {
-							field.onChange(value);
-							handleProductChange(value);
-						}}
-					/>
-				)}
-			/>
+			
+			{getProduct.isLoading ? (
+				<div className="flex items-center gap-2">
+					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					<span>Loading products...</span>
+				</div>
+			) : (
+				<Controller
+					name="id"
+					control={control}
+					rules={{ required: "Select Product is required" }}
+					render={({ field }) => (
+						<FormSelect
+							label="Select Product"
+							focusLabel="Select Product (Required):"
+							isRequired
+							searchable
+							options={ads.map((p: Product) => ({
+								value: p.id,
+								label: `${p.id} - ${p.product_name}`,
+							}))}
+							value={field?.value}
+							onChange={(value) => {
+								field.onChange(value);
+								handleProductChange(value);
+							}}
+						/>
+					)}
+				/>
+			)}
 
 			{/* Auto-populated fields */}
 			{selectedProduct && (
@@ -126,7 +92,7 @@ const ProductForm = () => {
 						label="Product Title"
 						type="text"
 						focusLabel="Product Title:"
-						value={selectedProduct.title}
+						value={selectedProduct.product_name}
 						readOnly
 					/>
 
@@ -146,12 +112,12 @@ const ProductForm = () => {
 
 					{/* Tags */}
 					<div className="flex flex-wrap gap-2 py-4 px-2">
-						{selectedProduct.tags.map((tag, idx) => (
+						{selectedProduct.tags.map((tag: any) => (
 							<span
-								key={idx}
+								key={tag.id}
 								className="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-700"
 							>
-								{tag}
+								{tag.name}
 							</span>
 						))}
 					</div>
@@ -176,23 +142,24 @@ const ProductForm = () => {
 						label="Available Units"
 						type="number"
 						focusLabel="Available Units:"
-						value={selectedProduct.units}
+						value={selectedProduct.available_unit}
 						readOnly
 					/>
 
 					{/* Availability toggle */}
 					<div className="flex w-11/12 m-auto items-center py-3 justify-between">
 						<span className="text-sm font-medium text-gray-700">
-							Availability Status - {selectedProduct.open ? "Open" : "Closed"}
+							Availability Status -{" "}
+							{selectedProduct.availability ? "Open" : "Closed"}
 						</span>
 						<span
 							className={`px-3 py-1 text-xs rounded-full ${
-								selectedProduct.open
+								selectedProduct.availability
 									? "bg-green-100 text-green-600"
 									: "bg-red-100 text-red-600"
 							}`}
 						>
-							{selectedProduct.open ? "Open" : "Closed"}
+							{selectedProduct.availability ? "Open" : "Closed"}
 						</span>
 					</div>
 
@@ -234,4 +201,4 @@ const ProductForm = () => {
 	);
 };
 
-export default ProductForm;
+export default AdProductForm;

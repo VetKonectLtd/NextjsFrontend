@@ -39,7 +39,7 @@ export const useAuthService = () => {
 			AUTH_ENDPOINTS.SIGNUP,
 			{
 				onSuccess: (response: any) => {
-					handleSuccess("Signup successfully!");
+					handleSuccess(response.message || "Signup successfully!");
 				},
 				onError: (error) => {
 					handleError(error.message || "Signup failed");
@@ -54,7 +54,7 @@ export const useAuthService = () => {
 			USER_ENDPOINTS.COMPLETE_PROFILE,
 			{
 				onSuccess: (response: any) => {
-					handleSuccess("Profile completed successfully!");
+					handleSuccess(response.message || "Profile completed successfully!");
 				},
 				onError: (error) => {
 					handleError(error.message || "Profile completion failed");
@@ -89,7 +89,7 @@ export const useAuthService = () => {
 
 	// Get current user query
 	const useCurrentUser = (enabled: boolean = true) => {
-		return useGet<User>(["currentUser"], AUTH_ENDPOINTS.ME, {
+		return useGet<User>(["currentUser"], AUTH_ENDPOINTS.GET_PROFILE, {
 			enabled,
 			staleTime: 5 * 60 * 1000, // 5 minutes
 		});
@@ -98,10 +98,10 @@ export const useAuthService = () => {
 	// Logout mutation
 	const useLogout = () => {
 		return usePost<void, void>(AUTH_ENDPOINTS.LOGOUT, {
-			onSuccess: () => {
+			onSuccess: (res:any) => {
 				// Remove token from localStorage
 				Cookies.remove("auth-token");
-				handleSuccess("Logout successfully!");
+				handleSuccess(res.message || "Logout successfully!");
 			},
 		});
 	};

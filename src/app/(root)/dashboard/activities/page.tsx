@@ -1,52 +1,47 @@
+"use client";
+import ActivitiesSkeleton from "@/components/shared/ActivitiesSkeleton.";
+import { timeAgo } from "@/components/shared/TimeFormat";
+import { useActivitiesService } from "@/services/activitiesService";
+import { Activity } from "@/types";
 
 const Activities = () => {
-	const activities = [
-		{
-			id: 1,
-			text: "Deleted Vendor From Client List",
-			meta: "Vendor Name",
-			time: "39 mins ago",
-		},
-		{ id: 2, text: "Liked a Forum Chat", meta: "Topic", time: "51 mins ago" },
-		{
-			id: 3,
-			text: "Case Closed",
-			meta: "Case Title - Case ID",
-			time: "2 hrs ago",
-		},
-		{
-			id: 4,
-			text: "Sent a Direct Message",
-			meta: "Message first paragraph",
-			time: "Today 12:47 PM CST",
-		},
-		{
-			id: 5,
-			text: "Replied a Direct Message",
-			meta: "Message first paragraph",
-			time: "Jan 20, 2023 12:47 PM CST",
-		},
-	];
+	const { useGetActivities } = useActivitiesService();
+	const getActivities = useGetActivities(true);
+
+	const activities = Array.isArray(getActivities.data?.data)
+		? getActivities.data.data
+		: [];
 
 	return (
 		<div className="w-11/12 m-auto py-2 px-4 bg-white shadow-md rounded-xl border border-gray-225">
+			<h1 className="pb-4 text-base font-bold text-gray-55">
+				Recent Activities
+			</h1>
 
-            <h1 className="pb-4 text-base font-bold text-gray-55">Recent Activities</h1>
-
-			{activities.map((item) => (
-				<div
-					key={item.id}
-					className="flex md:flex-row flex-col border rounded-xl shadow-md  bg-white border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
-				>
-					<div>
-						<p className="font-medium text-sm text-gray-55">{item.text}</p>
-						<p className=" text-xs text-gray-55">{item.meta}</p>
+			{getActivities.isLoading ? (
+				<ActivitiesSkeleton />
+			) : activities.length >= 1 ? (
+				activities.map((activity: Activity) => (
+					<div
+						key={activity.id}
+						className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
+					>
+						<div>
+							<p className="font-medium text-sm text-gray-55">
+								{activity.title}
+							</p>
+							<p className=" text-xs text-gray-55">{activity.detail}</p>
+						</div>
+						<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
+							{timeAgo(activity.created_at)}
+						</span>
 					</div>
-					<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
-						{item.time}
-					</span>
-				</div>
-			))}
+				))
+			) : (
+				<p className="text-gray-55 text-center font-bold pb-6 text-base">
+					No activities yet.
+				</p>
+			)}
 		</div>
 	);
 };

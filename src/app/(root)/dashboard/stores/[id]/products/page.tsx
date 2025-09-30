@@ -3,62 +3,30 @@ import Link from "next/link";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import StoreProductCard from "@/components/shared/StoreProductCard";
+import { useStoreService } from "@/services/storeService";
+import { useProductService } from "@/services/productService";
+import StoreCardSkeleton from "@/components/shared/StoreCardSkeleton";
+import { Product } from "@/types";
+import EmptyState from "@/components/shared/EmptyState";
+import { Hand } from "@/app/assets/icons";
 
-const mockProducts = [
-	{
-		id: "1",
-		title: "Golden Retriever Puppy",
-		price: 50.99,
-		images: [
-			"https://images.unsplash.com/photo-1558788353-f76d92427f16",
-			"https://images.unsplash.com/photo-1507149833265-60c372daea22",
-			"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-		],
-		rating: 4.5,
-		location: "Lagos, Nigeria",
-		units: 20,
-		open: true,
-		availableUnits: true,
-	},
-	{
-		id: "2",
-		title: "Persian Cat",
-		price: 120.0,
-		images: [
-			"https://images.unsplash.com/photo-1592194996308-7b43878e84a6",
-			"https://images.unsplash.com/photo-1558788353-f76d92427f16",
-			"https://images.unsplash.com/photo-1507149833265-60c372daea22",
-			"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-		],
-		rating: 4.8,
-		location: "Abuja, Nigeria",
-		units: 10,
-		open: true,
-		availableUnits: true,
-	},
-	{
-		id: "3",
-		title: "African Grey Parrot",
-		price: 299.99,
-		images: [
-			"https://images.unsplash.com/photo-1558788353-f76d92427f16",
-			"https://images.unsplash.com/photo-1507149833265-60c372daea22",
-			"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-		],
-		rating: 4.3,
-		location: "Oyo, Nigeria",
-		units: 5,
-		open: false,
-		availableUnits: false,
-	},
-];
 
-const ProductPage = () => {
+const ProductPage = ({ params }: { params: { id: string } }) => {
 	const router = useRouter();
+
+	const { useGetStoreById } = useStoreService();
+	const { useGetProductByStore } = useProductService();
+	const storeProduct = useGetProductByStore(true, params.id);
+	const storeData: any = useGetStoreById(true, params.id);
+
+	const store = (storeData.data as Record<string, any>)?.store;
+	const product = (storeProduct.data as Record<string, any>)?.products.data;
 
 	return (
 		<div className="w-11/12 mt-3 m-auto bg-white">
-			<h1 className="text-xl text-gray-55 font-bold mb-4">Goodislorn Store</h1>
+			<h1 className="text-xl capitalize text-gray-55 font-bold mb-4">
+				{store?.store_name}
+			</h1>
 
 			<Link
 				href="/dashboard/stores/1/add"
@@ -72,17 +40,31 @@ const ProductPage = () => {
 				</div>
 			</Link>
 
-			<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
-				{mockProducts.map((p) => (
-					<StoreProductCard
-						key={p.id}
-						{...p}
-						onViewProduct={(id) =>
-							router.push(`/dashboard/stores/1/products/${id}`)
-						}
-					/>
-				))}
-			</div>
+			{storeProduct.isLoading ? (
+				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
+					{Array.from({ length: 3 }).map((_, i) => (
+						<StoreCardSkeleton key={i} />
+					))}
+				</div>
+			) : product?.length >= 1 ? (
+				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
+					{product.map((product: Product) => (
+						<StoreProductCard
+							key={product?.id}
+							{...product}
+							onViewProduct={(id) =>
+								router.push(`/dashboard/stores/${params.id}/products/${id}`)
+							}
+						/>
+					))}
+				</div>
+			) : (
+				<EmptyState
+					title="Hey! User"
+					description="Kindly click on the button above to add new product"
+					image={Hand}
+				/>
+			)}
 		</div>
 	);
 };

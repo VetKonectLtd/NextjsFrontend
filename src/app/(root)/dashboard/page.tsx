@@ -9,6 +9,11 @@ import { Arrow } from "@/app/assets/icons";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useRouter, useSearchParams } from "next/navigation";
+import { timeAgo } from "@/components/shared/TimeFormat";
+import { useActivitiesService } from "@/services/activitiesService";
+import ActivitiesSkeleton from "@/components/shared/ActivitiesSkeleton.";
+import { Activity } from "@/types";
+import { useForumService } from "@/services/forumService";
 
 const quickActions = [
 	{
@@ -40,42 +45,25 @@ const quickActions = [
 	},
 ];
 
-const activities = [
-	{
-		id: 1,
-		text: "Deleted Vendor From Client List",
-		meta: "Vendor Name",
-		time: "39 mins ago",
-	},
-	{ id: 2, text: "Liked a Forum Chat", meta: "Topic", time: "51 mins ago" },
-	{
-		id: 3,
-		text: "Case Closed",
-		meta: "Case Title - Case ID",
-		time: "2 hrs ago",
-	},
-	{
-		id: 4,
-		text: "Sent a Direct Message",
-		meta: "Message first paragraph",
-		time: "Today 12:47 PM CST",
-	},
-	{
-		id: 5,
-		text: "Replied a Direct Message",
-		meta: "Message first paragraph",
-		time: "Jan 20, 2023 12:47 PM CST",
-	},
-];
-
 const Dashboard = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [role, setRole]= useState(false);
+	const [role, setRole] = useState(false);
+	const { useGetActivities } = useActivitiesService();
+	const { useGetTrendingForum } = useForumService();
+	const getActivities = useGetActivities(true);
+	const getTrendingForum = useGetTrendingForum(true);
+
+	const trending = Array.isArray(getTrendingForum.data)
+		? getTrendingForum.data
+		: [];
+
+	const activities = Array.isArray(getActivities.data?.data)
+		? getActivities.data.data
+		: [];
 
 	const initialTab = searchParams.get("tab") || "recent";
 	const [tab, setTab] = useState(initialTab);
-
 
 	useEffect(() => {
 		const urlTab = searchParams.get("tab");
@@ -92,16 +80,19 @@ const Dashboard = () => {
 	return (
 		<div className="w-11/12 m-auto">
 			{/* ✅ Congratulations Card */}
-			{role && 
-			<div className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-1 mb-2 transition">
-				<div className="text-gray-55 flex flex-col">
-				<span className="text-xs font-normal">Congratulations</span>	
-				<p className="text-gray-55 text-sm font-medium">Your Vet Number (VCN) has been verified and Approved</p>
+			{role && (
+				<div className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-1 mb-2 transition">
+					<div className="text-gray-55 flex flex-col">
+						<span className="text-xs font-normal">Congratulations</span>
+						<p className="text-gray-55 text-sm font-medium">
+							Your Vet Number (VCN) has been verified and Approved
+						</p>
+					</div>
+					<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
+						<Check className="w-5 h-5 font-bold text-white " />
+					</div>
 				</div>
-				<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
-					<Check className="w-5 h-5 font-bold text-white " />
-				</div>
-			</div>}
+			)}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{quickActions.map((action, idx) => (
@@ -133,15 +124,19 @@ const Dashboard = () => {
 			</div>
 
 			{/* ✅ Add New Case Button */}
-			{role && <div
-				// onClick={() => selectAddPromotion(false)}
-				className="flex items-center justify-between md:w-1/2 border-2 pl-2 bg-white border-green-50 rounded-xl p-2 my-6 transition"
-			>
-				<span className="text-gray-55 text-sm font-semibold">Add new Case</span>
-				<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
-					<PlusIcon className="w-5 h-5 font-bold text-white " />
+			{role && (
+				<div
+					// onClick={() => selectAddPromotion(false)}
+					className="flex items-center justify-between md:w-1/2 border-2 pl-2 bg-white border-green-50 rounded-xl p-2 my-6 transition"
+				>
+					<span className="text-gray-55 text-sm font-semibold">
+						Add new Case
+					</span>
+					<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
+						<PlusIcon className="w-5 h-5 font-bold text-white " />
+					</div>
 				</div>
-			</div>}
+			)}
 
 			{/* Tabs */}
 			<div className=" py-2 px-4 mt-6 bg-white shadow-md rounded-xl border border-gray-225">
@@ -167,29 +162,58 @@ const Dashboard = () => {
 
 					<TabsContent value="recent">
 						<div className="mt-3">
-							{activities.map((item) => (
-								<div
-									key={item.id}
-									className="flex border rounded-xl shadow-md  bg-white border-gray-225 justify-between items-center px-4 py-3 mb-2 text-sm"
-								>
-									<div>
-										<p className="font-bold text-sm text-gray-55">
-											{item.text}
-										</p>
-										<p className="text-gray-55 text-xs">{item.meta}</p>
+							{getActivities.isLoading ? (
+								<ActivitiesSkeleton />
+							) : activities.length >= 1 ? (
+								activities.map((activity: Activity) => (
+									<div
+										key={activity.id}
+										className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
+									>
+										<div>
+											<p className="font-medium text-sm text-gray-55">
+												{activity.title}
+											</p>
+											<p className=" text-xs text-gray-55">{activity.detail}</p>
+										</div>
+										<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
+											{timeAgo(activity.created_at)}
+										</span>
 									</div>
-									<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
-										{item.time}
-									</span>
-								</div>
-							))}
+								))
+							) : (
+								<p className="text-gray-55 text-center font-bold pb-6 text-base">
+									No activities yet.
+								</p>
+							)}
 						</div>
 					</TabsContent>
 
 					<TabsContent value="forum">
-						<div className="text-center pb-5 text-gray-500  rounded-2xl mt-2">
-							Forum Trending Topics will appear here.
-						</div>
+						{getTrendingForum.isLoading ? (
+							<ActivitiesSkeleton />
+						) : trending.length >= 1 ? (
+							trending.map((activity: Activity) => (
+								<div
+									key={activity.id}
+									className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
+								>
+									<div>
+										<p className="font-medium text-sm text-gray-55">
+											{activity.title}
+										</p>
+										<p className=" text-xs text-gray-55">{activity.detail}</p>
+									</div>
+									<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
+										{timeAgo(activity.created_at)}
+									</span>
+								</div>
+							))
+						) : (
+							<div className="text-center pb-5 text-gray-500  rounded-2xl mt-2">
+								Forum Trending Topics will appear here.
+							</div>
+						)}
 					</TabsContent>
 				</Tabs>
 			</div>

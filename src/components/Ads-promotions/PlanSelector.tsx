@@ -49,14 +49,14 @@ const PlanSelector = ({
         <div className="rounded-2xl md:h-60 h-auto relative text-center p-4 shadow-lg border border-gray-225 bg-white">
           <h3 className="font-semibold text-sm mb-1">
             {currentPlan.label}{" "}
-            {selectedPlan !== "free" && `(${factor} ${selectedPlan})`}
+            {selectedPlan !== "weekly" && `(${factor} ${selectedPlan})`}
           </h3>
           <p className="text-sm text-gray-500 mb-2">
             {currentPlan.maxProducts} Products Max
           </p>
 
           {/* Factor selector */}
-          {selectedPlan !== "free" && (
+          {selectedPlan !== "weekly" && (
             <div className="flex items-center justify-center gap-2 mb-3">
               {[1, 2, 3, 4].map((n) => (
                 <button

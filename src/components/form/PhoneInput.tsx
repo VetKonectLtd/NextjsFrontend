@@ -82,7 +82,7 @@ const PhoneInput = ({
           onChange={(e) => handlePhoneChange(e.target.value, countryCode)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="flex-1 px-2 py-3 pb-1 text-xs outline-none"
+          className="flex-1 px-2 py-3 pb-1 text-sm outline-none"
         />
 
         {/* Floating Label */}
