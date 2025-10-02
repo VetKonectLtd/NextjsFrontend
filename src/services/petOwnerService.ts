@@ -8,7 +8,6 @@ export const usePetOwnerService = () => {
 	const handleSuccess = useHandleSuccess();
 	const handleError = useHandleError();
 
-	
 	const useAddPet = () => {
 		return usePost<{ pet: PetOwner; token: string }, PetOwner>(
 			PET_OwNER_ENDPOINTS.ADD_PET,
@@ -23,7 +22,20 @@ export const usePetOwnerService = () => {
 		);
 	};
 
-	
+	const useAddPetOwner = () => {
+		return usePost<{ pet: PetOwner }>(
+			PET_OwNER_ENDPOINTS.ADD_PET_OWNER,
+			{
+				onSuccess: (response: any) => {
+					// handleSuccess(response.message || "Pet added successfully!");
+				},
+				onError: (error) => {
+					handleError(error.message || "failed");
+				},
+			},
+		);
+	};
+
 	const useGetPetOwners = (enabled: boolean = false) => {
 		return useGet<{ pet: PetOwner; token: string }>(
 			["petOwner"],
@@ -60,25 +72,24 @@ export const usePetOwnerService = () => {
 		);
 	};
 
-	
 	const useDeletePetOwner = (petId: string) => {
 		return useDelete<PetOwner>(PET_OwNER_ENDPOINTS.DELETE_PET(petId), {
-				onSuccess: (response: any) => {
-					handleSuccess(response.message || "Pet deleted successfully!");
-				},
-				onError: (error) => {
-					handleError(error.message || "failed");
-				},
-				invalidateQueries: [["petOwner"]],
-			},);
+			onSuccess: (response: any) => {
+				handleSuccess(response.message || "Pet deleted successfully!");
+			},
+			onError: (error) => {
+				handleError(error.message || "failed");
+			},
+			invalidateQueries: [["petOwner"]],
+		});
 	};
 
 	return {
-        useAddPet,
-        useGetPetOwners,
-        useGetPetOwnerById,
-        useUpdatePetOwner,
-        useDeletePetOwner,
-
-    };
+		useAddPet,
+		useGetPetOwners,
+		useGetPetOwnerById,
+		useUpdatePetOwner,
+		useDeletePetOwner,
+		useAddPetOwner,
+	};
 };

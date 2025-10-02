@@ -49,3 +49,16 @@ export const navItems = [
 		href: "/dashboard/ad-promotion",
 	},
 ];
+
+
+export const ROLE_NAV_ACCESS: Record<string, number[]> = {
+	"veterinary_paraprofessional": [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+	"veterinary_clinic": [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+	"veterinary_doctor": [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+	"livestock_farmer": [1, 2, 4, 7, 8, 9, 10, 11, 12, 13],
+	"pet_owner": [1, 2, 3, 7, 8, 9, 10, 11], 
+	"vendor": [1, 2, 7, 11, 12, 13],       
+	"others": [1, 2, 11],   
+	
+	"basic_user": [1, 2, 8, 9, 10, 11, 12, 13],
+};

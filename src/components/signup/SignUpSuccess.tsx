@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {Success} from "@/app/assets/icons/auth";
+import { Success } from "@/app/assets/icons/auth";
 
 const SignUpSuccess = () => {
 	const router = useRouter();
@@ -28,7 +28,9 @@ const SignUpSuccess = () => {
 				<button
 					type="button"
 					className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 hover:bg-primary-400 transition"
-					onClick={() => router.replace("/dashboard")}
+					onClick={() => 
+						router.replace("/dashboard")
+					}
 				>
 					Go to Dashboard
 				</button>

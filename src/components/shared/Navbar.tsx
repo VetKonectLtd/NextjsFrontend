@@ -28,9 +28,8 @@ const Navbar = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const {useLogout}= useAuthService();
-  const logoutMutation= useLogout();
-
+	const { useLogout } = useAuthService();
+	const logoutMutation = useLogout();
 
 	const pathname = usePathname();
 
@@ -101,13 +100,13 @@ const Navbar = () => {
 		};
 	}, [isMobileMenuOpen]);
 
-  const handleLogout=()=>{
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        window.location.reload();
-      }
-    });
-  }
+	const handleLogout = () => {
+		logoutMutation.mutate(undefined, {
+			onSuccess: () => {
+				window.location.reload();
+			},
+		});
+	};
 
 	return (
 		<nav

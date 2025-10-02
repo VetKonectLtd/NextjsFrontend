@@ -29,6 +29,7 @@ export const useAuthService = () => {
 				onError: (error) => {
 					handleError(error.message || "Login failed");
 				},
+				invalidateQueries: [["currentUser"]],
 			},
 		);
 	};
@@ -44,6 +45,7 @@ export const useAuthService = () => {
 				onError: (error) => {
 					handleError(error.message || "Signup failed");
 				},
+				invalidateQueries: [["currentUser"]],
 			},
 		);
 	};
@@ -103,6 +105,7 @@ export const useAuthService = () => {
 				Cookies.remove("auth-token");
 				handleSuccess(res.message || "Logout successfully!");
 			},
+			invalidateQueries: [["currentUser"]],
 		});
 	};
 

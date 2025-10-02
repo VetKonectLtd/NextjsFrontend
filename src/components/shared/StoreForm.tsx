@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Store } from "@/types";
 import { useStoreService } from "@/services/storeService";
 import { useAuthService } from "@/services/authService";
+import { useGeolocation } from "@/lib/hooks/useGeolocation";
 
 type StoreFormProps = {
 	mode: "create" | "edit";
@@ -26,11 +27,11 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 	const { useCurrentUser } = useAuthService();
 	const addStoreMutation = useAddStore();
 	const user = useCurrentUser(true);
+	const { coordinates } = useGeolocation();
 
 	const updateStoreMutation = useUpdateStore(
 		(store as Record<string, any>)?.store?.id,
 	);
-
 
 	const {
 		control,
@@ -69,15 +70,8 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 	});
 
 	useEffect(() => {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(
-				(pos) => {
-					setValue("latitude", pos.coords.latitude.toString());
-					setValue("longitude", pos.coords.longitude.toString());
-				},
-				(err) => {},
-			);
-		}
+		setValue("latitude", coordinates?.latitude.toString());
+		setValue("longitude", coordinates?.longitude.toString());
 
 		setValue("user_id", (user as Record<string, any>).data?.profile?.user_id);
 		setValue("role", (user as Record<string, any>).data?.role);
@@ -126,16 +120,16 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 		}
 
 		if (mode === "create") {
-			addStoreMutation.mutate(formData, { 
-				onSuccess: (response:any) => {
-                    const storeId = response?.store?.id;
+			addStoreMutation.mutate(formData, {
+				onSuccess: (response: any) => {
+					const storeId = response?.store?.id;
 					router.push(`/dashboard/stores/${storeId}`);
 				},
 			});
 		} else if (mode === "edit" && (store as Record<string, any>)?.store.id) {
 			updateStoreMutation.mutate(formData, {
-				onSuccess: (response:any) => {
-                    const storeId = response?.store?.id;
+				onSuccess: (response: any) => {
+					const storeId = response?.store?.id;
 					router.push(`/dashboard/stores/${storeId}`);
 				},
 			});
@@ -214,28 +208,29 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 						</p>
 					)}
 
-					{ mode == "create" && <Controller
-						name="country"
-						control={control}
-						rules={{ required: "Country is required" }}
-						render={({ field }) => (
-							<FormSelect
-								label="Country"
-								focusLabel="Country (Required) :"
-								isRequired
-								searchable
-								options={countries}
-								value={field.value}
-								onChange={field.onChange}
-							/>
-						)}
-					/>}
-                   
+					{mode == "create" && (
+						<Controller
+							name="country"
+							control={control}
+							rules={{ required: "Country is required" }}
+							render={({ field }) => (
+								<FormSelect
+									label="Country"
+									focusLabel="Country (Required) :"
+									isRequired
+									searchable
+									options={countries}
+									value={field.value}
+									onChange={field.onChange}
+								/>
+							)}
+						/>
+					)}
+
 					{errors.country && (
 						<p className="text-red-500 text-xs">{errors.country.message}</p>
 					)}
-                    
-              
+
 					<FormInput
 						label="Location"
 						type="text"
@@ -324,7 +319,7 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 					<div className=" pt-8">
 						<button
 							type="submit"
-                            onClick={handleSubmit(onSubmit)}
+							onClick={handleSubmit(onSubmit)}
 							disabled={
 								mode === "create"
 									? addStoreMutation.isLoading

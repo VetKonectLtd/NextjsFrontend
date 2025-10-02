@@ -67,7 +67,7 @@ export interface Product {
 	available_unit: string;
 	category: string;
 	createdAt: string;
-	images_url:  string[] | null;
+	images_url: string[] | null;
 	updatedAt: string;
 }
 
@@ -97,8 +97,8 @@ export interface Store {
 	phone_number: string;
 	location: string;
 	availability: string;
-	longitude: string;
-	latitude: string;
+	longitude?: string;
+	latitude?: string;
 	country: string;
 	countryCode: string;
 	picture: File | null;
@@ -106,7 +106,7 @@ export interface Store {
 	id: string;
 	average_rating: string;
 	products: Product[];
-	picture_url:string;
+	picture_url: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -154,7 +154,7 @@ export interface PersonalInfoForm {
 	country: string;
 	state: string;
 	agreeTerms: boolean;
-};
+}
 
 // Veterinary types
 export interface VeterinaryDoctor {
@@ -179,6 +179,44 @@ export interface VeterinaryDoctor {
 	availableHours?: string;
 	createdAt?: string;
 	updatedAt?: string;
+}
+
+export interface VetDoctor {
+	user_id: string;
+	practice_license_num: string;
+	specialty: string;
+	list_them: string;
+	address: string;
+	agreeTerms:boolean;
+	longitude?: number | string;
+	latitude?: number | string;
+}
+
+export interface VetClinic {
+	user_id: string;
+	clinic_name:string;
+	practice_license_num: string;
+	specialty: string;
+	list_them: string;
+	contact_num:string;
+	address: string;
+	agreeTerms:boolean;
+	longitude?: number | string;
+	latitude?: number | string;
+}
+
+export interface VetParaprofessional {
+	user_id: string;
+	name_of_institution:string;
+	graduation_year: string;
+	expected_year_of_graduation:string;
+	specialty: string;
+	list_them: string;
+	contact_num:string;
+	address: string;
+	agreeTerms:boolean;
+	longitude?: number | string;
+	latitude?: number | string;
 }
 
 export interface GetNearestVetsRequest {

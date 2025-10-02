@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ExternalLinkIcon } from 'lucide-react';
+import { useActivitiesService } from '@/services/activitiesService';
 
 interface Notification {
   id: string;
@@ -16,8 +17,17 @@ const NotificationsPage = () => {
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  const { useGetNotification } = useActivitiesService();
+    const getNotification = useGetNotification(true);
+  
+    const notifications = Array.isArray(getNotification.data?.data)
+      ? getNotification.data.data
+      : [];
+
+      
+
   // Sample notifications data
-  const notifications: Notification[] = [
+  const notification: Notification[] = [
     {
       id: '1',
       title: 'Welcome Message',

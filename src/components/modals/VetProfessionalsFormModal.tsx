@@ -13,31 +13,55 @@ import SuccessModal from "./SuccessModal";
 import Image from "next/image";
 import { Icon1, Icon2, Icon3, Arrow } from "@/app/assets/icons/auth";
 import progressItem from "./progressItem";
-import { VetClinic } from "@/types";
-import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
-import { useAuthService } from "@/services/authService";
-import { useGeolocation } from "@/lib/hooks/useGeolocation";
+import { VetParaprofessional } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
+import { useGeolocation } from "@/lib/hooks/useGeolocation";
+import { useAuthService } from "@/services/authService";
+import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
+import FormSelect from "../form/FormSelect";
 
-const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) => {
-	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+const VetProfessionalsFormModal = ({
+	progressOpen,
+	setProgressOpen,
+	setOpen,
+}: any) => {
 	const [successOpen, setSuccessOpen] = useState(false);
-
-	const { useAddVetClinic } = useVeterinaryClinicService();
+	const { useAddVetProfessional } = useVeterinaryParaprofessionalService();
 	const { useCurrentUser } = useAuthService();
 	const { coordinates } = useGeolocation();
 
-	const addVetClinicMutation = useAddVetClinic();
+	const addVetProfessionalMutation = useAddVetProfessional();
 	const { data: user } = useCurrentUser(true);
 
 	const {
 		register,
 		handleSubmit,
 		setValue,
+		watch,
 		control,
 		formState: { errors, isValid },
-	} = useForm<VetClinic>();
+	} = useForm<VetParaprofessional>();
+
+	const currentYear = new Date().getFullYear();
+
+	const futureYearOptions = Array.from({ length: 20 }, (_, i) => {
+		const year = currentYear + i; // current year and next 20 years
+		return { value: String(year), label: String(year) };
+	});
+	const yearOptions = [
+		{ value: "awaiting", label: "Awaiting" },
+		...Array.from({ length: 80 }, (_, i) => {
+			const year = currentYear - i;
+			return { value: String(year), label: String(year) };
+		}),
+	];
+
+	useEffect(() => {
+		if (watch("graduation_year")?.toLowerCase() === "awaiting") {
+			setValue("expected_year_of_graduation", "");
+		}
+	}, [watch("graduation_year"), setValue]);
 
 	useEffect(() => {
 		if (coordinates) {
@@ -52,12 +76,12 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 		}
 	}, [setValue, coordinates, user]);
 
-	const onSubmit = (data: VetClinic) => {
+	const onSubmit = (data: VetParaprofessional) => {
 		if (Array.isArray(data.specialty)) {
 			data.specialty = data.specialty.join(", ");
 		}
-		addVetClinicMutation.mutate(data, {
-			onSuccess: () => {
+		addVetProfessionalMutation.mutate(data, {
+			onSuccess: (res) => {
 				setProgressOpen(false);
 				setSuccessOpen(true);
 			},
@@ -68,7 +92,6 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 		setOpen(true);
 		setProgressOpen(false);
 	};
-
 	return (
 		<>
 			<Dialog open={progressOpen} onOpenChange={setProgressOpen}>
@@ -101,29 +124,43 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 					</div>
 					<form className="space-y-1">
 						<FormInput
-							label="Practicing License Number"
+							label="Name of Institution"
 							type="text"
-							focusLabel="Practicing License Number (Required) :"
+							focusLabel="Name of Institution:"
 							isRequired
-							error={errors.practice_license_num?.message}
-							{...register("practice_license_num", {
-								required: "Practicing License number is required",
+							error={errors.name_of_institution?.message}
+							{...register("name_of_institution", {
+								required: "Name of Institution is required",
 							})}
+						/>
+
+						<FormSelect
+							label="Graduation Year"
+							focusLabel="Graduation Year:"
+							isRequired
+							searchable
+							options={yearOptions}
+							value={watch("graduation_year") || ""}
+							onChange={(val) => setValue("graduation_year", val)}
 						/>
 						<p className="text-sm font-normal">
-							Type <span className="font-medium">Awaiting</span> if License
-							number is not available
+							Type <span className="font-medium">Awaiting</span> if you have not
+							graduated
 						</p>
-						<FormInput
-							label="Name of Clinic/Animal Hospital"
-							type="text"
-							focusLabel="Name of Clinic/Animal Hospital:"
-							isRequired
-							error={errors.clinic_name?.message}
-							{...register("clinic_name", {
-								required: "Clinic name is required",
-							})}
-						/>
+
+						{watch("graduation_year") &&
+							watch("graduation_year").toLowerCase() === "awaiting" && (
+								<FormSelect
+									label="Expected Year of Graduation"
+									focusLabel="Expected Year of Graduation:"
+									isRequired
+									options={futureYearOptions}
+									value={watch("expected_year_of_graduation") || ""}
+									onChange={(val) =>
+										setValue("expected_year_of_graduation", val)
+									}
+								/>
+							)}
 
 						<Controller
 							name="specialty"
@@ -173,7 +210,7 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 							focusLabel="Address (Required) :"
 							isRequired
 							error={errors.address?.message}
-							{...register("address", { required: "Address is required" })}
+							{...register("address", { required: "Location is required" })}
 						/>
 
 						<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
@@ -200,10 +237,10 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 							<Button
 								type="submit"
 								onClick={handleSubmit(onSubmit)}
-								disabled={addVetClinicMutation.isLoading}
+								disabled={addVetProfessionalMutation.isLoading}
 								className="w-full py-6 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 							>
-								{addVetClinicMutation.isLoading ? (
+								{addVetProfessionalMutation.isLoading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
 										Processing...
@@ -235,4 +272,4 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 	);
 };
 
-export default VeterinarianFormModal;
+export default VetProfessionalsFormModal;

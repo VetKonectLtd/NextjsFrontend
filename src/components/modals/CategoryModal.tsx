@@ -14,6 +14,12 @@ import { useEffect, useState } from "react";
 import SuccessModal from "./SuccessModal";
 import VeterinarianFormModal from "./VeterinarianFormModal";
 import VetClinicFormModal from "./VetClinicFormModal";
+import { useLiveStockService } from "@/services/liveStockService";
+import { useStoreService } from "@/services/storeService";
+import { usePetOwnerService } from "@/services/petOwnerService";
+import { useOtherService } from "@/services/otherService";
+import { useAuthService } from "@/services/authService";
+import VetProfessionalsFormModal from "./VetProfessionalsFormModal";
 
 const categories = [
 	"Pet Owner",
@@ -31,31 +37,101 @@ const CategoryModal = () => {
 	const [successOpen, setSuccessOpen] = useState(false);
 	const [progressOpen, setProgressOpen] = useState(false);
 	const [progressOpen1, setProgressOpen1] = useState(false);
+	const [progressOpen2, setProgressOpen2] = useState(false);
+
+	const { useAddPetOwner } = usePetOwnerService();
+	const { useAddLiveStockFarmer } = useLiveStockService();
+	const { useAddVendor } = useStoreService();
+	const { useOthers } = useOtherService();
+	const { useCurrentUser } = useAuthService();
+
+	const addPetOwnerMutation = useAddPetOwner();
+	const addLiveStockFarmerMutation = useAddLiveStockFarmer();
+	const addVendorMutaion = useAddVendor();
+	const addOtherMutation = useOthers();
+	const { data: user, isLoading } = useCurrentUser(true);
 
 	const handleSave = () => {
-		if (selected) {
-			console.log("Selected category:", selected);
-			setOpen(false);
+		if (!selected) return;
+		setOpen(false);
 
-			if (selected === "Veterinarian") {
+		switch (selected) {
+			case "Veterinarian":
 				setProgressOpen(true);
-			}
-			else if (selected === "Veterinary Clinic") {
+				break;
+
+			case "Veterinary Paraprofessional":
+				setProgressOpen2(true);
+				break;
+
+			case "Veterinary Clinic":
 				setProgressOpen1(true);
-			} 
-			else {
+				break;
+
+			case "Livestock Farmer":
+				addLiveStockFarmerMutation.mutate(
+					{},
+					{
+						onSuccess: () => {
+							setSuccessOpen(true);
+						},
+					},
+				);
+				break;
+			case "Vendor":
+				addVendorMutaion.mutate(
+					{},
+					{
+						onSuccess: () => {
+							setSuccessOpen(true);
+						},
+					},
+				);
+				break;
+
+			case "Others":
+				addOtherMutation.mutate(
+					{},
+					{
+						onSuccess: () => {
+							setSuccessOpen(true);
+						},
+					},
+				);
+				break;
+
+			case "Pet Owner":
+				addPetOwnerMutation.mutate(
+					{},
+					{
+						onSuccess: () => {
+							setSuccessOpen(true);
+						},
+					},
+				);
+
+				break;
+
+			default:
 				setSuccessOpen(true);
-			}
+				break;
 		}
 	};
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setOpen(true);
-		}, 1000);
+		if (isLoading) return;
 
-		return () => clearTimeout(timer);
-	}, []);
+		const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+
+		const userRole = (user as any)?.role || (user as any)?.profile?.role;
+
+		if (!userRole && justLoggedIn) {
+			setOpen(true);
+			sessionStorage.removeItem("justLoggedIn");
+		} else {
+			setOpen(false);
+		}
+	}, [user, isLoading]);
 
 	return (
 		<>
@@ -107,13 +183,26 @@ const CategoryModal = () => {
 			</Dialog>
 			<VeterinarianFormModal
 				progressOpen={progressOpen}
+				setOpen={setOpen}
 				setProgressOpen={setProgressOpen}
 			/>
 			<VetClinicFormModal
 				progressOpen={progressOpen1}
+				setOpen={setOpen}
 				setProgressOpen={setProgressOpen1}
 			/>
-			<SuccessModal successOpen={successOpen} setSuccessOpen={setSuccessOpen} />
+			<VetProfessionalsFormModal
+				progressOpen={progressOpen2}
+				setOpen={setOpen}
+				setProgressOpen={setProgressOpen2}
+			/>
+			<SuccessModal
+				successOpen={successOpen}
+				message={
+					"You have updated your Vet Konect profile. Kindly enjoy all other features present on the system."
+				}
+				setSuccessOpen={setSuccessOpen}
+			/>
 		</>
 	);
 };

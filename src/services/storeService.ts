@@ -10,7 +10,7 @@ export const useStoreService = () => {
 
     
     const useAddStore = () => {
-        return usePost<{ pet: Store; token: string }, Store>(
+        return usePost<{ store: Store; token: string }, Store>(
             STORE.ADD_STORE,
             {
                 onSuccess: (response: any) => {
@@ -23,9 +23,23 @@ export const useStoreService = () => {
         );
     };
 
+    const useAddVendor = () => {
+        return usePost<{ store: Store }>(
+            STORE.ADD_VENDOR,
+            {
+                onSuccess: (response: any) => {
+                    // handleSuccess(response.message || "Store added successfully!");
+                },
+                onError: (error) => {
+                    handleError(error.message || "failed");
+                },
+            },
+        );
+    };
+
     
     const useGetStores = (enabled: boolean = false) => {
-        return useGet<{ pet: Store; token: string }>(
+        return useGet<{ store: Store; token: string }>(
             ["store"],
             `${STORE.GET_STORES}`,
             {
@@ -36,7 +50,7 @@ export const useStoreService = () => {
     };
 
     const useGetStoreById = (enabled: boolean = false, Id: string) => {
-        return useGet<{ pet: Store; token: string }>(
+        return useGet<{ store: Store; token: string }>(
             ["getStoreById"],
             `${STORE.GET_STORE_BY_ID(Id)}`,
             {
@@ -46,10 +60,10 @@ export const useStoreService = () => {
         );
     };
 
-    const useGetStoreByUserId = (enabled: boolean = false, Id: string) => {
-        return useGet<{ pet: Store; token: string }>(
+    const useGetStoreByUserId = (enabled: boolean = false, user_id: string) => {
+        return useGet<{ store: Store; token: string }>(
             ["getStoreByUserId"],
-            `${STORE.GET_STORE_BY_USER_ID(Id)}`,
+            `${STORE.GET_STORE_BY_USER_ID(user_id)}`,
             {
                 enabled,
                 staleTime: 0,
@@ -58,7 +72,7 @@ export const useStoreService = () => {
     };
 
     const useUpdateStore = (Id: string) => {
-        return usePost<{ pet: Store; token: string }, Store>(
+        return usePost<{ store: Store; token: string }, Store>(
             STORE.UPDATE_STORE(Id),
             {
                 onSuccess: (response: any) => {
@@ -91,5 +105,6 @@ export const useStoreService = () => {
         useUpdateStore,
         useDeleteStore,
         useGetStoreByUserId,
+        useAddVendor
     };
 };

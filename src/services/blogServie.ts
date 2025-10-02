@@ -4,7 +4,7 @@ import { Comment, ReportComment } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
 // any service using hooks
-export const usePetOwnerService = () => {
+export const useBlogService = () => {
 	const handleSuccess = useHandleSuccess();
 	const handleError = useHandleError();
 

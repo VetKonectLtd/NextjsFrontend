@@ -4,6 +4,7 @@ import {
 	VeterinaryDoctor,
 	GetNearestVetsRequest,
 	GetNearestVetsResponse,
+	VetDoctor,
 } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
@@ -31,9 +32,35 @@ export const useVeterinaryService = () => {
 		);
 	};
 
+	const useAddVetDoctor = () => {
+			return usePost<{ store: VetDoctor; token: string }, VetDoctor>(
+				VETERINARY_ENDPOINTS.ADD_VET_DOCTOR,
+				{
+					onSuccess: (response: any) => {
+						handleSuccess(response.message || "Category updated successfully!");
+					},
+					onError: (error) => {
+						handleError(error.message || "failed");
+					},
+				},
+			);
+		};
+
+	const useGetAllVetDoctor = (enabled: boolean = false) => {
+			return useGet<{ vetDoctor: VeterinaryDoctor; token: string }>(
+				["vetDoctor"],
+				`${VETERINARY_ENDPOINTS.GET_ALL_VET_DOCTOR}`,
+				{
+					enabled,
+					staleTime: 0,
+				},
+			);
+		};
 
 	return {
 		useGetNearestVets,
+		useAddVetDoctor,
+		useGetAllVetDoctor
 	};
 };
 

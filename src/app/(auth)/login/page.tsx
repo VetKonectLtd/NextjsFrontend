@@ -8,9 +8,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form/FormInput";
 import { LoginCredentials } from "@/types";
-import {
-	useAuthService
-} from "@/services/authService";
+import { useAuthService } from "@/services/authService";
 import { Loader2 } from "lucide-react";
 import Cookies from "js-cookie";
 
@@ -34,6 +32,7 @@ export default function LoginPage() {
 	const onSubmit = async (data: LoginCredentials) => {
 		loginMutation.mutate(data, {
 			onSuccess: () => {
+				sessionStorage.setItem("justLoggedIn", "true");
 				router.replace("/success?form=Login");
 			},
 		});

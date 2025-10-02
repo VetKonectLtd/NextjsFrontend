@@ -27,6 +27,7 @@ export const USER_ENDPOINTS = {
 
 export const PET_OwNER_ENDPOINTS = {
 	ADD_PET: "/v3/add-pet",
+	ADD_PET_OWNER: "/v3/add-pet-owner",
 	GET_PETS: "/v3/get-user-pets",
 	GET_PET_BY_ID: (petId: string) => `/v3/get-pet-by-id/${petId}/pet`,
 	UPDATE_PET: (petId: string) => `/v3/update-pet/${petId}/pet`,
@@ -35,6 +36,7 @@ export const PET_OwNER_ENDPOINTS = {
 
 export const LIVE_STOCK_ENDPOINTS = {
 	ADD_FARM: "/v3/add-farm",
+	ADD_LIVESTOCK_FARMER:"/v3/add-livestock-farmer",
 	GET_FARMS: "/v3/get-user-farms",
 	GET_FARM_BY_ID: (Id: string) => `/v3/get-farm-by-id/${Id}/farm`,
 	UPDATE_FARM: (Id: string) => `/v3/update-farm/${Id}/farm`,
@@ -43,6 +45,7 @@ export const LIVE_STOCK_ENDPOINTS = {
 
 export const STORE = {
 	ADD_STORE: "/v3/add-new-store",
+	ADD_VENDOR: "/v3/add-vendor",
 	GET_STORES: "/v3/vendor-store",
 	GET_STORE_BY_USER_ID: (Id: string) => `/v3/get-store-by-user-id/${Id}/store`,
 	GET_STORE_BY_ID: (Id: string) => `/v3/get-store-by-id/${Id}/store`,
@@ -87,6 +90,7 @@ export const PROMOTIONPLAN = {
 
 export const ACTIVITIES ={
 	GET_ACTIVITIES:"/v3/get-user-activity",
+	GET_USER_NOTIFICATION:"/v3/get-user-notification"
 }
 
 export const FORUM_CHAT = {
@@ -118,4 +122,18 @@ export const DIRECT_CHAT = {
 // Veterinary endpoints
 export const VETERINARY_ENDPOINTS = {
   GET_NEAREST_DOCTORS: '/api/v3/get-nearest-veterinary-doctors',
+  ADD_VET_DOCTOR: "/v3/add-veterinary-doctor",
+  GET_ALL_VET_DOCTOR:"/v3/get-all-veterinary-doctors"
 } as const;
+
+export const VETERINARY_CLINIC ={
+	ADD_VET_CLINIC: "/v3/add-veterinary-clinic"
+}
+
+export const VETERINARY_PARAPROFESSIONAL ={
+	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional"
+}
+
+export const OTHERS ={
+	ADD_OTHERS:"/v3/add-others"
+}

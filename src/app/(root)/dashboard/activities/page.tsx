@@ -38,7 +38,7 @@ const Activities = () => {
 					</div>
 				))
 			) : (
-				<p className="text-gray-55 text-center font-bold pb-6 text-base">
+				<p className="text-gray-55 p-2 text-center font-bold pb-6 text-base">
 					No activities yet.
 				</p>
 			)}
