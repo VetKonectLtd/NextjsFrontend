@@ -73,7 +73,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
 
   if (isEditMode) {
     return (
-      <div className="w-full max-w-2xl mx-auto p-4 md:p-6">
+      <div className="w-full mx-auto">
         {/* Back Button */}
         <button 
           onClick={onToggleEdit}

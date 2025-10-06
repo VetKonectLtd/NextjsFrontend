@@ -187,34 +187,34 @@ export interface VetDoctor {
 	specialty: string;
 	list_them: string;
 	address: string;
-	agreeTerms:boolean;
+	agreeTerms: boolean;
 	longitude?: number | string;
 	latitude?: number | string;
 }
 
 export interface VetClinic {
 	user_id: string;
-	clinic_name:string;
+	clinic_name: string;
 	practice_license_num: string;
 	specialty: string;
 	list_them: string;
-	contact_num:string;
+	contact_num: string;
 	address: string;
-	agreeTerms:boolean;
+	agreeTerms: boolean;
 	longitude?: number | string;
 	latitude?: number | string;
 }
 
 export interface VetParaprofessional {
 	user_id: string;
-	name_of_institution:string;
+	name_of_institution: string;
 	graduation_year: string;
-	expected_year_of_graduation:string;
+	expected_year_of_graduation: string;
 	specialty: string;
 	list_them: string;
-	contact_num:string;
+	contact_num: string;
 	address: string;
-	agreeTerms:boolean;
+	agreeTerms: boolean;
 	longitude?: number | string;
 	latitude?: number | string;
 }
@@ -249,4 +249,33 @@ export interface GetNearestVetsResponse {
 		to: number | null;
 		total: number;
 	};
+}
+
+export interface ForumChat {
+	id:string;
+	title: string;
+	content: string;
+	comment:string;
+	visibility:string;
+	image: File | null;
+	image_url:string;
+	views_count:string;
+	created_at:string;
+	deleted_at:string;
+	comments_count:string;
+	shares_count:string;
+	likes_count:string;
+	status:string;
+	has_liked:boolean;
+	updated_at:string;
+	author:Author;
+	slug:string;
+
+}
+
+export interface  Author{
+	id:string,
+	name: string;
+	image: string | null;
+	active_role:string
 }

@@ -19,7 +19,7 @@ const Profile = ({ userRole = 'vet', initialEditMode = false }: ProfileProps) =>
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {userRole === 'vet' ? (
         <VetProfile 
           isEditMode={isEditMode} 

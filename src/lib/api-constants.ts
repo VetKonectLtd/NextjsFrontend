@@ -94,16 +94,16 @@ export const ACTIVITIES ={
 }
 
 export const FORUM_CHAT = {
-	FORUM_STORE: "forums/store",
+	FORUM_STORE: "/v3/forums/store",
 	TRENDING_FORUM: "/v3/forums/trending",
+	GET_ALL_FORUM: "/v3/forums/index",
 
 	LIKE_FORUM: (Id: string) => `/v3/forums/${Id}/like`,
 
 	ADD_FORUM_COMMENT: (forumId: string) => `/v3/forums/${forumId}/comments`,
-	GET_FORUM_COMMENTS: (forumId: string) =>
-		`/v3/forums/${forumId}/comments/fetch`,
+	GET_FORUM_COMMENTS: (forumId: string) =>`/v3/forums/${forumId}/comments/fetch`,
 	UPDATE_FORUM_COMMENT: (Id: string) => `/v3/forums/comments/${Id}`,
-	DELETE_FORUM_COMMENT: (Id: string) => `/V3/forums/comments/{id}/delete`,
+	DELETE_FORUM_COMMENT: (Id: string) => `/v3/forums/comments/${Id}/delete`,
 	REPORT_FORUM_COMMENT: (Id: string) => `/v3/forums/comments/${Id}/flag`,
 
 	SHARE_FORUM: (Id: string) => `/v3/forums/${Id}/share`,

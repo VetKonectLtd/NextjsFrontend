@@ -21,7 +21,7 @@ const Activities = () => {
 			{getActivities.isLoading ? (
 				<ActivitiesSkeleton />
 			) : activities.length >= 1 ? (
-				activities.map((activity: Activity) => (
+				activities.slice().reverse().map((activity: Activity) => (
 					<div
 						key={activity.id}
 						className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"

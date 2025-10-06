@@ -1,8 +1,7 @@
 "use client";
 
-import { Vet1, Vet2, Vet3, Vet4 } from "@/app/assets/images";
 import {
-	Mail,
+	Eye,
 	MessagesSquare,
 	PlusIcon,
 	Search,
@@ -11,14 +10,86 @@ import {
 	SlidersVertical,
 	ThumbsUp,
 } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import PostDetail from "./PostDetails";
+import { useForumService } from "@/services/forumService";
+import { ForumChat } from "@/types";
+import { formatRole, timeAgo } from "../shared/TimeFormat";
+import ForumPostSkeleton from "./ForumPostSkeleton";
+import EmptyState from "../shared/EmptyState";
+import { Hand, User } from "@/app/assets/icons";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { slugify } from "@/lib/slugify";
+import { useAuthService } from "@/services/authService";
+import FilterDropdownMenu from "./DropdownMenu";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+const DEFAULT_AVATAR = User;
 
 const ForumChatCard = () => {
-	const [activePost, setActivePost] = useState<number | null>(null);
+	const [activePost, setActivePost] = useState<string | null>(null);
 	const [selectedPost, setSelectedPost] = useState<any | null>(null);
+	const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
+	const [visibilityFilter, setVisibilityFilter] = useState<"everyone" | string>(
+		"everyone",
+	);
+	const { useCurrentUser } = useAuthService();
+	const { data: user } = useCurrentUser(true);
+
+	const [likeTarget, setLikeTarget] = useState<string | " ">("");
+	const [searchTerm, setSearchTerm] = useState("");
+	const { useLikeForum, useGetAllForumChat } = useForumService();
+	const router = useRouter();
+	const getAllForum = useGetAllForumChat(true);
+	const likeMutattion = useLikeForum(likeTarget);
+	
+
+	const currentUserRole = (user as any)?.profile?.role;
+
+	const posts = Array.isArray((getAllForum?.data as any)?.chats.data)
+		? (getAllForum?.data as any)?.chats?.data
+		: [];
+
+	const filteredPosts = posts.filter((post: ForumChat) => {
+		const titleMatch = post.title
+			.toLowerCase()
+			.includes(searchTerm.toLowerCase());
+
+		const visibilityMatch =
+			visibilityFilter === "everyone"
+				? post.visibility === "everyone" || post.visibility === currentUserRole
+				: post.visibility === visibilityFilter;
+
+		return titleMatch && visibilityMatch;
+	});
+
+	useEffect(() => {
+		if (posts.length > 0) {
+			const initialLikes: { [key: string]: boolean } = {};
+
+			posts.forEach((post: ForumChat) => {
+				initialLikes[post.id] = post.has_liked ?? false;
+			});
+			setLikedPosts(initialLikes);
+		}
+	}, [posts]);
+
+	const handleLike = (postId: any) => {
+		setLikeTarget(postId);
+		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+
+		likeMutattion.mutate(postId, {
+			onSuccess: () => {
+				getAllForum.refetch();
+			},
+		});
+	};
+
+	const handleOpenPost = (post: ForumChat) => {
+		setSelectedPost(post);
+		const slug = slugify(post.slug);
+		router.push(`/dashboard/chat-forum/${post.id}/${slug}`);
+	};
 
 	useEffect(() => {
 		if (selectedPost) {
@@ -26,104 +97,27 @@ const ForumChatCard = () => {
 		}
 	}, [selectedPost]);
 
-	// Mock posts
-	const posts = [
-		{
-			id: 1,
-			author: "Dr. Amechi Anayor",
-			role: "Veterinarian",
-			avatar: Vet1,
-			time: "20 mins ago",
-			title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-			likes: 3,
-			content:
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam...",
-			comments: [
-				{
-					id: 1,
-					author: "Grace Jonesse",
-					role: "Veterinarian",
-					avatar: Vet2,
-					text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-					time: "Today 12:29 PM CET",
-				},
-				{
-					id: 2,
-					author: "Good Sliron",
-					role: "Veterinarian",
-					avatar: Vet3,
-					text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-					time: "Today 12:29 PM CET",
-				},
-			],
-		},
-		{
-			id: 2,
-			author: "Dr. Paul Smith",
-			role: "Veterinarian",
-			avatar: Vet2,
-			time: "1 hr ago",
-			title: "How to treat poultry infections effectively?",
-			likes: 3,
-			content:
-				"I've been facing some recurring issues in poultry health management...",
-			comments: [
-				{
-					id: 1,
-					author: "Dr. Angela White",
-					role: "Veterinarian",
-					avatar: Vet4,
-					text: "I think proper vaccination and monitoring can help a lot...",
-					time: "Today 1:00 PM CET",
-				},
-			],
-		},
-		{
-			id: 3,
-			author: "Dr. Kristine Joel",
-			role: "Vet Clinic Owner",
-			avatar: Vet3,
-			time: "Yesterday",
-			title: "Best practices for dog vaccination schedules",
-			likes: 3,
-			content:
-				"Could someone share recommended dog vaccination timelines that work well?",
-			comments: [],
-		},
-		{
-			id: 4,
-			author: "Dr. Dority Hanger",
-			role: "Veterinarian",
-			avatar: Vet4,
-			time: "Jan 20",
-			title: "Challenges in fish feeding",
-			content: "What are the best feeds for tropical fish farms?",
-			comments: [],
-		},
-	];
-
 	return (
 		<>
-			<div className="px-4">
+			<div>
 				{/* Search Bar */}
 				<div className="flex flex-row items-center md:gap-7 gap-2 w-full  mb-6">
 					<div className="flex items-center w-full shadow-sm rounded-xl border border-gray-200 overflow-hidden bg-white">
 						<input
 							type="text"
 							placeholder="Type in your keyword here"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
 							className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
 						/>
 						<button className="flex items-center md:py-2 py-3 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white">
 							<Search className="w-5 h-5" />
 							<span className="ml-2 hidden md:inline">Search</span>
 						</button>
-
 					</div>
 
 					<div className="flex items-center gap-7">
-						<button className="bg-white shadow-md rounded-xl border border-gray-200 p-3">
-							<SlidersVertical className="h-4 w-4" />
-						</button>
+						<FilterDropdownMenu setVisibilityFilter={setVisibilityFilter} />
 
 						<div className="w-9 h-9 md:flex hidden items-center justify-center bg-green-50 text-white rounded-xl text-xl">
 							<PlusIcon className="w-10 h-10 font-bold text-white " />
@@ -134,120 +128,181 @@ const ForumChatCard = () => {
 				{/* Tags */}
 				{!selectedPost && (
 					<>
-						
-							<div className="flex pb-6 md:max-w-full max-w-xs  overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
-								{[
-									"Dogs",
-									"Poultry",
-									"Vet Clinics",
-									"Vet Store",
-									"Vaccination",
-									"Dog Treatment",
-									"Fish Feeding",
-								].map((tag) => (
-									<span
-										key={tag}
-										className="px-3 py-1 text-sm bg-white border border-gray-225 shadow-md text-gray-700 text-center rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0"
-									>
-										{tag}
-									</span>
-								))}
-							</div>
-				
+						<div className="flex pb-6 md:max-w-full max-w-xs  overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
+							{[
+								"Dogs",
+								"Poultry",
+								"Vet Clinics",
+								"Vet Store",
+								"Vaccination",
+								"Dog Treatment",
+								"Fish Feeding",
+							].map((tag) => (
+								<span
+									key={tag}
+									className="px-3 py-1 text-sm bg-white border border-gray-225 shadow-md text-gray-700 text-center rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0"
+								>
+									{tag}
+								</span>
+							))}
+						</div>
 
 						{/* Posts */}
-						{posts.map((post) => (
-							<div
-								key={post.id}
-								className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm"
-							>
-								{/* Header */}
-								<div className="flex items-center mb-3">
-									<div className="w-10 h-10 rounded-full border overflow-hidden border-gray-225 bg-gray-300 mr-3">
-										<Image
-											src={post.avatar}
-											alt={"Vet"}
-											width={40}
-											height={40}
-											className="object-cover w-full h-full"
-										/>
+						{getAllForum.isLoading ? (
+							Array.from({ length: 2 }).map((_, i) => (
+								<ForumPostSkeleton key={i} />
+							))
+						) : filteredPosts.length > 0 ? (
+							filteredPosts.map((post: ForumChat) => (
+								<div
+									key={post.id}
+									className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm"
+								>
+									{/* Header */}
+									<div className="flex items-center mb-3">
+										<div className="w-10 h-10 rounded-full border overflow-hidden border-gray-225 bg-gray-300 mr-3">
+											<Image
+												src={post.author.image || DEFAULT_AVATAR}
+												alt={"Vet"}
+												width={40}
+												height={40}
+												className="object-cover w-full h-full"
+											/>
+										</div>
+										<div>
+											<h3 className="font-semibold text-gray-800">
+												{post.author.name}
+											</h3>
+											<p className="text-sm text-gray-500">
+												{formatRole(post.author.active_role)}
+											</p>
+										</div>
+										<span className="ml-auto text-xs px-3 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
+											{timeAgo(post.created_at)}
+										</span>
 									</div>
-									<div>
-										<h3 className="font-semibold text-gray-800">
-											{post.author}
-										</h3>
-										<p className="text-sm text-gray-500">{post.role}</p>
-									</div>
-									<span className="ml-auto text-xs px-3 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
-										{post.time}
-									</span>
-								</div>
 
-								{/* Post Body */}
-								<div className="bg-primary-400 h-40 mb-3"></div>
-								<h4 className="font-semibold text-gray-55 text-lg">
-									{post.title}
-								</h4>
-								<p className="text-gray-55 text-sm mb-3">
-									{post.content}
-									<span className="text-green-50 cursor-pointer">
-										{" "}
-										see more
-									</span>
-								</p>
+									{/* Post Body */}
+									{post?.image_url ? (
+										<Dialog>
+											<DialogTrigger asChild>
+												<div
+													className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
+													style={{ backgroundImage: `url(${post?.image_url})` }}
+												/>
+											</DialogTrigger>
+											<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
+												<img
+													src={post?.image_url}
+													alt="Full Image"
+													className="w-full h-auto max-h-[90vh] object-contain rounded-md"
+												/>
+											</DialogContent>
+										</Dialog>
+									) : (
+										<div className="bg-primary-400 h-40 mb-3 rounded-md" />
+									)}
+									<h4 className="font-semibold capitalize text-gray-55 text-lg">
+										{post.title}
+									</h4>
+									<p className="text-gray-55 text-sm mb-3">
+										{post.content.length <= 200 ? (
+											post.content
+										) : (
+											<>
+												{post.content.slice(0, 200)}...
+												<span
+													onClick={() => handleOpenPost(post)}
+													className="text-green-50 cursor-pointer"
+												>
+													{" "}
+													see more
+												</span>
+											</>
+										)}
+									</p>
 
-								{/* Actions */}
-								<div className="flex md:justify-end justify-start gap-4 items-end text-sm">
-									<div
-										className="flex items-center cursor-pointer"
-										onClick={() =>
-											setActivePost(activePost === post.id ? null : post.id)
-										}
-									>
-										<span
-											onClick={() => setSelectedPost(post)}
-											className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+									{/* Actions */}
+									<div className="flex md:justify-end justify-start gap-4 items-end text-sm">
+										<div className="flex items-center">
+											<span className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+												<Eye size={14} color="#1D2432" />
+											</span>
+											<span className="ml-1 flex gap-2 md:text-sm text-xs text-gray-55 font-medium">
+												{post.views_count}
+												<span className="hidden md:block">Views</span>
+											</span>
+										</div>
+
+										<div
+											className="flex items-center cursor-pointer"
+											onClick={() =>
+												setActivePost(activePost === post.id ? null : post.id)
+											}
 										>
-											<MessagesSquare size={14} color="#1D2432" />
-										</span>
-										<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-											{post.comments.length} 
-											<span className="hidden md:block">Comments</span>
-										</span>
-									</div>
+											<span
+												onClick={() => handleOpenPost(post)}
+												className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+											>
+												<MessagesSquare size={14} color="#1D2432" />
+											</span>
+											<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+												{post.comments_count}
+												<span className="hidden md:block">Comments</span>
+											</span>
+										</div>
 
-									<div className="flex items-center">
-										<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
-											<ThumbsUp size={14} color="#1D2432" />
-										</span>
-										<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-											{post.likes} <span className="hidden md:block">Likes</span>
-										</span>
-									</div>
+										<div className="flex items-center">
+											<span
+												onClick={() => handleLike(post?.id)}
+												className={`bg-white border cursor-pointer shadow-md rounded-full p-2 flex items-center justify-center transition-transform  ${likedPosts[post.id] ? "border-primary-400" : "border-gray-225"}`}
+											>
+												<ThumbsUp
+													size={14}
+													color={likedPosts[post.id] ? "#0BA02C" : "#1D2432"}
+													fill={likedPosts[post.id] ? "#0BA02C" : "none"}
+												/>
+											</span>
+											<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+												{post.likes_count}{" "}
+												<span className="hidden md:block">Likes</span>
+											</span>
+										</div>
 
-									<div className="flex items-center">
-										<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
-											<Share2 size={14} color="#1D2432" />
-										</span>
-										<span
-											onClick={() => setSelectedPost(post)}
-											className="ml-3 bg-primary-400 border cursor-pointer border-white rounded-xl p-2 font-semibold"
-										>
-											<Send size={14} className="text-white" />
-										</span>
+										<div className="flex items-center">
+											<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+												<Share2 size={14} color="#1D2432" />
+											</span>
+											<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+												{post?.shares_count}
+											</span>
+										</div>
+										<div className="flex items-center">
+											<span
+												onClick={() => handleOpenPost(post)}
+												className="ml-3 bg-primary-400 border cursor-pointer border-white rounded-xl p-2 font-semibold"
+											>
+												<Send size={14} className="text-white" />
+											</span>
+										</div>
 									</div>
 								</div>
-							</div>
-						))}
+							))
+						) : posts.length > 0 ? (
+							<p className="text-gray-500 text-center py-6 font-medium">
+								No forum chats match "
+								<span className="text-primary-400">{searchTerm}</span>"
+							</p>
+						) : (
+							<EmptyState
+								title="Hey! User"
+								description="Kindly click on the button above to start a forum chat"
+								image={Hand}
+							/>
+						)}
 					</>
 				)}
 			</div>
-
-			{/* Post Detail */}
-
-			{selectedPost && (
-				<PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} />
-			)}
 		</>
 	);
 };
