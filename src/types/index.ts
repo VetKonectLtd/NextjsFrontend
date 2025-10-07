@@ -279,3 +279,11 @@ export interface  Author{
 	image: string | null;
 	active_role:string
 }
+
+export interface Appointment {
+	date: string;
+	time: string;
+	id?: string;
+	created_at?: string;
+	updated_at?: string;
+}

@@ -44,7 +44,7 @@ const ForumChatCard = () => {
 	const likeMutattion = useLikeForum(likeTarget);
 	
 
-	const currentUserRole = (user as any)?.profile?.role;
+	const currentUserRole = (user as any)?.profile;
 
 	const posts = Array.isArray((getAllForum?.data as any)?.chats.data)
 		? (getAllForum?.data as any)?.chats?.data
@@ -60,7 +60,10 @@ const ForumChatCard = () => {
 				? post.visibility === "everyone" || post.visibility === currentUserRole
 				: post.visibility === visibilityFilter;
 
-		return titleMatch && visibilityMatch;
+		if (visibilityFilter !== "everyone" && !visibilityMatch) {
+			return false;
+		}
+		return titleMatch;
 	});
 
 	useEffect(() => {

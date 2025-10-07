@@ -113,6 +113,7 @@ export const FORUM_CHAT = {
 };
 
 export const DIRECT_CHAT = {
+	APPOINTMENT:"/v3/appointment",
 	SEND_MESSAGE: "/v3/messages/send",
 	GET_MESSAGE: (userId: string) => `/v3/messages/${userId}`,
 	EDIT_MESSAGE: (Id: string) => `/v3/messages/${Id}/edit`,
