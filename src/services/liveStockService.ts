@@ -23,6 +23,20 @@ export const useLiveStockService = () => {
         );
     };
 
+     const useAddLiveStockFarmer = () => {
+        return usePost<{ livestock: LiveStock}>(
+            LIVE_STOCK_ENDPOINTS.ADD_LIVESTOCK_FARMER,
+            {
+                onSuccess: (response: any) => {
+                    // handleSuccess(response.message || "Farm added successfully!");
+                },
+                onError: (error) => {
+                    handleError(error.message || "failed");
+                },
+            },
+        );
+    };
+
     
     const useGetLiveStock = (enabled: boolean = false) => {
         return useGet<{ livestock: LiveStock; token: string }>(
@@ -79,5 +93,7 @@ export const useLiveStockService = () => {
         useGetLiveStockById,
         useUpdateLiveStock,
         useDeleteLiveStock,
+        useAddLiveStockFarmer
     };
+
 };

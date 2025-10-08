@@ -8,19 +8,63 @@ import {
 import { Button } from "../ui/button";
 import FormInput from "../form/FormInput";
 import TagSelect from "../form/TagSelect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SuccessModal from "./SuccessModal";
 import Image from "next/image";
 import { Icon1, Icon2, Icon3, Arrow } from "@/app/assets/icons/auth";
 import progressItem from "./progressItem";
+import { useVeterinaryService } from "@/services/veterinaryService";
+import { VetDoctor } from "@/types";
+import { Controller, useForm } from "react-hook-form";
+import { Loader2 } from "lucide-react";
+import { useGeolocation } from "@/lib/hooks/useGeolocation";
+import { useAuthService } from "@/services/authService";
 
-const VeterinarianFormModal = ({ progressOpen, setProgressOpen }: any) => {
-	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) => {
 	const [successOpen, setSuccessOpen] = useState(false);
+	const { useAddVetDoctor } = useVeterinaryService();
+	const { useCurrentUser } = useAuthService();
+	const { coordinates } = useGeolocation();
 
-	const handleSubmit = () => {
+	const addVetDoctorMutation = useAddVetDoctor();
+	const { data: user } = useCurrentUser(true);
+
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		formState: { errors, isValid },
+	} = useForm<VetDoctor>();
+
+	useEffect(() => {
+		if (coordinates) {
+			setValue("latitude", String(coordinates.latitude));
+			setValue("longitude", String(coordinates.longitude));
+		}
+		if (user) {
+			setValue(
+				"user_id",
+				(user as Record<string, any>)?.data?.profile?.user?.id,
+			);
+		}
+	}, [setValue, coordinates, user]);
+
+	const onSubmit = (data: VetDoctor) => {
+		if (Array.isArray(data.specialty)) {
+			data.specialty = data.specialty.join(", ");
+		}
+		addVetDoctorMutation.mutate(data, {
+			onSuccess: (res) => {
+				setProgressOpen(false);
+				setSuccessOpen(true);
+			},
+		});
+	};
+
+	const handleBack = () => {
+		setOpen(true);
 		setProgressOpen(false);
-		setSuccessOpen(true);
 	};
 
 	return (
@@ -59,36 +103,53 @@ const VeterinarianFormModal = ({ progressOpen, setProgressOpen }: any) => {
 							type="text"
 							focusLabel="Practicing License Number (Required) :"
 							isRequired
+							error={errors.practice_license_num?.message}
+							{...register("practice_license_num", {
+								required: "Practicing License number is required",
+							})}
 						/>
 						<p className="text-sm font-normal">
 							Type <span className="font-medium">Awaiting</span> if License
 							number is not available
 						</p>
 
-						<TagSelect
-							label="Specialty"
-							focusLabel="Specialty Required :"
-							isRequired
-							options={[
-								"Small Animal",
-								"Large Animal",
-								"Exotic",
-								"Wildlife",
-								"Others",
-							]}
-							onChange={(tags) => setSelectedTags(tags)}
+						<Controller
+							name="specialty"
+							control={control}
+							rules={{ required: "At least one tag is required" }}
+							render={({ field }) => (
+								<TagSelect
+									label="Specialty"
+									focusLabel="Specialty Required :"
+									isRequired
+									options={[
+										"Small Animal",
+										"Large Animal",
+										"Exotic",
+										"Wildlife",
+										"Others",
+									]}
+									error={errors.specialty?.message}
+									onChange={(tags) => field.onChange(tags)}
+								/>
+							)}
 						/>
+
 						<FormInput
 							label="List them"
 							type="text"
 							focusLabel="List them (Required) :"
 							isRequired
+							error={errors.list_them?.message}
+							{...register("list_them", { required: "List them is required" })}
 						/>
 						<FormInput
 							label="Address"
 							type="text"
 							focusLabel="Address (Required) :"
 							isRequired
+							error={errors.address?.message}
+							{...register("address", { required: "Location is required" })}
 						/>
 
 						<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
@@ -96,6 +157,9 @@ const VeterinarianFormModal = ({ progressOpen, setProgressOpen }: any) => {
 							<input
 								id="agree-terms"
 								type="checkbox"
+								{...register("agreeTerms", {
+									required: "You must agree to the terms and conditions",
+								})}
 								className="h-5 w-5 text-primary-400 cursor-pointer accent-primary-400 focus:ring-primary-400 border-gray-300 rounded"
 							/>
 							<label
@@ -110,15 +174,24 @@ const VeterinarianFormModal = ({ progressOpen, setProgressOpen }: any) => {
 
 						<div className="flex flex-col mt-4 gap-3">
 							<Button
-								type="button"
-								onClick={handleSubmit}
-								className="w-full py-5 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+								type="submit"
+								onClick={handleSubmit(onSubmit)}
+								disabled={addVetDoctorMutation.isLoading}
+								className="w-full py-6 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 							>
-								Proceed
+								{addVetDoctorMutation.isLoading ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+										Processing...
+									</>
+								) : (
+									"Proceed"
+								)}
 							</Button>
 
 							<Button
 								type="button"
+								onClick={handleBack}
 								className="flex-1 py-3 text-gray-55 font-medium rounded-lg bg-[#FFDAB0] hover:bg-[#ffdab0ef] transition"
 							>
 								Back
@@ -127,7 +200,13 @@ const VeterinarianFormModal = ({ progressOpen, setProgressOpen }: any) => {
 					</form>
 				</DialogContent>
 			</Dialog>
-			<SuccessModal successOpen={successOpen} setSuccessOpen={setSuccessOpen} />
+			<SuccessModal
+				successOpen={successOpen}
+				message={
+					"Your Vet Konect account upgrade has been initiated. Kindly exercise patience, you will be contacted soon."
+				}
+				setSuccessOpen={setSuccessOpen}
+			/>
 		</>
 	);
 };

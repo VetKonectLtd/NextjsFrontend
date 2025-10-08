@@ -2,15 +2,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems } from "./data";
+import { navItems, ROLE_NAV_ACCESS } from "./data";
+import { useAuthService } from "@/services/authService";
 
 const Sidebar = () => {
 	const pathname = usePathname();
+	const { useCurrentUser } = useAuthService();
+	const user = useCurrentUser(true);
+
+	const userRole= (user as Record<string, any>).data?.role;
+
+	const allowedIds = ROLE_NAV_ACCESS[userRole] || ROLE_NAV_ACCESS["basic_user"];
+
+	const filteredNav = navItems.filter((item) => allowedIds.includes(item.id));
 
 	return (
 		<>
 			<div className="hidden w-24 overflow-y-scroll scrollbar-hide pb-8 transition-all duration-300 h-vhs  fixed items-center  md:flex flex-col gap-2">
-				{navItems.map((item, index) => {
+				{filteredNav.map((item, index) => {
 					const isActive =
 						pathname === item.href ||
 						(pathname.startsWith(item.href + "/") &&

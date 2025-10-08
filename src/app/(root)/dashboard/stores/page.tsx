@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { Dog, Shop } from "@/app/assets/icons/vet-vendor";
 import { PlusIcon } from "lucide-react";
 import StoreCard from "@/components/shared/StoreCard";
 import { useRouter } from "next/navigation";
@@ -9,12 +8,20 @@ import { Store } from "@/types";
 import EmptyState from "@/components/shared/EmptyState";
 import { Hand } from "@/app/assets/icons";
 import StoreCardSkeleton from "@/components/shared/StoreCardSkeleton";
+import { useAuthService } from "@/services/authService";
 
 const StorePage = () => {
-	const { useGetStores } = useStoreService();
-	const getStore = useGetStores(true);
+	const { useGetStoreByUserId } = useStoreService();
+	const { useCurrentUser } = useAuthService();
 
-	const stores = (getStore.data as Record<string, any>)?.stores.data;
+	const user = useCurrentUser(true);
+	
+	const getStore = useGetStoreByUserId(
+		true,
+		(user as Record<string, any>).data?.profile?.user?.id,
+	);
+
+	const stores = (getStore.data as Record<string, any>)?.store?.data;
 
 	const router = useRouter();
 

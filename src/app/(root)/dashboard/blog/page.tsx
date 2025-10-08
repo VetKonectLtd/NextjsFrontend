@@ -15,10 +15,11 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hand } from "@/app/assets/icons";
 import { BlogImage, Vet1, Vet2 } from "@/app/assets/images";
-import {  Dog } from "@/app/assets/icons/vet-vendor";
+import { Dog } from "@/app/assets/icons/vet-vendor";
 import MobileDrawal from "@/components/blog/MobileDrawal";
 import HotNews from "@/components/blog/HotNews";
 import CommentSection from "@/components/blog/CommentSection";
+import { useBlogService } from "@/services/blogServie";
 
 // --- Blog Data ---
 const blogPosts = [
@@ -114,6 +115,27 @@ const Blog = () => {
 	const [showFull, setShowFull] = useState(true);
 	const [showComments, setShowComments] = useState(false);
 	const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+	const {
+		useGetAllBlog,
+		useGetTrendingBlog,
+		useGetComments,
+		useToggleBlogLike,
+		useAddComment,
+		useDeleteComment,
+		useReportComment,
+		useUpdateComment,
+		useGetShareBlog,
+	} = useBlogService();
+
+	// const blogCommentMutation = useAddComment();
+	// const getTrendingBlog = useGetTrendingBlog();
+	// const getComment = useGetComments(true);
+	// const getAllBlog = useGetAllBlog(true);
+	// const deleteCommentMutation = useDeleteComment();
+	// const reportComment = useReportComment();
+	// const updateCommentMutation = useUpdateComment();
+	// const addCommentMutaion = useAddComment();
+	// const likeBlog = useToggleBlogLike();
 
 	const toggleDropdown = (id: string) => {
 		setOpenDropdownId((prev) => (prev === id ? null : id));
@@ -242,7 +264,11 @@ const Blog = () => {
 									</div>
 									<div className="flex items-center">
 										<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
-											<ThumbsUp size={14} color="#1D2432" />
+											<ThumbsUp
+												size={14}
+												// color={likedPosts[detail?.id] ? "#0BA02C" : "#1D2432"}
+												// fill={likedPosts[detail?.id] ? "#0BA02C" : "none"}
+											/>
 										</span>
 										<span className="ml-1 flex gap-2 text-sm text-gray-55 font-medium">
 											{activePost.likes}{" "}

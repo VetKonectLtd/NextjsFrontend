@@ -16,7 +16,19 @@ export const useActivitiesService = () => {
         );
     };
 
+    const useGetNotification = (enabled: boolean = false) => {
+        return useGet<any>(
+            ["notification"],
+            `${ACTIVITIES.GET_USER_NOTIFICATION}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
+
     return {
-       useGetActivities
+       useGetActivities,
+       useGetNotification
     };
 };

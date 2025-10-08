@@ -60,6 +60,7 @@ export default function PersonalInfoPage() {
 	const onSubmit = (data: PersonalInfoForm) => {
 		completeProfileMutation.mutate(data, {
 			onSuccess: () => {
+				sessionStorage.setItem("justLoggedIn", "true");
 				router.replace("/success?form=Signup");
 			},
 			onError: (err: any) => {

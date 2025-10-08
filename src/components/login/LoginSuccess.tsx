@@ -13,6 +13,7 @@ const LoginSuccess = () => {
 			router.replace("/success?form=Login");
 		}
 	};
+	
 	return (
 		<>
 			<div className="w-full  pt-36  max-w-sm mx-auto flex flex-col items-center">

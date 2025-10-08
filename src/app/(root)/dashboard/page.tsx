@@ -95,7 +95,7 @@ const Dashboard = () => {
 			)}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-				{quickActions.map((action, idx) => (
+				{quickActions.slice(0, 5).map((action, idx) => (
 					<Link
 						href={action.href}
 						key={idx}
@@ -165,7 +165,7 @@ const Dashboard = () => {
 							{getActivities.isLoading ? (
 								<ActivitiesSkeleton />
 							) : activities.length >= 1 ? (
-								activities.map((activity: Activity) => (
+								activities.slice().reverse().slice(0, 5).map((activity: Activity) => (
 									<div
 										key={activity.id}
 										className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"

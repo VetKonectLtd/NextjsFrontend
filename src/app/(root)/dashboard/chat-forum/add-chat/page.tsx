@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -13,19 +12,36 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Controller, useForm } from "react-hook-form";
+import { ForumChat } from "@/types";
+import { useForumService } from "@/services/forumService";
+import { Loader2 } from "lucide-react";
 
 const NewChatPage = () => {
 	const [preview, setPreview] = useState<string | null>(null);
 	const router = useRouter();
+	const { useAddForum } = useForumService();
+	const addForumMutation = useAddForum();
+
+	const {
+		register,
+		control,
+		handleSubmit,
+		clearErrors,
+		setValue,
+		formState: { errors },
+	} = useForm<ForumChat>();
 
 	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
 			const reader = new FileReader();
 			reader.onloadend = () => {
-				setPreview(reader.result as string);
+				const base64 = reader.result as string;
+				setPreview(base64);
 			};
 			reader.readAsDataURL(file);
+			setValue("image", file, { shouldValidate: true });
 		}
 	};
 
@@ -35,6 +51,23 @@ const NewChatPage = () => {
 
 	const handleBack = () => {
 		router.back();
+	};
+
+	const onSubmit = (data: ForumChat) => {
+		const formData: any = new FormData();
+		formData.append("title", data.title);
+		formData.append("visibility", data.visibility);
+		formData.append("content", data.content);
+
+		if (data.image instanceof File) {
+			formData.append("image", data.image);
+		}
+
+		addForumMutation.mutate(formData, {
+			onSuccess: () => {
+				router.push(`/dashboard/chat-forum`);
+			},
+		});
 	};
 
 	return (
@@ -53,42 +86,64 @@ const NewChatPage = () => {
 					</h2>
 
 					<form className="space-y-2">
-						<Select>
-							<SelectTrigger className="border outline-none shadow-sm w-full rounded-md border-gray-225 p-4 text-sm font-normal py-5">
-								<SelectValue placeholder="Visibility of the post" />
-							</SelectTrigger>
-
-							<SelectContent>
-								<SelectItem value="Everyone">Everyone</SelectItem>
-								<SelectItem value="Veterinary Doctors">
-									Veterinary Doctors
-								</SelectItem>
-								<SelectItem value="Veterinary Paraprofessional">
-									Veterinary Paraprofessional
-								</SelectItem>
-								<SelectItem value="Petowner/Livestock farmer">
-									Petowner/Livestock farmer
-								</SelectItem>
-								<SelectItem value="Veterinary Clinic">
-									Veterinary Clinic
-								</SelectItem>
-								<SelectItem value="Vendor">Vendor</SelectItem>
-								<SelectItem value="Students">Students</SelectItem>
-							</SelectContent>
-						</Select>
+						<Controller
+							name="visibility"
+							control={control}
+							rules={{ required: "Please select visibility" }}
+							render={({ field }) => (
+								<Select onValueChange={field.onChange}>
+									<SelectTrigger className="border shadow-sm w-full rounded-md border-gray-225 p-4">
+										<SelectValue placeholder="Visibility of the post" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="everyone">Everyone</SelectItem>
+										<SelectItem value="veterinary_doctors">
+											Veterinary Doctors
+										</SelectItem>
+										<SelectItem value="veterinary_paraprofessional">
+											Veterinary Paraprofessional
+										</SelectItem>
+										<SelectItem value="pet_owner">
+											Petowner
+										</SelectItem>
+										<SelectItem value="livestock_farmer">
+											Livestock farmer
+										</SelectItem>
+										<SelectItem value="veterinary_clinics">
+											Veterinary Clinic
+										</SelectItem>
+										<SelectItem value="vendor">Vendor</SelectItem>
+										<SelectItem value="others">Others</SelectItem>
+									</SelectContent>
+								</Select>
+							)}
+						/>
+						{errors.visibility && (
+							<p className="text-red-500 text-xs">
+								{errors.visibility.message}
+							</p>
+						)}
 
 						<Input
 							type="text"
 							placeholder="Title"
-							className="border outline-none shadow-sm w-full p-4 text-sm font-normal py-5 rounded-md border-gray-225"
+							{...register("title", { required: "Title is required" })}
+							className="border shadow-sm w-full p-4 rounded-md border-gray-225"
 						/>
+						{errors.title && (
+							<p className="text-red-500 text-xs">{errors.title.message}</p>
+						)}
 
+						{/* Content */}
 						<Textarea
-							className="border outline-none shadow-sm w-full p-4  text-sm font-normal py-3 mb-3 rounded-md resize-none border-gray-225"
-							placeholder="content"
-							id="content"
+							placeholder="Content"
 							rows={10}
+							{...register("content", { required: "Content is required" })}
+							className="border shadow-sm w-full p-4 rounded-md resize-none border-gray-225"
 						/>
+						{errors.content && (
+							<p className="text-red-500 text-xs">{errors.content.message}</p>
+						)}
 
 						{/* Image Upload */}
 						<div className="flex flex-col">
@@ -125,7 +180,13 @@ const NewChatPage = () => {
 										id="store-image-upload"
 										type="file"
 										accept="image/*"
-										onChange={handleImageUpload}
+										{...register("image", {
+											required: "Image is required",
+										})}
+										onChange={(e) => {
+											handleImageUpload(e);
+											clearErrors("image");
+										}}
 										className="hidden"
 									/>
 
@@ -141,9 +202,18 @@ const NewChatPage = () => {
 						<div className=" pt-8">
 							<button
 								type="submit"
-								className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+								onClick={handleSubmit(onSubmit)}
+								disabled={addForumMutation.isLoading}
+								className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 							>
-								Submit
+								{addForumMutation.isLoading ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+										Processing...
+									</>
+								) : (
+									"Submit"
+								)}
 							</button>
 						</div>
 					</form>

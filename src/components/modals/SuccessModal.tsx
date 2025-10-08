@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Success } from "@/app/assets/icons/auth";
 
-const SuccessModal = ({ successOpen, setSuccessOpen }: any) => {
+const SuccessModal = ({ successOpen, setSuccessOpen, message }: any) => {
 	return (
 		<>
 			{/* Success Modal */}
@@ -32,7 +32,7 @@ const SuccessModal = ({ successOpen, setSuccessOpen }: any) => {
 								Congratulations!
 							</h1>
 							<p className="text-base font-normal text-center text-[#666666] mb-8">
-								You have updated your Vet Konect profile. Kindly enjoy all other features present on the system.
+								{message}
 							</p>
 						</DialogDescription>
 					</DialogHeader>
