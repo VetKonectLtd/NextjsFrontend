@@ -11,6 +11,7 @@ import {
 	Edit,
 	Trash,
 	Eye,
+	X,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -59,13 +60,20 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	const detail: any = getForumBySlug?.data;
 
 	const comments = Array.isArray(getComment?.data) ? getComment?.data : [];
-
+  
+	console.log("Comments:", getComment.data);
+	
 	useEffect(() => {
 		const initialLikes: { [key: string]: boolean } = {};
 		initialLikes[detail?.id] = detail?.has_liked ?? false;
-		console.log(detail);
 		setLikedPosts(initialLikes);
 	}, [detail]);
+
+	const handleCancel = () => {
+		setCommentText("");
+		setEditingCommentId("");
+		setReplyToId("");
+	};
 
 	const handleSubmit = () => {
 		if (replyToId) {
@@ -76,6 +84,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						setCommentText("");
 						setReplyToId("");
 						getComment.refetch();
+						getForumBySlug.refetch();
 					},
 				},
 			);
@@ -260,7 +269,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						comments.map((comment: any) => (
 							<div
 								key={comment.id}
-								className="flex flex-col items-start gap-3 bg-[#F1F1F1] p-3 rounded-lg"
+								className="flex flex-col items-start gap-1 bg-[#F1F1F1] p-3 rounded-lg"
 							>
 								<div className="flex w-full items-center justify-between">
 									<div className="flex gap-4 items-center">
@@ -297,30 +306,34 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 								</div>
 
 								{/* Actions */}
-								<div className="flex w-full md:justify-end justify-start gap-4 items-center text-sm md:my-1">
-									{comment.user.id == currentUserId ? (
+								<div className="flex w-full md:justify-end justify-start gap-4 items-center text-sm md:mb-1">
+									<div className="flex items-center">
+										<span
+											onClick={() => {
+												setReplyToId(comment.id);
+												setCommentText("");
+											}}
+											className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+										>
+											<MessagesSquare size={14} color="#1D2432" />
+										</span>
+
+										<span
+											onClick={() =>
+												setOpenReplies(
+													openReplies === comment.id ? null : comment.id,
+												)
+											}
+											className="ml-1 md:text-sm text-xs text-gray-55 font-medium cursor-pointer hover:underline"
+										>
+											{openReplies === comment.id
+												? "Hide Replies"
+												: `${comment?.replies?.length} Replies`}
+										</span>
+									</div>
+
+									{comment.user.id == currentUserId && (
 										<>
-											<div className="flex items-center">
-												<span
-													onClick={() => {
-														setReplyToId(comment.id);
-														setCommentText("");
-														setTimeout(() => {
-															commentInputRef.current?.scrollIntoView({
-																behavior: "smooth",
-																block: "start",
-															});
-															commentInputRef.current?.focus();
-														}, 200);
-													}}
-													className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
-												>
-													<MessagesSquare size={14} color="#1D2432" />
-												</span>
-												<span className="ml-1 md:text-sm text-xs text-gray-55 font-medium">
-													{comment?.replies?.length} Replies
-												</span>
-											</div>
 											<div className="flex items-center">
 												<span
 													onClick={() => {
@@ -346,31 +359,6 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 												<Trash size={14} color="#1D2432" />
 											</span>
 										</>
-									) : (
-										<div className="flex items-center">
-											<span
-												onClick={() => {
-													setReplyToId(comment.id);
-													setCommentText("");
-												}}
-												className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
-											>
-												<MessagesSquare size={14} color="#1D2432" />
-											</span>
-
-											<span
-												onClick={() =>
-													setOpenReplies(
-														openReplies === comment.id ? null : comment.id,
-													)
-												}
-												className="ml-1 md:text-sm text-xs text-gray-55 font-medium cursor-pointer hover:underline"
-											>
-												{openReplies === comment.id
-													? "Hide Replies"
-													: `${comment?.replies?.length} Replies`}
-											</span>
-										</div>
 									)}
 								</div>
 								<AnimatePresence>
@@ -382,7 +370,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 												animate={{ height: "auto", opacity: 1 }}
 												exit={{ height: 0, opacity: 0 }}
 												transition={{ duration: 0.3, ease: "easeInOut" }}
-												className="pl-6 mt-2  w-full  space-y-3"
+												className="pl-3  w-full  space-y-2"
 											>
 												{comment.replies.map((reply: any) => (
 													<motion.div
@@ -390,28 +378,30 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 														initial={{ x: -10, opacity: 0 }}
 														animate={{ x: 0, opacity: 1 }}
 														transition={{ duration: 0.2 }}
-														className="bg-[#F1F1F1] ml-20 border-l-2 pl-4 p-3 rounded-md shadow-sm border border-gray-225 flex gap-5"
+														className="ml-16 pl-4 py-1 rounded-md flex flex-col gap-1"
 													>
-														<div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
-															<Image
-																src={reply?.author.image || DEFAULT_AVATAR}
-																alt={reply?.author.name}
-																width={25}
-																height={25}
-																className="rounded-full w-full h-full object-cover"
-															/>
-														</div>
-														<div>
+														<div className="flex gap-3">
+															<div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+																<Image
+																	src={reply?.author.image || DEFAULT_AVATAR}
+																	alt={reply?.author.name}
+																	width={25}
+																	height={25}
+																	className="rounded-full w-full h-full object-cover"
+																/>
+															</div>
 															<div className="mb-2">
-																<p className="font-semibold text-gray-700">
+																<p className="font-semibold text-gray-55">
 																	{reply.author.name}
 																</p>
 																<p className="text-xs text-gray-400">
 																	{timeAgo(reply.created_at)}
 																</p>
 															</div>
-															<p className="text-gray-600">{reply.comment}</p>
 														</div>
+														<p className="text-gray-55 text-sm">
+															{reply.comment}
+														</p>
 													</motion.div>
 												))}
 											</motion.div>
@@ -447,7 +437,15 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						value={commentText}
 						onChange={(e) => setCommentText(e.target.value)}
 					></textarea>
-
+					{(editingCommentId || replyToId) && (
+						<button
+							onClick={handleCancel}
+							className="ml-2 p-2 rounded-full hover:bg-gray-100"
+							title="Cancel"
+						>
+							<X className="w-5 h-5 text-gray-500" />
+						</button>
+					)}
 					<button
 						onClick={handleSubmit}
 						className="bg-primary-400 w-full text-center text-sm text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2"
@@ -455,18 +453,6 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						<span>{editingCommentId ? "Update Comment" : "Comment"}</span>
 						<Send size={14} />
 					</button>
-
-					{editingCommentId && (
-						<button
-							onClick={() => {
-								setEditingCommentId("");
-								setCommentText("");
-							}}
-							className="bg-gray-300 w-full text-sm text-gray-700 px-4 py-2 rounded-lg"
-						>
-							Cancel Edit
-						</button>
-					)}
 				</div>
 			</div>
 		</div>

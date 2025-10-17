@@ -2,28 +2,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { HotNewsChat } from "@/types";
 
-type HotNewsItem = {
-	id: string;
-	title: string;
-	image: any;
-	content: string;
-	likes: number;
-	shares: number;
-	author: string;
-	time: string;
-	views: number;
-	commentsList: any[];
-};
 
 interface HotNewsProps {
-	news: HotNewsItem[];
+	news: HotNewsChat[];
 	setShowFull: (val: boolean) => void;
-	setActivePost: (post: HotNewsItem) => void;
+	setActivePost: (post: HotNewsChat) => void;
 	setShowComments: (val: boolean) => void;
 }
 
-const HotNews = ({ news, setShowFull, setActivePost, setShowComments }: HotNewsProps) => {
+const HotNews = ({
+	news,
+	setShowFull,
+	setActivePost,
+	setShowComments,
+}: HotNewsProps) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isMobile, setIsMobile] = useState(false);
 
@@ -66,8 +60,8 @@ const HotNews = ({ news, setShowFull, setActivePost, setShowComments }: HotNewsP
 						>
 							<div className="h-36">
 								<Image
-									src={item.image}
-									alt={item.title}
+									src={item?.picture_url}
+									alt={item?.title}
 									width={400}
 									height={200}
 									className="rounded-md w-full h-full object-cover mb-2"

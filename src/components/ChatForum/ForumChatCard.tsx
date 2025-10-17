@@ -50,6 +50,7 @@ const ForumChatCard = () => {
 		? (getAllForum?.data as any)?.chats?.data
 		: [];
 
+		console.log(getAllForum)
 	const filteredPosts = posts.filter((post: ForumChat) => {
 		const titleMatch = post.title
 			.toLowerCase()

@@ -1,18 +1,147 @@
 import { ButtonBg } from "@/app/assets/icons/vet-vendor";
 import { AnimatePresence, motion } from "framer-motion";
-import { EllipsisVertical, Send } from "lucide-react";
-import React from "react";
+import { Send, X } from "lucide-react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
-import CommentModal from "./CommentModal";
+import CommentMenu from "./CommentMenu";
+import { User } from "@/app/assets/icons";
+import { timeAgo } from "../shared/TimeFormat";
+import { useBlogService } from "@/services/blogServie";
 
-const MobileDrawal = ({
-	showComments,
-	setOpenDropdownId,
-	openDropdownId,
-	toggleDropdown,
-	setShowComments,
-	activePost,
-}: any) => {
+const DEFAULT_AVATAR = User;
+const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
+	const [commentText, setCommentText] = useState("");
+	const [commentId, setCommentId] = useState<string | " ">("");
+	const [editingCommentId, setEditingCommentId] = useState<string | "">("");
+	const [replyToId, setReplyToId] = useState<string | " ">("");
+	const commentInputRef = useRef<HTMLTextAreaElement | null>(null);
+	const [openReplies, setOpenReplies] = useState<string | null>(null);
+	const {
+		useAddComment,
+		useDeleteComment,
+		useGetBlog,
+		useReportComment,
+		useUpdateComment,
+		useGetComments,
+	} = useBlogService();
+
+	const deleteCommentMutation = useDeleteComment(commentId);
+	const reportComment = useReportComment(commentId);
+	const getBlog = useGetBlog(true, id);
+	const updateCommentMutation = useUpdateComment(editingCommentId);
+	const blogCommentMutation = useAddComment(id);
+	const getComment = useGetComments(true, id);
+
+	const comments: any = getComment.data || [];
+
+	const handleCancel = () => {
+		setCommentText("");
+		setEditingCommentId("");
+		setReplyToId("");
+	};
+
+	const handleDelete = (commentId: any) => {
+		setCommentId(commentId);
+		if (window.confirm(`Are you sure you want to delete your comment?`)) {
+			deleteCommentMutation.mutate(commentId, {
+				onSuccess: () => {
+					getComment.refetch();
+					getBlog.refetch();
+				},
+			});
+		}
+	};
+
+	const handleFlag = (commentId: any) => {
+		setCommentId(commentId);
+
+		const choice = window.prompt(
+			"Why are you reporting this comment? Type 'spam' or 'abuse'",
+		);
+
+		if (choice === "spam" || choice === "abuse") {
+			if (
+				window.confirm(
+					`Are you sure you want to report this comment as ${choice}?`,
+				)
+			) {
+				reportComment.mutate(
+					{ flag: choice }, // ✅ only "spam" or "abuse"
+					{
+						onSuccess: () => {
+							getComment.refetch();
+							getBlog.refetch();
+						},
+					},
+				);
+			}
+		} else {
+			alert("Invalid choice. Please type either 'spam' or 'abuse'.");
+		}
+	};
+
+	const handleReply = (comment: any) => {
+		setReplyToId(comment.id);
+		setCommentText("");
+		setTimeout(() => {
+			commentInputRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+			});
+			commentInputRef.current?.focus();
+		}, 200);
+	};
+
+	const handleEdit = (comment: any) => {
+		setEditingCommentId(comment.id);
+		setCommentText(comment.comment);
+		setTimeout(() => {
+			commentInputRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+			});
+			commentInputRef.current?.focus();
+		}, 200);
+	};
+
+	const handleSubmit = () => {
+		if (replyToId) {
+			blogCommentMutation.mutate(
+				{ comment: commentText, parent_id: replyToId },
+				{
+					onSuccess: () => {
+						setCommentText("");
+						setReplyToId("");
+						getComment.refetch();
+						getBlog.refetch();
+					},
+				},
+			);
+		} else if (editingCommentId) {
+			updateCommentMutation.mutate(
+				{ comment: commentText },
+				{
+					onSuccess: () => {
+						setCommentText("");
+						setEditingCommentId("");
+						getComment.refetch();
+						getBlog.refetch();
+					},
+				},
+			);
+		} else {
+			blogCommentMutation.mutate(
+				{ comment: commentText },
+				{
+					onSuccess: () => {
+						setCommentText("");
+						getComment.refetch();
+						getBlog.refetch();
+					},
+				},
+			);
+		}
+	};
 	return (
 		<AnimatePresence>
 			{showComments && (
@@ -20,8 +149,8 @@ const MobileDrawal = ({
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
-					className="fixed inset-0 bg-black/40 z-40 md:hidden" 
-					onClick={() => setShowComments(false)} 
+					className="fixed inset-0 bg-black/40 z-40 md:hidden"
+					onClick={() => setShowComments(false)}
 				>
 					{/* Modal itself */}
 					<motion.div
@@ -30,7 +159,7 @@ const MobileDrawal = ({
 						exit={{ y: "100%" }}
 						transition={{ duration: 0.4 }}
 						className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg p-4 z-50"
-						onClick={(e) => e.stopPropagation()} 
+						onClick={(e) => e.stopPropagation()}
 					>
 						<div
 							className="bg-[#555555] w-40 h-1 mb-2 rounded-full m-auto cursor-pointer"
@@ -42,33 +171,89 @@ const MobileDrawal = ({
 						</div>
 
 						<div className="space-y-4 max-h-[60vh] overflow-y-auto">
-							{activePost.commentsList.length > 0 ? (
-								activePost.commentsList.map((c: any) => (
+							{comments?.length > 0 ? (
+								comments?.map((c: any) => (
 									<div key={c.id} className="pb-2">
 										<div className="flex justify-between">
 											<div className="flex items-center gap-2 mb-2">
 												<div className="w-10 h-10 rounded-full border border-gray-225 overflow-hidden">
 													<Image
-														src={c?.avatar || "/default-vet.png"}
-														alt={c?.name || "Vet"}
+														src={c.author.image || DEFAULT_AVATAR}
+														alt={c.name}
 														width={40}
 														height={40}
 														className="object-cover w-full h-full"
 													/>
 												</div>
 												<div>
-													<p className="text-sm font-semibold">{c.name}</p>
-													<p className="text-xs text-gray-600">{c.time}</p>
+													<p className="text-sm font-semibold">
+														{c.author.name}
+													</p>
+													<p className="text-xs text-gray-55">
+														{timeAgo(c?.created_at)}
+													</p>
 												</div>
 											</div>
-											<button onClick={() => toggleDropdown(c.id)}>
-												<EllipsisVertical className="w-4 h-4" />
-											</button>
-											{openDropdownId === c.id && (
-												<CommentModal setOpenDropdownId={setOpenDropdownId} />
-											)}
+											<CommentMenu
+												handleEdit={() => handleEdit(c)}
+												handleReply={() => handleReply(c)}
+												handleDelete={() => handleDelete(c.id)}
+												handleFlag={() => handleFlag(c.id)}
+											/>
 										</div>
-										<p className="text-sm">{c.text}</p>
+										<p className="text-sm">{c.comment}</p>
+
+										<span
+											onClick={() =>
+												setOpenReplies(openReplies === c.id ? null : c.id)
+											}
+											className="ml-1 text-xs text-gray-55 font-medium cursor-pointer hover:underline"
+										>
+											{openReplies === c.id
+												? "Hide comments"
+												: c?.replies?.length < 1
+													? ""
+													: `${c?.replies?.length} comments`}
+										</span>
+
+										{openReplies === c.id && c.replies?.length > 0
+											? c.replies.map((reply: any) => (
+													<div key={reply.id} className="mt-3 ml-12 pb-2">
+														<div className="flex justify-between">
+															{/* Left side */}
+															<div className="flex w-full mb-1 items-center gap-2">
+																<div className="w-8 h-8 rounded-full border border-gray-225 overflow-hidden">
+																	<Image
+																		src={reply.author.image || DEFAULT_AVATAR}
+																		alt={reply.name}
+																		width={32}
+																		height={32}
+																		className="object-cover w-full h-full"
+																	/>
+																</div>
+																<div className="flex items-start text-left flex-col text-gray-55">
+																	<p className="text-sm font-semibold">
+																		{reply.author.name}
+																	</p>
+																	<p className="text-xs text-gray-55">
+																		{timeAgo(reply?.created_at)}
+																	</p>
+																</div>
+															</div>
+
+															<CommentMenu
+																handleEdit={() => handleEdit(reply)}
+																handleReply={() => handleReply(c)}
+																handleDelete={() => handleDelete(reply.id)}
+																handleFlag={() => handleFlag(reply.id)}
+															/>
+														</div>
+														<p className="text-sm text-gray-600">
+															{reply.comment}
+														</p>
+													</div>
+												))
+											: null}
 									</div>
 								))
 							) : (
@@ -78,16 +263,32 @@ const MobileDrawal = ({
 
 						{/* Input */}
 						<div className="flex mt-3 border-t pt-2">
-							<input
-								type="text"
+							<textarea
+								ref={commentInputRef}
+								value={commentText}
+								onChange={(e) => setCommentText(e.target.value)}
+								className="flex-1 resize-none rounded-bl-xl outline-none px-3 py-3 text-sm"
+								name="comment"
 								placeholder="Write a comment..."
-								className="flex-1 px-3 py-2 text-sm border rounded-l-md"
-							/>
+								id="comment"
+								rows={1}
+							></textarea>
+							{/* Cancel button shows only when editing or replying */}
+							{(editingCommentId || replyToId) && (
+								<button
+									onClick={handleCancel}
+									className="ml-2 p-2 rounded-full hover:bg-gray-100"
+									title="Cancel"
+								>
+									<X className="w-5 h-5 text-gray-500" />
+								</button>
+							)}
 							<button
 								style={{ backgroundImage: `url(${ButtonBg.src})` }}
-								className="px-3 py-2 bg-no-repeat bg-contain bg-primary-400 text-white rounded-r-md"
+								onClick={handleSubmit}
+								className="px-3 py-2 bg-no-repeat bg-contain bg-primary-400 text-white rounded-xl"
 							>
-								<Send size={18} />
+								<Send className="w-5 h-5" />
 							</button>
 						</div>
 					</motion.div>
