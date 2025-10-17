@@ -7,7 +7,7 @@ import ForumChatCard from "@/components/ChatForum/ForumChatCard";
 const ChatForum = () => {
 
 	return (
-		<div className="w-11/12 mt-3 m-auto">
+		<div className="md:w-11/12 w-full md:p-0 p-4 mt-3 m-auto">
 			<Link
 				href="/dashboard/chat-forum/add-chat"
 				className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition"
@@ -20,7 +20,7 @@ const ChatForum = () => {
 				</div>
 			</Link>
 
-			<div className="bg-white px-6 py-3 shadow-md rounded-xl border border-gray-200">
+			<div className="bg-white md:px-6 px-3 py-3 shadow-md rounded-xl border border-gray-200">
 			
 				<div className="w-full ">
 					<div className="font-bold text-lg mb-6">Forum Chat</div>

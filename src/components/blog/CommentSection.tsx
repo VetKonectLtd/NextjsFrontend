@@ -30,6 +30,7 @@ const CommentSection = ({ id }: Props) => {
 		useReportComment,
 		useUpdateComment,
 		useGetComments,
+		useGetAllBlog,
 		useGetBlog,
 	} = useBlogService();
 
@@ -39,6 +40,7 @@ const CommentSection = ({ id }: Props) => {
 	const updateCommentMutation = useUpdateComment(editingCommentId);
 	const blogCommentMutation = useAddComment(id);
 	const getComment = useGetComments(true, id);
+	const getAllBlog = useGetAllBlog(true);
 
 	const comments: any = getComment.data || [];
 
@@ -55,6 +57,7 @@ const CommentSection = ({ id }: Props) => {
 			deleteCommentMutation.mutate(commentid, {
 				onSuccess: () => {
 					getComment.refetch();
+					getAllBlog.refetch();
 					getBlog.refetch();
 				},
 			});
@@ -79,6 +82,7 @@ const CommentSection = ({ id }: Props) => {
 					{
 						onSuccess: () => {
 							getComment.refetch();
+							getAllBlog.refetch();
 							getBlog.refetch();
 						},
 					},
@@ -122,6 +126,7 @@ const CommentSection = ({ id }: Props) => {
 						setCommentText("");
 						setReplyToId("");
 						getComment.refetch();
+						getAllBlog.refetch();
 						getBlog.refetch();
 					},
 				},
@@ -135,6 +140,7 @@ const CommentSection = ({ id }: Props) => {
 						setCommentText("");
 						setEditingCommentId("");
 						getComment.refetch();
+						getAllBlog.refetch();
 						getBlog.refetch();
 					},
 				},
@@ -146,6 +152,7 @@ const CommentSection = ({ id }: Props) => {
 					onSuccess: () => {
 						setCommentText("");
 						getComment.refetch();
+						getAllBlog.refetch();
 						getBlog.refetch();
 					},
 				},

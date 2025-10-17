@@ -48,7 +48,6 @@ const Blog = () => {
 	const blogPosts: BlogChat[] = Array.isArray(getAllBlog.data?.data)
 		? getAllBlog.data.data
 		: [];
-console.log(blogPosts);
 	
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [activePost, setActivePost] = useState<any>(blogPosts[0]);

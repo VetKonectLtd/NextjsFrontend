@@ -15,10 +15,9 @@ import { useState } from "react";
 const FilterDropdownMenu = ({ setVisibilityFilter }: { setVisibilityFilter: (val: string) => void }) => {
 	const { useCurrentUser } = useAuthService();
 	const { data: user } = useCurrentUser(true);
-	const currentUserRole = (user as any)?.profile?.role;
-
+	const currentUserRole = (user as any)?.profile.user.roles[1].name;
 	
-	const [selected, setSelected] = useState("everyone");
+	const [selected, setSelected] = useState(" ");
 
 	const handleSelect = (value: string) => {
 		setSelected(value);
@@ -28,7 +27,7 @@ const FilterDropdownMenu = ({ setVisibilityFilter }: { setVisibilityFilter: (val
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<button className="bg-white shadow-md rounded-xl border border-gray-225 p-3 transition-all hover:shadow-lg">
+				<button className="bg-white shadow-md rounded-xl border border-gray-225 md:p-3 p-2 transition-all hover:shadow-lg">
 					<SlidersVertical className="h-4 w-4 text-gray-600" />
 				</button>
 			</DropdownMenuTrigger>

@@ -97,6 +97,7 @@ export const FORUM_CHAT = {
 	FORUM_STORE: "/v3/forums/store",
 	TRENDING_FORUM: "/v3/forums/trending",
 	GET_ALL_FORUM: "/v3/forums/index",
+	GET_VISIBILITY_OPTIONS: (visibility:string)=> `/v3/forums/get-visibility-options/${visibility}/forums`,
 
 	LIKE_FORUM: (Id: string) => `/v3/forums/${Id}/like`,
 

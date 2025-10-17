@@ -426,10 +426,11 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 				)}
 
 				{/* Add Comment */}
-				<div className="flex flex-col items-center gap-3 mt-4">
+				<div className="flex flex-col relative items-center gap-3 mt-4">
+
 					<textarea
 						ref={commentInputRef}
-						className="border outline-none shadow-md w-full p-4 text-sm font-normal py-3 rounded-md resize-none border-gray-225"
+						className="border relative outline-none shadow-md w-full p-4 text-sm font-normal py-3 rounded-md resize-none border-gray-225"
 						name="comment"
 						placeholder="comment"
 						id="comment"
@@ -440,7 +441,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 					{(editingCommentId || replyToId) && (
 						<button
 							onClick={handleCancel}
-							className="ml-2 p-2 rounded-full hover:bg-gray-100"
+							className="ml-2 absolute right-3 top-10 p-2 rounded-full hover:bg-gray-100"
 							title="Cancel"
 						>
 							<X className="w-5 h-5 text-gray-500" />

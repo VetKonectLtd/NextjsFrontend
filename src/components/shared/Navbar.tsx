@@ -22,6 +22,7 @@ import {
 import { Notification, MessageNav } from "@/app/assets/icons";
 import Cookies from "js-cookie";
 import { useAuthService } from "@/services/authService";
+import { LogOut, MessageSquare, UserRoundCog } from "lucide-react";
 
 const Navbar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -300,18 +301,25 @@ const Navbar = () => {
 															onClick={closeAccountDropdown}
 															className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
 														>
-															<UserIcon className="w-5 h-5 mr-3" />
+															<UserRoundCog className="w-5 h-5 mr-3" />
 															<span className="text-sm font-medium">
 																My Account
 															</span>
 														</Link>
 
+														<button className="flex items-center w-full px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200">
+															<MessageSquare className="w-5 h-5 mr-3" />
+															<span className="text-sm font-medium">
+																Language Option
+															</span>
+														</button>
+
 														{/* Logout */}
 														<button
 															onClick={handleLogout}
-															className="flex items-center w-full px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200"
+															className="flex items-center w-full px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
 														>
-															<UserIcon className="w-5 h-5 mr-3" />
+															<LogOut className="w-5 h-5 mr-3" />
 															<span className="text-sm font-medium">
 																Logout
 															</span>
@@ -320,7 +328,7 @@ const Navbar = () => {
 												)}
 
 												{/* Divider */}
-												<div className="border-t border-gray-200 my-2"></div>
+												{/* <div className="border-t border-gray-200 my-2"></div> */}
 
 												{/* Customer Support */}
 												<Link

@@ -22,6 +22,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 		useGetBlog,
 		useReportComment,
 		useUpdateComment,
+		useGetAllBlog,
 		useGetComments,
 	} = useBlogService();
 
@@ -31,6 +32,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 	const updateCommentMutation = useUpdateComment(editingCommentId);
 	const blogCommentMutation = useAddComment(id);
 	const getComment = useGetComments(true, id);
+	const getAllBlog = useGetAllBlog(true);
 
 	const comments: any = getComment.data || [];
 
@@ -46,6 +48,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 			deleteCommentMutation.mutate(commentId, {
 				onSuccess: () => {
 					getComment.refetch();
+					getAllBlog.refetch();
 					getBlog.refetch();
 				},
 			});
@@ -70,6 +73,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 					{
 						onSuccess: () => {
 							getComment.refetch();
+							getAllBlog.refetch();
 							getBlog.refetch();
 						},
 					},
@@ -113,6 +117,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 						setCommentText("");
 						setReplyToId("");
 						getComment.refetch();
+						getAllBlog.refetch();
 						getBlog.refetch();
 					},
 				},
@@ -125,6 +130,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 						setCommentText("");
 						setEditingCommentId("");
 						getComment.refetch();
+						getAllBlog.refetch();
 						getBlog.refetch();
 					},
 				},
@@ -136,6 +142,7 @@ const MobileDrawal = ({ showComments, setShowComments, id }: any) => {
 					onSuccess: () => {
 						setCommentText("");
 						getComment.refetch();
+						getAllBlog.refetch();
 						getBlog.refetch();
 					},
 				},
