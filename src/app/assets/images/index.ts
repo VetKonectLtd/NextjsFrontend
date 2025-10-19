@@ -53,8 +53,5 @@ export { default as BlogImage } from './blog.jpg';
 export { default as Activity1 } from './activity1.jpg';
 export { default as Activity2 } from './activity2.jpg';
 export { default as Activity3 } from './activity3.jpg';
-export { default as Moses } from './moses.jpg';
-export { default as Dr_Moses } from './Dr_moses.jpg'
-export { default as Tayo } from './tayo.jpg'
-export { default as Koyode } from './koyode.jpg'
-export { default as Gani } from './gani.jpg'
+export { default as Dr_Moses } from './Dr_moses.jpg';
+export { default as Koyode } from './koyode.jpg';
