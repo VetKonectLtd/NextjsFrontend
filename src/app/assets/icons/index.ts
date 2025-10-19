@@ -27,4 +27,7 @@ export {default as Bg22} from './bg22.svg'
 export {default as Notification} from './notification.svg'
 export {default as MessageNav} from './messagenav.svg'
 
+export { default as LinkedInIcon } from './linkedin.png';
+export { default as XIcon } from './twitter.png';
+
 export {default as User} from './user.png'

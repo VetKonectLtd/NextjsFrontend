@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import FormInput from "@/components/form/FormInput";
-import PhoneInput from "@/components/form/PhoneInput";
 import FormSelect from "@/components/form/FormSelect";
 import { Country } from "country-state-city";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -181,54 +180,19 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 						error={errors.email?.message}
 					/>
 
-					<Controller
-						name="phone_number"
-						control={control}
-						rules={{
+					<FormInput
+						label="Phone Number"
+						type="number"
+						focusLabel="Phone Number (Required):"
+						isRequired
+						{...register("phone_number", {
 							required: "Phone number is required",
-							minLength: { value: 10, message: "Phone number too short" },
-						}}
-						render={({ field }) => (
-							<PhoneInput
-								label="Phone Number"
-								isRequired
-								focusLabel="Phone Number (Required)"
-								value={field.value || ""}
-								countryCode={watchedCountryCode || "NG"}
-								onChange={({ phone, countryCode }) => {
-									field.onChange(phone);
-									setValue("countryCode", countryCode);
-								}}
-							/>
-						)}
+						})}
+						error={errors.phone_number?.message}
 					/>
+
 					{errors.phone_number && (
-						<p className="text-red-500 text-xs">
-							{errors.phone_number.message}
-						</p>
-					)}
-
-					{mode == "create" && (
-						<Controller
-							name="country"
-							control={control}
-							rules={{ required: "Country is required" }}
-							render={({ field }) => (
-								<FormSelect
-									label="Country"
-									focusLabel="Country (Required) :"
-									isRequired
-									searchable
-									options={countries}
-									value={field.value}
-									onChange={field.onChange}
-								/>
-							)}
-						/>
-					)}
-
-					{errors.country && (
-						<p className="text-red-500 text-xs">{errors.country.message}</p>
+						<p className="text-red-500 text-xs">{errors.phone_number?.message}</p>
 					)}
 
 					<FormInput

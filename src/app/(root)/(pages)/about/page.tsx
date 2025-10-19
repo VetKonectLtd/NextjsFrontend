@@ -1,6 +1,7 @@
 'use client';
 
 import { AboutSection, OurValuesSection, AreaCoveredSection, TeamMembersSection, ContactSection } from '@/components/aboutComponents';
+import AdvisoryAndActivities from '@/components/aboutComponents/AdvisoryAndActivities';
 import { Footer } from '@/components/shared';
 import React from 'react';
 
@@ -18,6 +19,8 @@ export default function AboutPage() {
 
       {/* Team Members Section */}
       <TeamMembersSection />
+
+      <AdvisoryAndActivities />
 
       {/* Contact Section */}
       <ContactSection />

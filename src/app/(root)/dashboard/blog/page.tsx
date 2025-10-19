@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Search,
 	SlidersVertical,
@@ -14,131 +14,71 @@ import {
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hand } from "@/app/assets/icons";
-import { BlogImage, Vet1, Vet2 } from "@/app/assets/images";
-import { Dog } from "@/app/assets/icons/vet-vendor";
 import MobileDrawal from "@/components/blog/MobileDrawal";
 import HotNews from "@/components/blog/HotNews";
 import CommentSection from "@/components/blog/CommentSection";
 import { useBlogService } from "@/services/blogServie";
-
-// --- Blog Data ---
-const blogPosts = [
-	{
-		id: "1",
-		title: "Anti-Microbial Resistance",
-		image: BlogImage,
-		content:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",
-		likes: 20,
-		shares: 13,
-		author: "Dr. Shadrach",
-		time: "12 mins ago",
-		views: 3,
-		commentsList: [
-			{
-				id: "1",
-				avatar: Vet1,
-				name: "Jade Cosgrove",
-				text: "Great insights! Really helpful.",
-				time: "10 Apr",
-			},
-			{
-				id: "2",
-				avatar: Vet2,
-				name: "Tola Williams",
-				text: "I agree, this is a huge concern.",
-				time: "11 Apr",
-			},
-		],
-	},
-	{
-		id: "2",
-		title: "Anthrax Outbreak",
-		image: Dog,
-		content:
-			"Full Anthrax blog post goes here. More detailed info about the outbreak...",
-		likes: 15,
-		shares: 9,
-		author: "Dr. Shadrach",
-		time: "2 hrs ago",
-		views: 2,
-		commentsList: [],
-	},
-];
-
-// --- Hot News ---
-const hotNews = [
-	{
-		id: "1",
-		title: "Avian Flu Alert",
-		image: BlogImage,
-		content:
-			"Avian flu detected in multiple regions. Authorities are urging farmers...",
-		likes: 10,
-		shares: 5,
-		author: "Dr. Hope",
-		time: "30 mins ago",
-		views: 5,
-		commentsList: [],
-	},
-	{
-		id: "2",
-		title: "Swine Fever Update",
-		image: BlogImage,
-		content:
-			"Swine fever cases rising globally. Precautionary measures recommended...",
-		likes: 12,
-		shares: 7,
-		author: "Dr. Kelvin",
-		time: "1 hr ago",
-		views: 8,
-		commentsList: [],
-	},
-	{
-		id: "2",
-		title: "Swine Fever Update",
-		image: BlogImage,
-		content:
-			"Swine fever cases rising globally. Precautionary measures recommended...",
-		likes: 12,
-		shares: 7,
-		author: "Dr. Kelvin",
-		time: "1 hr ago",
-		views: 8,
-		commentsList: [],
-	},
-];
+import { BlogChat } from "@/types";
+import { timeAgo } from "@/components/shared/TimeFormat";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const Blog = () => {
-	const [activePost, setActivePost] = useState(blogPosts[0]);
-	const [activeIndex, setActiveIndex] = useState(0);
 	const [showFull, setShowFull] = useState(true);
 	const [showComments, setShowComments] = useState(false);
 	const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+	const [likedBlog, setLikedBlog] = useState<{ [key: string]: boolean }>({});
+	const [likeTarget, setLikeTarget] = useState<string | " ">("");
 	const {
 		useGetAllBlog,
 		useGetTrendingBlog,
-		useGetComments,
 		useToggleBlogLike,
-		useAddComment,
-		useDeleteComment,
-		useReportComment,
-		useUpdateComment,
 		useGetShareBlog,
 	} = useBlogService();
 
-	// const blogCommentMutation = useAddComment();
-	// const getTrendingBlog = useGetTrendingBlog();
-	// const getComment = useGetComments(true);
-	// const getAllBlog = useGetAllBlog(true);
-	// const deleteCommentMutation = useDeleteComment();
-	// const reportComment = useReportComment();
-	// const updateCommentMutation = useUpdateComment();
-	// const addCommentMutaion = useAddComment();
-	// const likeBlog = useToggleBlogLike();
+	const getTrendingBlog = useGetTrendingBlog();
+	const getAllBlog = useGetAllBlog(true);
+	const likeBlogMutation = useToggleBlogLike(likeTarget);
+
+	const hotNewsData: any = Array.isArray(getTrendingBlog.data?.data)
+		? getTrendingBlog.data.data
+		: [];
+	const hotNews = hotNewsData.slice(0, 3); // Display only top 3 hot news
+	
+
+	const blogPosts: BlogChat[] = Array.isArray(getAllBlog.data?.data)
+		? getAllBlog.data.data
+		: [];
+	
+	const [activeIndex, setActiveIndex] = useState(0);
+	const [activePost, setActivePost] = useState<any>(blogPosts[0]);
+
+	useEffect(() => {
+		if (blogPosts.length > 0) {
+			setActivePost(blogPosts[0]);
+		}
+	}, [blogPosts]);
+
+	useEffect(() => {
+		const initialLikes: { [key: string]: boolean } = {};
+		initialLikes[activePost?.id] = activePost?.has_liked ?? false;
+		setLikedBlog(initialLikes);
+	}, [activePost]);
 
 	const toggleDropdown = (id: string) => {
 		setOpenDropdownId((prev) => (prev === id ? null : id));
+	};
+
+
+	const handleLike = (postId: any) => {
+		setLikeTarget(postId);
+		console.log(postId);
+		setLikedBlog((prev) => ({ ...prev, [postId]: !prev[postId] }));
+
+		likeBlogMutation.mutate(postId, {
+			onSuccess: () => {
+				getAllBlog.refetch();
+			},
+		});
 	};
 
 	const handleNext = () => {
@@ -187,38 +127,54 @@ const Blog = () => {
 					<div className="md:col-span-2 col-span-3">
 						<AnimatePresence mode="wait">
 							<motion.div
-								key={activePost.id}
+								key={activePost?.id}
 								initial={{ opacity: 0, x: -50 }}
 								animate={{ opacity: 1, x: 0 }}
 								exit={{ opacity: 0, x: 50 }}
 								transition={{ duration: 0.4 }}
 								className="w-full  py-5 px-3 bg-white shadow-md rounded-xl border border-gray-200"
 							>
-								<Image
-									src={activePost.image}
-									alt={activePost.title}
-									width={400}
-									height={400}
-									className="rounded-lg w-full h-52 object-cover mb-4"
-								/>
+								{activePost?.picture_url ? (
+									<Dialog>
+										<DialogTrigger asChild>
+											<div
+												className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
+												style={{
+													backgroundImage: `url(${activePost?.picture_url})`,
+												}}
+											/>
+										</DialogTrigger>
+										<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
+											<Image
+												src={activePost?.picture_url}
+												alt={activePost?.title}
+												width={400}
+												height={400}
+												className="rounded-lg w-full h-52 object-cover mb-4"
+											/>
+										</DialogContent>
+									</Dialog>
+								) : (
+									<div className="bg-primary-400 h-40 mb-3 rounded-md" />
+								)}
 								<div className="flex text-gray-55 justify-between mb-4">
 									<div>
-										<h3 className="font-semibold text-sm md:text-lg">
-											{activePost.title}
+										<h3 className="font-semibold capitalize text-sm md:text-lg">
+											{activePost?.title}
 										</h3>
-										<h2 className="font-normal text-xs">
-											Author. {activePost.author}
+										<h2 className="font-normal capitalize text-xs">
+											Author. {activePost?.author.name}
 										</h2>
 									</div>
 									<p className="md:text-sm text-xs text-gray-55">
-										{activePost.time}
+										{timeAgo(activePost?.created_at)}
 									</p>
 								</div>
 
 								<p className="text-gray-55 font-normal text-sm cursor-pointer hover:text-gray-600 mb-4">
 									{showFull ? (
 										<span>
-											{activePost.content.slice(0, 150)}
+											{activePost?.content.slice(0, 150)}
 											<span
 												className="ml-1"
 												onClick={() => setShowFull(!showFull)}
@@ -228,7 +184,7 @@ const Blog = () => {
 										</span>
 									) : (
 										<span>
-											{activePost.content}{" "}
+											{activePost?.content}{" "}
 											<span
 												className="ml-1"
 												onClick={() => setShowFull(!showFull)}
@@ -246,7 +202,7 @@ const Blog = () => {
 											<Eye size={14} color="#1D2432" />
 										</span>
 										<span className="ml-1 flex gap-2 md:text-sm text-xs text-gray-55 font-medium">
-											{activePost.views}{" "}
+											{activePost?.views_count}{" "}
 											<span className="hidden md:block">Views</span>
 										</span>
 									</div>
@@ -258,20 +214,25 @@ const Blog = () => {
 											<MessagesSquare size={14} color="#1D2432" />
 										</span>
 										<span className="ml-1 flex gap-2 md:text-sm text-xs text-gray-55 font-medium">
-											{activePost.commentsList.length}{" "}
+											{activePost?.comments_count}
 											<span className="hidden md:block">Comments</span>
 										</span>
 									</div>
 									<div className="flex items-center">
-										<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+										<span
+											onClick={() => handleLike(activePost?.id)}
+											className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+										>
 											<ThumbsUp
 												size={14}
-												// color={likedPosts[detail?.id] ? "#0BA02C" : "#1D2432"}
-												// fill={likedPosts[detail?.id] ? "#0BA02C" : "none"}
+												color={
+													likedBlog[activePost?.id] ? "#0BA02C" : "#1D2432"
+												}
+												fill={likedBlog[activePost?.id] ? "#0BA02C" : "none"}
 											/>
 										</span>
 										<span className="ml-1 flex gap-2 text-sm text-gray-55 font-medium">
-											{activePost.likes}{" "}
+											{activePost?.likes_count}
 											<span className="hidden md:block">Likes</span>
 										</span>
 									</div>
@@ -281,7 +242,7 @@ const Blog = () => {
 											<Share2 size={14} color="#1D2432" />
 										</span>
 										<span className="ml-1 flex gap-2 text-sm text-gray-55 font-medium">
-											{activePost.shares}{" "}
+											{activePost?.shares_count}{" "}
 											<span className="hidden md:block">Shares</span>
 										</span>
 									</div>
@@ -323,7 +284,7 @@ const Blog = () => {
 							</div>
 						) : (
 							<CommentSection
-								comments={activePost.commentsList}
+								id={activePost.id}
 								openDropdownId={openDropdownId}
 								toggleDropdown={toggleDropdown}
 								setOpenDropdownId={setOpenDropdownId}
@@ -336,7 +297,7 @@ const Blog = () => {
 						toggleDropdown={toggleDropdown}
 						showComments={showComments}
 						setShowComments={setShowComments}
-						activePost={activePost}
+						id={activePost?.id}
 						openDropdownId={openDropdownId}
 						setOpenDropdownId={setOpenDropdownId}
 					/>
@@ -344,6 +305,12 @@ const Blog = () => {
 
 				{/* Hot News Section */}
 				<h3 className="font-semibold text-2xl pb-7 pt-12">Hot News</h3>
+				{
+					hotNews.length === 0 && (<p className="text-gray-55 font-medium text-sm">
+						No trending blog available
+					</p>
+					)
+				}
 				<HotNews
 					news={hotNews}
 					setShowFull={setShowFull}

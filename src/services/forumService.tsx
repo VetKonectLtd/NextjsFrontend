@@ -54,6 +54,17 @@ export const useForumService = () => {
 		);
 	};
 
+	const useGetForumByVisibility = (enabled: boolean = false, visibility:string) => {
+		return useGet<{ forum: ForumChat; token: string }>(
+			["forum_visibility"],
+			`${FORUM_CHAT.GET_VISIBILITY_OPTIONS(visibility)}`,
+			{
+				enabled,
+				staleTime: 0,
+			},
+		);
+	};
+
 	const useGetForumCommentById = (enabled: boolean = false, id: string) => {
 		return useGet<{ forum: ForumChat }>(
 			["forum_comment"],
@@ -158,6 +169,7 @@ export const useForumService = () => {
 		useAddForum,
 		useGetShareForum,
 		useGetForumSlug,
+		useGetForumByVisibility,
 		useGetTrendingForum,
 		useLikeForum,
 		useGetAllForumChat,
