@@ -122,19 +122,26 @@ export const DIRECT_CHAT = {
 
 // Veterinary endpoints
 export const VETERINARY_ENDPOINTS = {
-  GET_NEAREST_DOCTORS: '/api/v3/get-nearest-veterinary-doctors',
+  GET_NEAREST_DOCTORS: '/v3/get-nearest-veterinary-doctors',
   ADD_VET_DOCTOR: "/v3/add-veterinary-doctor",
   GET_ALL_VET_DOCTOR:"/v3/get-all-veterinary-doctors"
 } as const;
 
 export const VETERINARY_CLINIC ={
-	ADD_VET_CLINIC: "/v3/add-veterinary-clinic"
+	ADD_VET_CLINIC: "/v3/add-veterinary-clinic",
+	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics"
 }
 
 export const VETERINARY_PARAPROFESSIONAL ={
-	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional"
+	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional",
+	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals"
 }
 
 export const OTHERS ={
 	ADD_OTHERS:"/v3/add-others"
+}
+
+export const GENERAL = {
+	FEED_CALCULATOR:"/v3/feed-calculator",
+	DISEASE_PREDICTOR:"/v3/disease-predictor"
 }

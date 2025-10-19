@@ -19,6 +19,7 @@ import {
 } from "@/app/assets/icons/vet-vendor";
 import { Bar, Bar2, FullMap, Map2 } from "@/app/assets/images";
 import Veterinarian from "@/components/Veterinarian/Veterinarian";
+import VeterinaryParaprofessional from "@/components/Veterinarian/VeterinaryParaprofessional";
 import VetClinic from "@/components/vetClinic/VetClinic";
 
 export default function VetVendorPage() {
@@ -112,7 +113,7 @@ export default function VetVendorPage() {
 			<div className="flex md:flex-row flex-col items-center gap-4 w-full py-2">
 				<SearchBar />
 
-				{activeCategory == "Vet Vendor" && (
+				{activeCategory == "Vendor" && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
 						<Link href="#">
 							<Image src={Cart} alt="Cart" width={36} height={36} />
@@ -130,6 +131,7 @@ export default function VetVendorPage() {
 				)}
 
 				{(activeCategory === "Veterinarian" ||
+					activeCategory === "VPP" ||
 					activeCategory === "Vet Clinic") && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
 						<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
@@ -147,14 +149,14 @@ export default function VetVendorPage() {
 				)}
 			</div>
 
-			{activeCategory == "Vet Vendor" && (
+			{activeCategory == "Vendor" && (
 				<CategoryTabs
 					tabs={tabs}
 					activeTab={activeTab}
 					onSelect={setActiveTab}
 				/>
 			)}
-			{activeCategory == "Vet Vendor" && (
+			{activeCategory == "Vendor" && (
 				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
 					{filteredProducts.length > 0 ? (
 						filteredProducts.map((p, i) => (
@@ -183,6 +185,7 @@ export default function VetVendorPage() {
 			</div>
 
 			{activeCategory == "Veterinarian" && <Veterinarian />}
+			{activeCategory == "VPP" && <VeterinaryParaprofessional />}
 			{activeCategory == "Vet Clinic" && <VetClinic />}
 		</div>
 	);

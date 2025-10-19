@@ -7,13 +7,19 @@ import { z } from "zod";
 import {
   baseFormSchema,
   poultrySchema,
-  fishesSchema,
-  pigsSchema,
+  fishSchema,
+  pigSchema,
   livestockOptions,
   birdsTypeOptions,
   feedTypeOptions,
   type BaseFormData,
 } from "@/lib/validations/feed-calculator";
+import {
+  useFeedCalculator,
+  transformFormDataToApiRequest,
+  formatApiResponseForDisplay,
+} from "@/services/feedCalculatorService";
+import { FeedCalculatorResponse } from "@/types";
 import {
   Form,
   FormControl,
@@ -38,15 +44,18 @@ export default function FeedCalculatorPage() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [calculationResult, setCalculationResult] = useState<any>(null);
 
+  // Feed calculator API hook
+  const feedCalculatorMutation = useFeedCalculator();
+
   // Dynamic schema based on livestock selection
   const getSchema = () => {
     switch (selectedLivestock) {
       case "Poultry":
         return poultrySchema;
-      case "Fishes":
-        return fishesSchema;
-      case "Pigs":
-        return pigsSchema;
+      case "Fish":
+        return fishSchema;
+      case "Pig":
+        return pigSchema;
       default:
         return baseFormSchema;
     }
@@ -80,7 +89,7 @@ export default function FeedCalculatorPage() {
           Number(values.numberOfWeeks) > 0 &&
           Number(values.numberOfBirds) > 0
         );
-      case "Fishes":
+      case "Fish":
         return !!(
           values.livestockCategory &&
           values.sizeOfFish &&
@@ -88,7 +97,7 @@ export default function FeedCalculatorPage() {
           Number(values.sizeOfFish) > 0 &&
           Number(values.numberOfFish) > 0
         );
-      case "Pigs":
+      case "Pig":
         return !!(
           values.livestockCategory &&
           values.numberOfPigs &&
@@ -102,31 +111,48 @@ export default function FeedCalculatorPage() {
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
     
-    // Calculate dummy feed amount based on livestock type
-    const calculateFeedAmount = (formData: any) => {
-      switch (formData.livestockCategory) {
-        case "Poultry":
-          // Dummy calculation: 0.5kg per bird for the duration
-          const weeksMultiplier = formData.numberOfWeeks || 1;
-          return Math.round(formData.numberOfBirds * 0.5 * weeksMultiplier);
-        case "Fishes":
-          // Dummy calculation: size * number * 0.1
-          return Math.round(formData.sizeOfFish * formData.numberOfFish * 0.1);
-        case "Pigs":
-          // Dummy calculation: 25kg per pig
-          return formData.numberOfPigs * 25;
-        default:
-          return 50;
-      }
-    };
-
-    const feedAmount = calculateFeedAmount(data);
-    
-    setCalculationResult({
-      feedAmount,
-      formData: data,
-    });
-    setShowResults(true);
+    try {
+      // Transform form data to API request format
+      const apiRequest = transformFormDataToApiRequest(data);
+      
+      // Call the API
+      feedCalculatorMutation.mutate(apiRequest, {
+        onSuccess: (response) => {
+          console.log('API Response:', response);
+          
+          // Since API returns data directly (not wrapped), extract the actual response
+          const responseData = response?.data || response;
+          
+          if (responseData) {
+            try {
+              // Format API response for display
+              const formattedResult = formatApiResponseForDisplay(responseData as FeedCalculatorResponse);
+              setCalculationResult(formattedResult);
+              setShowResults(true);
+            } catch (formatError) {
+              console.error('Error formatting response:', formatError);
+              console.log('Response data:', responseData);
+              
+              // Fallback: show raw response data
+              const fallbackData = responseData as any;
+              setCalculationResult({
+                feedAmount: fallbackData.feed_required || 'N/A',
+                formData: data,
+              });
+              setShowResults(true);
+            }
+          } else {
+            console.error('No response data received');
+          }
+        },
+        onError: (error) => {
+          console.error('Feed calculation failed:', error);
+          // Optionally show fallback or keep form open
+        }
+      });
+    } catch (error) {
+      console.error('Error transforming form data:', error);
+    }
   };
 
   const handleLivestockChange = (value: string) => {
@@ -359,7 +385,7 @@ export default function FeedCalculatorPage() {
           </>
         );
 
-      case "Fishes":
+      case "Fish":
         return (
           <>
             {/* Size of Fish */}
@@ -372,7 +398,7 @@ export default function FeedCalculatorPage() {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="254"
+                      placeholder="10"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                       className="w-full"
@@ -393,7 +419,7 @@ export default function FeedCalculatorPage() {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="254"
+                      placeholder="50"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                       className="w-full"
@@ -406,7 +432,7 @@ export default function FeedCalculatorPage() {
           </>
         );
 
-      case "Pigs":
+      case "Pig":
         return (
           <>
             {/* Number of Pigs */}
@@ -493,9 +519,9 @@ export default function FeedCalculatorPage() {
                 <Button
                   type="submit"
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  disabled={!isFormValid()}
+                  disabled={!isFormValid() || feedCalculatorMutation.isPending}
                 >
-                  Submit
+                  {feedCalculatorMutation.isPending ? 'Calculating...' : 'Submit'}
                 </Button>
               </form>
             </Form>

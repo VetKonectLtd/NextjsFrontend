@@ -2,143 +2,72 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { YounglanTalyoung, Team1, Team2, EyaboGodwin, Isa, Lucy, Abiodun, Vivian, Nelson, Yusuf, Fola } from '@/app/assets/images';
+import { Tayo, Gani, Moses, Nelson } from '@/app/assets/images';
 
-interface TeamMember {
+interface AdvisoryMember {
   id: number;
   name: string;
-  role: string;
-  description: string;
   image: any;
   bgColor: string;
 }
 
-const teamMembers: TeamMember[] = [
+const advisoryMembers: AdvisoryMember[] = [
   {
     id: 1,
-    name: 'Dr. Akpem Shadrach',
-    role: 'Founder',
-    description: 'Veterinary expert with 10+ years experience in animal healthcare across Africa.',
-    image: Team1,
-    bgColor: 'bg-green-100',
-  },
-  {
-    id: 2,
-    name: 'Dr. Abiodun Samuel O.',
-    role: 'COO',
-    description: 'Chief Operating Officer overseeing operations and strategic initiatives.',
-    image: Abiodun,
+    name: 'Tayo',
+    image: Tayo,
     bgColor: 'bg-blue-100',
   },
   {
+    id: 2,
+    name: 'Olajuwon Kayode',
+    image: Nelson,
+    bgColor: 'bg-green-100',
+  },
+  {
     id: 3,
-    name: 'Godwin Eyabo',
-    role: 'Human Resources',
-    description: 'HR specialist managing talent and fostering team growth.',
-    image: EyaboGodwin,
+    name: 'Dr. Moses Arokoyo',
+    image: Moses,
     bgColor: 'bg-purple-100',
   },
   {
     id: 4,
-    name: 'Isa Abdulmajeed',
-    role: 'Product UI/UX Designer',
-    description: 'Product designer crafting intuitive user experiences.',
-    image: Isa,
+    name: 'Dr. Gani Enahoro',
+    image: Gani,
     bgColor: 'bg-yellow-100',
-  },
-  {
-    id: 5,
-    name: 'Vivian Iorhen',
-    role: 'Social Media/Community Manager',
-    description: 'Community manager building engagement and brand presence.',
-    image: Vivian,
-    bgColor: 'bg-red-100',
-  },
-  {
-    id: 6,
-    name: 'Elshaddai Yusuf',
-    role: 'Product Marketer',
-    description: 'Product marketer driving growth and market expansion.',
-    image: Yusuf,
-    bgColor: 'bg-pink-100',
-  },
-  {
-    id: 7,
-    name: 'Younglan Talyoung',
-    role: 'Content Writer',
-    description: 'Content writer creating engaging stories and educational materials.',
-    image: YounglanTalyoung,
-    bgColor: 'bg-orange-100',
-  },
-  {
-    id: 8,
-    name: 'Ihoon Nelson',
-    role: 'Graphics Designer',
-    description: 'Graphics designer creating visual content and brand materials.',
-    image: Nelson,
-    bgColor: 'bg-teal-100',
-  },
-  {
-    id: 9,
-    name: 'Osakuni Folashade',
-    role: 'Volunteer Chair Manager',
-    description: 'Volunteer coordinator managing community initiatives and programs.',
-    image: Fola,
-    bgColor: 'bg-indigo-100',
   },
 ];
 
-export default function TeamMembersSection() {
+export default function AdvisorySection() {
   return (
-    <section className="py-16 bg-offbrown overflow-hidden">
+    <section className="py-16 bg-cream overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Heading */}
         <motion.div
-          className="mb-12 flex items-center justify-between"
+          className="mb-12 text-center"
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ amount: 0.3 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl lg:text-4xl font-black text-gray-900 font-nunito">
-            Team Members
+            Advisory Board
           </h2>
-          
-          {/* Navigation Arrows - Desktop only */}
-          <div className="hidden lg:flex items-center gap-4">
-            <button
-              className="w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
-              aria-label="Previous slide"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            <button
-              className="w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
-              aria-label="Next slide"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
         </motion.div>
 
-        {/* Team Members - Circular Overlapping Layout */}
+        {/* Advisory Members - Circular Overlapping Layout */}
         <div className="w-full">
-          {/* Desktop: Overlapping layout */}
-          <div className="hidden lg:flex items-center justify-start w-full">
+          {/* Desktop: Centered Overlapping layout */}
+          <div className="hidden lg:flex items-center justify-center w-full">
             <div className="relative flex items-center">
-              {teamMembers.map((member, index) => (
+              {advisoryMembers.map((member, index) => (
                 <motion.div
                   key={member.id}
                   className="group relative cursor-pointer"
                   style={{
                     marginLeft: index > 0 ? '-2rem' : '0',
-                    zIndex: teamMembers.length - index
+                    zIndex: advisoryMembers.length - index
                   }}
                   initial={{ opacity: 0, x: -50, scale: 0.8 }}
                   whileInView={{
@@ -152,7 +81,7 @@ export default function TeamMembersSection() {
                       stiffness: 120
                     }
                   }}
-                  viewport={{ amount: 0.3 }}
+                  viewport={{ once: true, amount: 0.3 }}
                   whileHover={{
                     scale: 1.1,
                     zIndex: 999,
@@ -163,7 +92,7 @@ export default function TeamMembersSection() {
                   <div className="relative w-32 h-32 lg:w-40 lg:h-40">
                     {/* Main Circle with proper masking */}
                     <div className="relative w-full h-full rounded-full border-4 border-white shadow-lg bg-white group-hover:border-green-400 transition-all duration-300">
-                      <div className="w-full h-full rounded-full overflow-hidden">
+                      <div className="w-full h-full rounded-full overflow-hidden bg-gray-200">
                         <Image
                           src={member.image}
                           alt={member.name}
@@ -181,12 +110,23 @@ export default function TeamMembersSection() {
                       initial={{ y: 20, opacity: 0 }}
                       whileHover={{ y: 0, opacity: 1 }}
                     >
-                      <h3 className="text-sm font-bold text-gray-900 font-nunito mb-1">
+                      <h3 className="text-sm font-bold text-gray-900 font-nunito">
                         {member.name}
                       </h3>
-                      <p className="text-xs font-semibold text-green-600">
-                        {member.role}
-                      </p>
+                      <div className="flex items-center justify-center gap-2 mt-1">
+                        {/* X (Twitter) Icon */}
+                        <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                          </svg>
+                        </a>
+                        {/* LinkedIn Icon */}
+                        <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                          </svg>
+                        </a>
+                      </div>
                     </motion.div>
                   </div>
                 </motion.div>
@@ -196,14 +136,14 @@ export default function TeamMembersSection() {
 
           {/* Mobile: Horizontal Scroll with Interlocking */}
           <div className="lg:hidden overflow-x-auto scrollbar-hide">
-            <div className="flex pb-4" style={{ width: 'max-content', paddingLeft: '1rem', paddingRight: '2rem' }}>
-              {teamMembers.map((member, index) => (
+            <div className="flex pb-4 justify-center" style={{ width: 'max-content', paddingLeft: '1rem', paddingRight: '2rem', margin: '0 auto' }}>
+              {advisoryMembers.map((member, index) => (
                 <div
                   key={member.id}
                   className="group relative cursor-pointer"
                   style={{
                     marginLeft: index > 0 ? '-1rem' : '0',
-                    zIndex: teamMembers.length - index,
+                    zIndex: advisoryMembers.length - index,
                     minWidth: '6rem',
                     flexShrink: 0
                   }}
@@ -212,7 +152,7 @@ export default function TeamMembersSection() {
                   <div className="relative w-24 h-24">
                     {/* Main Circle */}
                     <div className="relative w-full h-full rounded-full border-4 border-white shadow-lg bg-white group-hover:border-green-400 transition-all duration-300">
-                      <div className="w-full h-full rounded-full overflow-hidden">
+                      <div className="w-full h-full rounded-full overflow-hidden bg-gray-200">
                         <Image
                           src={member.image}
                           alt={member.name}
@@ -224,14 +164,25 @@ export default function TeamMembersSection() {
                       </div>
                     </div>
 
-                    {/* Name and Role below image */}
+                    {/* Name below image */}
                     <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center whitespace-nowrap">
                       <h3 className="text-xs font-bold text-gray-900 font-nunito">
                         {member.name}
                       </h3>
-                      <p className="text-xs font-medium text-green-600 mt-1">
-                        {member.role}
-                      </p>
+                      <div className="flex items-center justify-center gap-2 mt-1">
+                        {/* X (Twitter) Icon */}
+                        <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                          </svg>
+                        </a>
+                        {/* LinkedIn Icon */}
+                        <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                          </svg>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -239,7 +190,6 @@ export default function TeamMembersSection() {
             </div>
           </div>
         </div>
-
 
       </div>
     </section>

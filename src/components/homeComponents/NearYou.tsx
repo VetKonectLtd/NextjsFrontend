@@ -113,17 +113,6 @@ const NearYou: React.FC<NearYouProps> = ({
             <h2 className="text-3xl font-black text-gray-900 font-nunito">
               {useRealData ? 'Nearby Veterinarians' : 'Most Contacted Nearby Vet'}
             </h2>
-            {error && (
-              <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
-                <p className="text-sm text-yellow-800">{error}</p>
-                <button
-                  onClick={() => refetch()}
-                  className="mt-1 text-sm text-yellow-600 hover:text-yellow-800 underline"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Navigation Arrows - Desktop only */}
