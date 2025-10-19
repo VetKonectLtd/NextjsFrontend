@@ -47,7 +47,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
 					))}
 				</div>
 			) : product?.length >= 1 ? (
-				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
+				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 md:gap-5 gap-2">
 					{product.map((product: Product) => (
 						<StoreProductCard
 							key={product?.id}

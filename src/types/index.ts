@@ -73,7 +73,7 @@ export interface Product {
 
 export interface Comment {
 	comment: string;
-	parent_id: string;
+	parent_id?: string;
 }
 
 export interface Activity {
@@ -420,6 +420,28 @@ export interface ForumChat {
 
 }
 
+export interface BlogChat {
+	id:string;
+	title: string;
+	content: string;
+	comment:string;
+	visibility:string;
+	image: File | null;
+	image_url:string;
+	views_count:string;
+	created_at:string;
+	deleted_at:string;
+	comments_count:string;
+	shares_count:string;
+	likes_count:string;
+	status:string;
+	has_liked:boolean;
+	updated_at:string;
+	author:Author;
+	slug:string;
+
+}
+
 export interface  Author{
 	id:string,
 	name: string;
@@ -493,3 +515,23 @@ export interface DiseasePredictorRequest {
 }
 
 export type DiseasePredictorResponse = string;
+export interface HotNewsChat {
+	id:string;
+	title: string;
+	content: string;
+	comment:string;
+	visibility:string;
+	image: File | null;
+	picture_url:string;
+	views_count:string;
+	created_at:string;
+	deleted_at:string;
+	comments_count:string;
+	shares_count:string;
+	likes_count:string;
+	status:string;
+	has_liked:boolean;
+	updated_at:string;
+	author:Author;
+	slug:string;
+}

@@ -68,13 +68,12 @@ export const useBlogService = () => {
 			},
 			onError: (error) => {
 				handleError(error.message || "failed");
-			},
-			invalidateQueries: [["comments"]],
+			}
 		});
 	};
 
 	const useReportComment = (Id: string) => {
-		return usePost<{ flag: ReportComment; token: string }, Comment>(
+		return usePut<{ flag: ReportComment;}>(
 			BLOG_COMMENTS.REPORT_COMMENT(Id),
 			{
 				onSuccess: (response: any) => {
@@ -98,8 +97,8 @@ export const useBlogService = () => {
 		);
 	};
 
-	const useGetBlog = (enabled: boolean = false) => {
-		return useGet<{ blog: any; token: string }>(["blog"], `${BLOG.BLOG}`, {
+	const useGetBlog = (enabled: boolean = false, id:string) => {
+		return useGet<{ blog: any; }>(["blog"], `${BLOG.BLOG(id)}`, {
 			enabled,
 			staleTime: 0,
 		});

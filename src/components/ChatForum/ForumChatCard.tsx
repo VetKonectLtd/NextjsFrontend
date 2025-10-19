@@ -11,7 +11,6 @@ import {
 	ThumbsUp,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import PostDetail from "./PostDetails";
 import { useForumService } from "@/services/forumService";
 import { ForumChat } from "@/types";
 import { formatRole, timeAgo } from "../shared/TimeFormat";
@@ -30,39 +29,30 @@ const ForumChatCard = () => {
 	const [activePost, setActivePost] = useState<string | null>(null);
 	const [selectedPost, setSelectedPost] = useState<any | null>(null);
 	const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
-	const [visibilityFilter, setVisibilityFilter] = useState<"everyone" | string>(
-		"everyone",
-	);
+	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
 	const { useCurrentUser } = useAuthService();
 	const { data: user } = useCurrentUser(true);
 
 	const [likeTarget, setLikeTarget] = useState<string | " ">("");
 	const [searchTerm, setSearchTerm] = useState("");
-	const { useLikeForum, useGetAllForumChat } = useForumService();
+	const { useLikeForum, useGetAllForumChat, useGetForumByVisibility } =
+		useForumService();
 	const router = useRouter();
 	const getAllForum = useGetAllForumChat(true);
+	const getForumByVisibility = useGetForumByVisibility(  visibilityFilter !== "", visibilityFilter);
 	const likeMutattion = useLikeForum(likeTarget);
-	
 
-	const currentUserRole = (user as any)?.profile;
+	console.log("visibilityFilter:::::;", getForumByVisibility.data);
 
-	const posts = Array.isArray((getAllForum?.data as any)?.chats.data)
-		? (getAllForum?.data as any)?.chats?.data
-		: [];
+	const posts =
+			 Array.isArray((getAllForum?.data as any)?.chats?.data)
+				? (getAllForum?.data as any)?.chats?.data
+				: [];
 
 	const filteredPosts = posts.filter((post: ForumChat) => {
 		const titleMatch = post.title
 			.toLowerCase()
 			.includes(searchTerm.toLowerCase());
-
-		const visibilityMatch =
-			visibilityFilter === "everyone"
-				? post.visibility === "everyone" || post.visibility === currentUserRole
-				: post.visibility === visibilityFilter;
-
-		if (visibilityFilter !== "everyone" && !visibilityMatch) {
-			return false;
-		}
 		return titleMatch;
 	});
 
@@ -111,9 +101,9 @@ const ForumChatCard = () => {
 							placeholder="Type in your keyword here"
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
+							className="flex-1 px-4 py-1 text-gray-55 focus:outline-none"
 						/>
-						<button className="flex items-center md:py-2 py-3 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white">
+						<button className="flex items-center md:py-2 py-2 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white">
 							<Search className="w-5 h-5" />
 							<span className="ml-2 hidden md:inline">Search</span>
 						</button>
@@ -180,7 +170,7 @@ const ForumChatCard = () => {
 												{formatRole(post.author.active_role)}
 											</p>
 										</div>
-										<span className="ml-auto text-xs px-3 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
+										<span className="ml-auto md:text-xs text-[10px] px-2 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
 											{timeAgo(post.created_at)}
 										</span>
 									</div>

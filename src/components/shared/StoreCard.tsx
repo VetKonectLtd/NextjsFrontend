@@ -10,6 +10,7 @@ import {
 import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
 import { GreenButton } from "@/app/assets/icons";
 import { Store } from "@/types";
+import Link from "next/link";
 
 type StoreCardProps = Store & {
   onViewProduct?: (id: string) => void;
@@ -22,7 +23,9 @@ const StoreCard = ({
 	average_rating,
 	location,
 	availability,
+	phone_number,
 	id,
+	email,
 	onViewProduct,
 }: StoreCardProps) => {
 	const handleViewProduct = () => {
@@ -103,15 +106,15 @@ const StoreCard = ({
 
 				<div className="flex items-center justify-between px-2 mt-3">
 					<div className="flex items-center md:gap-3 gap-2">
-						<button className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
+						<Link target="_blank" href={`tel:${phone_number}`} className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
 							<Phone size={14} color="#1D2432" />
-						</button>
-						<button className="bg-white border border-gray-225 shadow-md rounded-full p-2">
+						</Link>
+						<Link target="_blank" href={`https://wa.me/${phone_number}`} className="bg-white border border-gray-225 shadow-md rounded-full p-2">
 							<MessageCircle size={14} color="#1D2432" />
-						</button>
-						<button className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
+						</Link>
+						<Link target="_blank" href={`mailto:${email}`} className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
 							<Mail size={14} color="#1D2432" />
-						</button>
+						</Link>
 					</div>
 					<button
 						onClick={handleViewProduct}

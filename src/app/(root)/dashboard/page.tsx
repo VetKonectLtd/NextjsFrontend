@@ -34,7 +34,7 @@ const quickActions = [
 		description:
 			"Manage your farm and livestock care on our platform to access high-quality vet care.",
 		icon: Cow,
-		href: "/dashboard/animal-owner",
+		href: "/dashboard/pet",
 	},
 	{
 		title: "Manage Your Promotions",
