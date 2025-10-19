@@ -19,11 +19,14 @@ export interface ClinicProfileProps {
     id: string;
     name: string;
     location: string;
-    image: StaticImageData;
+    image: StaticImageData | string;
     rating: number;
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
+    email?: string;
+    phone?: string;
+    userId?: string;
     onViewProfile?: (id: string) => void;
     onContact?: (id: string, type: 'phone' | 'message' | 'mail' | 'location' | 'share' | 'rate') => void;
 }

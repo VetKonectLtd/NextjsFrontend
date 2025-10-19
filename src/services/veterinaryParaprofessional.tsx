@@ -1,6 +1,6 @@
 import { usePost, useGet, useDelete, usePut } from "@/lib/hooks";
 import { VETERINARY_PARAPROFESSIONAL } from "@/lib/api-constants";
-import {  VetParaprofessional } from "@/types";
+import {  VetParaprofessional, GetAllVetParaprofessionalResponse } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
 
@@ -25,7 +25,24 @@ export const useVeterinaryParaprofessionalService = () => {
 
 
 
+    const useGetAllVetParaprofessional = (page: number = 1, enabled: boolean = true) => {
+        const queryParams = new URLSearchParams();
+        queryParams.append('page', page.toString());
+
+        const url = `${VETERINARY_PARAPROFESSIONAL.GET_ALL_VET_PARAPROFESSIONAL}?${queryParams.toString()}`;
+
+        return useGet<GetAllVetParaprofessionalResponse>(
+            ["allVetParaprofessionals", page.toString()],
+            url,
+            {
+                enabled,
+                staleTime: 5 * 60 * 1000, // 5 minutes
+            },
+        );
+    };
+
     return {
-      useAddVetProfessional
+      useAddVetProfessional,
+      useGetAllVetParaprofessional
     };
 };

@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 interface ValueItem {
   id: number;
   title: string;
-  description: string;
+  description?: string;
+  items?: string[];
   bgColor: string;
   iconBg: string;
   iconColor: string;
@@ -47,7 +48,7 @@ const values: ValueItem[] = [
   {
     id: 5,
     title: 'Core Value',
-    description: 'Adaptability, Inclusiveness, Creative Innovation, Impact Agility.',
+    items: ['Adaptability', 'Inclusiveness', 'Creative Innovation', 'Impact', 'Agility'],
     bgColor: 'bg-orange-50',
     iconBg: 'bg-orange-200',
     iconColor: 'text-orange-700',
@@ -130,9 +131,21 @@ export default function OurValuesSection() {
                   <h3 className="text-xl font-bold text-gray-900 font-nunito mb-2">
                     {value.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {value.description}
-                  </p>
+                  {value.description && (
+                    <p className="text-gray-600 leading-relaxed">
+                      {value.description}
+                    </p>
+                  )}
+                  {value.items && (
+                    <ul className="space-y-2">
+                      {value.items.map((item, idx) => (
+                        <li key={idx} className="text-gray-600 leading-relaxed flex items-start">
+                          <span className="mr-2">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </motion.div>

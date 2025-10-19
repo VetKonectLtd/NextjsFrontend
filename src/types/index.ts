@@ -251,6 +251,153 @@ export interface GetNearestVetsResponse {
 	};
 }
 
+// API response types for getAllVetDoctor
+export interface VetDoctorUser {
+	id: number;
+	email: string;
+	first_name: string;
+	last_name: string;
+	phone_num: string;
+	state: string;
+	country: string;
+	activeRoleName: string | null;
+	profile: string | null;
+	active_role: string | null;
+}
+
+export interface VetDoctorRating {
+	id?: number;
+	rating?: number;
+	comment?: string;
+}
+
+export interface VetDoctorData {
+	id: number;
+	user_id: number;
+	specialty: string;
+	list_them: string;
+	address: string;
+	longitude: string;
+	latitude: string;
+	role: string;
+	availability: number;
+	created_at: string;
+	is_approved: number;
+	average_rating: number;
+	user: VetDoctorUser;
+	ratings: VetDoctorRating[];
+}
+
+export interface GetAllVetDoctorResponse {
+	message: string;
+	veterinary_doctors: {
+		current_page: number;
+		data: VetDoctorData[];
+		first_page_url: string;
+		from: number | null;
+		last_page: number;
+		last_page_url: string;
+		links: Array<{
+			url: string | null;
+			label: string;
+			page: number | null;
+			active: boolean;
+		}>;
+		next_page_url: string | null;
+		path: string;
+		per_page: number;
+		prev_page_url: string | null;
+		to: number | null;
+		total: number;
+	};
+}
+
+// API response types for getAllVetParaprofessional
+export interface VetParaprofessionalData {
+	id: number;
+	user_id: number;
+	name_of_institution: string;
+	specialty: string;
+	list_them: string;
+	contact_num: string;
+	address: string;
+	longitude: string;
+	latitude: string;
+	role: string;
+	availability: number;
+	is_approved: number;
+	created_at: string;
+	average_rating: number;
+	user: VetDoctorUser;
+	ratings: VetDoctorRating[];
+}
+
+export interface GetAllVetParaprofessionalResponse {
+	veterinary_paraprofessionals: {
+		current_page: number;
+		data: VetParaprofessionalData[];
+		first_page_url: string;
+		from: number | null;
+		last_page: number;
+		last_page_url: string;
+		links: Array<{
+			url: string | null;
+			label: string;
+			page: number | null;
+			active: boolean;
+		}>;
+		next_page_url: string | null;
+		path: string;
+		per_page: number;
+		prev_page_url: string | null;
+		to: number | null;
+		total: number;
+	};
+}
+
+// API response types for getAllVetClinic
+export interface VetClinicData {
+	id: number;
+	user_id: number;
+	clinic_name: string;
+	specialty: string;
+	list_them: string;
+	contact_num: string;
+	address: string;
+	longitude: string;
+	latitude: string;
+	role: string;
+	availability: number;
+	is_approved: number;
+	created_at: string;
+	average_rating: number;
+	user: VetDoctorUser;
+	ratings: VetDoctorRating[];
+}
+
+export interface GetAllVetClinicResponse {
+	veterinary_clinics: {
+		current_page: number;
+		data: VetClinicData[];
+		first_page_url: string;
+		from: number | null;
+		last_page: number;
+		last_page_url: string;
+		links: Array<{
+			url: string | null;
+			label: string;
+			page: number | null;
+			active: boolean;
+		}>;
+		next_page_url: string | null;
+		path: string;
+		per_page: number;
+		prev_page_url: string | null;
+		to: number | null;
+		total: number;
+	};
+}
+
 export interface ForumChat {
 	id:string;
 	title: string;
@@ -310,6 +457,64 @@ export interface Appointment {
 	updated_at?: string;
 }
 
+// Feed Calculator types
+export interface FeedCalculatorFishRequest {
+	livestock_category: "Fish";
+	no_of_fish: number;
+	fish_size: number;
+}
+
+export interface FeedCalculatorPoultryRequest {
+	livestock_category: "Poultry";
+	bird_type: string;
+	feed_type: string;
+	no_of_bird: number;
+	no_of_week: number;
+}
+
+export interface FeedCalculatorPigRequest {
+	livestock_category: "Pig";
+	no_of_pig: number;
+}
+
+export type FeedCalculatorRequest = 
+	| FeedCalculatorFishRequest 
+	| FeedCalculatorPoultryRequest 
+	| FeedCalculatorPigRequest;
+
+export interface FeedCalculatorFishResponse {
+	livestock_category: "Fish";
+	fish_size: string;
+	number_of_fish: number;
+	feed_required: string;
+}
+
+export interface FeedCalculatorPoultryResponse {
+	livestock_category: "Poultry";
+	bird_type: string;
+	feed_type: string;
+	number_of_birds: number;
+	feed_required: string;
+}
+
+export interface FeedCalculatorPigResponse {
+	livestock_category: "Pig";
+	number_of_pigs: number;
+	feed_required: string;
+}
+
+export type FeedCalculatorResponse = 
+	| FeedCalculatorFishResponse 
+	| FeedCalculatorPoultryResponse 
+	| FeedCalculatorPigResponse;
+
+// Disease Predictor types
+export interface DiseasePredictorRequest {
+	livestock_category: string;
+	diseases: string[];
+}
+
+export type DiseasePredictorResponse = string;
 export interface HotNewsChat {
 	id:string;
 	title: string;

@@ -4,7 +4,7 @@ import { Icon6, Icon10, Icon7, Icon9 } from "@/app/assets/icons/vet-vendor";
 const categories = [
 	{ id: 1, name: "Veterinarian", icon: Icon7, active: false },
 	{ id: 2, name: "VPP", icon: Icon6, active: false },
-	{ id: 3, name: "Vet Vendor", icon: Icon10, active: true },
+	{ id: 3, name: "Vendor", icon: Icon10, active: true },
 	{ id: 4, name: "Vet Clinic", icon: Icon9, active: false },
 ];
 
