@@ -14,7 +14,7 @@ const host = process.env.NEXT_PUBLIC_REVERB_HOST!;
 const port = Number(process.env.NEXT_PUBLIC_REVERB_PORT || 443);
 const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME || "https";
 
-let echo: Echo;
+let echo;
 
 if (typeof window !== "undefined") {
   if (!window.Pusher) {
