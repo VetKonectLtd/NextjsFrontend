@@ -22,123 +22,99 @@ export const directMessageService = () => {
         );
     };
 
-    // const useAddComment = (Id: string) => {
-    //     return usePost<{ comment: Comment; token: string }, Comment>(
-    //         BLOG_COMMENTS.ADD_COMMENT(Id),
-    //         {
-    //             onSuccess: (response: any) => {
-    //                 handleSuccess(response.message);
-    //             },
-    //             onError: (error) => {
-    //                 handleError(error.message || "failed");
-    //             },
-    //         },
-    //     );
-    // };
+    const useSendMessage = () => {
+        return usePost<any>(
+            DIRECT_CHAT.SEND_MESSAGE,
+            {
+                onSuccess: (response: any) => {
+                    handleSuccess(response.message);
+                },
+                onError: (error) => {
+                    handleError(error.message || "failed");
+                },
+            },
+        );
+    };
 
-    // const useGetComments = (enabled: boolean = false, Id: string) => {
-    //     return useGet<{ comment: Comment; token: string }>(
-    //         ["comments"],
-    //         `${BLOG_COMMENTS.GET_COMMENTS(Id)}`,
-    //         {
-    //             enabled,
-    //             staleTime: 0,
-    //         },
-    //     );
-    // };
+    const useGetSentMessage = (enabled: boolean = false) => {
+        return useGet<any>(
+            ["sentMessages"],
+            `${DIRECT_CHAT.GET_MESSAGE_SENT_TO}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
 
-    // const useUpdateComment = (Id: string) => {
-    //     return usePut<{ comment: Comment; token: string }, Comment>(
-    //         BLOG_COMMENTS.UPDATE_COMMENT(Id),
-    //         {
-    //             onSuccess: (response: any) => {
-    //                 handleSuccess(response.message);
-    //             },
-    //             onError: (error) => {
-    //                 handleError(error.message || "failed");
-    //             },
-    //         },
-    //     );
-    // };
+    const useGetReceivedMessage = (enabled: boolean = false) => {
+        return useGet<any>(
+            ["receivedMessages"],
+            `${DIRECT_CHAT.GET_MESSAGE_RECEIVED_FROM}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
 
-    // const useDeleteComment = (Id: string) => {
-    //     return useDelete<Comment>(BLOG_COMMENTS.DELETE_COMMENT(Id), {
-    //         onSuccess: (response: any) => {
-    //             handleSuccess(response.message || " Comment deleted successfully!");
-    //         },
-    //         onError: (error) => {
-    //             handleError(error.message || "failed");
-    //         },
-    //         invalidateQueries: [["comments"]],
-    //     });
-    // };
+     const useGetChatList = (enabled: boolean = false,) => {
+        return useGet<any>(
+            ["getChatList"],
+            `${DIRECT_CHAT.GET_CHAT_LIST}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
 
-    // const useReportComment = (Id: string) => {
-    //     return usePost<{ flag: ReportComment; token: string }, Comment>(
-    //         BLOG_COMMENTS.REPORT_COMMENT(Id),
-    //         {
-    //             onSuccess: (response: any) => {
-    //                 handleSuccess(response.message);
-    //             },
-    //             onError: (error) => {
-    //                 handleError(error.message || "failed");
-    //             },
-    //         },
-    //     );
-    // };
+     const useGetMessage = (enabled: boolean = false, Id: string) => {
+        return useGet<any>(
+            ["getMessage"],
+            `${DIRECT_CHAT.GET_MESSAGE(Id)}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
 
-    // const useGetAllBlog = (enabled: boolean = false) => {
-    //     return useGet<{ blog: any; token: string }>(
-    //         ["allBlog"],
-    //         `${BLOG.GET_ALL_BLOGS}`,
-    //         {
-    //             enabled,
-    //             staleTime: 0,
-    //         },
-    //     );
-    // };
+    const useUpdateMessage = (Id: string) => {
+        return usePut<any>(
+            DIRECT_CHAT.EDIT_MESSAGE(Id),
+            {
+                onSuccess: (response: any) => {
+                    handleSuccess(response.message);
+                },
+                onError: (error) => {
+                    handleError(error.message || "failed");
+                },
+            },
+        );
+    };
 
-    // const useGetBlog = (enabled: boolean = false) => {
-    //     return useGet<{ blog: any; token: string }>(["blog"], `${BLOG.BLOG}`, {
-    //         enabled,
-    //         staleTime: 0,
-    //     });
-    // };
+    const useDeleteMessage = (Id: string) => {
+        return useDelete<any>(DIRECT_CHAT.DELETE_MESSAGE(Id), {
+            onSuccess: (response: any) => {
+                handleSuccess(response.message || " Message deleted successfully!");
+            },
+            onError: (error) => {
+                handleError(error.message || "failed");
+            },
+            invalidateQueries: [["messages"]],
+        });
+    };
 
-    // const useGetShareBlog = (enabled: boolean = false) => {
-    //     return useGet<{ blog: any; token: string }>(
-    //         ["shareBlog"],
-    //         `${BLOG.SHARE_BLOG}`,
-    //         {
-    //             enabled,
-    //             staleTime: 0,
-    //         },
-    //     );
-    // };
-
-    // const useGetBlogSlug = (enabled: boolean = false) => {
-    //     return useGet<{ blog: any; token: string }>(
-    //         ["blogSlug"],
-    //         `${BLOG.BLOGS_SLUG}`,
-    //         {
-    //             enabled,
-    //             staleTime: 0,
-    //         },
-    //     );
-    // };
-
-    // const useGetTrendingBlog = (enabled: boolean = false) => {
-    //     return useGet<{ blog: any; token: string }>(
-    //         ["trendingBlog"],
-    //         `${BLOG.TRENDING_BLOGS}`,
-    //         {
-    //             enabled,
-    //             staleTime: 0,
-    //         },
-    //     );
-    // };
 
     return {
-        useBookAppointment
+        useBookAppointment,
+        useSendMessage,
+        useGetSentMessage,
+        useGetReceivedMessage,
+        useGetChatList,
+        useGetMessage,
+        useUpdateMessage,
+        useDeleteMessage,
     };
 };

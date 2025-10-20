@@ -122,3 +122,12 @@ input[type="number"] {
 .swiper-pagination-bullet-active {
 	background: white;
 }
+
+
+.swiper-slide-active > div {
+  transform: translateY(30px);
+}
+
+.swiper-slide-active > p{
+	transform: translateY(30px);
+}

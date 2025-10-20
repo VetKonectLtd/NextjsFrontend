@@ -1,7 +1,9 @@
 "use client";
+import { User } from "@/app/assets/icons";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+const DEFAULT_AVATAR = User;
 
 interface ChatListProps {
 	messages: any[];
@@ -18,7 +20,7 @@ export default function ChatList({
 
 	const filteredMessages = useMemo(() => {
 		return messages.filter((msg) =>
-			msg.name.toLowerCase().includes(searchTerm.toLowerCase()),
+			msg?.user?.name.toLowerCase().includes(searchTerm.toLowerCase()),
 		);
 	}, [searchTerm, messages]);
 
@@ -49,31 +51,31 @@ export default function ChatList({
 				{filteredMessages.length > 0 ? (
 					filteredMessages.map((msg) => (
 						<div
-							key={msg.id}
-							onClick={() => onSelectVet(msg)}
+							key={msg.user.id}
+							onClick={() => onSelectVet(msg?.user.id)}
 							className={`flex items-center justify-between hover:bg-gray-50 cursor-pointer rounded-lg p-2 transition ${
-								selectedVet?.id === msg.id ? "bg-gray-100" : ""
+								selectedVet?.user?.id === msg?.user.id ? "bg-gray-100" : ""
 							}`}
 						>
 							<div className="flex items-center">
 								<div className="w-12 h-12 mr-3 rounded-full border-2 shadow-sm border-[#52CE06] overflow-hidden">
 									<Image
-										src={msg.avatar}
-										alt={msg.name}
+										src={msg?.user?.profile_image || DEFAULT_AVATAR}
+										alt={msg?.user?.name}
 										width={40}
 										height={40}
 										className="object-cover w-full h-full"
 									/>
 								</div>
 								<div>
-									<p className="font-bold text-gray-55">{msg.name}</p>
-									<p className="text-sm text-gray-55 font-normal truncate w-40">
-										{msg.text}
+									<p className="font-bold text-gray-55">{msg?.user?.name}</p>
+									<p className="text-sm text-gray-55 font-normal truncate w-28">
+										{msg.last_message}
 									</p>
 								</div>
 							</div>
 							<p className="text-xs mr-2 bg-gray-225 px-2 py-1 rounded-full text-gray-55">
-								{msg.time}
+								{msg.last_message_display_time}
 							</p>
 						</div>
 					))

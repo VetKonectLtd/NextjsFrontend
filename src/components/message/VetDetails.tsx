@@ -2,7 +2,8 @@
 import Image from "next/image";
 import { ArrowLeft, Mail, MapPin, Share2, ShoppingBag } from "lucide-react";
 import MessageAction from "./MessageAction";
-import { Bg22 } from "@/app/assets/icons";
+import { Bg22, User } from "@/app/assets/icons";
+const DEFAULT_AVATAR = User;
 
 interface VetDetailsProps {
 	selectedVet: any;
@@ -31,8 +32,8 @@ export default function VetDetails({
 			<div className="flex flex-col relative items-center p-4 mb-4 -mt-14">
 				<div className="w-20 h-20 rounded-full border-2 shadow-sm border-[#52CE06] overflow-hidden">
 					<Image
-						src={selectedVet?.avatar || "/default-vet.png"}
-						alt={selectedVet?.name}
+						src={selectedVet?.user?.profile_image || DEFAULT_AVATAR}
+						alt={selectedVet?.user.name}
 						width={60}
 						height={60}
 						className="object-cover w-full h-full"

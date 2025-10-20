@@ -332,7 +332,7 @@ const Navbar = () => {
 
 												{/* Customer Support */}
 												<Link
-													href="/support"
+													href="/customer-support"
 													onClick={closeAccountDropdown}
 													className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:border hover:border-gray-200 transition-all duration-200"
 												>
