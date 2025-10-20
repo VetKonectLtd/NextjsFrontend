@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { YounglanTalyoung, Team1, Team2, EyaboGodwin, Isa, Lucy } from '@/app/assets/images';
+import { YounglanTalyoung, Team1, Team2, EyaboGodwin, Isa, Lucy, Abiodun, Vivian, Nelson, Yusuf, Fola } from '@/app/assets/images';
 
 interface TeamMember {
   id: number;
@@ -24,43 +24,67 @@ const teamMembers: TeamMember[] = [
   },
   {
     id: 2,
-    name: 'John Doe',
-    role: 'CTO',
-    description: 'Technology leader driving innovation in veterinary practice management.',
-    image: YounglanTalyoung,
+    name: 'Dr. Abiodun Samuel O.',
+    role: 'COO',
+    description: 'Chief Operating Officer overseeing operations and strategic initiatives.',
+    image: Abiodun,
     bgColor: 'bg-blue-100',
   },
   {
     id: 3,
-    name: 'Jane Smith',
-    role: 'Head of Operations',
-    description: 'Operations specialist ensuring seamless service delivery across all regions.',
-    image: Team2,
+    name: 'Godwin Eyabo',
+    role: 'Human Resources',
+    description: 'HR specialist managing talent and fostering team growth.',
+    image: EyaboGodwin,
     bgColor: 'bg-purple-100',
   },
   {
     id: 4,
-    name: 'Eyabo Godwin',
-    role: 'Lead Developer',
-    description: 'Full-stack developer building robust solutions for veterinary professionals.',
-    image: EyaboGodwin,
+    name: 'Isa Abdulmajeed',
+    role: 'Product UI/UX Designer',
+    description: 'Product designer crafting intuitive user experiences.',
+    image: Isa,
     bgColor: 'bg-yellow-100',
   },
   {
     id: 5,
-    name: 'Isa Mohammed',
-    role: 'Marketing Director',
-    description: 'Marketing strategist expanding VetKonnect\'s reach across African markets.',
-    image: Isa,
+    name: 'Vivian Iorhen',
+    role: 'Social Media/Community Manager',
+    description: 'Community manager building engagement and brand presence.',
+    image: Vivian,
     bgColor: 'bg-red-100',
   },
   {
     id: 6,
-    name: 'Lucy Okafor',
-    role: 'Customer Success',
-    description: 'Customer advocate ensuring exceptional user experience and satisfaction.',
-    image: Lucy,
+    name: 'Elshaddai Yusuf',
+    role: 'Product Marketer',
+    description: 'Product marketer driving growth and market expansion.',
+    image: Yusuf,
     bgColor: 'bg-pink-100',
+  },
+  {
+    id: 7,
+    name: 'Younglan Talyoung',
+    role: 'Content Writer',
+    description: 'Content writer creating engaging stories and educational materials.',
+    image: YounglanTalyoung,
+    bgColor: 'bg-orange-100',
+  },
+  {
+    id: 8,
+    name: 'Ihoon Nelson',
+    role: 'Graphics Designer',
+    description: 'Graphics designer creating visual content and brand materials.',
+    image: Nelson,
+    bgColor: 'bg-teal-100',
+  },
+  {
+    id: 9,
+    name: 'Osakuni Folashade',
+    role: 'Volunteer Chair Manager',
+    description: 'Volunteer coordinator managing community initiatives and programs.',
+    image: Fola,
+    bgColor: 'bg-indigo-100',
   },
 ];
 

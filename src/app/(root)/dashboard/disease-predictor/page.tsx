@@ -11,6 +11,12 @@ import {
     type DiseasePredictorFormData,
 } from "@/lib/validations/disease-predictor";
 import {
+    useDiseasePredictor,
+    transformDiseasePredictorFormData,
+    formatDiseasePredictorResponse,
+} from "@/services/diseasePredictorService";
+import { DiseasePredictorResponse } from "@/types";
+import {
     Form,
     FormControl,
     FormField,
@@ -38,6 +44,9 @@ export default function DiseasePredictorPage() {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Disease predictor API hook
+    const diseasePredictorMutation = useDiseasePredictor();
 
     const form = useForm<DiseasePredictorFormData>({
         resolver: zodResolver(diseasePredictorSchema),
@@ -82,18 +91,59 @@ export default function DiseasePredictorPage() {
     const onSubmit = (data: DiseasePredictorFormData) => {
         console.log("Form submitted:", data);
 
-        // Generate dummy prediction based on symptoms
-        const symptomsKey = data.symptoms.sort().join(",");
-        const possibleDiseases = diseasePredictions[symptomsKey] || diseasePredictions.default;
-        const predictedDisease = possibleDiseases[0];
+        try {
+            // Transform form data to API request format
+            const apiRequest = transformDiseasePredictorFormData({
+                livestockCategory: data.animalSpecies,
+                diseases: data.symptoms,
+            });
 
-        setPredictionResult({
-            predictedDisease,
-            animalSpecies: data.animalSpecies,
-            symptoms: data.symptoms,
-            hasImage: !!uploadedImage,
-        });
-        setShowResults(true);
+            // Call the API
+            diseasePredictorMutation.mutate(apiRequest, {
+                onSuccess: (response) => {
+                    console.log('Disease Predictor API Response:', response);
+                    
+                    // Since API returns data directly (not wrapped), extract the actual response
+                    const responseData = response?.data || response;
+                    
+                    if (responseData) {
+                        try {
+                            // Format API response for display
+                            const formattedResult = formatDiseasePredictorResponse(responseData as DiseasePredictorResponse);
+                            
+                            setPredictionResult({
+                                predictedDisease: formattedResult.prediction,
+                                animalSpecies: data.animalSpecies,
+                                symptoms: data.symptoms,
+                                hasImage: !!uploadedImage,
+                            });
+                            setShowResults(true);
+                        } catch (formatError) {
+                            console.error('Error formatting response:', formatError);
+                            console.log('Response data:', responseData);
+                            
+                            // Fallback: show raw response data
+                            const fallbackData = responseData as any;
+                            setPredictionResult({
+                                predictedDisease: typeof fallbackData === 'string' ? fallbackData : 'Unable to determine disease',
+                                animalSpecies: data.animalSpecies,
+                                symptoms: data.symptoms,
+                                hasImage: !!uploadedImage,
+                            });
+                            setShowResults(true);
+                        }
+                    } else {
+                        console.error('No response data received');
+                    }
+                },
+                onError: (error) => {
+                    console.error('Disease prediction failed:', error);
+                    // Optionally show fallback or keep form open
+                }
+            });
+        } catch (error) {
+            console.error('Error transforming form data:', error);
+        }
     };
 
     const handleAnimalChange = (value: string) => {
@@ -407,9 +457,9 @@ export default function DiseasePredictorPage() {
                                 <Button
                                     type="submit"
                                     className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                    disabled={!isFormValid()}
+                                    disabled={!isFormValid() || diseasePredictorMutation.isPending}
                                 >
-                                    Predict
+                                    {diseasePredictorMutation.isPending ? 'Predicting...' : 'Predict'}
                                 </Button>
                             </form>
                         </Form>

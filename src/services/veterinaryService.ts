@@ -5,6 +5,7 @@ import {
 	GetNearestVetsRequest,
 	GetNearestVetsResponse,
 	VetDoctor,
+	GetAllVetDoctorResponse,
 } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
@@ -46,13 +47,18 @@ export const useVeterinaryService = () => {
 			);
 		};
 
-	const useGetAllVetDoctor = (enabled: boolean = false) => {
-			return useGet<{ vetDoctor: VeterinaryDoctor; token: string }>(
-				["vetDoctor"],
-				`${VETERINARY_ENDPOINTS.GET_ALL_VET_DOCTOR}`,
+	const useGetAllVetDoctor = (page: number = 1, enabled: boolean = true) => {
+			const queryParams = new URLSearchParams();
+			queryParams.append('page', page.toString());
+
+			const url = `${VETERINARY_ENDPOINTS.GET_ALL_VET_DOCTOR}?${queryParams.toString()}`;
+
+			return useGet<GetAllVetDoctorResponse>(
+				["allVetDoctors", page.toString()],
+				url,
 				{
 					enabled,
-					staleTime: 0,
+					staleTime: 5 * 60 * 1000, // 5 minutes
 				},
 			);
 		};

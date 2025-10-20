@@ -35,5 +35,10 @@ export function middleware(request: NextRequest) {
 
 // tell Next.js which routes should be checked
 export const config = {
-	matcher: ["/dashboard/:path*", "/login", "/signup/:path*", "/reset-password/:path*"],
+	matcher: [
+		"/dashboard/:path*", 
+		"/login", 
+		"/signup/:path*", 
+		"/reset-password/:path*"
+	],
 };

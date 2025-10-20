@@ -9,24 +9,24 @@ export const poultrySchema = z.object({
   numberOfBirds: z.number().min(1, "Number of birds must be at least 1"),
 });
 
-// Fishes schema
-export const fishesSchema = z.object({
-  livestockCategory: z.literal("Fishes"),
+// Fish schema
+export const fishSchema = z.object({
+  livestockCategory: z.literal("Fish"),
   sizeOfFish: z.number().min(1, "Size of fish is required"),
   numberOfFish: z.number().min(1, "Number of fish must be at least 1"),
 });
 
-// Pigs schema
-export const pigsSchema = z.object({
-  livestockCategory: z.literal("Pigs"),
+// Pig schema
+export const pigSchema = z.object({
+  livestockCategory: z.literal("Pig"),
   numberOfPigs: z.number().min(1, "Number of pigs must be at least 1"),
 });
 
 // Union schema for all livestock types
 export const feedCalculatorSchema = z.discriminatedUnion("livestockCategory", [
   poultrySchema,
-  fishesSchema,
-  pigsSchema,
+  fishSchema,
+  pigSchema,
 ]);
 
 // Base form type for initial state
@@ -40,8 +40,8 @@ export type BaseFormData = z.infer<typeof baseFormSchema>;
 // Livestock options
 export const livestockOptions = [
   { value: "Poultry", label: "Poultry" },
-  { value: "Fishes", label: "Fishes" },
-  { value: "Pigs", label: "Pigs" },
+  { value: "Fish", label: "Fish" },
+  { value: "Pig", label: "Pig" },
 ];
 
 // Birds type options for Poultry

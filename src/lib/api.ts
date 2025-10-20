@@ -49,6 +49,13 @@ class ApiClient {
 			const response = await fetch(url, config);
 			const data = await response.json();
 
+			// Handle 401 Unauthorized - Auto logout and redirect
+			if (response.status === 401) {
+				console.warn("401 Unauthorized - Logging out user");
+				this.handleUnauthorized();
+				throw new Error(data.error || data.message || "Unauthorized - Please login again");
+			}
+
 			if (!response.ok) {
 				throw new Error(data.error || data.message || "API request failed");
 			}
@@ -76,6 +83,19 @@ class ApiClient {
 	private removeAuthToken(): void {
 		if (typeof window !== "undefined") {
 			Cookies.remove("auth-token");
+		}
+	}
+
+	private handleUnauthorized(): void {
+		if (typeof window !== "undefined") {
+			// Remove auth token
+			this.removeAuthToken();
+			
+			// Clear any user data from localStorage if needed
+			localStorage.removeItem("user");
+			
+			// Redirect to login page
+			window.location.href = "/login";
 		}
 	}
 
