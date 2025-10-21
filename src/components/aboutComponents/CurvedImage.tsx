@@ -11,8 +11,6 @@ const CurvedImage=({
 })=> {
 	const id = useId();
 	const clipId = `clip-${id}`;
-
-	// path with concave top and bottom
 	const pathD = `
     M 0 0
     C 200 40, 800 40, 1000 0

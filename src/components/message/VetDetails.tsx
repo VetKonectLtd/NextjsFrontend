@@ -2,7 +2,9 @@
 import Image from "next/image";
 import { ArrowLeft, Mail, MapPin, Share2, ShoppingBag } from "lucide-react";
 import MessageAction from "./MessageAction";
-import { Bg22 } from "@/app/assets/icons";
+import { Bg22, User } from "@/app/assets/icons";
+import { formatRole } from "../shared/TimeFormat";
+const DEFAULT_AVATAR = User;
 
 interface VetDetailsProps {
 	selectedVet: any;
@@ -18,7 +20,7 @@ export default function VetDetails({
 	handleContact,
 }: VetDetailsProps) {
 	return (
-		<div className="bg-white md:col-span-1 col-span-4 rounded-2xl shadow-md w-full max-w-sm border border-gray-200 overflow-hidden">
+		<div className="bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 scrollbar-hide overflow-y-auto rounded-2xl shadow-md w-full max-w-sm border border-gray-200 overflow-hidden">
 			<div
 				style={{ backgroundImage: `url(${Bg22.src})` }}
 				className="bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover p-4 flex justify-between items-start"
@@ -31,7 +33,7 @@ export default function VetDetails({
 			<div className="flex flex-col relative items-center p-4 mb-4 -mt-14">
 				<div className="w-20 h-20 rounded-full border-2 shadow-sm border-[#52CE06] overflow-hidden">
 					<Image
-						src={selectedVet?.avatar || "/default-vet.png"}
+						src={selectedVet?.profile_image || DEFAULT_AVATAR}
 						alt={selectedVet?.name}
 						width={60}
 						height={60}
@@ -39,7 +41,7 @@ export default function VetDetails({
 					/>
 				</div>
 				<h2 className="font-semibold text-base">{selectedVet?.name}</h2>
-				<p className="text-xs text-gray-500">{selectedVet?.role}</p>
+				<p className="text-xs text-gray-500">{formatRole(selectedVet?.role)}</p>
 				<p className="text-xs text-gray-400">{selectedVet?.location}</p>
 			</div>
 

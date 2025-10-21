@@ -24,6 +24,7 @@ export interface VetProfileProps {
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
+    role?:string;
     email?: string;
     phone?: string;
     userId?: string;

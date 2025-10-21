@@ -59,6 +59,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ()
 				location: location,
 				image: vpp.user.profile || GENERIC_VET_IMAGE,
 				rating: averageRating,
+				role:vpp.role,
 				totalRatings: totalRatings,
 				isAvailable: vpp.availability === 1,
 				isVerified: vpp.is_approved === 1,

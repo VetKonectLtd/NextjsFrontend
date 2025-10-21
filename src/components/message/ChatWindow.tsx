@@ -1,7 +1,16 @@
 "use client";
 import Image from "next/image";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, ImageIcon, Send } from "lucide-react";
 import MessageDropdown from "./MessageDropdown";
+import { Clock, User } from "@/app/assets/icons";
+import { directMessageService } from "@/services/directMessageService";
+import { useAuthService } from "@/services/authService";
+import { formatRole } from "../shared/TimeFormat";
+import { useEffect, useState } from "react";
+import AppointmentDetails from "./AppointmentDetails";
+import { useForm } from "react-hook-form";
+import { MessageFormData } from "@/types";
+const DEFAULT_AVATAR = User;
 
 interface ChatWindowProps {
 	selectedVet: any;
@@ -11,15 +20,94 @@ interface ChatWindowProps {
 	onOpenVetDetails: () => void;
 }
 
+
+
 export default function ChatWindow({
 	selectedVet,
-	message,
 	onBack,
 	onMessageChange,
 	onOpenVetDetails,
 }: ChatWindowProps) {
+	const { useGetCancelAppointment, useSendMessage, useGetMessage } =
+		directMessageService();
+	const { useCurrentUser } = useAuthService();
+	const [openAppointmentModal, setOpenAppointmentModal] = useState(false);
+	const [selectedAppointment, setSelectedAppointment] = useState<string>("");
+	const [cancelAppointmentId, setCancelAppointmentId] = useState<string>("");
+	const [previews, setPreviews] = useState<string[]>([]);
+	const user = useCurrentUser(true);
+	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
+	const { data: messageData, refetch } = useGetMessage(true, selectedVet?.id);
+	const { data: appointmentData } = useGetCancelAppointment(
+		true,
+		cancelAppointmentId,
+	);
+	const sendMessage = useSendMessage();
+
+	const allMessages: any = messageData ?? [];
+
+	const { register, handleSubmit, getValues, setValue } =
+		useForm<MessageFormData>();
+
+	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = Array.from(e.target.files || []);
+		const allowedFiles = files;
+
+		allowedFiles.forEach((file) => {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				setPreviews((prev) => [...prev, reader.result as string]);
+			};
+			reader.readAsDataURL(file);
+		});
+		setValue("images", [...allowedFiles], {
+			shouldValidate: true,
+		});
+	};
+
+	const handleRemoveImage = (idx: number) => {
+		setPreviews((prev) => prev.filter((_, i) => i !== idx));
+
+		const existingImages = getValues("images") || [];
+		const updatedImages = existingImages.filter((_, i) => i !== idx);
+		setValue("images", updatedImages, { shouldValidate: true });
+	};
+
+	useEffect(() => {
+		if (selectedVet?.id) {
+			refetch();
+		}
+	}, [selectedVet?.id]);
+
+	const handleCancel = (appointmentId: string) => async () => {
+		setCancelAppointmentId(appointmentId);
+		appointmentData;
+	};
+
+	const handleViewDetails = (appointment: any) => {
+		setSelectedAppointment(appointment);
+		setOpenAppointmentModal(true);
+	};
+
+	const handleSend = (data: any) => {
+		if (!data.content && !data.images) return;
+
+		const formData: any = new FormData();
+		formData.append("content", data.content);
+		formData.append("receiver_id", selectedVet?.id);
+
+		data.images?.forEach((file: any) => formData.append("images[]", file));
+
+		sendMessage.mutate(formData, {
+			onSuccess: () => {
+				setValue("content", "");
+				setValue("images", []);
+				setPreviews([]);
+			},
+		});
+	};
 	return (
-		<div className="bg-white md:col-span-1 col-span-4 rounded-2xl shadow-md w-full max-w-sm flex flex-col overflow-hidden border border-gray-200">
+		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl shadow-md w-full max-w-sm flex flex-col overflow-hidden border border-gray-200">
 			{/* Header */}
 			<div className="flex items-center justify-between p-3 border-b border-gray-100">
 				<div className="flex items-center gap-2">
@@ -32,7 +120,7 @@ export default function ChatWindow({
 					>
 						<div className="w-10 h-10 rounded-full border-2 shadow-sm border-[#52CE06] overflow-hidden">
 							<Image
-								src={selectedVet?.avatar || "/default-vet.png"}
+								src={selectedVet?.profile_image || DEFAULT_AVATAR}
 								alt={selectedVet?.name}
 								width={40}
 								height={40}
@@ -41,29 +129,118 @@ export default function ChatWindow({
 						</div>
 						<div>
 							<h2 className="font-semibold text-sm">{selectedVet?.name}</h2>
-							<p className="text-xs text-gray-500">{selectedVet?.role}</p>
+							<p className="text-xs text-gray-500">
+								{formatRole(selectedVet?.role)}
+							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* Messages */}
-			<div className="flex-1 overflow-y-auto p-3 space-y-4 bg-gray-50">
+			<div className="flex-1 h-full scrollbar-hide overflow-y-auto p-3 space-y-4 bg-gray-50">
 				{selectedVet ? (
-					<>
-						<div className="flex justify-end">
-							<div className="bg-gray-100 text-gray-800 text-sm px-3 py-2 rounded-xl rounded-br-none max-w-[80%]">
-								Hi {selectedVet.name.split(" ")[0]}, I’m interested in your
-								services.
-							</div>
-						</div>
+					allMessages.map((msg: any, idx: any) => {
+						const isMe = msg?.sender_id === currentUserId;
 
-						<div className="flex">
-							<div className="bg-gray-800 text-white text-sm px-3 py-2 rounded-xl rounded-bl-none max-w-[80%]">
-								Sure! Let’s discuss more.
+						return (
+							<div
+								key={idx}
+								className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+							>
+								<div
+									className={`${
+										isMe
+											? "bg-gray-100 text-gray-800 rounded-br-none"
+											: "bg-gray-800 text-white rounded-bl-none"
+									} text-sm px-2 py-2 rounded-xl max-w-[70%]`}
+								>
+									{/* ✅ Appointment type */}
+									{msg?.type === "appointment" ? (
+										<div className="bg-white border border-gray-225 rounded-xl p-5 flex flex-col items-center shadow-md">
+											{/* Icon */}
+											<div className="w-10 h-10 flex items-center justify-center rounded-full mb-2">
+												<Image
+													src={Clock.src}
+													alt="Appointment Icon"
+													width={120}
+													height={120}
+													className="w-full h-full object-cover"
+												/>
+											</div>
+
+											{/* Text */}
+											<p className="text-gray-800 font-medium text-sm mb-3">
+												Appointment booked
+											</p>
+											<AppointmentDetails
+												openAppointmentModal={openAppointmentModal}
+												setOpenAppointmentModal={setOpenAppointmentModal}
+												selectedVet={selectedVet}
+												selectedAppointment={selectedAppointment}
+											/>
+
+											{/* Buttons */}
+											<div className="flex flex-col gap-2 w-full">
+												<button
+													onClick={() =>
+														handleViewDetails(msg.meta.appointment_id)
+													}
+													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
+												>
+													View Details
+												</button>
+												<button
+													onClick={handleCancel(msg.meta.appointment_id)}
+													className="w-full bg-white border border-primary-400 text-gray-600 font-medium text-xs hover:text-primary-400 py-3 px-5 rounded-md hover:bg-gray-50"
+												>
+													Cancel appointment
+												</button>
+											</div>
+										</div>
+									) : (
+										<div className="space-y-1">
+											{/* If there are images */}
+											{msg.image_urls.length === 1 ? (
+												<div className={`relative ${msg.content.length > 20 ? "w-full":"w-[110px]"} h-[110px] rounded-lg overflow-hidden`}>
+													<Image
+														src={msg.image_urls[0]}
+														alt="sent"
+														fill
+														className="object-cover"
+													/>
+												</div>
+											) : (
+												<div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
+													{msg.image_urls.map((imgUrl: string, i: number) => (
+														<div
+															key={i}
+															className="relative w-[110px] h-[110px]"
+														>
+															<Image
+																src={imgUrl}
+																alt={`sent-${i}`}
+																fill
+																className="rounded-lg object-cover"
+															/>
+														</div>
+													))}
+												</div>
+											)}
+											{/* If there’s text */}
+											{msg?.content && (
+												<p
+													className={`${isMe ? "text-gray-800" : "text-white"}`}
+												>
+													{msg.content}
+												</p>
+											)}
+										</div>
+									)}
+								</div>
 							</div>
-						</div>
-					</>
+						);
+					})
 				) : (
 					<p className="text-center text-gray-500 text-sm mt-10">
 						Select a vet to start chatting
@@ -72,16 +249,45 @@ export default function ChatWindow({
 			</div>
 
 			{/* Input */}
-			<div className="p-3 border-t border-gray-200 flex items-center gap-2 relative bg-white">
-				<MessageDropdown />
+			<div className="flex gap-2 overflow-x-auto  scrollbar-hide">
+				{previews.map((img, idx) => (
+					<div key={idx} className="relative flex items-center w-fit  my-4 md:my-2">
+						<div className="w-[80px] h-[50px] border-2 border-gray-200 rounded-md overflow-hidden flex items-center justify-center mb-1">
+							<Image
+								src={img}
+								alt={`Preview ${idx + 1}`}
+								width={100}
+								height={70}
+								className="object-cover w-full h-full"
+							/>
+						</div>
+						<button
+							type="button"
+							onClick={() => handleRemoveImage(idx)}
+							className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full md:w-6 w-4 h-4 md:h-6 flex items-center justify-center"
+						>
+							✕
+						</button>
+					</div>
+				))}
+			</div>
+
+			<div className="p-3 sticky bottom-0 border-t border-gray-200 flex items-center gap-2 md:relative bg-white">
+				<MessageDropdown
+					receiverId={selectedVet?.id}
+					handleImageUpload={handleImageUpload}
+				/>
+
 				<input
 					type="text"
-					placeholder="Type a message..."
-					value={message}
-					onChange={(e) => onMessageChange(e.target.value)}
+					placeholder="Type your message..."
+					{...register("content")}
 					className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
 				/>
-				<button className="bg-primary-400 p-2 rounded-2xl hover:bg-primary-400 transition">
+				<button
+					onClick={handleSubmit(handleSend)}
+					className="bg-primary-400 p-2 rounded-2xl hover:bg-primary-400 transition"
+				>
 					<Send className="w-4 h-4 text-white" />
 				</button>
 			</div>

@@ -16,25 +16,50 @@ import {
 import { Appointment } from "@/types";
 import { useForm } from "react-hook-form";
 import { directMessageService } from "@/services/directMessageService";
+import SuccessModal from "../modals/SuccessModal";
+interface MessageDropdownProps {
+	receiverId: string;
+	handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-const MessageDropdown = () => {
+const MessageDropdown = ({
+	receiverId,
+	handleImageUpload,
+}: MessageDropdownProps) => {
 	const [openModal, setOpenModal] = useState(false);
-	const {useBookAppointment}= directMessageService();
+	const [open, setOpen] = useState(false);
+	const { useBookAppointment } = directMessageService();
 	const bookingMutation = useBookAppointment();
+	const [successOpen, setSuccessOpen] = useState(false);
 
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
 	} = useForm<Appointment>();
 
 	const onSubmit = (data: Appointment) => {
-		
-		bookingMutation.mutate(data, {
+		const rawDate = data.date;
+
+		const [year, month, day] = rawDate.split("-");
+		const formattedDate = `${day}/${month}/${year}`;
+
+		const payload = {
+			...data,
+			date: formattedDate,
+			doctor_id: receiverId,
+		};
+
+		bookingMutation.mutate(payload, {
 			onSuccess: () => {
 				setOpenModal(false);
+				setSuccessOpen(true);
 			},
 		});
+	};
+
+	const onImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+		handleImageUpload(e);
+		setOpen(false); 
 	};
 
 	const handleBookAppointment = () => {
@@ -42,7 +67,7 @@ const MessageDropdown = () => {
 	};
 	return (
 		<div>
-			<DropdownMenu>
+			<DropdownMenu open={open} onOpenChange={setOpen}>
 				<DropdownMenuTrigger asChild>
 					<button className="p-2 rounded-full outline-none border border-gray-300 hover:bg-gray-100 transition">
 						<Plus className="w-4 h-4 text-gray-600" />
@@ -55,12 +80,25 @@ const MessageDropdown = () => {
 					className="bg-white rounded-xl shadow-lg border border-gray-200 p-2 space-y-2"
 				>
 					<DropdownMenuItem
+						onSelect={(e) => e.preventDefault()}
 						className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md p-2"
-						onClick={() => console.log("Add Image clicked")}
 					>
-						<ImageIcon className="w-4 h-4 text-gray-500" />
-						<span className="text-sm text-gray-700">Add Image</span>
+						<label
+							htmlFor="chatImageUpload"
+							className="flex items-center gap-2 cursor-pointer w-full"
+						>
+							<ImageIcon className="w-4 h-4 text-gray-500" />
+							<span className="text-sm text-gray-700">Add Image</span>
+						</label>
 					</DropdownMenuItem>
+					<input
+						id="chatImageUpload"
+						type="file"
+						accept="image/*"
+						multiple
+						onChange={onImageSelect}
+						className="hidden"
+					/>
 
 					<DropdownMenuItem
 						className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md p-2"
@@ -124,24 +162,28 @@ const MessageDropdown = () => {
 						</div>
 
 						<button
-						type="submit"
+							type="submit"
 							onClick={handleSubmit(onSubmit)}
-								disabled={bookingMutation.isLoading}
+							disabled={bookingMutation.isLoading}
 							className="w-full bg-transparent flex items-center text-center justify-center disabled:bg-[#666666] disabled:opacity-50 disabled:cursor-not-allowed  hover:bg-primary-400 border border-primary-400 hover:text-white text-primary-400 font-medium rounded-md py-2 transition"
 						>
 							{bookingMutation.isLoading ? (
-									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-										Processing...
-									</>
-								) : (
-									"Save"
-								)}
-							
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+									Processing...
+								</>
+							) : (
+								"Save"
+							)}
 						</button>
 					</div>
 				</DialogContent>
 			</Dialog>
+			<SuccessModal
+				successOpen={successOpen}
+				setSuccessOpen={setSuccessOpen}
+				message="You have successfully booked and appointment with a Medical Professional."
+			/>
 		</div>
 	);
 };
