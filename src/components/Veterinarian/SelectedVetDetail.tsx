@@ -97,7 +97,7 @@ const SelectedVet = ({
 								<h1 className="mt-3 text-lg font-semibold">
 									{selectedVet.name}
 								</h1>
-								<p className="text-sm mt-2 text-gray-500">Veterinarian</p>
+								<p className="text-sm mt-2 text-gray-500">{selectedVet.role}</p>
 							</div>
 
 							<div className="flex py-6 w-72 m-auto flex-wrap gap-2 mb-4">

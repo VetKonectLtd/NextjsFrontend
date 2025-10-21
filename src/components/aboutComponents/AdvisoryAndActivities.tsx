@@ -12,7 +12,7 @@ import {
 	Tayo,
 } from "@/app/assets/images";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Linkedin, Twitter } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -201,7 +201,7 @@ export default function AdvisoryAndActivities() {
 									className="flex flex-col items-center  transition-transform duration-300
     swiper-slide-active:translate-y-5"
 								>
-									<CurvedImage src={activity.image} alt="Activity"  />
+									<CurvedImage src={activity.image} alt="Activity" />
 									<p className="mt-4 text-gray-700 text-sm md:text-base">
 										{activity.text}
 									</p>

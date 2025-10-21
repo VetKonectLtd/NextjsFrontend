@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChatLikes, ChatMessage1, ChatMessage2, ChatImage } from '@/app/assets/images';
+import Link from 'next/link';
 
 export default function ChatForumSection() {
   // Animation variants for left and right sides
@@ -48,9 +49,9 @@ export default function ChatForumSection() {
               Join a growing community of animal owners and animal health professionals.
             </p>
             <div className="flex justify-center md:justify-start">
-              <Button className="px-6 py-3 border border-primary-600 bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-medium rounded-lg transition-colors duration-200">
+              <Link href="/login" className="px-6 py-3 border hover:text-white border-primary-600 bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-medium rounded-lg transition-colors duration-200">
                 Get Started
-              </Button>
+              </Link>
             </div>
           </motion.div>
 

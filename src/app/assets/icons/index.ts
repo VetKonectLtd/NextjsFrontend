@@ -31,3 +31,4 @@ export { default as LinkedInIcon } from './linkedin.png';
 export { default as XIcon } from './twitter.png';
 
 export {default as User} from './user.png'
+export {default as Clock} from './clock.png'

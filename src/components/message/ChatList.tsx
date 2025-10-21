@@ -27,7 +27,7 @@ export default function ChatList({
 	return (
 		<div
 			className={`
-        bg-white md:col-span-1 col-span-4 border border-gray-225 rounded-lg shadow-md px-6 py-3
+        bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 border border-gray-225 rounded-lg shadow-md px-6 py-3
       `}
 		>
 			<div className="flex mb-2">
@@ -47,12 +47,12 @@ export default function ChatList({
 				</button>
 			</div>
 
-			<div className="space-y-3">
+			<div className="space-y-3 h-full scrollbar-hide overflow-y-auto">
 				{filteredMessages.length > 0 ? (
 					filteredMessages.map((msg) => (
 						<div
 							key={msg.user.id}
-							onClick={() => onSelectVet(msg?.user.id)}
+							onClick={() => onSelectVet(msg?.user)}
 							className={`flex items-center justify-between hover:bg-gray-50 cursor-pointer rounded-lg p-2 transition ${
 								selectedVet?.user?.id === msg?.user.id ? "bg-gray-100" : ""
 							}`}

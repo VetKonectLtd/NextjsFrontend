@@ -166,6 +166,7 @@ export interface VeterinaryDoctor {
 	location: string;
 	latitude?: number;
 	longitude?: number;
+	role?:string;
 	image?: string;
 	rating: number;
 	totalRatings: number;
@@ -534,4 +535,25 @@ export interface HotNewsChat {
 	updated_at:string;
 	author:Author;
 	slug:string;
+}
+
+interface MessageMeta {
+	appointment_id?: string;
+}
+
+export interface ChatMessage {
+	id: string;
+	sender_id: string;
+	receiver_id: string;
+	content?: string;
+	image_urls?: string[];
+	type?: "text" | "appointment";
+	meta?: MessageMeta;
+	created_at?: string;
+}
+
+export interface MessageFormData {
+	content?: string;
+	images?: File[];
+	receiver_id: string;
 }

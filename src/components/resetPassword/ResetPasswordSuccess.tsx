@@ -21,7 +21,7 @@ const ResetPasswordSuccess = () => {
 					Congratulations!
 				</h1>
 				<p className="text-base font-normal text-center text-[#666666] mb-8">
-					Your Vkonnect password has been reset. Kindly log into your account
+					Your Vetkonnect password has been reset. Kindly log into your account
 					with your new password.
 				</p>
 

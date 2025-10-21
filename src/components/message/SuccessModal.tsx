@@ -1,0 +1,40 @@
+"use client";
+
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogDescription,
+} from "@/components/ui/dialog";
+import Image from "next/image";
+import { Success } from "@/app/assets/icons/auth";
+
+const SuccessModal = ({ successOpen, setSuccessOpen, message }: any) => {
+	return (
+		<>
+			{/* Success Modal */}
+			<Dialog open={successOpen} onOpenChange={setSuccessOpen}>
+				<DialogContent className="max-w-sm rounded-lg">
+					<DialogHeader className="text-center">
+						<DialogDescription className="text-base">
+                            <div className="mb-6 w-full flex justify-center">
+								<span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-600">
+									<Image
+										src={Success}
+										alt="success Logo"
+										className="object-contain"
+									/>
+								</span>
+							</div>
+							<p className="text-base font-normal text-center text-[#666666] mb-8">
+								{message}
+							</p>
+						</DialogDescription>
+					</DialogHeader>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
+};
+
+export default SuccessModal;

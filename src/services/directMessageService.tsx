@@ -1,6 +1,6 @@
 import { usePost, useGet, useDelete, usePut } from "@/lib/hooks";
 import { DIRECT_CHAT } from "@/lib/api-constants";
-import { Appointment } from "@/types";
+import { Appointment, ChatMessage } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
 // any service using hooks
@@ -70,9 +70,31 @@ export const directMessageService = () => {
     };
 
      const useGetMessage = (enabled: boolean = false, Id: string) => {
-        return useGet<any>(
+        return useGet<ChatMessage>(
             ["getMessage"],
             `${DIRECT_CHAT.GET_MESSAGE(Id)}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
+
+     const useGetAppointment = (enabled: boolean = false, Id: string) => {
+        return useGet<any>(
+            ["get-Appointment"],
+            `${DIRECT_CHAT.GET_APPOINTMENT_BY_ID(Id)}`,
+            {
+                enabled,
+                staleTime: 0,
+            },
+        );
+    };
+
+     const useGetCancelAppointment = (enabled: boolean = false, Id: string) => {
+        return useGet<Appointment>(
+            ["get-Cancel-Appointment"],
+            `${DIRECT_CHAT.GET_CANCEL(Id)}`,
             {
                 enabled,
                 staleTime: 0,
@@ -116,5 +138,7 @@ export const directMessageService = () => {
         useGetMessage,
         useUpdateMessage,
         useDeleteMessage,
+        useGetAppointment,
+        useGetCancelAppointment
     };
 };

@@ -26,7 +26,7 @@ const MessageAction = ({ selectedMessage, selectedAction }: MessageProps) => {
 			{selectedAction === "product" && (
 				<div className="px-4">
 					<h3 className="text-base text-gray-55 font-semibold mb-2">Shared images</h3>
-					<div className="grid grid-cols-3 gap-2">
+					{/* <div className="grid grid-cols-3 gap-2">
 						{[1, 2, 3, 4, 5, 6].map((i) => (
 							<Image
 								key={i}
@@ -37,7 +37,7 @@ const MessageAction = ({ selectedMessage, selectedAction }: MessageProps) => {
 								className="rounded-lg object-cover"
 							/>
 						))}
-					</div>
+					</div> */}
 				</div>
 			)}
 
@@ -45,13 +45,13 @@ const MessageAction = ({ selectedMessage, selectedAction }: MessageProps) => {
 				<div className="text-center">
 					<p className="text-gray-55 font-bold">User’s Email Address</p>
 					<p className="text-sm mt-2">
-						{selectedMessage?.name.split(" ")[0].toLowerCase()}@gmail.com
+						{selectedMessage?.email}
 					</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
 							onClick={() =>
 								handleCopy(
-									`${selectedMessage?.name.split(" ")[0].toLowerCase()}@gmail.com`,
+									`${selectedMessage?.email}`,
 								)
 							}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
@@ -60,7 +60,7 @@ const MessageAction = ({ selectedMessage, selectedAction }: MessageProps) => {
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied?.includes("@gmail.com") ? "Copied!" : "Click to copy"}
+							{copied ? "Copied!" : "Click to copy"}
 						</span>
 					</div>
 				</div>

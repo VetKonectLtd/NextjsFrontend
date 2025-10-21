@@ -7,7 +7,6 @@ import EmptyState from "@/components/shared/EmptyState";
 import SelectedVet from "./SelectedVetDetail";
 import { useVeterinaryService } from "@/services/veterinaryService";
 import { VetDoctorData, GetAllVetDoctorResponse } from "@/types";
-import { StaticImageData } from "next/image";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -28,6 +27,7 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 	// Cast to actual response type since API returns data directly
 	const data = apiData as unknown as GetAllVetDoctorResponse | undefined;
 
+	
 	// Transform API data to VetProfile props
 	const transformedVets: VetProfileProps[] = useMemo(() => {
 		if (!data?.veterinary_doctors?.data) return [];
@@ -58,6 +58,7 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 				id: vet.id.toString(),
 				name: fullName,
 				location: location,
+				role:vet.role,
 				image: vet.user.profile || GENERIC_VET_IMAGE,
 				rating: averageRating,
 				totalRatings: totalRatings,

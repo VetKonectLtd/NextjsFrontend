@@ -4,36 +4,68 @@ import Image from "next/image";
 import { Smile, Link as LinkIcon, Send, X } from "lucide-react";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
+import { directMessageService } from "@/services/directMessageService";
+import { useForm } from "react-hook-form";
+import { MessageFormData } from "@/types";
 
 const ChatBox = ({ selectedVet }: any) => {
-	const [text, setText] = useState("");
-	const [image, setImage] = useState<string | null>(null);
 	const [showEmoji, setShowEmoji] = useState(false);
-	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [previews, setPreviews] = useState<string[]>([]);
+	const { useSendMessage } = directMessageService();
+	const sendMessageMutation = useSendMessage();
 
-	// handle image selection
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
+	console.log(selectedVet);
+
+	const { register, handleSubmit, getValues, setValue } =
+		useForm<MessageFormData>();
+
+	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = Array.from(e.target.files || []);
+		const allowedFiles = files;
+
+		allowedFiles.forEach((file) => {
 			const reader = new FileReader();
 			reader.onloadend = () => {
-				setImage(reader.result as string);
+				setPreviews((prev) => [...prev, reader.result as string]);
 			};
 			reader.readAsDataURL(file);
-		}
+		});
+		setValue("images", [...allowedFiles], {
+			shouldValidate: true,
+		});
+	};
+
+	const handleRemoveImage = (idx: number) => {
+		setPreviews((prev) => prev.filter((_, i) => i !== idx));
+
+		const existingImages = getValues("images") || [];
+		const updatedImages = existingImages.filter((_, i) => i !== idx);
+		setValue("images", updatedImages, { shouldValidate: true });
 	};
 
 	// handle emoji select
 	const handleEmojiSelect = (emoji: any) => {
-		setText((prev) => prev + emoji.native);
+		const currentContent = getValues("content") || "";
+		setValue("content", currentContent + emoji.native);
 		setShowEmoji(false);
 	};
 
-	// simulate sending
-	const handleSend = () => {
-		console.log("Sending post:", { text, image });
-		setText("");
-		setImage(null);
+	const handleSend = (data: any) => {
+		if (!data.content && !data.images) return;
+
+		const formData: any = new FormData();
+		formData.append("content", data.content);
+		formData.append("receiver_id", selectedVet?.userId);
+
+		data.images?.forEach((file: any) => formData.append("images[]", file));
+
+		sendMessageMutation.mutate(formData, {
+			onSuccess: () => {
+				setValue("content", "");
+				setValue("images", []);
+				setPreviews([]);
+			},
+		});
 	};
 
 	return (
@@ -52,7 +84,7 @@ const ChatBox = ({ selectedVet }: any) => {
 					</div>
 					<div className="flex items-start text-left flex-col text-gray-55">
 						<p className="text-sm font-semibold">{selectedVet?.name}</p>
-						<p className="text-xs">Veterinarian</p>
+						<p className="text-xs">{selectedVet.role}</p>
 					</div>
 				</div>
 
@@ -65,20 +97,21 @@ const ChatBox = ({ selectedVet }: any) => {
 						<Smile size={16} />
 					</button>
 
-					<button
-						onClick={() => fileInputRef.current?.click()}
+					<label
+						htmlFor="chatImage"
 						className="p-2 shadow-sm border border-gray-225 hover:bg-gray-100 rounded-full"
 					>
 						<LinkIcon size={16} />
-					</button>
+					</label>
 
 					{/* hidden file input */}
 					<input
+						id="chatImage"
 						type="file"
-						ref={fileInputRef}
 						accept="image/*"
+						multiple
+						onChange={(e) => handleImageUpload(e)}
 						className="hidden"
-						onChange={handleImageChange}
 					/>
 				</div>
 			</div>
@@ -89,8 +122,7 @@ const ChatBox = ({ selectedVet }: any) => {
 					className="w-full resize-none min-h-[140px] border-none p-2 text-sm outline-none"
 					rows={3}
 					placeholder="What are we discussing?"
-					value={text}
-					onChange={(e) => setText(e.target.value)}
+					{...register("content")}
 				/>
 			</div>
 
@@ -102,27 +134,34 @@ const ChatBox = ({ selectedVet }: any) => {
 			)}
 
 			{/* Image preview */}
-			{image && (
-				<div className="bg-gray-225 w-ful relative p-1">
-					<Image
-						src={image}
-						alt="Preview"
-						width={56}
-						height={56}
-						className="max-h-14 w-14 rounded-lg object-cover"
-					/>
-					<button
-						onClick={() => setImage(null)}
-						className="absolute top-2 right-2 bg-white p-1 rounded-full shadow"
+			<div className="flex gap-2 overflow-x-auto  scrollbar-hide">
+				{previews.map((img, idx) => (
+					<div
+						key={idx}
+						className="relative flex items-center w-fit  my-4 md:my-2"
 					>
-						<X size={12} />
-					</button>
-				</div>
-			)}
+						<div className="w-[80px] h-[50px] border-2 border-gray-200 rounded-md overflow-hidden flex items-center justify-center mb-1">
+							<Image
+								src={img}
+								alt={`Preview ${idx + 1}`}
+								width={100}
+								height={70}
+								className="object-cover w-full h-full"
+							/>
+						</div>
+						<button
+							type="button"
+							onClick={() => handleRemoveImage(idx)}
+							className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full md:w-6 w-4 h-4 md:h-6 flex items-center justify-center"
+						>
+							✕
+						</button>
+					</div>
+				))}
+			</div>
 
 			<button
-				onClick={handleSend}
-				disabled={!text && !image}
+				onClick={handleSubmit(handleSend)}
 				className="flex font-medium px-3 py-2 justify-center items-center text-center w-full bg-primary-400 text-white rounded-b-lg disabled:bg-[#555555]"
 			>
 				Send <Send className="ml-3" size={14} />
