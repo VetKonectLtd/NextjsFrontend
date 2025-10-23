@@ -114,7 +114,7 @@ export default function ContactSection() {
                                             required
                                         />
                                         <label htmlFor="agreeToTerms" className="text-sm text-gray-600">
-                                            Confirm that you agree to our terms and conditions at Vet Konnect
+                                            Confirm that you agree to our terms and conditions at VetKonect
                                         </label>
                                     </div>
                                 </div>

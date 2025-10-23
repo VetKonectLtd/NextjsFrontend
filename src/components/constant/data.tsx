@@ -57,10 +57,10 @@ export const ROLE_NAV_ACCESS: Record<string, number[]> = {
 	"veterinary_paraprofessional": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 	"veterinary_clinic": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14],
 	"veterinary_doctor": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14],
-	"livestock_farmer": [1, 2,3, 4, 7, 8, 9, 10, 11, 12, 13,14],
-	"pet_owner": [1, 2, 3,4, 7, 8, 9, 10, 11], 
-	"vendor": [1, 2,3, 7, 11, 12, 13, 14],       
-	"others": [1, 2,3, 11],   
+	"livestock_farmer": [1, 2,3, 5, 8, 9, 10, 11, 12, 13,14],
+	"pet_owner": [1, 2, 3,4, 8, 9, 10, 11, 12, 13,14], 
+	"vendor": [1, 2,3, 8,9, 10, 11, 12, 13, 14],       
+	"others": [1, 2,3,8, 9, 10, 11, 12, 13, 14],   
 	
-	"basic_user": [1, 2, 3, 9, 10, 11, 12, 13, 14],
+	"basic_user": [1, 2, 3, 8, 9, 10, 11, 12, 13, 14],
 };

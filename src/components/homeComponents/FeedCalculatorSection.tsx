@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FeedCalculator, DiseasePredictor } from '@/app/assets/images';
 import { NextOrange, NextGreen } from '@/app/assets/icons';
+import Link from 'next/link';
 
 export default function FeedCalculatorSection() {
     // Animation variants
@@ -68,7 +69,7 @@ export default function FeedCalculatorSection() {
                             {/* Try it Now Button */}
                             <div className="flex justify-end mt-auto pt-2">
                                 <button className="inline-flex items-center gap-2 bg-gray-150 hover:bg-gray-225 text-black font-medium px-3 py-1 rounded-lg border border-gray-225 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
-                                    <span>Try it Now</span>
+                                     <Link href="/dashboard/feed-calculator">Try it Now</Link>
                                     <Image
                                         src={NextOrange}
                                         alt="Arrow"
@@ -114,7 +115,7 @@ export default function FeedCalculatorSection() {
                             {/* Try it Now Button */}
                             <div className="flex justify-end mt-auto pt-2">
                                 <button className="inline-flex items-center gap-2 bg-gray-150 hover:bg-gray-225 text-black font-medium px-3 py-1 rounded-lg border border-gray-225 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
-                                    <span>Try it Now</span>
+                                    <Link href="/dashboard/disease-predictor">Try it Now</Link>
                                     <Image
                                         src={NextGreen}
                                         alt="Arrow"

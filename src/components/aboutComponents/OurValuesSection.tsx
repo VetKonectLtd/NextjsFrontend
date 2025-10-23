@@ -40,7 +40,7 @@ const values: ValueItem[] = [
   {
     id: 4,
     title: 'Culture',
-    description: 'At Vet Konect, we believe it all begins with taking initiative.',
+    description: 'At VetKonect, we believe it all begins with taking initiative.',
     bgColor: 'bg-red-50',
     iconBg: 'bg-red-200',
     iconColor: 'text-red-700',

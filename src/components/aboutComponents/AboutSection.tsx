@@ -62,7 +62,7 @@ export default function AboutSection() {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl lg:text-5xl font-black text-gray-900 font-nunito">
-            About Vet Konect
+            About VetKonect
           </h1>
         </motion.div>
 
@@ -80,7 +80,7 @@ export default function AboutSection() {
               <div className="relative rounded-full overflow-hidden w-full h-full">
                 <Image
                   src={AboutImage}
-                  alt="About Vet Konect - Veterinarian with pet"
+                  alt="About VetKonect - Veterinarian with pet"
                   fill
                   className="object-cover"
                   priority
@@ -102,7 +102,7 @@ export default function AboutSection() {
                 Overview
               </h2>
               <p className="text-gray-600 leading-relaxed">
-                Vet Konect is a digital animal health company that is leveraging technology to
+                VetKonect is a digital animal health company that is leveraging technology to
                 provide access to animal care and social protection for Africa.
               </p>
             </div>
@@ -175,7 +175,7 @@ export default function AboutSection() {
                 Overview
               </h2>
               <p className="text-gray-600 leading-relaxed">
-                Vet Konect is a digital animal health company that is leveraging technology to
+                VetKonect is a digital animal health company that is leveraging technology to
                 provide access to animal care and social protection for Africa.
               </p>
             </div>

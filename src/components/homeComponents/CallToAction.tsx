@@ -95,7 +95,7 @@ export default function CallToAction({
             <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md mx-auto md:mx-0">{heading}</h2>
             <p className="text-lg text-gray-600 max-w-md mx-auto md:mx-0">{description}</p>
             <div className="flex justify-center md:justify-start">
-              <Link href="/login" className="px-6 py-3 bg-transparent border border-primary-600 hover:bg-primary-600 hover:text-white text-primary-600 font-medium rounded-lg transition-colors duration-200 ">
+              <Link href="/dashboard/vet-vendor" className="px-6 py-3 bg-transparent border border-primary-600 hover:bg-primary-600 hover:text-white text-primary-600 font-medium rounded-lg transition-colors duration-200 ">
                 Get Started
               </Link>
             </div>
