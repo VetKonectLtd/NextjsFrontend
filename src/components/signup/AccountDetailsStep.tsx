@@ -54,7 +54,7 @@ const AccountDetailsStep = ({
 							message: "Password must be at least 6 characters",
 						},
 						pattern: {
-							value: /^(?=.*[!@#$%^&*(),.?":{}|<>])/,
+							value: /^(?=.*[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~])/,
 							message: "Password must contain at least one special character",
 						},
 					})}

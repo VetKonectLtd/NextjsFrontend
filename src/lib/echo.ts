@@ -17,7 +17,7 @@ if (typeof window !== "undefined") {
   const host = process.env.NEXT_PUBLIC_REVERB_HOST;
   const port = Number(process.env.NEXT_PUBLIC_REVERB_PORT || 443);
   const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME || "https";
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
   
   if (!key || !host || !baseURL) {
@@ -38,7 +38,7 @@ if (typeof window !== "undefined") {
         forceTLS: scheme === "https",
         enabledTransports: ["ws"],
         disableStats: true,
-        authEndpoint: `${baseURL}/v3/broadcasting/auth`,
+        authEndpoint: `${baseURL}/broadcasting/auth`,
         auth: {
           headers: {
             Authorization: Cookies.get("auth-token")

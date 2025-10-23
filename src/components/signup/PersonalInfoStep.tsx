@@ -81,27 +81,7 @@ const PersonalInfoStep = ({
 				{errors.last_name && (
 					<p className="text-red-500 text-xs">{errors.last_name.message}</p>
 				)}
-				<Controller
-					name="phone_num"
-					control={control}
-					rules={{ required: "Phone number is required" }}
-					render={({ field }) => (
-						<PhoneInput
-							label="Phone No."
-							isRequired
-							focusLabel="Phone No. (Required):"
-							value={field.value || ""}
-							countryCode={watchedCountryCode || "US"}
-							onChange={({ phone, countryCode }) => {
-								field.onChange(phone); 
-								setValue("country", countryCode);
-							}}
-						/>
-					)}
-				/>
-				{errors.phone_num && (
-					<p className="text-red-500 text-xs">{errors.phone_num.message}</p>
-				)}
+
 				<Controller
 					name="country"
 					control={control}
@@ -140,6 +120,28 @@ const PersonalInfoStep = ({
 				{errors.state && (
 					<p className="text-red-500 text-xs">{errors.state.message}</p>
 				)}
+				<Controller
+					name="phone_num"
+					control={control}
+					rules={{ required: "Phone number is required" }}
+					render={({ field }) => (
+						<PhoneInput
+							label="Phone No."
+							isRequired
+							focusLabel="Phone No. (Required):"
+							value={field.value || ""}
+							countryCode={watchedCountryCode || "US"}
+							onChange={({ phone, countryCode }) => {
+								field.onChange(phone); 
+								setValue("country", countryCode);
+							}}
+						/>
+					)}
+				/>
+				{errors.phone_num && (
+					<p className="text-red-500 text-xs">{errors.phone_num.message}</p>
+				)}
+				
 				{/* Terms */}{" "}
 				<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
 					
