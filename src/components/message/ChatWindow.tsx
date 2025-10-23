@@ -98,7 +98,7 @@ export default function ChatWindow({
 
 		return () => {
 			if (channel) {
-				channel.leave("direct-message.sent");
+				 channel.leave(`private-direct-chat.${currentUserId}.${selectedVet.id}`);
 			}
 		};
 	}, [selectedVet?.id, currentUserId]);
