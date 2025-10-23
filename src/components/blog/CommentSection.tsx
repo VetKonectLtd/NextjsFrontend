@@ -210,7 +210,7 @@ const CommentSection = ({ id }: Props) => {
 									? "Hide comments"
 									: c?.replies?.length < 1
 										? ""
-										: `${c?.replies?.length} comments`}
+										: `${c?.replies?.length} reply`}
 							</span>
 
 							{openReplies === c.id && c.replies?.length > 0

@@ -20,8 +20,6 @@ interface ChatWindowProps {
 	onOpenVetDetails: () => void;
 }
 
-
-
 export default function ChatWindow({
 	selectedVet,
 	onBack,
@@ -79,6 +77,32 @@ export default function ChatWindow({
 		}
 	}, [selectedVet?.id]);
 
+
+	useEffect(() => {
+		let channel: any;
+
+		(async () => {
+			if (typeof window === "undefined" || !selectedVet?.id) return;
+
+			const { default: echo } = await import("@/lib/echo");
+
+			if (!echo) return;
+
+			channel = echo.private(`direct-chat.${currentUserId}.${selectedVet.id}`);
+
+			channel.listen("direct-message.sent", (event: any) => {
+				refetch();
+				console.log("New message:", event.message);
+			});
+		})();
+
+		return () => {
+			if (channel) {
+				 channel.leave(`private-direct-chat.${currentUserId}.${selectedVet.id}`);
+			}
+		};
+	}, [selectedVet?.id, currentUserId]);
+
 	const handleCancel = (appointmentId: string) => async () => {
 		setCancelAppointmentId(appointmentId);
 		appointmentData;
@@ -99,7 +123,8 @@ export default function ChatWindow({
 		data.images?.forEach((file: any) => formData.append("images[]", file));
 
 		sendMessage.mutate(formData, {
-			onSuccess: () => {
+			onSuccess: (res) => {
+				// refetch();
 				setValue("content", "");
 				setValue("images", []);
 				setPreviews([]);
@@ -202,7 +227,9 @@ export default function ChatWindow({
 										<div className="space-y-1">
 											{/* If there are images */}
 											{msg.image_urls.length === 1 ? (
-												<div className={`relative ${msg.content.length > 20 ? "w-full":"w-[110px]"} h-[110px] rounded-lg overflow-hidden`}>
+												<div
+													className={`relative ${msg.content.length > 20 ? "w-full" : "w-[110px]"} h-[110px] rounded-lg overflow-hidden`}
+												>
 													<Image
 														src={msg.image_urls[0]}
 														alt="sent"
@@ -251,7 +278,10 @@ export default function ChatWindow({
 			{/* Input */}
 			<div className="flex gap-2 overflow-x-auto  scrollbar-hide">
 				{previews.map((img, idx) => (
-					<div key={idx} className="relative flex items-center w-fit  my-4 md:my-2">
+					<div
+						key={idx}
+						className="relative flex items-center w-fit  my-4 md:my-2"
+					>
 						<div className="w-[80px] h-[50px] border-2 border-gray-200 rounded-md overflow-hidden flex items-center justify-center mb-1">
 							<Image
 								src={img}

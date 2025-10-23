@@ -27,20 +27,20 @@ interface QuickLink {
 }
 
 const socialLinks: SocialLink[] = [
-  { name: 'LinkedIn', icon: LinkedIn, href: '#' },
-  { name: 'X', icon: X, href: '#' },
-  { name: 'Facebook', icon: Facebook, href: '#' },
-  { name: 'Instagram', icon: Instagram, href: '#' },
-  { name: 'YouTube', icon: YouTube, href: '#' },
-  { name: 'Pinterest', icon: Pinterest, href: '#' },
+  { name: 'LinkedIn', icon: LinkedIn, href: 'https://www.linkedin.com/company/vet-konect/' },
+  { name: 'X', icon: X, href: 'https://x.com/Vetkonectng' },
+  { name: 'Facebook', icon: Facebook, href: 'https://www.facebook.com/vetkonect?rdid=P9itvbCuYYOmIgRI&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19nt7iWBwZ%2F#' },
+  { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/vetkonect_official/' },
+  { name: 'YouTube', icon: YouTube, href: 'https://www.youtube.com/@vetkonect?si=Fvnr3o8iEsd5-QOA' },
+  { name: 'Tiktok', icon: Pinterest, href: 'https://www.tiktok.com/@vetkonectafrica?is_from_webapp=1&sender_device=pc' },
 ];
 
 const quickLinks: QuickLink[] = [
-  { name: 'About Us', href: '#' },
-  { name: 'Feed Calculator', href: '#' },
-  { name: 'Disease Predictor', href: '#' },
-  { name: 'Blog', href: '#' },
-  { name: 'Chat Forum', href: '#' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Feed Calculator', href: '/dashboard/feed-calculator' },
+  { name: 'Disease Predictor', href: '/dashboard/disease-predictor' },
+  { name: 'Blog', href: '/dashboard/blog' },
+  { name: 'Chat Forum', href: '/dashboard/chat-forum' },
 ];
 
 export default function Footer() {
@@ -76,13 +76,13 @@ export default function Footer() {
                 className="w-8 h-8"
               />
               <span className="text-xl font-bold text-gray-900 font-nunito">
-                Vetkonnect
+                Vetkonect
               </span>
             </div>
             
             <div className="space-y-2 text-sm text-gray-600">
               <p>Makurdi, Nigeria.</p>
-              <p>hello@vkonnect.com | +2347078340106</p>
+              <p>admin@vetkonect.com | +2347078340106</p>
             </div>
 
             {/* Social Media Icons */}
@@ -91,6 +91,7 @@ export default function Footer() {
                 <motion.a
                   key={social.name}
                   href={social.href}
+                  target='_blank'
                   className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-colors duration-200"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -107,7 +108,7 @@ export default function Footer() {
             </div>
 
             <p className="text-sm text-gray-500">
-              Copyright Vetkonnect {currentYear}
+              Copyright Vetkonect {currentYear}
             </p>
           </motion.div>
 

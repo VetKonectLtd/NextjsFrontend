@@ -5,45 +5,54 @@ import Cookies from "js-cookie";
 declare global {
   interface Window {
     Pusher: typeof Pusher;
-    Echo: Echo<any>;
+    Echo?: Echo<any>;
   }
 }
 
-const key = process.env.NEXT_PUBLIC_REVERB_APP_KEY!;
-const host = process.env.NEXT_PUBLIC_REVERB_HOST!;
-const port = Number(process.env.NEXT_PUBLIC_REVERB_PORT || 443);
-const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME || "https";
 
-let echo;
+let echo: Echo<any> | null = null;
 
 if (typeof window !== "undefined") {
-  if (!window.Pusher) {
-    window.Pusher = Pusher;
+  const key = process.env.NEXT_PUBLIC_REVERB_APP_KEY;
+  const host = process.env.NEXT_PUBLIC_REVERB_HOST;
+  const port = Number(process.env.NEXT_PUBLIC_REVERB_PORT || 443);
+  const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME || "https";
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+
+  
+  if (!key || !host || !baseURL) {
+    console.error("Missing Reverb environment variables. Check your .env file.");
   }
 
-  if (!window.Echo) {
-    window.Echo = new Echo({
-      broadcaster: "pusher",
-      key,
-      wsHost: host,
-      wsPort: port,
-      wssPort: port,
-      forceTLS: scheme === "https" && host !== "localhost",
-      enabledTransports: ["ws", "wss"],
-      disableStats: true,
-      authEndpoint: `${process.env.NEXT_PUBLIC_API_BASE_URL}/broadcasting/auth`,
-      auth: {
-        headers: () => ({
-          Authorization: Cookies.get("token")
-            ? `Bearer ${Cookies.get("token")}`
-            : "",
-          Accept: "application/json",
-        }),
-      },
-    });
-  }
+  window.Pusher = Pusher;
 
-  echo = window.Echo;
+  try {
+    if (!window.Echo) {
+      window.Pusher.logToConsole = true;
+      window.Echo = new Echo({
+        broadcaster: "reverb",
+        key,
+        wsHost: host,
+        wsPort: port,
+        wssPort: port,
+        forceTLS: scheme === "https",
+        enabledTransports: ["ws"],
+        disableStats: true,
+        authEndpoint: `${baseURL}/broadcasting/auth`,
+        auth: {
+          headers: {
+            Authorization: Cookies.get("auth-token")
+              ? `Bearer ${Cookies.get("auth-token")}`
+              : "",
+            Accept: "application/json",
+          },
+        },
+      });
+    }
+    echo = window.Echo;
+  } catch (error) {
+    console.error("Failed to initialize Echo:", error);
+  }
 }
 
 export default echo;
