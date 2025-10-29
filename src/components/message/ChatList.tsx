@@ -27,10 +27,10 @@ export default function ChatList({
 	return (
 		<div
 			className={`
-        bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 border border-gray-225 rounded-lg shadow-md px-6 py-3
+        bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 md:border border-gray-225 rounded-lg md:shadow-md px-2 md:px-6 py-2 md:py-3
       `}
 		>
-			<div className="flex mb-2">
+			<div className="md:flex hidden mb-2">
 				<h3 className="py-2 text-base font-bold text-gray-55">Chats</h3>
 			</div>
 
@@ -42,7 +42,7 @@ export default function ChatList({
 					placeholder="Search"
 					className="flex-1 bg-transparent outline-none text-sm px-4"
 				/>
-				<button className="bg-gray-500 rounded-r-full px-7 py-2 flex items-center justify-center">
+				<button className="bg-gray-500 rounded-r-full px-7 py-3 flex items-center justify-center">
 					<Search size={15} color="#fff" />
 				</button>
 			</div>

@@ -32,3 +32,6 @@ export { default as XIcon } from './twitter.png';
 
 export {default as User} from './user.png'
 export {default as Clock} from './clock.png'
+
+export {default as Filter} from './Filter.png'
+export {default as Warning} from './warning.png'

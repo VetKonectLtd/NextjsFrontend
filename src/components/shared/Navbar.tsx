@@ -31,6 +31,7 @@ const Navbar = () => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const { useLogout } = useAuthService();
 	const logoutMutation = useLogout();
+	const [token, setToken] = useState<string | undefined>(Cookies.get("auth-token"));
 
 	const pathname = usePathname();
 
@@ -76,9 +77,20 @@ const Navbar = () => {
 	};
 
 	useEffect(() => {
-		const token = Cookies.get("auth-token");
-		setIsAuthenticated(!!token);
-	}, []);
+		const currentToken = Cookies.get("auth-token");
+		setIsAuthenticated(!!currentToken);
+		setToken(currentToken);
+
+		const interval = setInterval(() => {
+			const newToken = Cookies.get("auth-token");
+			if (newToken !== token) {
+				setToken(newToken);
+				setIsAuthenticated(!!newToken);
+			}
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, [token]);
 
 	useEffect(() => {
 		const handleScroll = () => {

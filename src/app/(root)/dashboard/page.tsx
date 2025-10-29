@@ -14,6 +14,7 @@ import { useActivitiesService } from "@/services/activitiesService";
 import ActivitiesSkeleton from "@/components/shared/ActivitiesSkeleton.";
 import { Activity } from "@/types";
 import { useForumService } from "@/services/forumService";
+import { useAuthService } from "@/services/authService";
 
 const quickActions = [
 	{
@@ -48,11 +49,15 @@ const quickActions = [
 const Dashboard = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [role, setRole] = useState(false);
 	const { useGetActivities } = useActivitiesService();
 	const { useGetTrendingForum } = useForumService();
 	const getActivities = useGetActivities(true);
 	const getTrendingForum = useGetTrendingForum(true);
+	const { useCurrentUser } = useAuthService();
+	const {data: user} = useCurrentUser(true);
+	
+	const role = (user as any)?.profile?.role;
+
 
 	const trending = Array.isArray(getTrendingForum.data)
 		? getTrendingForum.data
@@ -80,7 +85,7 @@ const Dashboard = () => {
 	return (
 		<div className="w-11/12 m-auto">
 			{/* ✅ Congratulations Card */}
-			{role && (
+			{role == "Veterinarian" && (
 				<div className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-1 mb-2 transition">
 					<div className="text-gray-55 flex flex-col">
 						<span className="text-xs font-normal">Congratulations</span>
@@ -124,9 +129,9 @@ const Dashboard = () => {
 			</div>
 
 			{/* ✅ Add New Case Button */}
-			{role && (
-				<div
-					// onClick={() => selectAddPromotion(false)}
+			{role == "Veterinarian" && (
+				<Link
+					href="/dashboard/cases/add"
 					className="flex items-center justify-between md:w-1/2 border-2 pl-2 bg-white border-green-50 rounded-xl p-2 my-6 transition"
 				>
 					<span className="text-gray-55 text-sm font-semibold">
@@ -135,7 +140,7 @@ const Dashboard = () => {
 					<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
 						<PlusIcon className="w-5 h-5 font-bold text-white " />
 					</div>
-				</div>
+				</Link>
 			)}
 
 			{/* Tabs */}
