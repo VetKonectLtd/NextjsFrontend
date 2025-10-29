@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import AppointmentDetails from "./AppointmentDetails";
 import { useForm } from "react-hook-form";
 import { MessageFormData } from "@/types";
+import { toast } from "sonner";
 const DEFAULT_AVATAR = User;
 
 interface ChatWindowProps {
@@ -36,10 +37,11 @@ export default function ChatWindow({
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 	const { data: messageData, refetch } = useGetMessage(true, selectedVet?.id);
-	const { data: appointmentData } = useGetCancelAppointment(
-		true,
+	const { refetch: cancelAppointment } = useGetCancelAppointment(
+		false,
 		cancelAppointmentId,
 	);
+
 	const sendMessage = useSendMessage();
 
 	const allMessages: any = messageData ?? [];
@@ -77,7 +79,6 @@ export default function ChatWindow({
 		}
 	}, [selectedVet?.id]);
 
-
 	useEffect(() => {
 		let channel: any;
 
@@ -85,27 +86,44 @@ export default function ChatWindow({
 			if (typeof window === "undefined" || !selectedVet?.id) return;
 
 			const { default: echo } = await import("@/lib/echo");
+			if (!echo) {
+				console.error("Echo not initialized");
+				return;
+			}
+			// if (!echo) return;
 
-			if (!echo) return;
-
-			channel = echo.private(`direct-chat.${currentUserId}.${selectedVet.id}`);
+			const ids = [currentUserId, selectedVet.id].sort((a, b) => a - b);
+			channel = echo
+				.private(`direct-chat.${ids[0]}.${ids[1]}`);
 
 			channel.listen("direct-message.sent", (event: any) => {
-				refetch();
 				console.log("New message:", event.message);
+				refetch();
 			});
 		})();
 
 		return () => {
 			if (channel) {
-				 channel.leave(`private-direct-chat.${currentUserId}.${selectedVet.id}`);
+				channel.stopListening("direct-message.sent");
+				console.log("Unsubscribed from channel");
 			}
 		};
 	}, [selectedVet?.id, currentUserId]);
 
 	const handleCancel = (appointmentId: string) => async () => {
 		setCancelAppointmentId(appointmentId);
-		appointmentData;
+
+		setTimeout(async () => {
+			try {
+				const res = await cancelAppointment();
+				if (res?.data) {
+					toast.success("Appointment cancelled successfully");
+					refetch();
+				}
+			} catch (error) {
+				toast.error("Failed to cancel appointment");
+			}
+		}, 0);
 	};
 
 	const handleViewDetails = (appointment: any) => {
@@ -132,7 +150,7 @@ export default function ChatWindow({
 		});
 	};
 	return (
-		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl shadow-md w-full max-w-sm flex flex-col overflow-hidden border border-gray-200">
+		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl md:shadow-md w-full md:max-w-sm flex flex-col overflow-hidden md:border border-gray-200">
 			{/* Header */}
 			<div className="flex items-center justify-between p-3 border-b border-gray-100">
 				<div className="flex items-center gap-2">

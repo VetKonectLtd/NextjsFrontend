@@ -50,6 +50,7 @@ if (typeof window !== "undefined") {
       });
     }
     echo = window.Echo;
+    console.log("echo", echo);
   } catch (error) {
     console.error("Failed to initialize Echo:", error);
   }

@@ -9,6 +9,7 @@ import {
 	Share2,
 	SlidersVertical,
 	ThumbsUp,
+	X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForumService } from "@/services/forumService";
@@ -32,6 +33,7 @@ const ForumChatCard = () => {
 	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
 	const { useCurrentUser } = useAuthService();
 	const { data: user } = useCurrentUser(true);
+	const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
 	const [likeTarget, setLikeTarget] = useState<string | " ">("");
 	const [searchTerm, setSearchTerm] = useState("");
@@ -39,15 +41,17 @@ const ForumChatCard = () => {
 		useForumService();
 	const router = useRouter();
 	const getAllForum = useGetAllForumChat(true);
-	const getForumByVisibility = useGetForumByVisibility(  visibilityFilter !== "", visibilityFilter);
+	const getForumByVisibility = useGetForumByVisibility(
+		visibilityFilter !== "",
+		visibilityFilter,
+	);
 	const likeMutattion = useLikeForum(likeTarget);
 
 	console.log("visibilityFilter:::::;", getForumByVisibility.data);
 
-	const posts =
-			 Array.isArray((getAllForum?.data as any)?.chats?.data)
-				? (getAllForum?.data as any)?.chats?.data
-				: [];
+	const posts = Array.isArray((getAllForum?.data as any)?.chats?.data)
+		? (getAllForum?.data as any)?.chats?.data
+		: [];
 
 	const filteredPosts = posts.filter((post: ForumChat) => {
 		const titleMatch = post.title
@@ -89,6 +93,27 @@ const ForumChatCard = () => {
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		}
 	}, [selectedPost]);
+	
+
+	useEffect(() => {
+		const saved = localStorage.getItem("forumSearchHistory");
+		if (saved) setSearchHistory(JSON.parse(saved));
+	}, []);
+
+	const handleSearch = () => {
+		if (!searchTerm.trim()) return;
+		const updatedHistory = [
+			searchTerm,
+			...searchHistory.filter((term) => term !== searchTerm),
+		].slice(0, 5);
+		setSearchHistory(updatedHistory);
+		localStorage.setItem("forumSearchHistory", JSON.stringify(updatedHistory));
+	};
+
+	const handleClearHistory = () => {
+		setSearchHistory([]);
+		localStorage.removeItem("forumSearchHistory");
+	};
 
 	return (
 		<>
@@ -101,9 +126,13 @@ const ForumChatCard = () => {
 							placeholder="Type in your keyword here"
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="flex-1 px-4 py-1 text-gray-55 focus:outline-none"
+							onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+							className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
 						/>
-						<button className="flex items-center md:py-2 py-2 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white">
+						<button
+							onClick={handleSearch}
+							className="flex items-center md:py-2 py-2 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white"
+						>
 							<Search className="w-5 h-5" />
 							<span className="ml-2 hidden md:inline">Search</span>
 						</button>
@@ -121,24 +150,27 @@ const ForumChatCard = () => {
 				{/* Tags */}
 				{!selectedPost && (
 					<>
-						<div className="flex pb-6 md:max-w-full max-w-xs  overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
-							{[
-								"Dogs",
-								"Poultry",
-								"Vet Clinics",
-								"Vet Store",
-								"Vaccination",
-								"Dog Treatment",
-								"Fish Feeding",
-							].map((tag) => (
-								<span
-									key={tag}
-									className="px-3 py-1 text-sm bg-white border border-gray-225 shadow-md text-gray-700 text-center rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0"
+						{searchHistory.length > 0 && (
+							<div className="flex items-center justify-between mb-4">
+								<div className="flex pb-4 md:max-w-full max-w-xs overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
+									{searchHistory.map((term) => (
+										<span
+											key={term}
+											onClick={() => setSearchTerm(term)}
+											className="px-3 py-1 text-sm bg-white border border-gray-200 shadow-sm text-gray-700 rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0 hover:bg-gray-100"
+										>
+											{term}
+										</span>
+									))}
+								</div>
+								<button
+									onClick={handleClearHistory}
+									className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1"
 								>
-									{tag}
-								</span>
-							))}
-						</div>
+									<X size={12} /> Clear
+								</button>
+							</div>
+						)}
 
 						{/* Posts */}
 						{getAllForum.isLoading ? (

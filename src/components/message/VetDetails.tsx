@@ -20,10 +20,10 @@ export default function VetDetails({
 	handleContact,
 }: VetDetailsProps) {
 	return (
-		<div className="bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 scrollbar-hide overflow-y-auto rounded-2xl shadow-md w-full max-w-sm border border-gray-200 overflow-hidden">
+		<div className="bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 scrollbar-hide overflow-y-auto md:rounded-2xl md:shadow-md w-full md:max-w-sm border md:border md:border-gray-200 overflow-hidden">
 			<div
 				style={{ backgroundImage: `url(${Bg22.src})` }}
-				className="bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover p-4 flex justify-between items-start"
+				className="bg-gray-100 h-24 relative md:rounded-t-2xl bg-no-repeat bg-top bg-cover p-4 flex justify-between items-start"
 			>
 				<button onClick={onBack} className="md:hidden">
 					<ArrowLeft className="w-5 h-5 text-gray-700" />

@@ -162,7 +162,7 @@ const AddCasePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-11/12 m-auto bg-gray-50">
       {/* Header */}
       <div className="bg-white px-4 py-4">
         <div className="flex items-center justify-between">
