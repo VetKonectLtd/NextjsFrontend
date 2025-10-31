@@ -67,7 +67,7 @@ const Vetkonectearning = () => {
 			</div>
 
 			{/* Static bot image at the bottom */}
-			<div className="absolute z-20 bottom-12 left-40 md:left-[52%] transform -translate-x-1/2">
+			<div className="absolute z-20 bottom-12 left-10 md:left-[52%] transform -translate-x-1/2">
 				<Image
 					src={Bot}
 					alt="Bot Icon"

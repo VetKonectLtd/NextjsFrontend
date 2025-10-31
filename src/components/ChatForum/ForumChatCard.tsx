@@ -131,7 +131,7 @@ const ForumChatCard = () => {
 						/>
 						<button
 							onClick={handleSearch}
-							className="flex items-center md:py-2 py-2 md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white"
+							className="flex items-center md:py-3 py-3 rounded-r-xl  md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white"
 						>
 							<Search className="w-5 h-5" />
 							<span className="ml-2 hidden md:inline">Search</span>

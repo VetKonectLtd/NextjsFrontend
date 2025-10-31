@@ -59,7 +59,7 @@ const VetDiary = () => {
 						{activities.map((activity, i) => (
 							<SwiperSlide key={i}>
 								<div
-									className="flex flex-col items-center h-96  transition-transform duration-300
+									className="flex flex-col items-center md:h-96  transition-transform duration-300
     swiper-slide-active:translate-y-5"
 								>
 									<CurvedImage src={activity.image} alt="Activity" />

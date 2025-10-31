@@ -142,7 +142,7 @@ export default function ChatWindow({
 
 		sendMessage.mutate(formData, {
 			onSuccess: (res) => {
-				// refetch();
+				refetch();
 				setValue("content", "");
 				setValue("images", []);
 				setPreviews([]);
