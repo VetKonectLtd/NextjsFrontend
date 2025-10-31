@@ -517,10 +517,10 @@ const Navbar = () => {
 							{isAuthenticated && (
 								<button
 									onClick={() => {
-										handleLogout;
-										closeMobileMenu;
+										handleLogout();
+										closeMobileMenu();
 									}}
-									className="flex items-center px-4 py-4 rounded-2xl text-gray-700 bg-gray-150 border border-gray-225 shadow-active-link transition-colors"
+									className="flex items-center px-4 py-4 w-full rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
 								>
 									<UserIcon className="w-6 h-6 mr-4" />
 									<span className="text-base font-medium">Logout</span>
