@@ -226,7 +226,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 							<MessagesSquare size={14} color="#1D2432" />
 						</span>
 						<span className="ml-3 text-sm flex gap-2 text-gray-55 font-medium">
-							{detail?.comments_count}{" "}
+							{detail?.comments_count}
 							<span className="hidden md:block">Comments</span>
 						</span>
 					</div>

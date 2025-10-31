@@ -19,7 +19,7 @@ const countries: Country[] = [
   { code: 'KE', name: 'Kenya', description: 'Excellence in wildlife and domestic animal care' },
 ];
 
-export default function AreaCoveredSection() {
+export default function AreaCoveredSection({title}:any) {
   return (
     <section className="py-16 bg-offwhite">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +33,7 @@ export default function AreaCoveredSection() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl lg:text-4xl font-black text-gray-900 font-nunito mb-4">
-            Area Covered on Map
+            {title}
           </h2>
         </motion.div>
 

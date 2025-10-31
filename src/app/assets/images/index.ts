@@ -55,3 +55,17 @@ export { default as Activity2 } from './activity2.jpg';
 export { default as Activity3 } from './activity3.jpg';
 export { default as Dr_Moses } from './Dr_moses.jpg';
 export { default as Koyode } from './koyode.jpg';
+
+export { default as Hero1 } from './hero1.png';
+export { default as Hero2 } from './hero2.png';
+export { default as Hero3 } from './hero3.png';
+
+export { default as Champion1 } from './Champion1.png';
+export { default as Champion2 } from './Champion2.png';
+export { default as Champion3 } from './Champion3.png';
+export { default as Champion4 } from './Champion4.png';
+export { default as Chronicle1 } from './Chronicle1.png';
+
+export { default as Learning } from './learning1.png';
+export { default as Bot } from './bot.png';
+

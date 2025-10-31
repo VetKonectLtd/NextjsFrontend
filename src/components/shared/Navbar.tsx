@@ -31,7 +31,9 @@ const Navbar = () => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const { useLogout } = useAuthService();
 	const logoutMutation = useLogout();
-	const [token, setToken] = useState<string | undefined>(Cookies.get("auth-token"));
+	const [token, setToken] = useState<string | undefined>(
+		Cookies.get("auth-token"),
+	);
 
 	const pathname = usePathname();
 
@@ -176,6 +178,12 @@ const Navbar = () => {
 							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
 						>
 							Chat Forum
+						</Link>
+						<Link
+							href="/initiatives"
+							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+						>
+							Initiatives
 						</Link>
 					</div>
 
@@ -409,14 +417,17 @@ const Navbar = () => {
 
 						<nav className="p-6 space-y-2">
 							{/* Login/Signup */}
-							<Link
-								href="/login"
-								onClick={closeMobileMenu}
-								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 bg-gray-150 border border-gray-225 shadow-active-link transition-colors"
-							>
-								<UserIcon className="w-6 h-6 mr-4" />
-								<span className="text-base font-medium">Login / Signup</span>
-							</Link>
+
+							{!isAuthenticated && (
+								<Link
+									href="/login"
+									onClick={closeMobileMenu}
+									className="flex items-center px-4 py-4 rounded-2xl text-gray-700 bg-gray-150 border border-gray-225 shadow-active-link transition-colors"
+								>
+									<UserIcon className="w-6 h-6 mr-4" />
+									<span className="text-base font-medium">Login / Signup</span>
+								</Link>
+							)}
 
 							{/* Home */}
 							<Link
@@ -478,6 +489,15 @@ const Navbar = () => {
 								<span className="text-base font-medium">Chat Forum</span>
 							</Link>
 
+							<Link
+								href="/initiatives"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<ChatBubbleLeftRightIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Initiatives</span>
+							</Link>
+
 							{/* Language Option */}
 							<div className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors cursor-pointer">
 								<LanguageIcon className="w-6 h-6 mr-4" />
@@ -493,6 +513,19 @@ const Navbar = () => {
 								<PhoneIcon className="w-6 h-6 mr-4" />
 								<span className="text-base font-medium">Customer Support</span>
 							</Link>
+
+							{isAuthenticated && (
+								<button
+									onClick={() => {
+										handleLogout;
+										closeMobileMenu;
+									}}
+									className="flex items-center px-4 py-4 rounded-2xl text-gray-700 bg-gray-150 border border-gray-225 shadow-active-link transition-colors"
+								>
+									<UserIcon className="w-6 h-6 mr-4" />
+									<span className="text-base font-medium">Logout</span>
+								</button>
+							)}
 						</nav>
 					</motion.div>
 				)}
