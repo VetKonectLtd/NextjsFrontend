@@ -185,10 +185,11 @@ export default function AdvisoryAndActivities() {
 				</div>
 				<div className="w-full mx-auto">
 					<Swiper
-						modules={[Navigation]}
+						modules={[Navigation, Autoplay]}
 						spaceBetween={50}
 						slidesPerView={1.8} // show 1 full + part of next
 						centeredSlides={true}
+						loop
 						navigation={{
 							prevEl: "#prev-btn",
 							nextEl: "#next-btn",

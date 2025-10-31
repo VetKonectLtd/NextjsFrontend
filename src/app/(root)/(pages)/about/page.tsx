@@ -15,7 +15,7 @@ export default function AboutPage() {
       <OurValuesSection />
 
       {/* Area Covered Section */}
-      <AreaCoveredSection />
+      <AreaCoveredSection title="Area Covered on Map" />
 
       {/* Team Members Section */}
       <TeamMembersSection />

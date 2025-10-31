@@ -158,8 +158,8 @@ export default function Footer() {
                 <motion.button
                   type="submit"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-gray-700 hover:bg-gray-800 rounded-full flex items-center gap-3 transition-colors duration-200"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  // whileHover={{ scale: 1.05 }}
+                  // whileTap={{ scale: 0.95 }}
                 >
                   <Image 
                     src={Send} 
