@@ -60,11 +60,11 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	const detail: any = getForumBySlug?.data;
 
 	const comments = Array.isArray(getComment?.data) ? getComment?.data : [];
-	
+
 	useEffect(() => {
 		const initialLikes: { [key: string]: boolean } = {};
 		initialLikes[detail?.id] = detail?.has_liked ?? false;
-		console.log(detail?.has_liked)
+		console.log(detail?.has_liked);
 		setLikedPosts(initialLikes);
 	}, [detail]);
 
@@ -401,6 +401,38 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 														<p className="text-gray-55 text-sm">
 															{reply.comment}
 														</p>
+														<div className="flex w-full md:justify-end justify-start gap-4 items-center text-sm md:mb-1">
+															{reply.user.id == currentUserId && (
+																<>
+																	<div className="flex items-center">
+																		<span
+																			onClick={() => {
+																				setEditingCommentId(reply.id);
+																				setCommentText(reply.comment);
+																				setTimeout(() => {
+																					commentInputRef.current?.scrollIntoView(
+																						{
+																							behavior: "smooth",
+																							block: "start",
+																						},
+																					);
+																					commentInputRef.current?.focus();
+																				}, 200);
+																			}}
+																			className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+																		>
+																			<Edit size={14} color="#1D2432" />
+																		</span>
+																	</div>
+																	<span
+																		onClick={() => handleDelete(reply?.id)}
+																		className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+																	>
+																		<Trash size={14} color="#1D2432" />
+																	</span>
+																</>
+															)}
+														</div>
 													</motion.div>
 												))}
 											</motion.div>
@@ -426,7 +458,6 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 
 				{/* Add Comment */}
 				<div className="flex flex-col relative items-center gap-3 mt-4">
-
 					<textarea
 						ref={commentInputRef}
 						className="border relative outline-none shadow-md w-full p-4 text-sm font-normal py-3 rounded-md resize-none border-gray-225"
