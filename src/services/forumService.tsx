@@ -55,7 +55,7 @@ export const useForumService = () => {
 	};
 
 	const useGetForumByVisibility = (enabled: boolean = false, visibility:string) => {
-		return useGet<{ forum: ForumChat; token: string }>(
+		return useGet<{ forum: ForumChat}>(
 			["forum_visibility"],
 			`${FORUM_CHAT.GET_VISIBILITY_OPTIONS(visibility)}`,
 			{
