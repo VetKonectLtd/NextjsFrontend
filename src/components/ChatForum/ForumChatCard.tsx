@@ -41,17 +41,33 @@ const ForumChatCard = () => {
 		useForumService();
 	const router = useRouter();
 	const getAllForum = useGetAllForumChat(true);
-	const getForumByVisibility = useGetForumByVisibility(
-		visibilityFilter !== "",
-		visibilityFilter,
-	);
+	const getForumByVisibility = useGetForumByVisibility(true, visibilityFilter);
 	const likeMutattion = useLikeForum(likeTarget);
 
-	console.log("visibilityFilter:::::;", getForumByVisibility.data);
+	useEffect(() => {
+		if (visibilityFilter) {
+			getForumByVisibility.refetch();
+		}
+	}, [visibilityFilter]);
 
-	const posts = Array.isArray((getAllForum?.data as any)?.chats?.data)
+	console.log(
+		"visibilityFilter:::::;",
+		(getForumByVisibility.data as any)?.data,
+	);
+
+	const allPosts = Array.isArray((getAllForum?.data as any)?.chats?.data)
 		? (getAllForum?.data as any)?.chats?.data
 		: [];
+
+	// 2️⃣ Grab filtered-by-visibility data
+	const visibilityPosts = Array.isArray(
+		(getForumByVisibility?.data as any)?.data,
+	)
+		? (getForumByVisibility?.data as any)?.data
+		: [];
+
+	// 3️⃣ Decide which to use
+	const posts = visibilityFilter ? visibilityPosts : allPosts;
 
 	const filteredPosts = posts.filter((post: ForumChat) => {
 		const titleMatch = post.title
@@ -93,7 +109,6 @@ const ForumChatCard = () => {
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		}
 	}, [selectedPost]);
-	
 
 	useEffect(() => {
 		const saved = localStorage.getItem("forumSearchHistory");
