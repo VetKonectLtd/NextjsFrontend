@@ -11,6 +11,7 @@ import { LoginCredentials } from "@/types";
 import { useAuthService } from "@/services/authService";
 import { Loader2 } from "lucide-react";
 import Cookies from "js-cookie";
+import { AUTH_ENDPOINTS } from "@/lib/api-constants";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -38,13 +39,16 @@ export default function LoginPage() {
 		});
 	};
 
+	// const handleGoogleLogin = () => {
+	// 	googleLogin.refetch().then((res) => {
+	// 		if (res.data?.data?.token) {
+	// 			Cookies.set("auth-token", res.data.data.token);
+	// 			router.push("/dashboard");
+	// 		}
+	// 	});
+	// };
 	const handleGoogleLogin = () => {
-		googleLogin.refetch().then((res) => {
-			if (res.data?.data?.token) {
-				Cookies.set("auth-token", res.data.data.token);
-				router.push("/dashboard");
-			}
-		});
+		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
 	};
 
 	const handleLinkedInLogin = () => {
