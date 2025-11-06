@@ -35,3 +35,4 @@ export {default as Clock} from './clock.png'
 
 export {default as Filter} from './Filter.png'
 export {default as Warning} from './warning.png'
+export {default as Down} from './down.png'

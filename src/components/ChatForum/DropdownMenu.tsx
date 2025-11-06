@@ -15,7 +15,7 @@ import { useState } from "react";
 const FilterDropdownMenu = ({ setVisibilityFilter }: { setVisibilityFilter: (val: string) => void }) => {
 	const { useCurrentUser } = useAuthService();
 	const { data: user } = useCurrentUser(true);
-	const currentUserRole = (user as any)?.profile.user.roles[1].name;
+	const currentUserRole = (user as any)?.role;
 	
 	const [selected, setSelected] = useState(" ");
 
