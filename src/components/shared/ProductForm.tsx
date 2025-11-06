@@ -314,11 +314,7 @@ export default function ProductForm({
 									/>
 								</>
 							)}
-							{errors.images?.message && (
-								<p className="text-red-500 text-sm mt-1">
-									{errors.images?.message}
-								</p>
-							)}
+							
 						</div>
 						<div className=" pt-8">
 							<button

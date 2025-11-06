@@ -23,15 +23,12 @@ export const useForumService = () => {
 	};
 
 	const useAddForumComment = (id: string) => {
-		return usePost<{ forum: any }>(
-			FORUM_CHAT.ADD_FORUM_COMMENT(id),
-			{
-				onSuccess: () => {},
-				onError: (error) => {
-					handleError(error.message || "failed");
-				},
+		return usePost<{ forum: any }>(FORUM_CHAT.ADD_FORUM_COMMENT(id), {
+			onSuccess: () => {},
+			onError: (error) => {
+				handleError(error.message || "failed");
 			},
-		);
+		});
 	};
 
 	const useLikeForum = (id: string) => {
@@ -54,8 +51,11 @@ export const useForumService = () => {
 		);
 	};
 
-	const useGetForumByVisibility = (enabled: boolean = false, visibility:string) => {
-		return useGet<{ forum: ForumChat}>(
+	const useGetForumByVisibility = (
+		enabled: boolean = false,
+		visibility: string,
+	) => {
+		return useGet<{ forum: ForumChat }>(
 			["forum_visibility"],
 			`${FORUM_CHAT.GET_VISIBILITY_OPTIONS(visibility)}`,
 			{
@@ -76,15 +76,16 @@ export const useForumService = () => {
 		);
 	};
 
-	const useGetAllForumChat = (enabled: boolean = false) => {
-		return useGet<{ forum: ForumChat }>(
-			["forum"],
-			`${FORUM_CHAT.GET_ALL_FORUM}`,
-			{
-				enabled,
-				staleTime: 0,
-			},
-		);
+	const useGetAllForumChat = (enabled: boolean = false, page: number = 1) => {
+		const queryParams = new URLSearchParams();
+		queryParams.append("page", page.toString());
+
+		const url = `${FORUM_CHAT.GET_ALL_FORUM}?${queryParams.toString()}`;
+
+		return useGet<{ forum: ForumChat }>(["forum", page.toString()], url, {
+			enabled,
+			staleTime: 0,
+		});
 	};
 
 	const useGetShareForum = (enabled: boolean = false, id: string) => {
@@ -123,18 +124,17 @@ export const useForumService = () => {
 		);
 	};
 
-    const useUpdateForumComment = (id: string) => {
-		return usePut<{ forum: any }>(
-			FORUM_CHAT.UPDATE_FORUM_COMMENT(id),
-			{
-				onSuccess: (response: any) => {
-                    handleSuccess(response.message || "Changes to your Comment have been saved");
-				},
-				onError: (error) => {
-					handleError(error.message || "failed");
-				},
+	const useUpdateForumComment = (id: string) => {
+		return usePut<{ forum: any }>(FORUM_CHAT.UPDATE_FORUM_COMMENT(id), {
+			onSuccess: (response: any) => {
+				handleSuccess(
+					response.message || "Changes to your Comment have been saved",
+				);
 			},
-		);
+			onError: (error) => {
+				handleError(error.message || "failed");
+			},
+		});
 	};
 
 	const useDeleteForumComment = (id: string) => {
@@ -173,7 +173,7 @@ export const useForumService = () => {
 		useGetTrendingForum,
 		useLikeForum,
 		useGetAllForumChat,
-        useDeleteForumComment,
-        useUpdateForumComment
+		useDeleteForumComment,
+		useUpdateForumComment,
 	};
 };

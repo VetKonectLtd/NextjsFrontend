@@ -10,6 +10,7 @@ export function useGet<T>(
     enabled?: boolean;
     staleTime?: number;
     cacheTime?: number;
+    keepPreviousData?: boolean,
   }
 ) {
   return useQuery({
@@ -18,6 +19,7 @@ export function useGet<T>(
     enabled: options?.enabled ?? true,
     staleTime: options?.staleTime,
     cacheTime: options?.cacheTime,
+    keepPreviousData: options?.keepPreviousData,
   });
 }
 

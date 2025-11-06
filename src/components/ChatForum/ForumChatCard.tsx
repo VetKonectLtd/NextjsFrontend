@@ -7,7 +7,6 @@ import {
 	Search,
 	Send,
 	Share2,
-	SlidersVertical,
 	ThumbsUp,
 	X,
 } from "lucide-react";
@@ -17,112 +16,107 @@ import { ForumChat } from "@/types";
 import { formatRole, timeAgo } from "../shared/TimeFormat";
 import ForumPostSkeleton from "./ForumPostSkeleton";
 import EmptyState from "../shared/EmptyState";
-import { Hand, User } from "@/app/assets/icons";
+import { Hand, User, Down } from "@/app/assets/icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
 import { useAuthService } from "@/services/authService";
 import FilterDropdownMenu from "./DropdownMenu";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import ForumMenu from "./ForumMenu";
+
 const DEFAULT_AVATAR = User;
 
 const ForumChatCard = () => {
 	const [activePost, setActivePost] = useState<string | null>(null);
 	const [selectedPost, setSelectedPost] = useState<any | null>(null);
+	const [page, setPage] = useState(1);
+	const [allPosts, setAllPosts] = useState<ForumChat[]>([]);
 	const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
 	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
 	const { useCurrentUser } = useAuthService();
 	const { data: user } = useCurrentUser(true);
 	const [searchHistory, setSearchHistory] = useState<string[]>([]);
-
-	const [likeTarget, setLikeTarget] = useState<string | " ">("");
 	const [searchTerm, setSearchTerm] = useState("");
-	const { useLikeForum, useGetAllForumChat, useGetForumByVisibility } =
-		useForumService();
-	const router = useRouter();
-	const getAllForum = useGetAllForumChat(true);
-	const getForumByVisibility = useGetForumByVisibility(true, visibilityFilter);
-	const likeMutattion = useLikeForum(likeTarget);
+	const [postId, setPostId] = useState<string | " ">("");
 
+	const {
+		useLikeForum,
+		useGetAllForumChat,
+		useGetForumByVisibility,
+		useDeleteForum,
+		useUpdateForum,
+	} = useForumService();
+
+	const router = useRouter();
+
+	// Paginated fetch
+	const deleteForumChat = useDeleteForum(postId);
+	const updateForumMutation = useUpdateForum(postId);
+	const getAllForum = useGetAllForumChat(true, page);
+	const getForumByVisibility = useGetForumByVisibility(
+		!!visibilityFilter,
+		visibilityFilter,
+	);
+
+	const likeMutation = useLikeForum(activePost || "");
+
+	// When visibility changes, reset pagination and posts
 	useEffect(() => {
+		setPage(1);
+		setAllPosts([]);
 		if (visibilityFilter) {
 			getForumByVisibility.refetch();
 		}
 	}, [visibilityFilter]);
 
-	console.log(
-		"visibilityFilter:::::;",
-		(getForumByVisibility.data as any)?.data,
-	);
-
-	const allPosts = Array.isArray((getAllForum?.data as any)?.chats?.data)
-		? (getAllForum?.data as any)?.chats?.data
-		: [];
-
-	// 2️⃣ Grab filtered-by-visibility data
-	const visibilityPosts = Array.isArray(
-		(getForumByVisibility?.data as any)?.data,
-	)
-		? (getForumByVisibility?.data as any)?.data
-		: [];
-
-	// 3️⃣ Decide which to use
-	const posts = visibilityFilter ? visibilityPosts : allPosts;
-
-	const filteredPosts = posts.filter((post: ForumChat) => {
-		const titleMatch = post.title
-			.toLowerCase()
-			.includes(searchTerm.toLowerCase());
-		return titleMatch;
-	});
-
+	// Combine posts as pages load
 	useEffect(() => {
-		if (posts.length > 0) {
-			const initialLikes: { [key: string]: boolean } = {};
+		const newData = visibilityFilter
+			? (getForumByVisibility.data as any)?.data
+			: (getAllForum.data as any)?.chats?.data;
 
-			posts.forEach((post: ForumChat) => {
-				initialLikes[post.id] = post.has_liked ?? false;
+		if (Array.isArray(newData)) {
+			setAllPosts((prev) => {
+				const newUnique = newData.filter(
+					(p: ForumChat) => !prev.some((old) => old.id === p.id),
+				);
+				return [...prev, ...newUnique];
 			});
-			setLikedPosts(initialLikes);
 		}
-	}, [posts]);
+	}, [getAllForum.data, getForumByVisibility.data]);
 
+	// Handle like
 	const handleLike = (postId: any) => {
-		setLikeTarget(postId);
+		setActivePost(postId);
 		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
-
-		likeMutattion.mutate(postId, {
-			onSuccess: () => {
-				getAllForum.refetch();
-			},
+		likeMutation.mutate(postId, {
+			onSuccess: () => getAllForum.refetch(),
 		});
 	};
 
+	// Handle open post
 	const handleOpenPost = (post: ForumChat) => {
 		setSelectedPost(post);
 		const slug = slugify(post.slug);
 		router.push(`/dashboard/chat-forum/${post.id}/${slug}`);
 	};
 
-	useEffect(() => {
-		if (selectedPost) {
-			window.scrollTo({ top: 0, behavior: "smooth" });
-		}
-	}, [selectedPost]);
-
+	// Restore search history
 	useEffect(() => {
 		const saved = localStorage.getItem("forumSearchHistory");
 		if (saved) setSearchHistory(JSON.parse(saved));
 	}, []);
 
+	// Handle search
 	const handleSearch = () => {
 		if (!searchTerm.trim()) return;
-		const updatedHistory = [
+		const updated = [
 			searchTerm,
-			...searchHistory.filter((term) => term !== searchTerm),
+			...searchHistory.filter((t) => t !== searchTerm),
 		].slice(0, 5);
-		setSearchHistory(updatedHistory);
-		localStorage.setItem("forumSearchHistory", JSON.stringify(updatedHistory));
+		setSearchHistory(updated);
+		localStorage.setItem("forumSearchHistory", JSON.stringify(updated));
 	};
 
 	const handleClearHistory = () => {
@@ -130,220 +124,267 @@ const ForumChatCard = () => {
 		localStorage.removeItem("forumSearchHistory");
 	};
 
+	// Load More logic
+	const handleLoadMore = () => {
+		const nextPage = (getAllForum.data as any)?.chats?.next_page_url;
+		if (nextPage) setPage((prev) => prev + 1);
+	};
+
+	const isLoading = getAllForum.isLoading && page === 1;
+
+	const postsToRender = allPosts.filter((post) =>
+		post.title.toLowerCase().includes(searchTerm.toLowerCase()),
+	);
+
+	const handleEdit = (post: any) => {
+		const slug = slugify(post.slug);
+		router.push(`/dashboard/chat-forum/edit/${slug}`);
+	};
+
+	const handleDelete = (postId: any) => {
+		setPostId(postId);
+		if (window.confirm(`Are you sure you want to delete your post?`)) {
+			deleteForumChat.mutate(postId, {
+				onSuccess: () => {
+					getAllForum.refetch();
+				},
+			});
+		}
+	};
+
 	return (
-		<>
-			<div>
-				{/* Search Bar */}
-				<div className="flex flex-row items-center md:gap-7 gap-2 w-full  mb-6">
-					<div className="flex items-center w-full shadow-sm rounded-xl border border-gray-200 overflow-hidden bg-white">
-						<input
-							type="text"
-							placeholder="Type in your keyword here"
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-							onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-							className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
-						/>
-						<button
-							onClick={handleSearch}
-							className="flex items-center md:py-3 py-3 rounded-r-xl  md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white"
-						>
-							<Search className="w-5 h-5" />
-							<span className="ml-2 hidden md:inline">Search</span>
-						</button>
-					</div>
-
-					<div className="flex items-center gap-7">
-						<FilterDropdownMenu setVisibilityFilter={setVisibilityFilter} />
-
-						<div className="w-9 h-9 md:flex hidden items-center justify-center bg-green-50 text-white rounded-xl text-xl">
-							<PlusIcon className="w-10 h-10 font-bold text-white " />
-						</div>
-					</div>
+		<div>
+			{/* Search Bar */}
+			<div className="flex flex-row items-center md:gap-7 gap-2 w-full mb-6">
+				<div className="flex items-center w-full shadow-sm rounded-xl border border-gray-200 overflow-hidden bg-white">
+					<input
+						type="text"
+						placeholder="Type in your keyword here"
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+						onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+						className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
+					/>
+					<button
+						onClick={handleSearch}
+						className="flex items-center md:py-3 py-3 rounded-r-xl md:px-4 h-full justify-center pl-1 pr-2 bg-primary-400 text-white"
+					>
+						<Search className="w-5 h-5" />
+						<span className="ml-2 hidden md:inline">Search</span>
+					</button>
 				</div>
 
-				{/* Tags */}
-				{!selectedPost && (
-					<>
-						{searchHistory.length > 0 && (
-							<div className="flex items-center justify-between mb-4">
-								<div className="flex pb-4 md:max-w-full max-w-xs overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
-									{searchHistory.map((term) => (
-										<span
-											key={term}
-											onClick={() => setSearchTerm(term)}
-											className="px-3 py-1 text-sm bg-white border border-gray-200 shadow-sm text-gray-700 rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0 hover:bg-gray-100"
-										>
-											{term}
-										</span>
-									))}
-								</div>
-								<button
-									onClick={handleClearHistory}
-									className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1"
-								>
-									<X size={12} /> Clear
-								</button>
-							</div>
-						)}
-
-						{/* Posts */}
-						{getAllForum.isLoading ? (
-							Array.from({ length: 2 }).map((_, i) => (
-								<ForumPostSkeleton key={i} />
-							))
-						) : filteredPosts.length > 0 ? (
-							filteredPosts.map((post: ForumChat) => (
-								<div
-									key={post.id}
-									className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm"
-								>
-									{/* Header */}
-									<div className="flex items-center mb-3">
-										<div className="w-10 h-10 rounded-full border overflow-hidden border-gray-225 bg-gray-300 mr-3">
-											<Image
-												src={post.author.image || DEFAULT_AVATAR}
-												alt={"Vet"}
-												width={40}
-												height={40}
-												className="object-cover w-full h-full"
-											/>
-										</div>
-										<div>
-											<h3 className="font-semibold text-gray-800">
-												{post.author.name}
-											</h3>
-											<p className="text-sm text-gray-500">
-												{formatRole(post.author.active_role)}
-											</p>
-										</div>
-										<span className="ml-auto md:text-xs text-[10px] px-2 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
-											{timeAgo(post.created_at)}
-										</span>
-									</div>
-
-									{/* Post Body */}
-									{post?.image_url ? (
-										<Dialog>
-											<DialogTrigger asChild>
-												<div
-													className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
-													style={{ backgroundImage: `url(${post?.image_url})` }}
-												/>
-											</DialogTrigger>
-											<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
-												<img
-													src={post?.image_url}
-													alt="Full Image"
-													className="w-full h-auto max-h-[90vh] object-contain rounded-md"
-												/>
-											</DialogContent>
-										</Dialog>
-									) : (
-										<div className="bg-primary-400 h-40 mb-3 rounded-md" />
-									)}
-									<h4 className="font-semibold capitalize text-gray-55 text-lg">
-										{post.title}
-									</h4>
-									<p className="text-gray-55 text-sm mb-3">
-										{post.content.length <= 200 ? (
-											post.content
-										) : (
-											<>
-												{post.content.slice(0, 200)}...
-												<span
-													onClick={() => handleOpenPost(post)}
-													className="text-green-50 cursor-pointer"
-												>
-													{" "}
-													see more
-												</span>
-											</>
-										)}
-									</p>
-
-									{/* Actions */}
-									<div className="flex md:justify-end justify-start gap-4 items-end text-sm">
-										<div className="flex items-center">
-											<span className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
-												<Eye size={14} color="#1D2432" />
-											</span>
-											<span className="ml-1 flex gap-2 md:text-sm text-xs text-gray-55 font-medium">
-												{post.views_count}
-												<span className="hidden md:block">Views</span>
-											</span>
-										</div>
-
-										<div
-											className="flex items-center cursor-pointer"
-											onClick={() =>
-												setActivePost(activePost === post.id ? null : post.id)
-											}
-										>
-											<span
-												onClick={() => handleOpenPost(post)}
-												className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
-											>
-												<MessagesSquare size={14} color="#1D2432" />
-											</span>
-											<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-												{post.comments_count}
-												<span className="hidden md:block">Comments</span>
-											</span>
-										</div>
-
-										<div className="flex items-center">
-											<span
-												onClick={() => handleLike(post?.id)}
-												className={`bg-white border cursor-pointer shadow-md rounded-full p-2 flex items-center justify-center transition-transform  ${likedPosts[post.id] ? "border-primary-400" : "border-gray-225"}`}
-											>
-												<ThumbsUp
-													size={14}
-													color={likedPosts[post.id] ? "#0BA02C" : "#1D2432"}
-													fill={likedPosts[post.id] ? "#0BA02C" : "none"}
-												/>
-											</span>
-											<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-												{post.likes_count}{" "}
-												<span className="hidden md:block">Likes</span>
-											</span>
-										</div>
-
-										<div className="flex items-center">
-											<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
-												<Share2 size={14} color="#1D2432" />
-											</span>
-											<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-												{post?.shares_count}
-											</span>
-										</div>
-										<div className="flex items-center">
-											<span
-												onClick={() => handleOpenPost(post)}
-												className="ml-3 bg-primary-400 border cursor-pointer border-white rounded-xl p-2 font-semibold"
-											>
-												<Send size={14} className="text-white" />
-											</span>
-										</div>
-									</div>
-								</div>
-							))
-						) : posts.length > 0 ? (
-							<p className="text-gray-500 text-center py-6 font-medium">
-								No forum chats match "
-								<span className="text-primary-400">{searchTerm}</span>"
-							</p>
-						) : (
-							<EmptyState
-								title="Hey! User"
-								description="Kindly click on the button above to start a forum chat"
-								image={Hand}
-							/>
-						)}
-					</>
-				)}
+				<div className="flex items-center gap-7">
+					<FilterDropdownMenu setVisibilityFilter={setVisibilityFilter} />
+					<div className="w-9 h-9 md:flex hidden items-center justify-center bg-green-50 text-white rounded-xl text-xl">
+						<PlusIcon className="w-10 h-10 font-bold text-white " />
+					</div>
+				</div>
 			</div>
-		</>
+
+			{/* Search Tags */}
+			{searchHistory.length > 0 && (
+				<div className="flex items-center justify-between mb-4">
+					<div className="flex pb-4 md:max-w-full max-w-xs overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
+						{searchHistory.map((term) => (
+							<span
+								key={term}
+								onClick={() => setSearchTerm(term)}
+								className="px-3 py-1 text-sm bg-white border border-gray-200 shadow-sm text-gray-700 rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0 hover:bg-gray-100"
+							>
+								{term}
+							</span>
+						))}
+					</div>
+					<button
+						onClick={handleClearHistory}
+						className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1"
+					>
+						<X size={12} /> Clear
+					</button>
+				</div>
+			)}
+
+			{/* Posts */}
+			{isLoading ? (
+				Array.from({ length: 2 }).map((_, i) => <ForumPostSkeleton key={i} />)
+			) : postsToRender.length > 0 ? (
+				<>
+					{postsToRender.map((post) => (
+						<div
+							key={post.id}
+							className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm"
+						>
+							{/* Header */}
+							<div className="flex justify-between items-center mb-3">
+								<div className="items-center flex">
+									<div className="w-10 h-10 rounded-full border overflow-hidden border-gray-225 bg-gray-300 mr-3">
+										<Image
+											src={post.author.image || DEFAULT_AVATAR}
+											alt={"Vet"}
+											width={40}
+											height={40}
+											className="object-cover w-full h-full"
+										/>
+									</div>
+									<div>
+										<h3 className="font-semibold text-gray-800">
+											{post.author.name}
+										</h3>
+										<p className="text-sm text-gray-500">
+											{formatRole(post.author.active_role)}
+										</p>
+									</div>
+								</div>
+								<div className="flex justify-between items-center">
+									<div className="ml-auto mr-3 text-nowrap md:text-xs text-[10px] px-2 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
+										{timeAgo(post.created_at)}
+									</div>
+									<ForumMenu
+										handleEdit={() => handleEdit(post)}
+										handleDelete={() => handleDelete(post.id)}
+									/>
+								</div>
+							</div>
+
+							{/* Body */}
+							{post?.image_url && (
+								<Dialog>
+									<DialogTrigger asChild>
+										<div
+											className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
+											style={{ backgroundImage: `url(${post.image_url})` }}
+										/>
+									</DialogTrigger>
+									<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
+										<img
+											src={post.image_url}
+											alt="Full Image"
+											className="w-full h-auto max-h-[90vh] object-contain rounded-md"
+										/>
+									</DialogContent>
+								</Dialog>
+							)}
+
+							<h4 className="font-semibold capitalize text-gray-55 text-lg">
+								{post.title}
+							</h4>
+							<p className="text-gray-55 text-sm mb-3">
+								{post.content.length <= 200 ? (
+									post.content
+								) : (
+									<>
+										{post.content.slice(0, 200)}...
+										<span
+											onClick={() => handleOpenPost(post)}
+											className="text-green-50 cursor-pointer"
+										>
+											see more
+										</span>
+									</>
+								)}
+							</p>
+
+							{/* Actions */}
+							<div className="flex md:justify-end justify-start gap-4 items-end text-sm">
+								<div className="flex items-center">
+									<span className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+										<Eye size={14} color="#1D2432" />
+									</span>
+									<span className="ml-1 flex gap-2 md:text-sm text-xs text-gray-55 font-medium">
+										{post.views_count}
+										<span className="hidden md:block">Views</span>
+									</span>
+								</div>
+
+								<div
+									className="flex items-center cursor-pointer"
+									onClick={() =>
+										setActivePost(activePost === post.id ? null : post.id)
+									}
+								>
+									<span
+										onClick={() => handleOpenPost(post)}
+										className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+									>
+										<MessagesSquare size={14} color="#1D2432" />
+									</span>
+									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+										{post.comments_count}
+										<span className="hidden md:block">Comments</span>
+									</span>
+								</div>
+
+								<div className="flex items-center">
+									<span
+										onClick={() => handleLike(post.id)}
+										className={`bg-white border cursor-pointer shadow-md rounded-full p-2 flex items-center justify-center transition-transform ${
+											likedPosts[post.id]
+												? "border-primary-400"
+												: "border-gray-225"
+										}`}
+									>
+										<ThumbsUp
+											size={14}
+											color={likedPosts[post.id] ? "#0BA02C" : "#1D2432"}
+											fill={likedPosts[post.id] ? "#0BA02C" : "none"}
+										/>
+									</span>
+									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+										{post.likes_count}
+										<span className="hidden md:block">Likes</span>
+									</span>
+								</div>
+
+								<div className="flex items-center">
+									<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+										<Share2 size={14} color="#1D2432" />
+									</span>
+									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
+										{post.shares_count}
+									</span>
+								</div>
+
+								<div className="flex items-center">
+									<span
+										onClick={() => handleOpenPost(post)}
+										className="ml-3 bg-primary-400 border cursor-pointer border-white rounded-xl p-2 font-semibold"
+									>
+										<Send size={14} className="text-white" />
+									</span>
+								</div>
+							</div>
+						</div>
+					))}
+
+					{/* Load More */}
+					{(getAllForum.data as any)?.chats?.next_page_url && (
+						<div className="m-auto w-1/3 justify-center flex">
+							<button
+								onClick={handleLoadMore}
+								disabled={getAllForum.isFetching}
+								className="mt-6 flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
+							>
+								{getAllForum.isFetching ? "Loading..." : "Load more"}
+								<Image
+									src={Down}
+									alt="down"
+									width={120}
+									height={120}
+									className="h-5 w-5 ml-3 animate-bounce object-cover"
+								/>
+							</button>
+						</div>
+					)}
+				</>
+			) : (
+				<EmptyState
+					title="Hey! User"
+					description="Kindly click on the button above to start a forum chat"
+					image={Hand}
+				/>
+			)}
+		</div>
 	);
 };
 

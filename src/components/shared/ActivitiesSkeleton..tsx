@@ -3,7 +3,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const ActivitiesSkeleton = () => {
 	return (
-		<div className="w-full m-auto py-2">
+		<div className="w-11/12 m-auto py-2">
 
 			{Array.from({ length: 2 }).map((_, idx) => (
 				<div

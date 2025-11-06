@@ -12,6 +12,7 @@ import {
 	Trash,
 	Eye,
 	X,
+	Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -149,6 +150,17 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 		return () => window.removeEventListener("resize", checkScreen);
 	}, []);
 
+	if (getForumBySlug.isLoading || getComment.isLoading) {
+		return (
+			<div className="flex justify-center items-center h-[60vh]">
+				<Loader2 className="animate-spin text-primary-400 w-8 h-8" />
+				<span className="ml-3 text-gray-600 font-medium">
+					Loading forum chat...
+				</span>
+			</div>
+		);
+	}
+
 	return (
 		<div className="">
 			<div className="flex gap-3 text-sm text-gray-55 mb-5">
@@ -180,7 +192,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 							{formatRole(detail?.author.active_role)}
 						</p>
 					</div>
-					<span className="ml-auto text-xs px-3 py-1 border border-gray-200 rounded-full bg-gray-100 text-gray-600">
+					<span className="ml-auto text-nowrap text-xs px-3 py-1 border border-gray-200 rounded-full bg-gray-100 text-gray-600">
 						{timeAgo(detail?.created_at)}
 					</span>
 				</div>
