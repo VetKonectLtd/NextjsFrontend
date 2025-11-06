@@ -5,8 +5,8 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export const AUTH_ENDPOINTS = {
 	LOGIN: "/v3/login",
 	SIGNUP: "/v3/register",
-	GOOGLE_LOGIN: "/google/loginUsingGoogle",
-	LINKEDIN_LOGIN: "/linkedin/loginUsingLinkedin",
+	GOOGLE_LOGIN: "/v3/google/loginUsingGoogle",
+	LINKEDIN_LOGIN: "/v3/linkedin/loginUsingLinkedin",
 	LOGOUT: "/v3/logout",
 	REFRESH: "/v3/refresh",
 	RESENDVERIFICATION: "/v3/resendVerificationEmail",
