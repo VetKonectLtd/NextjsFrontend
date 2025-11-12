@@ -1,15 +1,31 @@
 "use client";
 
-import {useSearchParams } from "next/navigation";
+import {useRouter, useSearchParams } from "next/navigation";
 import SignUpSuccess from "@/components/signup/SignUpSuccess";
 import { AuthBg } from "@/app/assets/images";
 import LoginSuccess from "@/components/login/LoginSuccess";
 import ResetPasswordSuccess from "@/components/resetPassword/ResetPasswordSuccess";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 const SuccessPage = () => {
 	
-	const searchParams = useSearchParams();
-	const formType = searchParams.get("form");
+	const router = useRouter();
+  const searchParams = useSearchParams();
+  const formType = searchParams.get("form");
+  const token = searchParams.get("token");
+  console.log("Form Type:", formType);
+  console.log("Token:", token);
+
+  useEffect(() => {
+    if (token) {
+		console.log("Received token:", token);
+      Cookies.set("auth-token", token, { secure: true, sameSite: "strict" });
+
+      const cleanUrl = `/success?form=${formType || "Login"}`;
+      router.replace(cleanUrl, { scroll: false });
+    }
+  }, [token, formType, router]);
 
 	const renderSuccessComponent = () => {
 		switch (formType) {

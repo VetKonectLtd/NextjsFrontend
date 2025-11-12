@@ -39,20 +39,19 @@ const ForumChatCard = () => {
 	const [searchHistory, setSearchHistory] = useState<string[]>([]);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [postId, setPostId] = useState<string | " ">("");
+	const currentUserId = (user as any)?.profile?.user_id;
 
 	const {
 		useLikeForum,
 		useGetAllForumChat,
 		useGetForumByVisibility,
 		useDeleteForum,
-		useUpdateForum,
 	} = useForumService();
 
 	const router = useRouter();
 
 	// Paginated fetch
 	const deleteForumChat = useDeleteForum(postId);
-	const updateForumMutation = useUpdateForum(postId);
 	const getAllForum = useGetAllForumChat(true, page);
 	const getForumByVisibility = useGetForumByVisibility(
 		!!visibilityFilter,
@@ -86,14 +85,15 @@ const ForumChatCard = () => {
 		}
 	}, [getAllForum.data, getForumByVisibility.data]);
 
-	// Handle like
-	const handleLike = (postId: any) => {
-		setActivePost(postId);
-		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
-		likeMutation.mutate(postId, {
-			onSuccess: () => getAllForum.refetch(),
-		});
-	};
+	useEffect(() => {
+		if (allPosts.length > 0) {
+			const initialLikes: { [key: string]: boolean } = {};
+			allPosts.forEach((post) => {
+				initialLikes[post.id] = post.has_liked ?? false;
+			});
+			setLikedPosts(initialLikes);
+		}
+	}, [allPosts]);
 
 	// Handle open post
 	const handleOpenPost = (post: ForumChat) => {
@@ -150,6 +150,17 @@ const ForumChatCard = () => {
 				},
 			});
 		}
+	};
+
+	// Handle like
+	const handleLike = (postId: any) => {
+		setActivePost(postId);
+		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+		likeMutation.mutate(postId, {
+			onSuccess: () => {
+				getAllForum.refetch();
+			},
+		});
 	};
 
 	return (
@@ -240,10 +251,12 @@ const ForumChatCard = () => {
 									<div className="ml-auto mr-3 text-nowrap md:text-xs text-[10px] px-2 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
 										{timeAgo(post.created_at)}
 									</div>
-									<ForumMenu
-										handleEdit={() => handleEdit(post)}
-										handleDelete={() => handleDelete(post.id)}
-									/>
+									{post.author.id == currentUserId && (
+										<ForumMenu
+											handleEdit={() => handleEdit(post)}
+											handleDelete={() => handleDelete(post.id)}
+										/>
+									)}
 								</div>
 							</div>
 

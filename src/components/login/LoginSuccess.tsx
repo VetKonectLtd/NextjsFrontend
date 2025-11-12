@@ -10,10 +10,12 @@ const LoginSuccess = () => {
 		if (token) {
 			router.replace("/dashboard");
 		} else {
-			router.replace("/success?form=Login");
+			router.replace("/login");
+
+			// router.replace("/success?form=Login");
 		}
 	};
-	
+
 	return (
 		<>
 			<div className="w-full  pt-36  max-w-sm mx-auto flex flex-col items-center">
