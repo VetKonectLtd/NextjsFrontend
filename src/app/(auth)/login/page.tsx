@@ -38,16 +38,6 @@ export default function LoginPage() {
 			},
 		});
 	};
-
-	// const handleGoogleLogin = () => {
-	// 	googleLogin.refetch().then((res) => {
-	// 		if (res.data?.data?.token) {
-	// 			console.log("Google login response:", res);
-	// 			Cookies.set("auth-token", res.data.data.token);
-	// 			router.push("/dashboard");
-	// 		}
-	// 	});
-	// };
 	
 	const handleGoogleLogin = () => {
 		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
