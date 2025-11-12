@@ -2,6 +2,7 @@ import { usePost, useGet, useDelete, usePut } from "@/lib/hooks";
 import { FORUM_CHAT } from "@/lib/api-constants";
 import { ForumChat } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
+import page from "@/app/(root)/dashboard/ad-promotion/page";
 
 // PetOwner service using hooks
 export const useForumService = () => {
@@ -37,6 +38,7 @@ export const useForumService = () => {
 			onError: (error) => {
 				handleError(error.message || "failed");
 			},
+			invalidateQueries: [["forum", page.toString()]],
 		});
 	};
 

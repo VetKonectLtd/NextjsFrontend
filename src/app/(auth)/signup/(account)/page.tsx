@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Linkedin } from "@/app/assets/icons/auth";
 import Cookies from "js-cookie";
+import { AUTH_ENDPOINTS } from "@/lib/api-constants";
 
 export default function AccountPage() {
 	const router = useRouter();
@@ -36,21 +37,11 @@ export default function AccountPage() {
 	};
 
 	const handleGoogleLogin = () => {
-		googleLogin.refetch().then((res) => {
-			if (res.data?.data?.token) {
-				Cookies.set("auth-token", res.data.data.token);
-				router.push("/dashboard");
-			}
-		});
+		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
 	};
 
 	const handleLinkedInLogin = () => {
-		linkedinLogin.refetch().then((res) => {
-			if (res.data?.data?.token) {
-				Cookies.set("auth-token", res.data.data.token);
-				router.push("/dashboard");
-			}
-		});
+		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`;
 	};
 
 	return (
