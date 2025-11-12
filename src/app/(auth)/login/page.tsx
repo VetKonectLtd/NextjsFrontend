@@ -17,7 +17,6 @@ export default function LoginPage() {
 	const router = useRouter();
 	const { useLogin, useGoogleLogin, useLinkedInLogin } = useAuthService();
 	const loginMutation = useLogin();
-	const googleLogin = useGoogleLogin(false);
 	const linkedinLogin = useLinkedInLogin(false);
 
 	const {
@@ -44,13 +43,17 @@ export default function LoginPage() {
 	};
 
 	const handleLinkedInLogin = () => {
-		linkedinLogin.refetch().then((res) => {
-			if (res.data?.data?.token) {
-				Cookies.set("auth-token", res.data.data.token);
-				router.push("/dashboard");
-			}
-		});
+		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`;
 	};
+
+	// const handleLinkedInLogin = () => {
+	// 	linkedinLogin.refetch().then((res) => {
+	// 		if (res.data?.data?.token) {
+	// 			Cookies.set("auth-token", res.data.data.token);
+	// 			router.push("/dashboard");
+	// 		}
+	// 	});
+	// };
 
 	return (
 		<div

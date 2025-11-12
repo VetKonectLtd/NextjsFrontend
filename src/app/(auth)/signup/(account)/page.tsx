@@ -41,12 +41,7 @@ export default function AccountPage() {
 	};
 
 	const handleLinkedInLogin = () => {
-		linkedinLogin.refetch().then((res) => {
-			if (res.data?.data?.token) {
-				Cookies.set("auth-token", res.data.data.token);
-				router.push("/dashboard");
-			}
-		});
+		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`;
 	};
 
 	return (

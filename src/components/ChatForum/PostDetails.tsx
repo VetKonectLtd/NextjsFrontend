@@ -65,7 +65,6 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	useEffect(() => {
 		const initialLikes: { [key: string]: boolean } = {};
 		initialLikes[detail?.id] = detail?.has_liked ?? false;
-		console.log(detail?.has_liked);
 		setLikedPosts(initialLikes);
 	}, [detail]);
 
