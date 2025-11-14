@@ -2,6 +2,7 @@
 
 import { ArrowDown, Search } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import CountryFlags from "@/components/homeComponents/CountryFlags";
 import { motion } from "framer-motion";
 import {
@@ -28,14 +29,30 @@ import { Footer } from "@/components/shared";
 import { div } from "framer-motion/client";
 import { Button } from "@/components/ui/button";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
+import GooglePlacesAutocomplete from "@/components/shared/GooglePlacesAutocomplete";
 
 export default function Home() {
-	// Get user's current location for nearby vets
+	// State for selected location from Google Places
+	const [selectedLocation, setSelectedLocation] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
+	// State for selected country
+	const [selectedCountry, setSelectedCountry] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
+	// Get user's current location for nearby vets (fallback)
 	const {
 		coordinates,
 		loading: locationLoading,
 		error: locationError,
 	} = useGeolocation();
+
+	// Priority: selected location > selected country > geolocation
+	const activeCoordinates = selectedLocation || selectedCountry || coordinates;
 
 	// CTA data configuration
 	const ctaData = [
@@ -155,10 +172,17 @@ export default function Home() {
 												height={20}
 											/>
 										</div>
-										<input
-											type="text"
-											className="search-bar block w-full pl-12 pr-14 py-4 bg-white/80 backdrop-blur-sm rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-700 placeholder-gray-500"
+										<GooglePlacesAutocomplete
+											onPlaceSelect={(location) => {
+												setSelectedLocation({
+													latitude: location.latitude,
+													longitude: location.longitude,
+												});
+												// Clear selected country when location is selected
+												setSelectedCountry(null);
+											}}
 											placeholder="Type in your location"
+											className="search-bar block w-full pl-12 pr-14 py-4 bg-white/80 backdrop-blur-sm rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-700 placeholder-gray-500 border border-transparent"
 										/>
 										<div className="absolute inset-y-0 right-0 flex items-center pr-3">
 											<button className="p-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white transition-colors">
@@ -167,7 +191,16 @@ export default function Home() {
 										</div>
 									</div>
 
-									<CountryFlags />
+									<CountryFlags
+										onCountrySelect={(country) => {
+											setSelectedCountry({
+												latitude: country.latitude,
+												longitude: country.longitude,
+											});
+											// Clear selected location when country is selected
+											setSelectedLocation(null);
+										}}
+									/>
 								</div>
 
 								{/* Right side - Globe visualization */}
@@ -187,11 +220,11 @@ export default function Home() {
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					<NearYou
 						userLocation={
-							coordinates
+							activeCoordinates
 								? {
-										latitude: coordinates.latitude,
-										longitude: coordinates.longitude,
-									}
+									latitude: activeCoordinates.latitude,
+									longitude: activeCoordinates.longitude,
+								}
 								: undefined
 						}
 						useRealData={true}

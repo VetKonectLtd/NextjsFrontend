@@ -1,8 +1,8 @@
 "use client";
-import { Copy, Link, Send, Smile } from "lucide-react";
+import { Copy, Link, Send, Smile, ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ReactStars from "react-stars";
 import { ChatBox } from "@/components/shared";
 import { User } from "@/types";
@@ -29,6 +29,8 @@ const AccountAction = ({
 	accountType,
 }: AccountActionProps) => {
 	const [copied, setCopied] = useState<string | null>(null);
+	const [uploadedMedia, setUploadedMedia] = useState<string[]>([]);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const ratingChanged = (newRating: any) => {
 		console.log(newRating);
@@ -103,22 +105,95 @@ const AccountAction = ({
 				</>
 			)}
 
-			{selectedAction === "media" && selectedUser && (
-				<ChatBox
-					selectedUser={{
-						name: selectedUser.name,
-						image:
-							selectedUser.profileImage ||
-							`https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.name)}&size=150&background=0B6614&color=fff`,
-						role:
-							accountType === "veterinarian" ? "Veterinarian" : "Animal Owner",
-					}}
-					placeholder={`Send a message to ${selectedUser.name}...`}
-					onSendMessage={(message) => {
-						console.log("Message sent to", selectedUser.name, message);
-						// Handle message sending logic here
-					}}
-				/>
+			{selectedAction === "media" && (
+				<div className="w-full max-w-md mx-auto">
+					{/* Title */}
+					<div className="text-center mb-6">
+						<h2 className="text-xl font-bold text-gray-900 mb-1">
+							Users' Media
+						</h2>
+						<p className="text-sm text-gray-600">Add your media practice</p>
+					</div>
+
+					{/* Media Upload Area */}
+					<div className="mb-6">
+						{uploadedMedia.length > 0 ? (
+							<div className="grid grid-cols-2 gap-3 mb-4">
+								{uploadedMedia.map((media, index) => (
+									<div key={index} className="relative group">
+										<div className="w-full h-32 border-2 border-gray-300 rounded-lg overflow-hidden">
+											<Image
+												src={media}
+												alt={`Media ${index + 1}`}
+												width={200}
+												height={128}
+												className="w-full h-full object-cover"
+											/>
+										</div>
+										<button
+											onClick={() => {
+												const newMedia = [...uploadedMedia];
+												newMedia.splice(index, 1);
+												setUploadedMedia(newMedia);
+											}}
+											className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+										>
+											<X className="w-4 h-4" />
+										</button>
+									</div>
+								))}
+							</div>
+						) : (
+							<div
+								onClick={() => fileInputRef.current?.click()}
+								className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-green-500 transition-colors"
+							>
+								<div className="flex flex-col items-center justify-center">
+									<div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+										<ImageIcon className="w-8 h-8 text-gray-400" />
+									</div>
+									<p className="text-gray-600 font-medium">Click to add media</p>
+								</div>
+							</div>
+						)}
+					</div>
+
+					{/* Hidden File Input */}
+					<input
+						ref={fileInputRef}
+						type="file"
+						accept="image/*,video/*"
+						multiple
+						className="hidden"
+						onChange={(e) => {
+							const files = e.target.files;
+							if (files) {
+								const fileArray = Array.from(files);
+								const newMediaPromises = fileArray.map((file) => {
+									return new Promise<string>((resolve) => {
+										const reader = new FileReader();
+										reader.onloadend = () => {
+											resolve(reader.result as string);
+										};
+										reader.readAsDataURL(file);
+									});
+								});
+
+								Promise.all(newMediaPromises).then((mediaUrls) => {
+									setUploadedMedia((prev) => [...prev, ...mediaUrls]);
+								});
+							}
+						}}
+					/>
+
+					{/* Add Media Button */}
+					<button
+						onClick={() => fileInputRef.current?.click()}
+						className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50 transition-colors"
+					>
+						Add media
+					</button>
+				</div>
 			)}
 
 			{selectedAction === "mail" && (
@@ -133,7 +208,7 @@ const AccountAction = ({
 							onClick={() =>
 								handleCopy(
 									selectedUser?.user.email ||
-										`${selectedUser?.user.email}`,
+									`${selectedUser?.user.email}`,
 								)
 							}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
@@ -155,7 +230,7 @@ const AccountAction = ({
 						{selectedUser?.user.email ||
 							`${selectedUser?.user.email}`}
 					</p>
-					
+
 				</>
 			)}
 
@@ -168,7 +243,7 @@ const AccountAction = ({
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
 							onClick={() =>
-								handleCopy(selectedUser?.user.country && selectedUser?.user.state  || "Location not specified")
+								handleCopy(selectedUser?.user.country && selectedUser?.user.state || "Location not specified")
 							}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
@@ -258,6 +333,26 @@ const AccountAction = ({
 								/>
 							</svg>
 							Edit Profile
+						</button>
+					</div>
+				</>
+			)}
+
+			{selectedAction === "switch-profile" && (
+				<>
+					<p className="text-gray-55 font-bold">Switch Profile</p>
+					<p className="text-sm mt-2 w-60 m-auto text-gray-55">
+						Switch between different profile types
+					</p>
+					<div className="flex items-center py-3 justify-center">
+						<button
+							onClick={() => {
+								// Handle profile switching logic here
+								console.log("Switching profile...");
+							}}
+							className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+						>
+							Switch Profile
 						</button>
 					</div>
 				</>
