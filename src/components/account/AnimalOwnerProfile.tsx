@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { AuthBg } from '@/app/assets/images';
 import { AccountAction } from './';
+import SwitcherIcon from '@/app/assets/icons/switcher.svg';
 
 interface AnimalOwnerProfileProps {
   isEditMode: boolean;
@@ -322,15 +323,15 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             </button>
 
             <button
-              onClick={() => handleContact('1', 'rate')}
+              onClick={() => handleContact('1', 'switch-profile')}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
-                className={`bg-white border ${selectedAction == "rate" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
               >
-                <Star size={14} color="#1D2432" />
+                <Image src={SwitcherIcon} alt="Switch profile" width={14} height={14} />
               </span>
-              <span className="text-xs">Rate</span>
+              <span className="text-xs">Switch profile</span>
             </button>
           </div>
 

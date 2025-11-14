@@ -4,6 +4,7 @@ import { ReactQueryProvider } from '@/lib/react-query';
 import Navbar from '@/components/shared/Navbar';
 import { fontVariables } from '@/lib/fonts';
 import { Toaster } from '@/components/ui/sonner';
+import GoogleMapsScript from '@/components/shared/GoogleMapsScript';
 
 export const metadata: Metadata = {
   title: 'VetKonect - Veterinary Practice Management',
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
       <body className={`${fontVariables} font-nunito min-h-screen bg-white`}>
+        <GoogleMapsScript />
         <ReactQueryProvider>
           <div className="flex flex-col min-h-full">
             <Navbar />
