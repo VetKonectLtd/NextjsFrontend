@@ -33,13 +33,13 @@ export default function AfriVetChroniclesSection() {
 					</h2>
 					<div className="flex justify-center items-end gap-3">
 						<button
-							id="prev-btn"
+							id="prev-btn-1"
 							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
 						>
 							<ArrowLeft size={16} />
 						</button>
 						<button
-							id="next-btn"
+							id="next-btn-1"
 							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
 						>
 							<ArrowRight size={16} />
@@ -57,8 +57,8 @@ export default function AfriVetChroniclesSection() {
 							centeredSlides={true}
 							loop
 							navigation={{
-								prevEl: "#prev-btn",
-								nextEl: "#next-btn",
+								prevEl: "#prev-btn-1",
+								nextEl: "#next-btn-1",
 							}}
 							breakpoints={{
 							0: {
