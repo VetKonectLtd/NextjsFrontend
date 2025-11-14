@@ -71,27 +71,43 @@ export const useVeterinaryService = () => {
 };
 
 // Helper function to transform API response to component props format
-export const transformVetDataToProps = (apiVets: VeterinaryDoctor[], defaultImages: any[]) => {
-	return apiVets.map((vet, index) => ({
-		id: vet.id,
-		name: vet.name,
-		location: vet.location,
-		image: defaultImages[index % defaultImages.length], // Use default images cyclically
-		rating: vet.rating,
-		totalRatings: vet.totalRatings,
-		isAvailable: vet.isAvailable,
-		isVerified: vet.isVerified,
-		// Additional data that might be useful
-		email: vet.email,
-		phone: vet.phone,
-		specialization: vet.specialization,
-		distance: vet.distance,
-		experience: vet.experience,
-		clinicName: vet.clinicName,
-		clinicAddress: vet.clinicAddress,
-		consultationFee: vet.consultationFee,
-		availableHours: vet.availableHours,
-	}));
+export const transformVetDataToProps = (apiVets: any[], defaultImages: any[]) => {
+	return apiVets.map((vet, index) => {
+		// Handle both VeterinaryDoctor interface and actual API response structure
+		const fullName = vet.name || (vet.user ? `${vet.user.first_name || ''} ${vet.user.last_name || ''}`.trim() : '');
+		const location = vet.location || (vet.user 
+			? `${vet.address || ''}${vet.user.state ? `, ${vet.user.state}` : ''}${vet.user.country ? `, ${vet.user.country}` : ''}`.replace(/^,\s*/, '')
+			: vet.address || '');
+		
+		// Calculate rating from ratings array or use average_rating
+		const totalRatings = vet.ratings?.length || vet.totalRatings || 0;
+		const averageRating = totalRatings > 0 && vet.ratings?.length > 0
+			? vet.ratings.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / vet.ratings.length
+			: vet.average_rating || vet.rating || 0;
+
+		return {
+			id: vet.id?.toString() || String(index),
+			name: fullName || 'Unknown',
+			location: location || 'Location not specified',
+			image: vet.user?.profile || vet.image || defaultImages[index % defaultImages.length],
+			rating: averageRating,
+			totalRatings: totalRatings,
+			isAvailable: vet.availability === 1 || vet.isAvailable === true,
+			isVerified: vet.is_approved === 1 || vet.isVerified === true,
+			role: vet.role || 'Veterinarian',
+			// Additional data
+			email: vet.user?.email || vet.email,
+			phone: vet.user?.phone_num || vet.phone,
+			userId: vet.user_id?.toString() || vet.user?.id?.toString(),
+			specialization: vet.specialty || vet.specialization,
+			distance: vet.distance,
+			experience: vet.experience,
+			clinicName: vet.clinicName,
+			clinicAddress: vet.clinicAddress || vet.address,
+			consultationFee: vet.consultationFee,
+			availableHours: vet.availableHours,
+		};
+	});
 };
 
 // Empty data design for development and testing

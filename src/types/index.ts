@@ -399,6 +399,36 @@ export interface GetAllVetClinicResponse {
 	};
 }
 
+// API response types for getAllVendor
+export interface VendorData {
+	id: number;
+	user_id: number;
+	role: string;
+	created_at: string;
+	user: VetDoctorUser;
+}
+
+export interface GetAllVendorResponse {
+	current_page: number;
+	data: VendorData[];
+	first_page_url: string;
+	from: number | null;
+	last_page: number;
+	last_page_url: string;
+	links: Array<{
+		url: string | null;
+		label: string;
+		page: number | null;
+		active: boolean;
+	}>;
+	next_page_url: string | null;
+	path: string;
+	per_page: number;
+	prev_page_url: string | null;
+	to: number | null;
+	total: number;
+}
+
 export interface ForumChat {
 	id:string;
 	title: string;
