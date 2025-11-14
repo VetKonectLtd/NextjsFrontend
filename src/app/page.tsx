@@ -38,6 +38,12 @@ export default function Home() {
 		longitude: number;
 	} | null>(null);
 
+	// State for selected country
+	const [selectedCountry, setSelectedCountry] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
 	// Get user's current location for nearby vets (fallback)
 	const {
 		coordinates,
@@ -45,8 +51,8 @@ export default function Home() {
 		error: locationError,
 	} = useGeolocation();
 
-	// Use selected location if available, otherwise use geolocation
-	const activeCoordinates = selectedLocation || coordinates;
+	// Priority: selected location > selected country > geolocation
+	const activeCoordinates = selectedLocation || selectedCountry || coordinates;
 
 	// CTA data configuration
 	const ctaData = [
@@ -172,6 +178,8 @@ export default function Home() {
 													latitude: location.latitude,
 													longitude: location.longitude,
 												});
+												// Clear selected country when location is selected
+												setSelectedCountry(null);
 											}}
 											placeholder="Type in your location"
 											className="search-bar block w-full pl-12 pr-14 py-4 bg-white/80 backdrop-blur-sm rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-700 placeholder-gray-500 border border-transparent"
@@ -183,7 +191,16 @@ export default function Home() {
 										</div>
 									</div>
 
-									<CountryFlags />
+									<CountryFlags
+										onCountrySelect={(country) => {
+											setSelectedCountry({
+												latitude: country.latitude,
+												longitude: country.longitude,
+											});
+											// Clear selected location when country is selected
+											setSelectedLocation(null);
+										}}
+									/>
 								</div>
 
 								{/* Right side - Globe visualization */}

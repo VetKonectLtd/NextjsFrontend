@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer components {
+
 	/* Custom Search Bar Styles */
 	.search-bar {
 		@apply border-4 rounded-4xl shadow-lg;
@@ -83,6 +84,7 @@
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
 	}
+
 	.dark {
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
@@ -115,15 +117,16 @@
 	* {
 		@apply border-border;
 	}
+
 	body {
 		@apply bg-background text-foreground;
 	}
 }
 
 .filter-green {
-	filter: invert(29%) sepia(96%) saturate(400%) hue-rotate(90deg)
-		brightness(90%) contrast(85%);
+	filter: invert(29%) sepia(96%) saturate(400%) hue-rotate(90deg) brightness(90%) contrast(85%);
 }
+
 .filter-gray {
 	filter: grayscale(100%);
 }
@@ -163,24 +166,26 @@ input[type="number"] {
 	opacity: 1;
 	margin: 0 4px !important;
 }
+
 .swiper-pagination-bullet-active {
 	background: white;
 }
 
 
-.swiper-slide-active > div {
-  transform: translateY(30px);
-  padding-bottom: 40px;
+.swiper-slide-active>div {
+	transform: translateY(30px);
+	padding-bottom: 40px;
 }
 
-.swiper-slide-active > p{
+.swiper-slide-active>p {
 	transform: translateY(30px);
 }
 
 .swiper-pagination-bullet {
-  background: #999 !important;
-  opacity: 1 !important;
+	background: #999 !important;
+	opacity: 1 !important;
 }
+
 .swiper-pagination-bullet-active {
-  background: #333 !important;
+	background: #333 !important;
 }
