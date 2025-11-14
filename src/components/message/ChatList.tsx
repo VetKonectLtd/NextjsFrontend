@@ -1,5 +1,6 @@
 "use client";
 import { User } from "@/app/assets/icons";
+import { directMessageService } from "@/services/directMessageService";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -9,12 +10,14 @@ interface ChatListProps {
 	messages: any[];
 	selectedVet: any;
 	onSelectVet: (vet: any) => void;
+	getChatList: any;
 }
 
 export default function ChatList({
 	messages,
 	selectedVet,
 	onSelectVet,
+	getChatList,
 }: ChatListProps) {
 	const [searchTerm, setSearchTerm] = useState("");
 
@@ -52,7 +55,12 @@ export default function ChatList({
 					filteredMessages.map((msg) => (
 						<div
 							key={msg.user.id}
-							onClick={() => onSelectVet(msg?.user)}
+							onClick={() => {
+								onSelectVet(msg?.user);
+								setTimeout(() => {
+									getChatList.refetch();
+								}, 0);
+							}}
 							className={`flex items-center justify-between hover:bg-gray-50 cursor-pointer rounded-lg p-2 transition ${
 								selectedVet?.user?.id === msg?.user.id ? "bg-gray-100" : ""
 							}`}
@@ -74,9 +82,16 @@ export default function ChatList({
 									</p>
 								</div>
 							</div>
-							<p className="text-xs mr-2 bg-gray-225 px-2 py-1 rounded-full text-gray-55">
-								{msg.last_message_display_time}
-							</p>
+							<div className="flex items-center">
+								{msg.unread_count === 0 ? null : (
+									<span className="text-xs mr-2 bg-primary-500 rounded-full p-1 h-5 w-5 items-center flex justify-center text-gray-55">
+										{msg.unread_count}
+									</span>
+								)}
+								<p className="text-xs mr-2  text-gray-55">
+									{msg.last_message_display_time}
+								</p>
+							</div>
 						</div>
 					))
 				) : (
