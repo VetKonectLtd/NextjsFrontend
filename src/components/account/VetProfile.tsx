@@ -23,6 +23,7 @@ import { AccountAction } from "./";
 import { Bg22, User } from "@/app/assets/icons";
 import { useAuthService } from "@/services/authService";
 import Veterinarian from "../Veterinarian/Veterinarian";
+import SwitcherIcon from "@/app/assets/icons/switcher.svg";
 
 const DEFAULT_AVATAR = User;
 interface VetProfileProps {
@@ -371,15 +372,15 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 						</button>
 
 						<button
-							onClick={() => handleContact("1", "profile")}
+							onClick={() => handleContact("1", "switch-profile")}
 							className="flex flex-col justify-center items-center space-y-3 text-gray-500"
 						>
 							<span
-								className={`bg-white border ${selectedAction == "profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+								className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
 							>
-								<Star size={14} color="#1D2432" />
+								<Image src={SwitcherIcon} alt="Switch profile" width={14} height={14} />
 							</span>
-							<span className="text-xs">Add Profile</span>
+							<span className="text-xs">Switch profile</span>
 						</button>
 					</div>
 
