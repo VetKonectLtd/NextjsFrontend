@@ -134,6 +134,10 @@ export const VETERINARY_ENDPOINTS = {
   GET_ALL_VET_DOCTOR:"/v3/get-all-veterinary-doctors"
 } as const;
 
+export const VENDOR_ENDPOINTS = {
+  GET_ALL_VENDOR: "/v3/get-all-vendor"
+} as const;
+
 export const VETERINARY_CLINIC ={
 	ADD_VET_CLINIC: "/v3/add-veterinary-clinic",
 	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics"

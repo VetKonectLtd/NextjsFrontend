@@ -21,6 +21,7 @@ import { Bar, Bar2, FullMap, Map2 } from "@/app/assets/images";
 import Veterinarian from "@/components/Veterinarian/Veterinarian";
 import VeterinaryParaprofessional from "@/components/Veterinarian/VeterinaryParaprofessional";
 import VetClinic from "@/components/vetClinic/VetClinic";
+import Vendor from "@/components/Vendor/Vendor";
 
 export default function VetVendorPage() {
 	const [activeCategory, setActiveCategory] = useState("Veterinarian");
@@ -156,23 +157,7 @@ export default function VetVendorPage() {
 					onSelect={setActiveTab}
 				/>
 			)}
-			{activeCategory == "Vendor" && (
-				<div className="grid grid-cols-2 py-5 sm:grid-cols-3 md:grid-cols-4 gap-5">
-					{filteredProducts.length > 0 ? (
-						filteredProducts.map((p, i) => (
-							<ProductCard
-								key={i}
-								{...p}
-								onViewProduct={(id) => router.push(`/dashboard/products/${id}`)}
-							/>
-						))
-					) : (
-						<p className="col-span-full text-center text-gray-500">
-							No products found for {activeCategory} in {activeTab}
-						</p>
-					)}
-				</div>
-			)}
+			{activeCategory == "Vendor" && <Vendor />}
 
 			<div className="relative w-full hidden bg-white shadow-md p-2 h-screen rounded-lg overflow-hidden">
 				<Image

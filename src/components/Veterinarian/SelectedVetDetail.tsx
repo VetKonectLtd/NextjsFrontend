@@ -8,7 +8,7 @@ import {
 	Star,
 	MapPin,
 	MessagesSquareIcon,
-	Plus,
+	X,
 	ChevronLeft,
 } from "lucide-react";
 import { VetProfileProps } from "../shared/VetProfile";
@@ -64,8 +64,12 @@ const SelectedVet = ({
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">
-								<button className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2">
-									<Plus className="w-7 h-7" size={16} />
+								<button 
+									onClick={() => setSelectedVet(null)}
+									className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2 hover:bg-gray-50 transition-colors"
+									aria-label="Close profile"
+								>
+									<X className="w-7 h-7" size={16} />
 								</button>
 							</div>
 						</div>
