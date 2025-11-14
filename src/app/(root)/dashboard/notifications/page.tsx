@@ -16,6 +16,15 @@ interface Notification {
 	isRead: boolean;
 }
 
+const NotificationSkeleton = () => (
+	<div className="space-y-4 animate-pulse">
+		<div className="h-6 bg-gray-200 rounded w-3/4"></div>
+		<div className="h-4 bg-gray-200 rounded w-1/2"></div>
+		<div className="h-4 bg-gray-200 rounded w-full"></div>
+		<div className="h-4 bg-gray-200 rounded w-5/6"></div>
+	</div>
+);
+
 const NotificationsPage = () => {
 	const [selectedNotification, setSelectedNotification] =
 		useState<Notification | null>(null);
@@ -30,16 +39,16 @@ const NotificationsPage = () => {
 
 	const getNotification = useGetNotification(true);
 
-	// Fetch details for selected notification
+	// Fetch details when selected
 	const getUserNotificationById = useGetUserNotificationById(
 		selectedNotification ? selectedNotification.id : "",
-		!!selectedNotification,
+		!!selectedNotification
 	);
 
 	const notificationDetails = (getUserNotificationById.data as any)?.notification;
 
 	const notifications = Array.isArray(
-		(getNotification.data as any)?.userNotification.data,
+		(getNotification.data as any)?.userNotification?.data
 	)
 		? (getNotification.data as any)?.userNotification.data
 		: [];
@@ -58,12 +67,8 @@ const NotificationsPage = () => {
 		};
 	}, [currentUserId]);
 
-	// Detect mobile or desktop
 	useEffect(() => {
-		const checkMobile = () => {
-			setIsMobile(window.innerWidth < 768);
-		};
-
+		const checkMobile = () => setIsMobile(window.innerWidth < 768);
 		checkMobile();
 		window.addEventListener("resize", checkMobile);
 		return () => window.removeEventListener("resize", checkMobile);
@@ -73,11 +78,9 @@ const NotificationsPage = () => {
 		setSelectedNotification(notification);
 	};
 
-	const handleBackClick = () => {
-		setSelectedNotification(null);
-	};
+	const handleBackClick = () => setSelectedNotification(null);
 
-	// Mobile full view
+	/* ---------------- MOBILE DETAIL VIEW ---------------- */
 	if (isMobile && selectedNotification) {
 		return (
 			<div className="min-h-screen bg-white">
@@ -92,24 +95,31 @@ const NotificationsPage = () => {
 				</div>
 
 				<div className="px-4">
-					<div className="flex items-center justify-between mb-4">
-						<h1 className="text-xl font-bold text-gray-900">
-							{notificationDetails?.title}
-						</h1>
-						<span className="text-sm text-gray-500">
-							{timeAgo(notificationDetails?.created_at)}
-						</span>
-					</div>
+					{getUserNotificationById.isLoading ? (
+						/* 🔵 MOBILE SKELETON HERE */
+						<NotificationSkeleton />
+					) : (
+						<>
+							<div className="flex items-center justify-between mb-4">
+								<h1 className="text-xl font-bold text-gray-900">
+									{notificationDetails?.title}
+								</h1>
+								<span className="text-sm text-gray-500">
+									{timeAgo(notificationDetails?.created_at)}
+								</span>
+							</div>
 
-					<div className="text-gray-700 leading-relaxed">
-						{notificationDetails?.content}
-					</div>
+							<div className="text-gray-700 leading-relaxed">
+								{notificationDetails?.content}
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 		);
 	}
 
-	// Desktop view
+	/* ---------------- DESKTOP VIEW ---------------- */
 	return (
 		<div className="min-h-screen bg-white">
 			<div className="w-full max-w-4xl mx-auto p-4 md:p-8">
@@ -121,7 +131,7 @@ const NotificationsPage = () => {
 						</h1>
 
 						<div className="space-y-4">
-							{notifications.reverse().map((notification:any) => (
+							{notifications.reverse().map((notification: any) => (
 								<div
 									key={notification.id}
 									onClick={() => handleNotificationClick(notification)}
@@ -150,20 +160,25 @@ const NotificationsPage = () => {
 					{/* RIGHT DETAILS */}
 					<div>
 						{selectedNotification ? (
-							<>
-								<div className="flex items-center justify-between mb-6">
-									<h2 className="text-2xl font-bold text-gray-900">
-										{notificationDetails?.title}
-									</h2>
-									<span className="text-sm text-gray-500">
-										{timeAgo(notificationDetails?.created_at)}
-									</span>
-								</div>
+							getUserNotificationById.isLoading ? (
+								/* 🔵 DESKTOP SKELETON HERE */
+								<NotificationSkeleton />
+							) : (
+								<>
+									<div className="flex items-center justify-between mb-6">
+										<h2 className="text-2xl font-bold text-gray-900">
+											{notificationDetails?.title}
+										</h2>
+										<span className="text-sm text-gray-500">
+											{timeAgo(notificationDetails?.created_at)}
+										</span>
+									</div>
 
-								<div className="text-gray-700 leading-relaxed">
-									{notificationDetails?.content}
-								</div>
-							</>
+									<div className="text-gray-700 leading-relaxed">
+										{notificationDetails?.content}
+									</div>
+								</>
+							)
 						) : (
 							<div className="text-gray-400 mt-20 text-center">
 								Select a notification to view details
@@ -177,7 +192,7 @@ const NotificationsPage = () => {
 					<h1 className="text-xl font-bold text-gray-900 mb-4">Notification</h1>
 
 					<div className="space-y-3">
-						{notifications.map((notification:any) => (
+						{notifications.map((notification: any) => (
 							<div
 								key={notification.id}
 								onClick={() => handleNotificationClick(notification)}

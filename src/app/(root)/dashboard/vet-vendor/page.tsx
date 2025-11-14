@@ -121,7 +121,7 @@ export default function VetVendorPage() {
 						</Link>
 
 						<div className="flex items-center gap-4">
-							<Link href="#">
+							<Link href="/dashboard/messages">
 								<Image src={Message} alt="Chat" width={36} height={36} />
 							</Link>
 							<button className="px-5 py-2 rounded-lg border border-primary-400 text-primary-400 font-medium bg-white">
