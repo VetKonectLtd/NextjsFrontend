@@ -29,13 +29,13 @@ const VetDiary = () => {
 					{/* Custom Controls */}
 					<div className="flex justify-center mt-4 gap-3">
 						<button
-							id="prev-btn"
+							id="prev-btn-2"
 							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
 						>
 							<ArrowLeft size={16} />
 						</button>
 						<button
-							id="next-btn"
+							id="next-btn-2"
 							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
 						>
 							<ArrowRight size={16} />
@@ -50,8 +50,8 @@ const VetDiary = () => {
 						centeredSlides={true}
 						loop
 						navigation={{
-							prevEl: "#prev-btn",
-							nextEl: "#next-btn",
+							prevEl: "#prev-btn-2",
+							nextEl: "#next-btn-2",
 						}}
                         
 						className="pb-10"

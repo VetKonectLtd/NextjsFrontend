@@ -90,7 +90,8 @@ export const PROMOTIONPLAN = {
 
 export const ACTIVITIES ={
 	GET_ACTIVITIES:"/v3/get-user-activity",
-	GET_USER_NOTIFICATION:"/v3/get-user-notification"
+	GET_USER_NOTIFICATION:"/v3/get-user-notification",
+	GET_USER_NOTIFICATIONS_BY_ID:(Id:string) => `/v3/get-notification/${Id}/notification`
 }
 
 export const FORUM_CHAT = {

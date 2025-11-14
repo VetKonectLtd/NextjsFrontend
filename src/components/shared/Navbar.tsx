@@ -23,6 +23,7 @@ import { Notification, MessageNav } from "@/app/assets/icons";
 import Cookies from "js-cookie";
 import { useAuthService } from "@/services/authService";
 import { LogOut, MessageSquare, UserRoundCog } from "lucide-react";
+import { useActivitiesService } from "@/services/activitiesService";
 
 const Navbar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -34,6 +35,10 @@ const Navbar = () => {
 	const [token, setToken] = useState<string | undefined>(
 		Cookies.get("auth-token"),
 	);
+	const { useGetNotification } = useActivitiesService();
+	const getNotification = useGetNotification(true);
+
+	const unreadCount = (getNotification?.data as any)?.totalNotification || 0;
 
 	const pathname = usePathname();
 
@@ -200,8 +205,8 @@ const Navbar = () => {
 										height={20}
 									/>
 									{/* Notification Badge */}
-									<span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-										1
+									<span className="absolute -top-1 -right-1 w-6 h-6 p-2 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+										{unreadCount}
 									</span>
 								</button>
 							</Link>

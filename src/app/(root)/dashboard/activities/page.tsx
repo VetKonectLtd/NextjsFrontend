@@ -45,41 +45,43 @@ const Activities = () => {
 
 			{allActivities.length >= 1 ? (
 				<>
-					{allActivities.slice().reverse().map((activity: Activity) => (
-						<div
-							key={activity.id}
-							className="flex md:flex-row flex-col border rounded-xl shadow-md border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
-						>
-							<div>
-								<p className="font-medium text-sm text-gray-55">
-									{activity.title}
-								</p>
-								<p className="text-xs text-gray-55">{activity.detail}</p>
+					{allActivities
+						.slice()
+						.reverse()
+						.map((activity: Activity) => (
+							<div
+								key={activity.id}
+								className="flex md:flex-row gap-2 flex-col border rounded-xl shadow-md border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
+							>
+								<div>
+									<p className="font-medium text-sm text-gray-55">
+										{activity.title}
+									</p>
+									<p className="text-xs text-gray-55">{activity.detail}</p>
+								</div>
+								<span className="text-xs rounded-full w-20 px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
+									{timeAgo(activity.created_at)}
+								</span>
 							</div>
-							<div className="text-xs  rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
-								{timeAgo(activity.created_at)}
-							</div>
-						</div>
-					))}
+						))}
 
 					{(getActivities.data as any)?.next_page_url ? (
-            <div className="m-auto  w-1/3 justify-center sticky bottom-0 flex">
-
-						<button
-							onClick={handleLoadMore}
-							disabled={getActivities.isFetching}
-							className="mt-9 flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
-						>
-							{getActivities.isFetching ? "Loading more..." : "Loading more"}{" "}
-							<Image
-								src={Down}
-								alt="down"
-								width={120}
-								height={120}
-								className="h-5 w-5 ml-3 animate-bounce object-cover"
-							/>
-						</button>
-            </div>
+						<div className="m-auto  md:w-1/3 justify-center sticky bottom-0 flex">
+							<button
+								onClick={handleLoadMore}
+								disabled={getActivities.isFetching}
+								className="mt-9 text-xs md:text-md flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
+							>
+								{getActivities.isFetching ? "Loading more..." : "Loading more"}{" "}
+								<Image
+									src={Down}
+									alt="down"
+									width={120}
+									height={120}
+									className="h-5 w-5 ml-3 animate-bounce object-cover"
+								/>
+							</button>
+						</div>
 					) : (
 						<p className="text-gray-55 text-center py-2 text-sm">
 							No more activities

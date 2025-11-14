@@ -22,7 +22,7 @@ export const useActivitiesService = () => {
 
 	const useGetNotification = (enabled: boolean = false) => {
 		return useGet<any>(
-			["notification"],
+			["notifications"],
 			`${ACTIVITIES.GET_USER_NOTIFICATION}`,
 			{
 				enabled,
@@ -31,8 +31,20 @@ export const useActivitiesService = () => {
 		);
 	};
 
+	const useGetUserNotificationById = (Id: string, enabled: boolean = false) => {
+		return useGet<any>(
+			["notification", Id],
+			`${ACTIVITIES.GET_USER_NOTIFICATIONS_BY_ID(Id)}`,
+			{
+				enabled,
+				staleTime: 0,
+			},
+		);
+	}
+
 	return {
 		useGetActivities,
 		useGetNotification,
+		useGetUserNotificationById,
 	};
 };

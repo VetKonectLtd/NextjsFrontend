@@ -6,7 +6,7 @@ import { Clock, User } from "@/app/assets/icons";
 import { directMessageService } from "@/services/directMessageService";
 import { useAuthService } from "@/services/authService";
 import { formatRole } from "../shared/TimeFormat";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppointmentDetails from "./AppointmentDetails";
 import { useForm } from "react-hook-form";
 import { MessageFormData } from "@/types";
@@ -34,6 +34,7 @@ export default function ChatWindow({
 	const [selectedAppointment, setSelectedAppointment] = useState<string>("");
 	const [cancelAppointmentId, setCancelAppointmentId] = useState<string>("");
 	const [previews, setPreviews] = useState<string[]>([]);
+	const messagesEndRef = useRef<HTMLDivElement | null>(null);
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 	const { data: messageData, refetch } = useGetMessage(true, selectedVet?.id);
@@ -73,6 +74,16 @@ export default function ChatWindow({
 		setValue("images", updatedImages, { shouldValidate: true });
 	};
 
+	const scrollToBottom = () => {
+		if (messagesEndRef.current) {
+			messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+		}
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [allMessages]);
+
 	useEffect(() => {
 		if (selectedVet?.id) {
 			refetch();
@@ -93,8 +104,7 @@ export default function ChatWindow({
 			// if (!echo) return;
 
 			const ids = [currentUserId, selectedVet.id].sort((a, b) => a - b);
-			channel = echo
-				.private(`direct-chat.${ids[0]}.${ids[1]}`);
+			channel = echo.private(`direct-chat.${ids[0]}.${ids[1]}`);
 
 			channel.listen("direct-message.sent", (event: any) => {
 				console.log("New message:", event.message);
@@ -291,6 +301,7 @@ export default function ChatWindow({
 						Select a vet to start chatting
 					</p>
 				)}
+				 <div ref={messagesEndRef} />
 			</div>
 
 			{/* Input */}

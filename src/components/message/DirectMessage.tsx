@@ -30,6 +30,7 @@ export default function DirectMessage() {
 				) : (
 					<ChatList
 						messages={messages}
+						getChatList={getChatList}
 						selectedVet={selectedVet}
 						onSelectVet={(vet) => setSelectedVet(vet)}
 					/>
@@ -68,6 +69,7 @@ export default function DirectMessage() {
 						<ChatListSkeleton />
 					) : (
 						<ChatList
+						getChatList={getChatList}
 							messages={messages}
 							selectedVet={selectedVet}
 							onSelectVet={(vet) => {
