@@ -16,7 +16,7 @@ export default function AfriVetChroniclesSection() {
 		},
 		{
 			image: Hero2.src,
-			text: " The Vetkonect AfriVet Chronicles provides a platform for knowledge sharing, collaboration, and storytelling among animal health professionals across the African continent with focus on addressing emerging challenges.",
+			text: " The Vet konect AfriVet Chronicles provides a platform for knowledge sharing, collaboration, and storytelling among animal health professionals across the African continent with focus on addressing emerging challenges.",
 		},
 		{
 			image: Chronicle1.src,
@@ -29,7 +29,7 @@ export default function AfriVetChroniclesSection() {
 			<div className=" text-center">
 				<div className="flex md:flex-row flex-col justify-between px-4 pb-5 md:pb-10 max-w-4xl mx-auto items-center">
 					<h2 className="text-lg md:text-3xl font-extrabold text-gray-900">
-						Vetkonect AfriVet Chronicles
+						Vet konect AfriVet Chronicles
 					</h2>
 					<div className="flex justify-center items-end gap-3">
 						<button

@@ -76,7 +76,7 @@ export default function Footer() {
                 className="w-8 h-8"
               />
               <span className="text-xl font-bold text-gray-900 font-nunito">
-                Vetkonect
+                Vet konect
               </span>
             </div>
             
@@ -108,7 +108,7 @@ export default function Footer() {
             </div>
 
             <p className="text-sm text-gray-500">
-              Copyright Vetkonect {currentYear}
+              Copyright Vet konect {currentYear}
             </p>
           </motion.div>
 

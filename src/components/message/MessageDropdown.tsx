@@ -19,12 +19,14 @@ import { directMessageService } from "@/services/directMessageService";
 import SuccessModal from "../modals/SuccessModal";
 interface MessageDropdownProps {
 	receiverId: string;
+	refetch: any;
 	handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const MessageDropdown = ({
 	receiverId,
 	handleImageUpload,
+	refetch,
 }: MessageDropdownProps) => {
 	const [openModal, setOpenModal] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -53,6 +55,7 @@ const MessageDropdown = ({
 			onSuccess: () => {
 				setOpenModal(false);
 				setSuccessOpen(true);
+				refetch();
 			},
 		});
 	};

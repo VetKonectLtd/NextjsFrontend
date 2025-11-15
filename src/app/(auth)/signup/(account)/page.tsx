@@ -6,16 +6,14 @@ import { useRouter } from "next/navigation";
 import AccountDetailsStep from "@/components/signup/AccountDetailsStep";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { Linkedin } from "@/app/assets/icons/auth";
 import Cookies from "js-cookie";
 import { AUTH_ENDPOINTS } from "@/lib/api-constants";
 
 export default function AccountPage() {
 	const router = useRouter();
-	const { useSignup, useGoogleLogin, useLinkedInLogin } = useAuthService();
+	const { useSignup, useGoogleLogin } = useAuthService();
 	const signupMutation = useSignup();
 	const googleLogin = useGoogleLogin(false);
-	const linkedinLogin = useLinkedInLogin(false);
 
 	const {
 		register,

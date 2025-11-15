@@ -25,14 +25,14 @@ const testimonials: Testimonial[] = [
     id: 2,
     name: "Dr. Sarah Johnson",
     location: "Abuja, Nigeria",
-    testimonial: "VetKonect has revolutionized how I connect with pet owners. The platform is intuitive and makes scheduling appointments seamless.",
+    testimonial: "Vet Konect has revolutionized how I connect with pet owners. The platform is intuitive and makes scheduling appointments seamless.",
     avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&h=80&fit=crop&crop=face&auto=format"
   },
   {
     id: 3,
     name: "Dr. Michael Okafor",
     location: "Port Harcourt, Nigeria",
-    testimonial: "As a veterinarian, I appreciate how VetKonect helps me reach more clients and provide better care through digital consultations.",
+    testimonial: "As a veterinarian, I appreciate how Vet Konect helps me reach more clients and provide better care through digital consultations.",
     avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=80&h=80&fit=crop&crop=face&auto=format"
   }
 ];
@@ -89,7 +89,7 @@ export default function TestimonialsSection() {
         {/* Subtitle */}
         <div className="text-center mb-12">
           <p className="text-lg md:text-xl text-gray-600 max-w-md mx-auto">
-            What are people saying about vetkonect
+            What are people saying about vet konect
           </p>
         </div>
 
