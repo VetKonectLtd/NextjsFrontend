@@ -78,16 +78,16 @@ export const useAuthService = () => {
 	};
 
 	// LinkedIn login
-	const useLinkedInLogin = (enabled: boolean = false) => {
-		return useGet<{ user: User; token: string }>(
-			["linkedinLogin"],
-			`${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`,
-			{
-				enabled,
-				staleTime: 0,
-			},
-		);
-	};
+	// const useLinkedInLogin = (enabled: boolean = false) => {
+	// 	return useGet<{ user: User; token: string }>(
+	// 		["linkedinLogin"],
+	// 		`${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`,
+	// 		{
+	// 			enabled,
+	// 			staleTime: 0,
+	// 		},
+	// 	);
+	// };
 
 	// Get current user query
 	const useCurrentUser = (enabled: boolean = true) => {
@@ -163,7 +163,7 @@ export const useAuthService = () => {
 		useCompleteProfile,
 		useResendVerification,
 		useGoogleLogin,
-		useLinkedInLogin,
+		// useLinkedInLogin,
 		useCurrentUser,
 		useLogout,
 		useRefreshToken,
