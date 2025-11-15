@@ -85,5 +85,5 @@ export const fontVariables = `${inter.variable} ${poppins.variable} ${openSans.v
  * Open Sans (UI Elements):
  * - Button text, navigation items
  * - Labels, badges, tags
- * - Form labels and UI components
+ * - Form labels and UI component
  */

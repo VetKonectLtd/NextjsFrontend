@@ -42,9 +42,9 @@ export default function LoginPage() {
 		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
 	};
 
-	const handleLinkedInLogin = () => {
-		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`;
-	};
+	// const handleLinkedInLogin = () => {
+	// 	window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`;
+	// };
 
 	// const handleLinkedInLogin = () => {
 	// 	linkedinLogin.refetch().then((res) => {
@@ -134,7 +134,7 @@ export default function LoginPage() {
 				</form>
 				<div className="flex flex-col items-center my-6">
 					<div className="flex space-x-3">
-						<button
+						{/* <button
 							type="button"
 							onClick={handleLinkedInLogin}
 							className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-400 text-white text-xl font-bold mb-4 shadow-md"
@@ -145,7 +145,7 @@ export default function LoginPage() {
 								alt="LinkedIn Logo"
 								className="object-contain"
 							/>
-						</button>
+						</button> */}
 
 						<button
 							type="button"
