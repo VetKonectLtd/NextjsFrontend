@@ -301,7 +301,7 @@ export default function ChatWindow({
 						Select a vet to start chatting
 					</p>
 				)}
-				 <div ref={messagesEndRef} />
+				<div ref={messagesEndRef} />
 			</div>
 
 			{/* Input */}
@@ -341,6 +341,12 @@ export default function ChatWindow({
 					type="text"
 					placeholder="Type your message..."
 					{...register("content")}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							e.preventDefault();
+							handleSubmit(handleSend)();
+						}
+					}}
 					className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
 				/>
 				<button
