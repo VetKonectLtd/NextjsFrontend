@@ -334,6 +334,7 @@ export default function ChatWindow({
 			<div className="p-3 sticky bottom-0 border-t border-gray-200 flex items-center gap-2 md:relative bg-white">
 				<MessageDropdown
 					receiverId={selectedVet?.id}
+					refetch={refetch}
 					handleImageUpload={handleImageUpload}
 				/>
 

@@ -9,12 +9,12 @@ const Vetkonectearning = () => {
 		<section className="relative bg-[#FEF4EE] min-h-[90vh] py-20 px-6">
 			{/* Left text section */}
 			<h1 className="text-2xl md:text-3xl text-center font-bold text-gray-800 mb-7 leading-snug">
-				Vetkonect Early Learning <br /> & <br /> Warning System
+				Vet konect Early Learning <br /> & <br /> Warning System
 			</h1>
 			<div className="flex flex-col md:flex-row items-center justify-between w-5/6 m-auto gap-10">
 				<div className="md:w-1/2 text-center md:text-left">
 					<p className="mt-6 text-gray-700 text-base md:text-2xl leading-relaxed">
-						We are part of Vetkonect’s mission to democratize animal health and
+						We are part of Vet konect’s mission to democratize animal health and
 						become empowered as students of Veterinary medicine, animal science,
 						and related fields to become leaders in our communities.
 					</p>
@@ -33,7 +33,7 @@ const Vetkonectearning = () => {
 						<SwiperSlide>
 							<Image
 								src={Learning}
-								alt="Vetkonect students"
+								alt="Vet konect students"
 								width={500}
 								height={350}
 								className="object-cover w-full h-[300px] md:h-[350px]"
@@ -42,7 +42,7 @@ const Vetkonectearning = () => {
 						<SwiperSlide>
 							<Image
 								src={Learning}
-								alt="Vetkonect field work"
+								alt="Vet konect field work"
 								width={500}
 								height={350}
 								className="object-cover w-full h-[300px] md:h-[350px]"
@@ -51,7 +51,7 @@ const Vetkonectearning = () => {
 						<SwiperSlide>
 							<Image
 								src={Learning}
-								alt="Vetkonect training"
+								alt="Vet konect training"
 								width={500}
 								height={350}
 								className="object-cover w-full h-[300px] md:h-[350px]"

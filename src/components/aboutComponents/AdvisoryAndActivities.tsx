@@ -24,35 +24,33 @@ import { Navigation } from "swiper/modules";
 
 const advisors = [
 	{
-		name: "Taye Olosunde",
-		image: Tayo.src,
-		linkedin: "https://linkedin.com/in/johndoe",
-		twitter: "https://x.com/johndoe",
-	},
-	{
-		name: "Olajuwon Kayode",
-		image: Koyode,
+		name: "Dr. Gani Enahoro",
+		image: Gani.src,
 		linkedin: "https://linkedin.com/in/janesmith",
-		twitter: "https://x.com/janesmith",
+	},
+
+	{
+		name: "Dr. Moses Another",
+		image: Dr_Moses.src,
+		linkedin: "https://linkedin.com/in/janesmith",
 	},
 	{
 		name: "Dr. Moses Arokoyo",
 		image: Moses.src,
 		linkedin: "https://linkedin.com/in/janesmith",
-		twitter: "https://x.com/janesmith",
 	},
 	{
-		name: "Dr. Gani Enahoro",
-		image: Gani.src,
-		linkedin: "https://linkedin.com/in/janesmith",
-		twitter: "https://x.com/janesmith",
+		name: "Tayo Olosunde",
+		image: Tayo.src,
+		linkedin: "https://linkedin.com/in/johndoe",
 	},
 	{
-		name: "Dr. Moses Another",
-		image: Dr_Moses.src,
+		name: "Olajuwon Kayode",
+		image: Koyode,
 		linkedin: "https://linkedin.com/in/janesmith",
-		twitter: "https://x.com/janesmith",
 	},
+	
+	
 ];
 
 const activities = [
@@ -127,20 +125,6 @@ export default function AdvisoryAndActivities() {
 										{advisor.name}
 									</p>
 									<div className="flex gap-4 mt-3">
-										<Link
-											href={advisor.twitter}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="w-4 h-4"
-										>
-											<Image
-												src={XIcon}
-												alt="Twitter"
-												width={20}
-												height={20}
-												className="object-contain w-full h-full"
-											/>
-										</Link>
 										<Link
 											href={advisor.linkedin}
 											target="_blank"

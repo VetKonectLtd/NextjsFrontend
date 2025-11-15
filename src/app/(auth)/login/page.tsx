@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthBg } from "@/app/assets/images";
-import { Linkedin } from "@/app/assets/icons/auth";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form/FormInput";
@@ -15,9 +14,8 @@ import { AUTH_ENDPOINTS } from "@/lib/api-constants";
 
 export default function LoginPage() {
 	const router = useRouter();
-	const { useLogin, useGoogleLogin, useLinkedInLogin } = useAuthService();
+	const { useLogin} = useAuthService();
 	const loginMutation = useLogin();
-	const linkedinLogin = useLinkedInLogin(false);
 
 	const {
 		register,

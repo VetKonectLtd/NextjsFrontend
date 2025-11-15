@@ -25,7 +25,7 @@ const VetDiary = () => {
 		<div>
 			<section className="text-center h-auto py-5 bg-[#FAFFF4] relative">
 				<div className="flex justify-between items-center w-11/12 m-auto py-5 mb-6">
-					<h2 className="text-xl md:text-3xl font-bold">Vetkonect Dairy Show</h2>
+					<h2 className="text-xl md:text-3xl font-bold">Vet konect Dairy Show</h2>
 					{/* Custom Controls */}
 					<div className="flex justify-center mt-4 gap-3">
 						<button

@@ -30,7 +30,7 @@ export default function ChatList({
 	return (
 		<div
 			className={`
-        bg-white md:col-span-1 min-h-[85vh] max-h-[85vh] col-span-4 md:border border-gray-225 rounded-lg md:shadow-md px-2 md:px-6 py-2 md:py-3
+        bg-white md:col-span-1 min-h-[85vh] overflow-hidden max-h-[85vh] col-span-4 md:border border-gray-225 rounded-lg md:shadow-md px-2 md:px-6 py-2 md:py-3
       `}
 		>
 			<div className="md:flex hidden mb-2">
@@ -50,7 +50,7 @@ export default function ChatList({
 				</button>
 			</div>
 
-			<div className="space-y-3 h-full scrollbar-hide overflow-y-auto">
+			<div className="space-y-3 h-[350px] overflow-y-auto">
 				{filteredMessages.length > 0 ? (
 					filteredMessages.map((msg) => (
 						<div

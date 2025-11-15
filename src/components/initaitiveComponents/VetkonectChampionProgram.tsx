@@ -12,13 +12,13 @@ export default function VetkonectChampionProgram() {
 	return (
 		<section className="relative bg-[#FAFFF4] py-20 overflow-hidden">
       <h2 className="text-2xl w-4/5 m-auto pb-8 md:text-3xl font-extrabold text-gray-900">
-						Vetkonect Champion Program
+						Vet konect Champion Program
 					</h2>
 			<div className="w-4/5 m-auto grid md:grid-cols-3 gap-12 items-start">
 				{/* Left Text Section */}
 				<div className="space-y-4 col-span-1">
 					<p className="text-gray-600 leading-relaxed md:text-2xl md:max-w-xs">
-						We are part of Vetkonect’s mission to democratize animal health and
+						We are part of Vet konect’s mission to democratize animal health and
 						become empowered as students of Veterinary medicine, animal science,
 						and related fields to become leaders in our communities.
 					</p>
@@ -29,7 +29,7 @@ export default function VetkonectChampionProgram() {
 					<div className="rounded-xl overflow-hidden shadow-md md:h-60">
 						<Image
 							src={Champion1}
-							alt="Vetkonect training session"
+							alt="Vet konect training session"
 							width={400}
 							height={300}
 							className="object-cover w-full h-full"
@@ -39,7 +39,7 @@ export default function VetkonectChampionProgram() {
 					<div className="rounded-xl overflow-hidden shadow-md md:h-48">
 						<Image
 							src={Champion2}
-							alt="Vetkonect outreach"
+							alt="Vet konect outreach"
 							width={400}
 							height={300}
 							className="object-cover w-full h-full"
@@ -49,7 +49,7 @@ export default function VetkonectChampionProgram() {
 					<div className="rounded-xl overflow-hidden shadow-md md:w-[385px] md:-ml-10 md:h-48">
 						<Image
 							src={Champion3}
-							alt="Vetkonect team"
+							alt="Vet konect team"
 							width={400}
 							height={300}
 							className="object-cover w-full h-full"
@@ -59,7 +59,7 @@ export default function VetkonectChampionProgram() {
 					<div className="rounded-xl overflow-hidden shadow-md md:-mt-12 md:h-60">
 						<Image
 							src={Champion4}
-							alt="Vetkonect community project"
+							alt="Vet konect community project"
 							width={400}
 							height={300}
 							className="object-cover w-full h-full"
