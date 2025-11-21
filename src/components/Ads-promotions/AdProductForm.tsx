@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Image from "next/image";
 import FormInput from "../form/FormInput";
@@ -17,7 +17,7 @@ const plans: Plan[] = [
 	{ value: "yearly", label: "Yearly Plan", maxProducts: 50, basePrice: 29.99 },
 ];
 
-const AdProductForm = () => {
+const AdProductForm = (preSelectedId: any) => {
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 	const [previews, setPreviews] = useState<string[]>([]);
 	const [selectedPlan, setSelectedPlan] = useState<string>("weekly");
@@ -38,10 +38,29 @@ const AdProductForm = () => {
 
 	const {
 		control,
+		setValue,
 		formState: { errors },
 	} = useForm<Product>({
 		mode: "onBlur",
 	});
+
+	useEffect(() => {
+		if (!getProduct.isLoading && preSelectedId) {
+			const found = ads.find((p: Product) => p.id === preSelectedId);
+			if (found) {
+				setSelectedProduct(found);
+				setPreviews(found.images_url.slice(0, 3));
+			}
+		}
+	}, [getProduct.isLoading, preSelectedId, ads]);
+
+
+	useEffect(() => {
+		if (!getProduct.isLoading && preSelectedId) {
+			setValue("id", preSelectedId);
+		}
+	}, [getProduct.isLoading, preSelectedId, setValue]);
+
 
 	const handleProductChange = (id: string) => {
 		const product = ads.find((p: Product) => p.id === id) || null;
@@ -54,7 +73,7 @@ const AdProductForm = () => {
 	return (
 		<form className="space-y-1 max-w-md mx-auto">
 			{/* Select Product */}
-			
+
 			{getProduct.isLoading ? (
 				<div className="flex items-center gap-2">
 					<Loader2 className="mr-2 h-4 w-4 animate-spin" />

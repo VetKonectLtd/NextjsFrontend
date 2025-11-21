@@ -4,9 +4,10 @@ import {
 	AreaCoveredSection,
 	ContactSection,
 } from "@/components/aboutComponents";
-import AdvisoryAndActivities from "@/components/aboutComponents/AdvisoryAndActivities";
 import AfriVetChroniclesSection from "@/components/initaitiveComponents/AfriVetChroniclesSection";
 import InitiativesHeroSection from "@/components/initaitiveComponents/InitiativesHeroSection";
+import PartnershipSection from "@/components/initaitiveComponents/PartnershipSection";
+import SupportsSection from "@/components/initaitiveComponents/SupportsSection";
 import VetDiary from "@/components/initaitiveComponents/VetDiary";
 import VetkonectChampionProgram from "@/components/initaitiveComponents/VetkonectChampionProgram";
 import Vetkonectearning from "@/components/initaitiveComponents/Vetkonectearning";
@@ -19,8 +20,8 @@ export default function InitiativesPage() {
 			<InitiativesHeroSection />
 
 			<VetkonectChampionProgram />
-
-			<AreaCoveredSection title="Partnership & Support" />
+			<PartnershipSection/>
+			<SupportsSection/>
 			<Vetkonectearning />
 			<VetDiary/>
 			<AfriVetChroniclesSection />

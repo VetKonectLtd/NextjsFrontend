@@ -22,6 +22,10 @@ const ProductDetailsPage = ({ params }: { params: { productId: string, id:string
 		router.back();
 	};
 
+	const handlePromote = () => {
+		router.push(`/dashboard/ad-promotion?productId=${product?.id}`);
+	}
+
 	const nextImage = () => {
 		setCurrentImageIndex((prev) =>
 			prev === product.images_url.length - 1 ? 0 : prev + 1,
@@ -160,7 +164,7 @@ const ProductDetailsPage = ({ params }: { params: { productId: string, id:string
 								)}
 							</span>
 						</div>
-						<button className="w-full bg-primary-400 text-white rounded-lg py-3 font-semibold text-md">
+						<button onClick={handlePromote} className="w-full bg-primary-400 text-white rounded-lg py-3 font-semibold text-md">
 							Promote Product
 						</button>
 					</div>

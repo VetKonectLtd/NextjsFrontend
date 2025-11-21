@@ -25,13 +25,16 @@ type ForumChatFormProps = {
 };
 
 const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
-	const [preview, setPreview] = useState<string | null>(chat?.image_url || null);
+	const [preview, setPreview] = useState<string | null>(
+		chat?.image_url || null,
+	);
 	const router = useRouter();
 	const { useAddForum, useUpdateForum } = useForumService();
 	const addForumMutation = useAddForum();
-	const updateForumMutation = useUpdateForum(chat?.id || '');
+	const updateForumMutation = useUpdateForum(chat?.id || "");
 	const { useCurrentUser } = useAuthService();
 	const { data: user } = useCurrentUser(true);
+	const [isCustom, setIsCustom] = useState(false);
 	const currentUserRole = (user as any)?.role;
 
 	const {
@@ -74,7 +77,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 	const handleBack = () => router.back();
 
 	const onSubmit = (data: ForumChat) => {
-		const formData:any = new FormData();
+		const formData: any = new FormData();
 		formData.append("title", data.title);
 		formData.append("visibility", data.visibility);
 		formData.append("content", data.content);
@@ -136,6 +139,125 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 							<p className="text-red-500 text-xs">
 								{errors.visibility.message}
 							</p>
+						)}
+
+						<Controller
+							name="category"
+							control={control}
+							rules={{ required: "Please select a Category" }}
+							render={({ field }) => (
+								<>
+									<Select
+										onValueChange={(value) => {
+											field.onChange(value);
+
+											if (value === "Others") {
+												setIsCustom(true);
+												setValue("category", ""); // clear previous value
+											} else {
+												setIsCustom(false);
+											}
+										}}
+										defaultValue={chat?.category || ""}
+									>
+										<SelectTrigger className="border shadow-sm w-full rounded-md border-gray-225 p-4">
+											<SelectValue placeholder="Select Category" />
+										</SelectTrigger>
+
+										<SelectContent>
+											<SelectItem value="⁠General Pet Health & Wellness">
+											 ⁠General Pet Health & Wellness
+											</SelectItem>
+											<SelectItem value="Canine Medicine & Care">
+												Canine Medicine & Care
+											</SelectItem>
+											<SelectItem value="Feline Medicine & Care">
+												Feline Medicine & Care
+											</SelectItem>
+											<SelectItem value="Small Animal Clinical Cases">
+												Small Animal Clinical Cases
+											</SelectItem>
+											<SelectItem value="Livestock Health & Farm Management">
+												Livestock Health & Farm Management
+											</SelectItem>
+
+											<SelectItem value="Poultry Production & Disease Control">
+												Poultry Production & Disease Control
+											</SelectItem>
+											<SelectItem value="Veterinary Diagnostics & Laboratory Findings">
+												Veterinary Diagnostics & Laboratory Findings
+											</SelectItem>
+											<SelectItem value="Veterinary Drugs, Vaccines & Therapeutics">
+												Veterinary Drugs, Vaccines & Therapeutics
+											</SelectItem>
+											<SelectItem value="Nutrition, Feeding & Supplementation">
+												Nutrition, Feeding & Supplementation
+											</SelectItem>
+
+											<SelectItem value="Animal Reproduction & Breeding Management">
+												Animal Reproduction & Breeding Management
+											</SelectItem>
+											<SelectItem value="Zoonotic Diseases & Public Health">
+												Zoonotic Diseases & Public Health
+											</SelectItem>
+											<SelectItem value="Emergency Care & First Aid Procedures">
+												Emergency Care & First Aid Procedures
+											</SelectItem>
+											<SelectItem value="Surgery, Orthopedics & Radiology">
+												Surgery, Orthopedics & Radiology
+											</SelectItem>
+
+											<SelectItem value="Veterinary Research, Innovations & Technology">
+												Veterinary Research, Innovations & Technology
+											</SelectItem>
+											<SelectItem value="Case Discussions & Expert Consultations">
+												Case Discussions & Expert Consultations
+											</SelectItem>
+											<SelectItem value="Animal Welfare, Ethics & Best Practices">
+												Animal Welfare, Ethics & Best Practices
+											</SelectItem>
+											<SelectItem value="Pet Behaviour & Training">
+												Pet Behaviour & Training
+											</SelectItem>
+
+											<SelectItem value="Veterinary Practice Manag. & Business Tips">
+												Veterinary Practice Manag. & Business Tips
+											</SelectItem>
+											<SelectItem value="Regulations, Policies & Veterinary Law">
+												Regulations, Policies & Veterinary Law
+											</SelectItem>
+											<SelectItem value="Pet Adoption, Rescue & Lost/Found Network">
+												Pet Adoption, Rescue & Lost/Found Network
+											</SelectItem>
+											<SelectItem value="Pet Adoption, Rescue & Lost/Found Networking">
+												Pet Adoption, Rescue & Lost/Found Networking
+											</SelectItem>
+
+											<SelectItem value="Vet Konnect Platform Updates & Community Announcements">
+												Vet Konnect Platform Updates & Community Announcements
+											</SelectItem>
+
+											{/* Custom option */}
+											<SelectItem value="Others">Others</SelectItem>
+										</SelectContent>
+									</Select>
+
+									{/* Custom Input */}
+									{isCustom && (
+										<Input
+											type="text"
+											placeholder="Enter custom category"
+											className="border shadow-sm w-full p-4 rounded-md border-gray-225 mt-2"
+											{...register("category", {
+												required: "Custom category is required",
+											})}
+										/>
+									)}
+								</>
+							)}
+						/>
+						{errors.category && (
+							<p className="text-red-500 text-xs">{errors.category.message}</p>
 						)}
 
 						{/* Title */}
@@ -231,7 +353,8 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 									)
 								) : updateForumMutation.isLoading ? (
 									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+										Updating...
 									</>
 								) : (
 									"Update"

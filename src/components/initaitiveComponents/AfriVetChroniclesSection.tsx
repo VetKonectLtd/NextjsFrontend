@@ -80,7 +80,7 @@ export default function AfriVetChroniclesSection() {
 							{activities.map((activity, i) => (
 								<SwiperSlide key={i}>
 									<div className="flex flex-col items-center w-11/12 md:h-auto h-96 m-auto">
-										<div className="w-full h-96 overflow-hidden shadow-md rounded-xl">
+										<div className="w-full h-72 overflow-hidden shadow-md rounded-xl">
 											<Image
 												src={activity.image}
 												alt="AfriVet main group"

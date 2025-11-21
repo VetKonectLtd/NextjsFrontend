@@ -96,6 +96,7 @@ export const ACTIVITIES ={
 
 export const FORUM_CHAT = {
 	FORUM_STORE: "/v3/forums/store",
+	GET_USER_FORUM: "/v3/forums/get-user-forum",
 	TRENDING_FORUM: "/v3/forums/trending",
 	GET_ALL_FORUM: "/v3/forums/index",
 	GET_VISIBILITY_OPTIONS: (visibility:string)=> `/v3/forums/get-visibility-options/${visibility}/forums`,
@@ -155,4 +156,17 @@ export const OTHERS ={
 export const GENERAL = {
 	FEED_CALCULATOR:"/v3/feed-calculator",
 	DISEASE_PREDICTOR:"/v3/disease-predictor"
+}
+
+export const CONTACT_US = {
+	ADD_TO_NEWSLETTER: "/v3/add-to-newsletter",
+	CONTACT_US: "/v3/contact-us"
+}
+
+export const SUPPORT = {
+	SUPPORT_TICKET: "/v3/drop-complain",
+}
+
+export const PAYMENTS = {
+	CREATE_PAYMENT_ORDER: "/v3/order/initialize",
 }

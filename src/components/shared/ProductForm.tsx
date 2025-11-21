@@ -10,6 +10,14 @@ import TagInput from "@/components/form/TagInput";
 import { useRouter } from "next/navigation";
 import { useProductService } from "@/services/productService";
 import { Product } from "@/types";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@radix-ui/react-select";
+import FormSelect from "../form/FormSelect";
 
 type ProductFormProps = {
 	mode: "create" | "edit";
@@ -26,12 +34,21 @@ export default function ProductForm({
 	const [available, setAvailable] = useState(product?.availability ?? false);
 	const [previews, setPreviews] = useState<string[]>(product?.images_url || []);
 
+	const [category, setCategory] = useState("");
+
+	const categoryOptions = [
+		{ value: "Pet", label: "Pet" },
+		{ value: "Feeds", label: "Feeds" },
+		{ value: "Livestock", label: "Livestock" },
+		{ value: "Drugs", label: "Drugs" },
+		{ value: "Tool and Materials", label: "Tool and Materials" },
+	];
+
 	const { useAddProduct, useUpdateProduct } = useProductService();
 	const productMutation = useAddProduct();
 	const updateProductMutation = useUpdateProduct(
 		(product as Record<string, any>)?.id,
 	);
-
 
 	const {
 		register,
@@ -92,7 +109,7 @@ export default function ProductForm({
 	};
 
 	const onSubmit = (data: Product) => {
-		const formData:any = new FormData();
+		const formData: any = new FormData();
 		formData.append("product_name", data.product_name);
 		formData.append("store_id", storeId);
 		data.tags.forEach((tag) => formData.append("tags[]", tag));
@@ -160,14 +177,19 @@ export default function ProductForm({
 							error={errors.product_name?.message}
 						/>
 
-						<FormInput
-							label="Product Category"
-							type="text"
-							focusLabel="Product Category:"
-							isRequired
-							{...register("category", { required: "Category is required" })}
-							error={errors.category?.message}
+						<FormSelect
+							label="Category"
+							focusLabel="Category"
+							value={category}
+							onChange={setCategory}
+							options={categoryOptions}
+							searchable
 						/>
+						{errors.category && (
+							<p className="text-red-500 text-xs mt-1">
+								{errors.category.message}
+							</p>
+						)}
 
 						<FormInput
 							label="Product Description"
@@ -187,7 +209,7 @@ export default function ProductForm({
 						<Controller
 							name="tags"
 							control={control}
-							rules={{required: "At least one tag is required" }}
+							rules={{ required: "At least one tag is required" }}
 							render={({ field }) => (
 								<TagInput
 									{...field}
@@ -314,17 +336,16 @@ export default function ProductForm({
 									/>
 								</>
 							)}
-							
 						</div>
 						<div className=" pt-8">
 							<button
 								type="submit"
 								onClick={handleSubmit(onSubmit)}
-                                disabled={
-								mode === "create"
-									? productMutation.isLoading
-									: updateProductMutation.isLoading
-							}
+								disabled={
+									mode === "create"
+										? productMutation.isLoading
+										: updateProductMutation.isLoading
+								}
 								className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 							>
 								{mode === "create" ? (

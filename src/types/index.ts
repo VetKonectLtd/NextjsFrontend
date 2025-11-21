@@ -433,6 +433,7 @@ export interface ForumChat {
 	id:string;
 	title: string;
 	content: string;
+	category:string;
 	comment:string;
 	visibility:string;
 	image: File | null;
@@ -586,4 +587,15 @@ export interface MessageFormData {
 	content?: string;
 	images?: File[];
 	receiver_id: string;
+}
+
+export interface Contact_us{
+	email:string;
+	content:string;
+	agreeToTerms:boolean;
+}
+
+export interface SupportTicket{
+	category:string;
+	complain:string;
 }

@@ -20,24 +20,30 @@ import { Hand, User, Down } from "@/app/assets/icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
+import { useAuthService } from "@/services/authService";
 import FilterDropdownMenu from "./DropdownMenu";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import ForumMenu from "./ForumMenu";
 
 const DEFAULT_AVATAR = User;
 
-const ForumChatCard = () => {
+const MyForumChat = () => {
 	const [activePost, setActivePost] = useState<string | null>(null);
 	const [selectedPost, setSelectedPost] = useState<any | null>(null);
 	const [page, setPage] = useState(1);
 	const [allPosts, setAllPosts] = useState<ForumChat[]>([]);
 	const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
 	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
+	const { useCurrentUser } = useAuthService();
+	const { data: user } = useCurrentUser(true);
 	const [searchHistory, setSearchHistory] = useState<string[]>([]);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [postId, setPostId] = useState<string | " ">("");
+	const currentUserId = (user as any)?.profile?.user_id;
 
 	const {
 		useLikeForum,
-		useGetAllForumChat,
+		useGetUserForum,
 		useGetForumByVisibility,
 		useDeleteForum,
 	} = useForumService();
@@ -45,13 +51,12 @@ const ForumChatCard = () => {
 	const router = useRouter();
 
 	// Paginated fetch
-	const getAllForum = useGetAllForumChat(true, page);
+	const deleteForumChat = useDeleteForum(postId);
+	const getUserForum = useGetUserForum(true, page);
 	const getForumByVisibility = useGetForumByVisibility(
 		!!visibilityFilter,
 		visibilityFilter,
 	);
-
-	console.log("getAllForum", getAllForum.data);
 
 	const likeMutation = useLikeForum(activePost || "");
 
@@ -68,7 +73,7 @@ const ForumChatCard = () => {
 	useEffect(() => {
 		const newData = visibilityFilter
 			? (getForumByVisibility.data as any)?.data
-			: (getAllForum.data as any)?.chats?.data;
+			: (getUserForum.data as any)?.data;
 
 		if (Array.isArray(newData)) {
 			// setAllPosts((prev) => {
@@ -79,7 +84,7 @@ const ForumChatCard = () => {
 			// });
 			setAllPosts(newData);
 		}
-	}, [getAllForum.data, getForumByVisibility.data]);
+	}, [getUserForum.data, getForumByVisibility.data]);
 
 	useEffect(() => {
 		if (allPosts.length > 0) {
@@ -122,15 +127,31 @@ const ForumChatCard = () => {
 
 	// Load More logic
 	const handleLoadMore = () => {
-		const nextPage = (getAllForum.data as any)?.chats?.next_page_url;
+		const nextPage = (getUserForum.data as any)?.chats?.next_page_url;
 		if (nextPage) setPage((prev) => prev + 1);
 	};
 
-	const isLoading = getAllForum.isLoading && page === 1;
+	const isLoading = getUserForum.isLoading && page === 1;
 
 	const postsToRender = allPosts.filter((post) =>
 		post.title.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
+
+	const handleEdit = (post: any) => {
+		const slug = slugify(post.slug);
+		router.push(`/dashboard/chat-forum/edit/${slug}`);
+	};
+
+	const handleDelete = (postId: any) => {
+		setPostId(postId);
+		if (window.confirm(`Are you sure you want to delete your post?`)) {
+			deleteForumChat.mutate(postId, {
+				onSuccess: () => {
+					getUserForum.refetch();
+				},
+			});
+		}
+	};
 
 	// Handle like
 	const handleLike = (postId: any) => {
@@ -138,7 +159,7 @@ const ForumChatCard = () => {
 		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
 		likeMutation.mutate(postId, {
 			onSuccess: () => {
-				getAllForum.refetch();
+				getUserForum.refetch();
 			},
 		});
 	};
@@ -231,6 +252,12 @@ const ForumChatCard = () => {
 									<div className="ml-auto mr-3 text-nowrap md:text-xs text-[10px] px-2 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
 										{timeAgo(post.created_at)}
 									</div>
+									{post.author.id == currentUserId && (
+										<ForumMenu
+											handleEdit={() => handleEdit(post)}
+											handleDelete={() => handleDelete(post.id)}
+										/>
+									)}
 								</div>
 							</div>
 
@@ -252,10 +279,25 @@ const ForumChatCard = () => {
 									</DialogContent>
 								</Dialog>
 							)}
-							<h4 className="font-semibold capitalize text-gray-55 text-lg">
-								{post.title}
-							</h4>
 
+							<div className="flex justify-between items-center mb-3">
+								<h4 className="font-semibold capitalize text-gray-55 text-lg">
+									{post.title}
+								</h4>
+								<div
+									className={`
+										flex justify-end items-end text-xs rounded-full px-3 py-1
+										${post.status === "published" ? "bg-green-500 text-white" : ""}
+										${post.status === "archived" ? "bg-[#E49542] text-white" : ""}
+									`}
+								>
+									{post.status === "archived"
+										? "Under Review"
+										: post.status === "published"
+											? "Approved"
+											: post.status}
+								</div>
+							</div>
 							<p className="text-gray-55 text-sm mb-3">
 								{post.content.length <= 200 ? (
 									post.content
@@ -345,14 +387,14 @@ const ForumChatCard = () => {
 					))}
 
 					{/* Load More */}
-					{(getAllForum.data as any)?.chats?.next_page_url && (
+					{(getUserForum.data as any)?.chats?.next_page_url && (
 						<div className="m-auto w-1/3 justify-center flex">
 							<button
 								onClick={handleLoadMore}
-								disabled={getAllForum.isFetching}
+								disabled={getUserForum.isFetching}
 								className="mt-6 flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
 							>
-								{getAllForum.isFetching ? "Loading..." : "Load more"}
+								{getUserForum.isFetching ? "Loading..." : "Load more"}
 								<Image
 									src={Down}
 									alt="down"
@@ -375,4 +417,4 @@ const ForumChatCard = () => {
 	);
 };
 
-export default ForumChatCard;
+export default MyForumChat;

@@ -2,9 +2,19 @@
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import ForumChatCard from "@/components/ChatForum/ForumChatCard";
-
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import MyForumChat from "@/components/ChatForum/MyForumChat";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const ChatForum = () => {
+	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	const currentTab = searchParams.get("tab") || "forum";
+
+	const handleTabChange = (value: string) => {
+		router.push(`?tab=${value}`, { scroll: false });
+	};
 
 	return (
 		<div className="md:w-11/12 w-full md:p-0 p-4 mt-3 m-auto">
@@ -21,14 +31,36 @@ const ChatForum = () => {
 			</Link>
 
 			<div className="bg-white md:px-6 px-3 py-3 shadow-md rounded-xl border border-gray-200">
-			
 				<div className="w-full ">
-					<div className="font-bold text-lg mb-6">Forum Chat</div>
+					<Tabs
+						value={currentTab}
+						onValueChange={handleTabChange}
+						className="w-full"
+					>
+						<TabsList className="bg-transparent px-0 mb-4">
+							<TabsTrigger
+								value="forum"
+								className="data-[state=active]:text-black data-[state=active]:font-bold text-gray-400 text-lg px-0 mr-6 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+							>
+								Forum Chat
+							</TabsTrigger>
 
-					{/* Pets Tab */}
-					<div>
-						<ForumChatCard />
-					</div>
+							<TabsTrigger
+								value="mypost"
+								className="data-[state=active]:text-black data-[state=active]:font-bold text-gray-400 text-lg px-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+							>
+								My Post
+							</TabsTrigger>
+						</TabsList>
+
+						<TabsContent value="forum">
+							<ForumChatCard />
+						</TabsContent>
+
+						<TabsContent value="mypost">
+							<MyForumChat />
+						</TabsContent>
+					</Tabs>
 				</div>
 			</div>
 		</div>

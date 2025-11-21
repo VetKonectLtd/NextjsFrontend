@@ -513,7 +513,7 @@ const Navbar = () => {
 
 							{/* Customer Support */}
 							<Link
-								href="/support"
+								href="/customer-support"
 								onClick={closeMobileMenu}
 								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
 							>

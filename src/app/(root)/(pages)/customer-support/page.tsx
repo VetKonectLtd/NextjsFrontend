@@ -10,8 +10,13 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Controller, useForm } from "react-hook-form";
+import { useSupportService } from "@/services/supportService";
+import { SupportTicket } from "@/types";
 
 const CustomerSupportPage = () => {
+	const { useSupportComplian } = useSupportService();
+	const supportComplainMutation = useSupportComplian();
+
 	const {
 		register,
 		control,
@@ -19,7 +24,11 @@ const CustomerSupportPage = () => {
 		clearErrors,
 		setValue,
 		formState: { errors },
-	} = useForm<any>();
+	} = useForm<SupportTicket>();
+
+	const onSubmit = (data: any) => {
+		supportComplainMutation.mutate(data);
+	};
 
 	return (
 		<div className="min-h-screen w-11/12 m-auto pt-20 bg-white">
@@ -62,9 +71,12 @@ const CustomerSupportPage = () => {
 							</span>
 						</div>
 
-						<form className="text-gray-700 space-y-4">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="text-gray-700 space-y-4"
+						>
 							<Controller
-								name="visibility"
+								name="category"
 								control={control}
 								rules={{ required: "Please select category" }}
 								render={({ field }) => (
@@ -95,16 +107,26 @@ const CustomerSupportPage = () => {
 							/>
 
 							<Textarea
-								placeholder="Describe your complain here..."
+								{...register("complain", {
+									required: "Please enter your complaint",
+								})}
+								placeholder="Describe your complaint here..."
 								rows={6}
 								className="border shadow-sm w-full p-4 rounded-md resize-none border-gray-225"
 							/>
+							{errors.complain && (
+								<p className="text-red-500 text-sm">{errors.complain.message}</p>
+							)}
 
 							<div className="">
 								<button
 									type="submit"
+									disabled={supportComplainMutation.isPending}
 									className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 								>
+									{supportComplainMutation.isPending && (
+										<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+									)}
 									Submit
 								</button>
 							</div>
