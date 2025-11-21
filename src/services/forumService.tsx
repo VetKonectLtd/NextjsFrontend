@@ -90,6 +90,21 @@ export const useForumService = () => {
 		});
 	};
 
+	const useGetUserForum = (enabled: boolean = false, page: number = 1) => {
+		const queryParams = new URLSearchParams();
+		queryParams.append("page", page.toString());
+
+		const url = `${FORUM_CHAT.GET_USER_FORUM}?${queryParams.toString()}`;
+		return useGet<{ forum: ForumChat }>(
+			["user_forum", page.toString()],
+			url,
+			{
+				enabled,
+				staleTime: 0,
+			},
+		);
+	}
+
 	const useGetShareForum = (enabled: boolean = false, id: string) => {
 		return useGet<{ forum: ForumChat; token: string }>(
 			["share_forum"],
@@ -171,6 +186,7 @@ export const useForumService = () => {
 		useAddForum,
 		useGetShareForum,
 		useGetForumSlug,
+		useGetUserForum,
 		useGetForumByVisibility,
 		useGetTrendingForum,
 		useLikeForum,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -14,6 +14,7 @@ import {
   X, 
   YouTube 
 } from '@/app/assets/icons';
+import { useContactService } from '@/services/contactService';
 
 interface SocialLink {
   name: string;
@@ -46,11 +47,13 @@ const quickLinks: QuickLink[] = [
 export default function Footer() {
   const [email, setEmail] = useState('');
   const currentYear = new Date().getFullYear();
+  const {useAddToNewletter}= useContactService();
+
+  const AddToNewsletterMutation = useAddToNewletter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle newsletter subscription
-    console.log('Newsletter subscription:', email);
+    AddToNewsletterMutation.mutate({email});
     setEmail('');
   };
 

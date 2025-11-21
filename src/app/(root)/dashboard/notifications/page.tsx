@@ -42,13 +42,14 @@ const NotificationsPage = () => {
 	// Fetch details when selected
 	const getUserNotificationById = useGetUserNotificationById(
 		selectedNotification ? selectedNotification.id : "",
-		!!selectedNotification
+		!!selectedNotification,
 	);
 
-	const notificationDetails = (getUserNotificationById.data as any)?.notification;
+	const notificationDetails = (getUserNotificationById.data as any)
+		?.notification;
 
 	const notifications = Array.isArray(
-		(getNotification.data as any)?.userNotification?.data
+		(getNotification.data as any)?.userNotification?.data,
 	)
 		? (getNotification.data as any)?.userNotification.data
 		: [];
@@ -109,9 +110,12 @@ const NotificationsPage = () => {
 								</span>
 							</div>
 
-							<div className="text-gray-700 leading-relaxed">
-								{notificationDetails?.content}
-							</div>
+							<div
+								className="text-gray-700 leading-relaxed"
+								dangerouslySetInnerHTML={{
+									__html: notificationDetails?.content || "",
+								}}
+							/>
 						</>
 					)}
 				</div>
@@ -121,11 +125,11 @@ const NotificationsPage = () => {
 
 	/* ---------------- DESKTOP VIEW ---------------- */
 	return (
-		<div className="min-h-screen bg-white">
-			<div className="w-full max-w-4xl mx-auto p-4 md:p-8">
+		<div className="min-h-screen">
+			<div className="w-11/12 mx-auto">
 				<div className="hidden md:grid md:grid-cols-2 md:gap-8">
 					{/* LEFT LIST */}
-					<div>
+					<div className="bg-white shadow-md rounded-lg p-6  border border-gray-2">
 						<h1 className="text-2xl font-bold text-gray-900 mb-6">
 							Notification
 						</h1>
@@ -158,7 +162,7 @@ const NotificationsPage = () => {
 					</div>
 
 					{/* RIGHT DETAILS */}
-					<div>
+					<div className="bg-white shadow-md rounded-lg p-6 border border-gray-225">
 						{selectedNotification ? (
 							getUserNotificationById.isLoading ? (
 								/* 🔵 DESKTOP SKELETON HERE */
@@ -174,9 +178,12 @@ const NotificationsPage = () => {
 										</span>
 									</div>
 
-									<div className="text-gray-700 leading-relaxed">
-										{notificationDetails?.content}
-									</div>
+									<div
+										className="text-gray-700 leading-relaxed"
+										dangerouslySetInnerHTML={{
+											__html: notificationDetails?.content || "",
+										}}
+									/>
 								</>
 							)
 						) : (

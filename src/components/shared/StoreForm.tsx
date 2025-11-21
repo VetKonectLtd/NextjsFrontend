@@ -192,7 +192,9 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 					/>
 
 					{errors.phone_number && (
-						<p className="text-red-500 text-xs">{errors.phone_number?.message}</p>
+						<p className="text-red-500 text-xs">
+							{errors.phone_number?.message}
+						</p>
 					)}
 
 					<FormInput
@@ -231,15 +233,15 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 					<div className="flex flex-col">
 						{preview ? (
 							<>
-								<div className="w-full h-[150px] border-2 border-gray-200 rounded-md overflow-hidden mb-2 cursor-pointer flex items-center justify-center">
+								<div className="relative w-full h-[150px] border-2 border-gray-200 rounded-md overflow-hidden mb-2 cursor-pointer">
 									<Image
 										src={preview}
 										alt="Preview"
-										width={200}
-										height={150}
-										className="object-cover w-full h-full"
+										fill
+										className="object-cover"
 									/>
 								</div>
+
 								<button
 									type="button"
 									onClick={handleRemoveImage}

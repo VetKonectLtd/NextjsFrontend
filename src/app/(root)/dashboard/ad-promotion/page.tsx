@@ -6,62 +6,66 @@ import { ChevronLeft, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import Image from "next/image";
 import AdCard from "@/components/Ads-promotions/AdCard";
+import { useSearchParams } from "next/navigation";
 
 const page = () => {
 	const [addPromotion, selectAddPromotion] = useState(true);
-	
+
+	const searchParams = useSearchParams();
+	const preSelectedId = searchParams.get("productId");
+
 	// Mock data
 	const ads = [
-	{
-		id: "1",
-		title: "Golden Retriever Puppy",
-		price: 50.99,
-		images: [
-			"https://images.unsplash.com/photo-1558788353-f76d92427f16",
-			"https://images.unsplash.com/photo-1507149833265-60c372daea22",
-			"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-		],
-		rating: 4.5,
-		location: "Lagos, Nigeria",
-		units: 20,
-		status: "active",
-		open: true,
-		availableUnits: true,
-	},
-	{
-		id: "2",
-		title: "Persian Cat",
-		price: 120.0,
-		images: [
-			"https://images.unsplash.com/photo-1592194996308-7b43878e84a6",
-			"https://images.unsplash.com/photo-1558788353-f76d92427f16",
-			"https://images.unsplash.com/photo-1507149833265-60c372daea22",
-			"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-		],
-		rating: 4.8,
-		location: "Abuja, Nigeria",
-		units: 10,
-		status: "active",
-		open: true,
-		availableUnits: true,
-	},
-	{
-		id: "3",
-		title: "African Grey Parrot",
-		price: 299.99,
-		images: [
-			"https://images.unsplash.com/photo-1558788353-f76d92427f16",
-			"https://images.unsplash.com/photo-1507149833265-60c372daea22",
-			"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-		],
-		rating: 4.3,
-		location: "Oyo, Nigeria",
-		units: 5,
-		status: "expired",
-		open: false,
-		availableUnits: false,
-	},
-];
+		{
+			id: "1",
+			title: "Golden Retriever Puppy",
+			price: 50.99,
+			images: [
+				"https://images.unsplash.com/photo-1558788353-f76d92427f16",
+				"https://images.unsplash.com/photo-1507149833265-60c372daea22",
+				"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
+			],
+			rating: 4.5,
+			location: "Lagos, Nigeria",
+			units: 20,
+			status: "active",
+			open: true,
+			availableUnits: true,
+		},
+		{
+			id: "2",
+			title: "Persian Cat",
+			price: 120.0,
+			images: [
+				"https://images.unsplash.com/photo-1592194996308-7b43878e84a6",
+				"https://images.unsplash.com/photo-1558788353-f76d92427f16",
+				"https://images.unsplash.com/photo-1507149833265-60c372daea22",
+				"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
+			],
+			rating: 4.8,
+			location: "Abuja, Nigeria",
+			units: 10,
+			status: "active",
+			open: true,
+			availableUnits: true,
+		},
+		{
+			id: "3",
+			title: "African Grey Parrot",
+			price: 299.99,
+			images: [
+				"https://images.unsplash.com/photo-1558788353-f76d92427f16",
+				"https://images.unsplash.com/photo-1507149833265-60c372daea22",
+				"https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
+			],
+			rating: 4.3,
+			location: "Oyo, Nigeria",
+			units: 5,
+			status: "expired",
+			open: false,
+			availableUnits: false,
+		},
+	];
 
 	const activeAds = ads.filter((ad) => ad.status === "active");
 	const expiredAds = ads.filter((ad) => ad.status === "expired");
@@ -165,7 +169,7 @@ const page = () => {
 							You can add a new promotion to your list
 						</p>
 					</div>
-					<AdProductForm />
+					<AdProductForm preSelectedId={preSelectedId} />
 				</div>
 			</div>
 		</div>

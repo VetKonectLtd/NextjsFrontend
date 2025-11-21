@@ -17,9 +17,9 @@ const Activities = () => {
 
 	// whenever data changes, merge it with existing ones
 	useEffect(() => {
-		if (getActivities.data?.data) {
+		if ((getActivities.data as any)?.userActivity.data) {
 			setAllActivities((prev) => {
-				const newActivities = (getActivities.data as any)?.data.filter(
+				const newActivities = (getActivities.data as any)?.userActivity.data.filter(
 					(a: Activity) => !prev.some((p) => p.id === a.id),
 				);
 				return [...prev, ...newActivities];

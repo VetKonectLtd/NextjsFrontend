@@ -63,9 +63,10 @@ const Dashboard = () => {
 		? getTrendingForum.data
 		: [];
 
-	const activities = Array.isArray(getActivities.data?.data)
-		? getActivities.data.data
+	const activities = Array.isArray((getActivities.data as any)?.userActivity.data)
+		? (getActivities.data as any)?.userActivity.data
 		: [];
+
 
 	const initialTab = searchParams.get("tab") || "recent";
 	const [tab, setTab] = useState(initialTab);
