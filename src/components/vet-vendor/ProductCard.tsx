@@ -11,11 +11,11 @@ import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
 import { GreenButton } from "@/app/assets/icons";
 
 interface ProductCardProps {
-	title: string;
+	product_name: string;
 	id: string;
 	price: number;
-	image: string;
-	rating?: number;
+	images_url: string[];
+	average_rating?: number;
 	seller?: string;
 	location: string;
 	open: boolean;
@@ -23,11 +23,10 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({
-	title,
+	product_name,
 	price,
-	image,
-	seller,
-	rating = 0,
+	images_url,
+	average_rating,
 	location,
 	open,
 	id,
@@ -61,8 +60,8 @@ const ProductCard = ({
 
 			<div className="rounded-t-xl overflow-hidden w-full h-[190px] mb-1 relative">
 				<Image
-					src={image}
-					alt={title}
+					src={images_url?.[0]}
+					alt={product_name}
 					width={220}
 					height={120}
 					className="object-cover w-full h-full"
@@ -76,10 +75,10 @@ const ProductCard = ({
 								fill="#FACC15"
 							/>
 						</svg>
-						<span className="text-white text-xs font-medium">{rating} of 5</span>
+						<span className="text-white text-xs font-medium">{average_rating} of 5</span>
 					</span>
 					<span className="text-lg font-bold text-white">
-						${price?.toFixed(2) || '0.00'}
+						${Number(price)?.toFixed(2) || '0.00'}
 					</span>
 				</div>
 			</div>
@@ -90,7 +89,7 @@ const ProductCard = ({
 						<div className="flex flex-col">
 							<div className="flex">
 								<span className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
-									{title && title.length > 15 ? `${title.slice(0, 15)}...` : title || 'Untitled'}
+									{product_name && product_name.length > 15 ? `${product_name.slice(0, 15)}...` : product_name || 'Untitled'}
 								</span>
 								<span className="ml-3">
 									<ShoppingCart size={16} color="#64748B" />

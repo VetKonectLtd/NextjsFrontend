@@ -28,7 +28,7 @@ const Activities = () => {
 	}, [getActivities.data]);
 
 	const handleLoadMore = () => {
-		if ((getActivities.data as any)?.next_page_url) {
+		if ((getActivities.data as any)?.userActivity.next_page_url) {
 			setPage((prev) => prev + 1);
 		}
 	};
@@ -65,7 +65,7 @@ const Activities = () => {
 							</div>
 						))}
 
-					{(getActivities.data as any)?.next_page_url ? (
+					{(getActivities.data as any)?.userActivity.next_page_url ? (
 						<div className="m-auto  md:w-1/3 justify-center sticky bottom-0 flex">
 							<button
 								onClick={handleLoadMore}

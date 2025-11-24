@@ -166,7 +166,7 @@ export interface VeterinaryDoctor {
 	location: string;
 	latitude?: number;
 	longitude?: number;
-	role?:string;
+	role?: string;
 	image?: string;
 	rating: number;
 	totalRatings: number;
@@ -430,55 +430,53 @@ export interface GetAllVendorResponse {
 }
 
 export interface ForumChat {
-	id:string;
+	id: string;
 	title: string;
 	content: string;
-	category:string;
-	comment:string;
-	visibility:string;
+	category: string;
+	comment: string;
+	visibility: string;
 	image: File | null;
-	image_url:string;
-	views_count:string;
-	created_at:string;
-	deleted_at:string;
-	comments_count:string;
-	shares_count:string;
-	likes_count:string;
-	status:string;
-	has_liked:boolean;
-	updated_at:string;
-	author:Author;
-	slug:string;
-
+	image_url: string;
+	views_count: string;
+	created_at: string;
+	deleted_at: string;
+	comments_count: string;
+	shares_count: string;
+	likes_count: string;
+	status: string;
+	has_liked: boolean;
+	updated_at: string;
+	author: Author;
+	slug: string;
 }
 
 export interface BlogChat {
-	id:string;
+	id: string;
 	title: string;
 	content: string;
-	comment:string;
-	visibility:string;
+	comment: string;
+	visibility: string;
 	image: File | null;
-	image_url:string;
-	views_count:string;
-	created_at:string;
-	deleted_at:string;
-	comments_count:string;
-	shares_count:string;
-	likes_count:string;
-	status:string;
-	has_liked:boolean;
-	updated_at:string;
-	author:Author;
-	slug:string;
-
+	image_url: string;
+	views_count: string;
+	created_at: string;
+	deleted_at: string;
+	comments_count: string;
+	shares_count: string;
+	likes_count: string;
+	status: string;
+	has_liked: boolean;
+	updated_at: string;
+	author: Author;
+	slug: string;
 }
 
-export interface  Author{
-	id:string,
+export interface Author {
+	id: string;
 	name: string;
 	image: string | null;
-	active_role:string
+	active_role: string;
 }
 
 export interface Appointment {
@@ -509,9 +507,9 @@ export interface FeedCalculatorPigRequest {
 	no_of_pig: number;
 }
 
-export type FeedCalculatorRequest = 
-	| FeedCalculatorFishRequest 
-	| FeedCalculatorPoultryRequest 
+export type FeedCalculatorRequest =
+	| FeedCalculatorFishRequest
+	| FeedCalculatorPoultryRequest
 	| FeedCalculatorPigRequest;
 
 export interface FeedCalculatorFishResponse {
@@ -535,9 +533,9 @@ export interface FeedCalculatorPigResponse {
 	feed_required: string;
 }
 
-export type FeedCalculatorResponse = 
-	| FeedCalculatorFishResponse 
-	| FeedCalculatorPoultryResponse 
+export type FeedCalculatorResponse =
+	| FeedCalculatorFishResponse
+	| FeedCalculatorPoultryResponse
 	| FeedCalculatorPigResponse;
 
 // Disease Predictor types
@@ -548,24 +546,24 @@ export interface DiseasePredictorRequest {
 
 export type DiseasePredictorResponse = string;
 export interface HotNewsChat {
-	id:string;
+	id: string;
 	title: string;
 	content: string;
-	comment:string;
-	visibility:string;
+	comment: string;
+	visibility: string;
 	image: File | null;
-	picture_url:string;
-	views_count:string;
-	created_at:string;
-	deleted_at:string;
-	comments_count:string;
-	shares_count:string;
-	likes_count:string;
-	status:string;
-	has_liked:boolean;
-	updated_at:string;
-	author:Author;
-	slug:string;
+	picture_url: string;
+	views_count: string;
+	created_at: string;
+	deleted_at: string;
+	comments_count: string;
+	shares_count: string;
+	likes_count: string;
+	status: string;
+	has_liked: boolean;
+	updated_at: string;
+	author: Author;
+	slug: string;
 }
 
 interface MessageMeta {
@@ -589,13 +587,19 @@ export interface MessageFormData {
 	receiver_id: string;
 }
 
-export interface Contact_us{
-	email:string;
-	content:string;
-	agreeToTerms:boolean;
+export interface Contact_us {
+	email: string;
+	content: string;
+	agreeToTerms: boolean;
 }
 
-export interface SupportTicket{
-	category:string;
-	complain:string;
+export interface SupportTicket {
+	category: string;
+	complain: string;
+}
+
+export interface Payment {
+	merchant_user_id: string;
+	productId: string;
+	quantity: number;
 }

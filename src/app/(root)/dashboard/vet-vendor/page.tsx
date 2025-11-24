@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CategorySelector from "@/components/vet-vendor/CategorySelector";
 import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
@@ -21,60 +21,45 @@ import { Bar, Bar2, FullMap, Map2 } from "@/app/assets/images";
 import Veterinarian from "@/components/Veterinarian/Veterinarian";
 import VeterinaryParaprofessional from "@/components/Veterinarian/VeterinaryParaprofessional";
 import VetClinic from "@/components/vetClinic/VetClinic";
-import Vendor from "@/components/Vendor/Vendor";
+// import Vendor from "@/components/Vendor/Vendor";
+import { useProductService } from "@/services/productService";
 
 export default function VetVendorPage() {
-	const [activeCategory, setActiveCategory] = useState("Veterinarian");
 	const [activeTab, setActiveTab] = useState("All");
 
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const initialCategory = searchParams.get("category") || "Veterinarian";
 
-	const products = [
-		{
-			id: "1",
-			title: "German Shepherd",
-			price: 50.99,
-			image: Shop.src,
-			rating: 5,
-			seller: "Owen",
-			location: "Cross River, Nigeria",
-			open: true,
-			category: "Pets",
-		},
-		{
-			id: "2",
-			title: "German Shepherd",
-			price: 50.99,
-			image: Dog.src,
-			rating: 4,
-			seller: "Chanel",
-			location: "Abuja",
-			open: true,
-			category: "Tools and materials",
-		},
-		{
-			id: "3",
-			title: "Dog Feed",
-			price: 15.99,
-			image: Shop.src,
-			rating: 4,
-			seller: "Owen",
-			location: "Lagos",
-			open: true,
-			category: "Feed",
-		},
-		{
-			id: "4",
-			title: "Cattle Injection",
-			price: 99.99,
-			image: Dog.src,
-			rating: 5,
-			seller: "Chanel",
-			location: "Abuja",
-			open: true,
-			category: "Drugs",
-		},
-	];
+	const [activeCategory, setActiveCategory] = useState(initialCategory);
+
+	const [page, setPage] = useState(1);
+	const [allProducts, setAllProducts] = useState<any[]>([]);
+
+	const { useGetAllProduct } = useProductService();
+	const productsReq: any = useGetAllProduct(true, page);
+
+	useEffect(() => {
+		if (productsReq.data?.products?.data) {
+			setAllProducts((prev) => {
+				const incoming = productsReq.data.products.data;
+
+				// Prevent duplicates by ID
+				const newOnes = incoming.filter(
+					(p: any) => !prev.some((x) => x.id === p.id),
+				);
+
+				return [...prev, ...newOnes];
+			});
+		}
+	}, [productsReq.data]);
+
+	const handleLoadMore = () => {
+		if (productsReq.data?.products?.next_page_url) {
+			setPage((prev) => prev + 1);
+		}
+	};
+
 	// categories
 	const categories = [
 		{ name: "Pets", icon: Paws },
@@ -88,17 +73,26 @@ export default function VetVendorPage() {
 	const tabs = categories.map((c) => {
 		const count =
 			c.name === "All"
-				? products.length
-				: products.filter((p) => p.category === c.name).length;
+				? allProducts.length
+				: allProducts.filter((p: any) => p.category === c.name).length;
 
 		return { ...c, count };
 	});
 
+	const handleCategoryChange = (newCategory: string) => {
+		setActiveCategory(newCategory);
+
+		const params = new URLSearchParams(window.location.search);
+		params.set("category", newCategory);
+
+		router.push(`?${params.toString()}`, { scroll: false });
+	};
+
 	// products filter
 	const filteredProducts =
 		activeTab === "All"
-			? products
-			: products.filter((p) => p.category === activeTab);
+			? allProducts
+			: allProducts.filter((p: any) => p.category === activeTab);
 
 	return (
 		<div className="w-11/12 m-auto bg-white">
@@ -108,7 +102,7 @@ export default function VetVendorPage() {
 
 			<CategorySelector
 				activeCategory={activeCategory}
-				onSelect={setActiveCategory}
+				onSelect={handleCategoryChange}
 			/>
 
 			<div className="flex md:flex-row flex-col items-center gap-4 w-full py-2">
@@ -157,7 +151,35 @@ export default function VetVendorPage() {
 					onSelect={setActiveTab}
 				/>
 			)}
-			{activeCategory == "Vendor" && <Vendor />}
+
+			{activeCategory === "Vendor" && (
+				<>
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+						{allProducts.map((product: any) => (
+							<ProductCard
+								key={product.id}
+								{...product}
+								onViewProduct={(id) => router.push(`/dashboard/products/${id}`)}
+							/>
+						))}
+					</div>
+
+					{/* LOAD MORE BUTTON */}
+					{productsReq.data?.products?.next_page_url ? (
+						<div className="flex justify-center my-6">
+							<button
+								onClick={handleLoadMore}
+								disabled={productsReq.isFetching}
+								className="px-4 py-2 bg-gray-200 rounded-md text-gray-700 font-medium disabled:bg-gray-400"
+							>
+								{productsReq.isFetching ? "Loading more..." : "Load More"}
+							</button>
+						</div>
+					) : (
+						<p className="text-center text-gray-500 py-4">No more products</p>
+					)}
+				</>
+			)}
 
 			<div className="relative w-full hidden bg-white shadow-md p-2 h-screen rounded-lg overflow-hidden">
 				<Image
