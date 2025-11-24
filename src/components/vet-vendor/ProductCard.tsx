@@ -114,15 +114,15 @@ const ProductCard = ({
 				</div>
 
 				<div className="flex items-center justify-between px-2 mt-3">
-					<div className="flex items-center md:gap-3 gap-2">
+					<div className="flex items-center md:gap-3 gap-2 mr-1">
 						<button className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
-							<Phone size={14} color="#1D2432" />
+							<Phone className="md:h-4 md:w-4 h-[10px] w-[10px]" color="#1D2432" />
 						</button>
 						<button className="bg-white border border-gray-225 shadow-md rounded-full p-2">
-							<MessageCircle size={14} color="#1D2432" />
+							<MessageCircle className="md:h-4 md:w-4 h-[10px] w-[10px]" color="#1D2432" />
 						</button>
 						<button className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
-							<Mail size={14} color="#1D2432" />
+							<Mail className="md:h-4 md:w-4 h-[10px] w-[10px]" color="#1D2432" />
 						</button>
 					</div>
 					{/* View Full Profile Button */}
@@ -133,7 +133,7 @@ const ProductCard = ({
 						<Image
 							src={GreenButton}
 							alt="View profile"
-							 className="md:w-12 w-9  md:h-12 h-9" 
+							 className="md:w-10 md:h-10 w-5 h-5 object-cover" 
 						/>
 					</button>
 				</div>
