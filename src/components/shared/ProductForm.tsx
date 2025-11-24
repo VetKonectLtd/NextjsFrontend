@@ -34,8 +34,6 @@ export default function ProductForm({
 	const [available, setAvailable] = useState(product?.availability ?? false);
 	const [previews, setPreviews] = useState<string[]>(product?.images_url || []);
 
-	const [category, setCategory] = useState("");
-
 	const categoryOptions = [
 		{ value: "Pet", label: "Pet" },
 		{ value: "Feeds", label: "Feeds" },
@@ -177,13 +175,20 @@ export default function ProductForm({
 							error={errors.product_name?.message}
 						/>
 
-						<FormSelect
-							label="Category"
-							focusLabel="Category"
-							value={category}
-							onChange={setCategory}
-							options={categoryOptions}
-							searchable
+						<Controller
+							name="category"
+							control={control}
+							rules={{ required: "Category is required" }}
+							render={({ field }) => (
+								<FormSelect
+									label="Category"
+									focusLabel="Category"
+									value={field.value || ""}
+									onChange={(val) => field.onChange(val)}
+									options={categoryOptions}
+									searchable
+								/>
+							)}
 						/>
 						{errors.category && (
 							<p className="text-red-500 text-xs mt-1">

@@ -33,6 +33,21 @@ export const useProductService = () => {
 		);
 	};
 
+	const useGetAllProduct = (enabled: boolean = false, page: number = 1) => {
+		const queryParams = new URLSearchParams();
+		queryParams.append("page", page.toString());
+		const url = `${PRODUCTS.GET_ALL_PRODUCTS}?${queryParams.toString()}`;
+		return useGet<{ product: Product; token: string }>(
+			["Allproducts", page.toString()],
+			url,
+			{
+				enabled,
+				keepPreviousData: true,
+				staleTime: 0,
+			},
+		);
+	};
+
 	const useGetProductByUserId = (enabled: boolean = false, Id: string) => {
 		return useGet<{ product: Product; token: string }>(
 			["productByUserId"],
@@ -54,7 +69,6 @@ export const useProductService = () => {
 			},
 		);
 	};
-
 
 	const useGetRelatedProduct = (enabled: boolean = false, Id: string) => {
 		return useGet<{ product: Product; token: string }>(
@@ -113,5 +127,6 @@ export const useProductService = () => {
 		useGetRelatedProduct,
 		useGetProductByUserId,
 		useGetProductById,
+		useGetAllProduct,
 	};
 };

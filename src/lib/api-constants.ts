@@ -55,6 +55,7 @@ export const STORE = {
 
 export const PRODUCTS = {
 	ADD_PRODUCT: "/v3/add-new-product",
+	GET_ALL_PRODUCTS: "/v3/get-all-product",
 	GET_USER_PRODUCTS: "/v3/get-user-products",
 	GET_PRODUCT_NOT_ON_STORE: "/v3/get-product-not-on-store",
 	GET_RELATED_PRODUCT: (Id: string) => `/v3/get-related-product/${Id}/related`,
@@ -169,4 +170,5 @@ export const SUPPORT = {
 
 export const PAYMENTS = {
 	CREATE_PAYMENT_ORDER: "/v3/order/initialize",
+	CREATE_PAYMENT: "/v3/orders",
 }
