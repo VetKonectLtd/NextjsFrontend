@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, PlusIcon } from "lucide-react";
-import { Ads, Search, Store } from "@/app/assets/icons/sidebar";
+import { Ads, Cases, Search, Store } from "@/app/assets/icons/sidebar";
 import { Cow } from "@/app/assets/icons/vet-vendor";
 import Image from "next/image";
 import { Arrow } from "@/app/assets/icons";
@@ -16,36 +16,6 @@ import { Activity } from "@/types";
 import { useForumService } from "@/services/forumService";
 import { useAuthService } from "@/services/authService";
 
-const quickActions = [
-	{
-		title: "Search for what you need",
-		description:
-			"Browse our platform for vendors, vets, pet clinics, livestock and more.",
-		icon: Search,
-		href: "/dashboard",
-	},
-	{
-		title: "Manage your store",
-		description: "Set up, edit, and customize your store on the platform.",
-		icon: Store,
-		href: "/dashboard/stores",
-	},
-	{
-		title: "Manage Your Pet & Livestock Farm",
-		description:
-			"Manage your farm and livestock care on our platform to access high-quality vet care.",
-		icon: Cow,
-		href: "/dashboard/pet",
-	},
-	{
-		title: "Manage Your Promotions",
-		description:
-			"Manage your advertisements by selecting promotion subscription plans.",
-		icon: Ads,
-		href: "/dashboard/ad-promotion",
-	},
-];
-
 const Dashboard = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -54,19 +24,96 @@ const Dashboard = () => {
 	const getActivities = useGetActivities(true);
 	const getTrendingForum = useGetTrendingForum(true);
 	const { useCurrentUser } = useAuthService();
-	const {data: user} = useCurrentUser(true);
-	
+	const { data: user } = useCurrentUser(true);
+
 	const role = (user as any)?.profile?.role;
 
+	const getQuickActions = () => {
+		const baseActions = [
+			{
+				title: "Search for what you need",
+				description:
+					"Browse our platform for vendors, vets, pet clinics, livestock and more.",
+				icon: Search,
+				href: "/dashboard",
+			},
+			{
+				title: "Manage your store",
+				description: "Set up, edit, and customize your store on the platform.",
+				icon: Store,
+				href: "/dashboard/stores",
+			},
+			{
+				title: "Manage Your Promotions",
+				description:
+					"Manage your advertisements by selecting promotion subscription plans.",
+				icon: Ads,
+				href: "/dashboard/ad-promotion",
+			},
+		];
+
+		// 🐾 Pet owners only
+		if (role === "PetOwner") {
+			return [
+				...baseActions,
+				{
+					title: "Manage Your Pet",
+					description:
+						"Manage your pets on the platform and access high-quality vet care.",
+					icon: Cow,
+					href: "/dashboard/pet",
+				},
+			];
+		}
+
+		// 🐄 Livestock owners only
+		if (role === "LivestockOwner") {
+			return [
+				...baseActions,
+				{
+					title: "Manage Livestock Farm",
+					description: "Manage your livestock farm and access vet care.",
+					icon: Cow,
+					href: "/dashboard/livestock",
+				},
+			];
+		}
+
+		// 🩺 Vet roles → vet, vetclinic, paraprofessional
+		if (
+			role === "Veterinarian" ||
+			role === "VetClinic" ||
+			role === "Veterinary Paraprofessional"
+		) {
+			return [
+				...baseActions,
+				{
+					title: "Manage Cases",
+					description:
+						"Manage your client cases on the platform for easy documentation and communication.",
+					icon: Cases,
+					href: "/dashboard/cases",
+				},
+			];
+		}
+
+		// default (if role not matched)
+		return baseActions;
+	};
+
+	console.log("ROLE:", role);
+
+	const quickActions = getQuickActions();
 
 	const trending = Array.isArray(getTrendingForum.data)
 		? getTrendingForum.data
 		: [];
 
-	const activities = Array.isArray((getActivities.data as any)?.userActivity.data)
+	const activities = Array.isArray(
+		(getActivities.data as any)?.userActivity.data,
+	)
 		? (getActivities.data as any)?.userActivity.data
 		: [];
-
 
 	const initialTab = searchParams.get("tab") || "recent";
 	const [tab, setTab] = useState(initialTab);
@@ -171,22 +218,28 @@ const Dashboard = () => {
 							{getActivities.isLoading ? (
 								<ActivitiesSkeleton />
 							) : activities.length >= 1 ? (
-								activities.slice().reverse().slice(0, 5).map((activity: Activity) => (
-									<div
-										key={activity.id}
-										className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
-									>
-										<div>
-											<p className="font-medium text-sm text-gray-55">
-												{activity.title}
-											</p>
-											<p className=" text-xs text-gray-55">{activity.detail}</p>
+								activities
+									.slice()
+									.reverse()
+									.slice(0, 5)
+									.map((activity: Activity) => (
+										<div
+											key={activity.id}
+											className="flex md:flex-row flex-col border rounded-xl shadow-md   border-gray-225 justify-between md:items-center px-4 py-3 mb-2 text-sm"
+										>
+											<div>
+												<p className="font-medium text-sm text-gray-55">
+													{activity.title}
+												</p>
+												<p className=" text-xs text-gray-55">
+													{activity.detail}
+												</p>
+											</div>
+											<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
+												{timeAgo(activity.created_at)}
+											</span>
 										</div>
-										<span className="text-xs rounded-full px-2 py-1 bg-[#F1F1F1] text-gray-55 whitespace-nowrap">
-											{timeAgo(activity.created_at)}
-										</span>
-									</div>
-								))
+									))
 							) : (
 								<p className="text-gray-55 text-center font-bold pb-6 text-base">
 									No activities yet.

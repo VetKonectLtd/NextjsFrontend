@@ -65,7 +65,7 @@ export default function LoginPage() {
 						Secure access to your account
 					</p>
 				</div>
-				<form className="space-y-1" onSubmit={handleSubmit(onSubmit)}>
+				<form className="space-y-1">
 					{/* {loginMutation.error && (
 						<div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-2">
 							{(loginMutation.error as Error).message || "Login failed"}
@@ -115,7 +115,8 @@ export default function LoginPage() {
 							</Link>
 						</div>
 						<button
-							type="submit"
+							type="button"
+							onClick={handleSubmit(onSubmit)}
 							disabled={loginMutation.isLoading}
 							className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
 						>
