@@ -172,3 +172,12 @@ export const PAYMENTS = {
 	CREATE_PAYMENT_ORDER: "/v3/order/initialize",
 	CREATE_PAYMENT: "/v3/orders",
 }
+
+export const ORDER={	
+	GET_BUYER_ORDERS: "/v3/orders/buyer",
+	GET_MERCHANT_ORDERS: "/v3/orders/merchant",
+	GET_ORDER_BY_ID: (Id: string) => `/v3/orders/${Id}`,
+	ORDER_COMPLAINT: (Id: string) => `/v3/orders/${Id}/complaint`,	
+	CONFIRM_ORDER: (Id: string) => `/v3/orders/${Id}/confirm`,
+	CANCELLED_ORDER: (Id: string) => `/v3/orders/${Id}/cancel`,
+}

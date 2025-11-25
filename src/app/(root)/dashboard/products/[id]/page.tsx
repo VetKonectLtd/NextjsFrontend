@@ -37,6 +37,7 @@ export default function ProductDetailsPage({
 	const productData: any = useGetProductById(true, params.id);
 	const product = productData.data?.product;
 
+
 	const relatedProductsData = useGetRelatedProduct(true, params.id);
 
 	const orderPayment = useOrderPayment();
@@ -77,20 +78,22 @@ export default function ProductDetailsPage({
 		if (product.product_type === 1) {
 			orderPayment.mutate(
 				{
-					merchant_user_id: userId,
+					merchant_user_id: product?.user_id,
 					product_id: product.id,
 					quantity: units,
 				},
 				{
-					onSuccess: (data) => {
-						console.log("Order Payment initiated:", data);
+					onSuccess: (data: any) => {
+						if (data?.authorization_url) {
+							window.location.href = data.authorization_url;
+						}
 					},
 				},
 			);
 		} else {
 			paymentMutation.mutate(
 				{
-					merchant_user_id: userId,
+					merchant_user_id: product?.user_id,
 					product_id: product.id,
 					quantity: units,
 				},
@@ -129,75 +132,77 @@ export default function ProductDetailsPage({
 			</div>
 
 			{/* Image Carousel */}
-			<div className="relative h-64 bg-gray-900 rounded-t-2xl overflow-hidden">
-				<AnimatePresence mode="wait">
-					<motion.div
-						key={currentImageIndex}
-						initial={{ opacity: 0, x: 300 }}
-						animate={{ opacity: 1, x: 0 }}
-						exit={{ opacity: 0, x: -300 }}
-						transition={{ duration: 0.3, ease: "easeInOut" }}
-						className="absolute inset-0"
-					>
-						<Image
-							src={product?.images_url[currentImageIndex]}
-							alt={product?.product_name}
-							fill
-							className="object-cover"
-							priority
-						/>
-					</motion.div>
-				</AnimatePresence>
-
-				{/* Carousel Controls */}
-				<motion.button
-					onClick={prevImage}
-					whileHover={{ scale: 1.1 }}
-					whileTap={{ scale: 0.95 }}
-					className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
-				>
-					<ChevronLeft size={20} className="text-gray-600" />
-				</motion.button>
-
-				<motion.button
-					onClick={nextImage}
-					whileHover={{ scale: 1.1 }}
-					whileTap={{ scale: 0.95 }}
-					className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
-				>
-					<ChevronRight size={20} className="text-gray-600" />
-				</motion.button>
-
-				{/* Overlay Elements */}
-				<div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4">
-					{/* Edit Icon */}
-					<button className="bg-white rounded-full p-2 shadow-lg">
-						{/* <Edit size={16} className="text-gray-600" /> */}
-					</button>
-
-					{/* Carousel Indicators */}
-					<div className="flex items-center space-x-2">
-						{product?.images_url.map((_: any, index: any) => (
-							<motion.button
-								key={index}
-								onClick={() => setCurrentImageIndex(index)}
-								whileHover={{ scale: 1.2 }}
-								whileTap={{ scale: 0.9 }}
-								className={`w-2 h-2 rounded-full transition-all duration-200 ${
-									index === currentImageIndex
-										? "bg-white scale-125"
-										: "bg-white/50 hover:bg-white/75"
-								}`}
+			{product?.images_url?.length > 0 && (
+				<div className="relative h-64 md:h-[350px] lg:h-[350px] bg-gray-900 rounded-t-2xl overflow-hidden">
+					<AnimatePresence mode="wait">
+						<motion.div
+							key={currentImageIndex}
+							initial={{ opacity: 0, x: 300 }}
+							animate={{ opacity: 1, x: 0 }}
+							exit={{ opacity: 0, x: -300 }}
+							transition={{ duration: 0.3, ease: "easeInOut" }}
+							className="absolute inset-0"
+						>
+							<Image
+								src={product?.images_url[currentImageIndex]}
+								alt={product?.product_name}
+								fill
+								className="object-cover"
+								priority
 							/>
-						))}
-					</div>
+						</motion.div>
+					</AnimatePresence>
 
-					{/* Price */}
-					<div className="text-white text-xl font-bold">
-						${Number(product?.price).toFixed(2)}
+					{/* Carousel Controls */}
+					<motion.button
+						onClick={prevImage}
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.95 }}
+						className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
+					>
+						<ChevronLeft size={20} className="text-gray-600" />
+					</motion.button>
+
+					<motion.button
+						onClick={nextImage}
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.95 }}
+						className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
+					>
+						<ChevronRight size={20} className="text-gray-600" />
+					</motion.button>
+
+					{/* Overlay Elements */}
+					<div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4">
+						{/* Edit Icon */}
+						<button className="bg-white rounded-full p-2 shadow-lg">
+							{/* <Edit size={16} className="text-gray-600" /> */}
+						</button>
+
+						{/* Carousel Indicators */}
+						<div className="flex items-center space-x-2">
+							{product?.images_url.map((_: any, index: any) => (
+								<motion.button
+									key={index}
+									onClick={() => setCurrentImageIndex(index)}
+									whileHover={{ scale: 1.2 }}
+									whileTap={{ scale: 0.9 }}
+									className={`w-2 h-2 rounded-full transition-all duration-200 ${
+										index === currentImageIndex
+											? "bg-white scale-125"
+											: "bg-white/50 hover:bg-white/75"
+									}`}
+								/>
+							))}
+						</div>
+
+						{/* Price */}
+						<div className="text-white text-xl font-bold">
+							${Number(product?.price).toFixed(2)}
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 
 			{/* Product Info */}
 			<div className="bg-white px-4 py-4">
