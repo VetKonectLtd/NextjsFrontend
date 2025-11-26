@@ -30,6 +30,7 @@ export default function ChatWindow({
 }: ChatWindowProps) {
 	const {
 		useGetCancelAppointment,
+		useCancelOrder,
 		useSendMessage,
 		useGetMessage,
 	} = directMessageService();
@@ -37,6 +38,7 @@ export default function ChatWindow({
 	const [openAppointmentModal, setOpenAppointmentModal] = useState(false);
 	const [selectedAppointment, setSelectedAppointment] = useState<string>("");
 	const [cancelAppointmentId, setCancelAppointmentId] = useState<string>("");
+	const [cancelOrder, setCancelOrder] = useState<string>("");
 	const [previews, setPreviews] = useState<string[]>([]);
 	const [openOrderModal, setOpenOrderModal] = useState(false);
 	const [selectedOrderUrl, setSelectedOrderUrl] = useState<string>("");
@@ -44,6 +46,7 @@ export default function ChatWindow({
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 	const { data: messageData, refetch } = useGetMessage(true, selectedVet?.id);
+	const cancelMutation = useCancelOrder(cancelOrder);
 	const { refetch: cancelAppointment } = useGetCancelAppointment(
 		false,
 		cancelAppointmentId,
@@ -167,8 +170,18 @@ export default function ChatWindow({
 		setOpenOrderModal(true);
 	};
 
-	console.log("Selected Vet in ChatWindow:", allMessages);
+	const handleCancelOrder = async (url: string) => {
+		const relativeUrl = new URL(url).pathname.replace("/api", "");
+		setCancelOrder(relativeUrl);
+		cancelMutation.mutate({
+			onSuccess: (res: any) => {
+				refetch();
+			},
+		});
+	};
 
+	console.log("Selected Vet in ChatWindow:", allMessages);
+	
 	return (
 		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl md:shadow-md w-full md:max-w-sm flex flex-col overflow-hidden md:border border-gray-200">
 			{/* Header */}
@@ -301,7 +314,50 @@ export default function ChatWindow({
 												</button>
 											</div>
 										</div>
-									) : (
+									) : msg?.type === "order.paystack" ? (
+										<div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200 w-[180px]">
+											{/* Product Image Placeholder (since backend sends no image) */}
+											<div className="w-full h-[120px] relative">
+												<Image
+													src={msg.product_image_urls[0]} // You can replace with a static image OR remove
+													alt="Order Item"
+													fill
+													className="object-cover"
+												/>
+											</div>
+
+											{/* Order Title (backend gives only text inside msg.content) */}
+											<div className="p-3 text-gray-900">
+												<p className="text-sm font-medium truncate">
+													{msg.content}
+												</p>
+											</div>
+
+											{/* Buttons */}
+											<div className="flex flex-col gap-2 p-3">
+												{/* View Order Details */}
+												<OrderDetailsModal
+													open={openOrderModal}
+													setOpen={setOpenOrderModal}
+													orderUrl={selectedOrderUrl}
+												/>
+
+												<button
+													onClick={() => handleViewOrder(msg.meta.view_url)}
+													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
+												>
+													Order Details
+												</button>
+
+												{/* Cancel Order */}
+												<button
+													onClick={() => handleCancelOrder(msg.meta.cancel_url)}
+													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
+												>
+													Cancel Order
+												</button>
+											</div>
+										</div>):(
 										<div className="space-y-1">
 											{/* If there are images */}
 											{msg.image_urls.length === 1 ? (
