@@ -36,7 +36,7 @@ export const PET_OwNER_ENDPOINTS = {
 
 export const LIVE_STOCK_ENDPOINTS = {
 	ADD_FARM: "/v3/add-farm",
-	ADD_LIVESTOCK_FARMER:"/v3/add-livestock-farmer",
+	ADD_LIVESTOCK_FARMER: "/v3/add-livestock-farmer",
 	GET_FARMS: "/v3/get-user-farms",
 	GET_FARM_BY_ID: (Id: string) => `/v3/get-farm-by-id/${Id}/farm`,
 	UPDATE_FARM: (Id: string) => `/v3/update-farm/${Id}/farm`,
@@ -61,7 +61,7 @@ export const PRODUCTS = {
 	GET_RELATED_PRODUCT: (Id: string) => `/v3/get-related-product/${Id}/related`,
 	GET_PRODUCT_BY_STORE: (Id: string) =>
 		`/v3/get-product-by-store/${Id}/product`,
-	GET_PRODUCT_BY_ID: (Id: string)=> `/v3/get-product-by-id/${Id}/product`,
+	GET_PRODUCT_BY_ID: (Id: string) => `/v3/get-product-by-id/${Id}/product`,
 	GET_PRODUCT_BY_USER_ID: (Id: string) =>
 		`/v3/get-products-by-user-id/${Id}/product`,
 	UPDATE_PRODUCT: (Id: string) => `/v3/update-product/${Id}/product`,
@@ -85,14 +85,21 @@ export const BLOG_COMMENTS = {
 	REPORT_COMMENT: (Id: string) => `/v3/comments/${Id}/flag`,
 };
 
-export const PROMOTIONPLAN = {
-	CREATE_PLAN: "/v3/buy-plan",
-};
+export const PROMOTION_PLANS = {
+	GET_ALL: "/api/v3/promotion-plans",
+} as const;
 
-export const ACTIVITIES ={
-	GET_ACTIVITIES:"/v3/get-user-activity",
-	GET_USER_NOTIFICATION:"/v3/get-user-notification",
-	GET_USER_NOTIFICATIONS_BY_ID:(Id:string) => `/v3/get-notification/${Id}/notification`
+export const ADS_PROMOTION = {
+	INITIALIZE: "/v3/ads-promotion/initialize",
+	GET_USER_PROMOTIONS: "/v3/ads-promotion/user",
+	GET_PROMOTION_BY_ID: (id: string) => `/v3/ads-promotion/${id}`,
+	CANCEL_PROMOTION: (id: string) => `/v3/ads-promotion/${id}/cancel`,
+} as const;
+
+export const ACTIVITIES = {
+	GET_ACTIVITIES: "/v3/get-user-activity",
+	GET_USER_NOTIFICATION: "/v3/get-user-notification",
+	GET_USER_NOTIFICATIONS_BY_ID: (Id: string) => `/v3/get-notification/${Id}/notification`
 }
 
 export const FORUM_CHAT = {
@@ -100,12 +107,12 @@ export const FORUM_CHAT = {
 	GET_USER_FORUM: "/v3/forums/get-user-forum",
 	TRENDING_FORUM: "/v3/forums/trending",
 	GET_ALL_FORUM: "/v3/forums/index",
-	GET_VISIBILITY_OPTIONS: (visibility:string)=> `/v3/forums/get-visibility-options/${visibility}/forums`,
+	GET_VISIBILITY_OPTIONS: (visibility: string) => `/v3/forums/get-visibility-options/${visibility}/forums`,
 
 	LIKE_FORUM: (Id: string) => `/v3/forums/${Id}/like`,
 
 	ADD_FORUM_COMMENT: (forumId: string) => `/v3/forums/${forumId}/comments`,
-	GET_FORUM_COMMENTS: (forumId: string) =>`/v3/forums/${forumId}/comments/fetch`,
+	GET_FORUM_COMMENTS: (forumId: string) => `/v3/forums/${forumId}/comments/fetch`,
 	UPDATE_FORUM_COMMENT: (Id: string) => `/v3/forums/comments/${Id}`,
 	DELETE_FORUM_COMMENT: (Id: string) => `/v3/forums/comments/${Id}/delete`,
 	REPORT_FORUM_COMMENT: (Id: string) => `/v3/forums/comments/${Id}/flag`,
@@ -117,12 +124,12 @@ export const FORUM_CHAT = {
 };
 
 export const DIRECT_CHAT = {
-	APPOINTMENT:"/v3/appointment",
-	GET_APPOINTMENT_BY_ID:(Id:string) => `/v3/appointment/${Id}`,
-	GET_CANCEL:(Id:string) => `/v3/appointment/${Id}/cancel`,
+	APPOINTMENT: "/v3/appointment",
+	GET_APPOINTMENT_BY_ID: (Id: string) => `/v3/appointment/${Id}`,
+	GET_CANCEL: (Id: string) => `/v3/appointment/${Id}/cancel`,
 	SEND_MESSAGE: "/v3/messages/send",
 	GET_CHAT_LIST: "/v3/get-chat-list",
-	GET_MESSAGE_SENT_TO:`/v3/message/sent`,
+	GET_MESSAGE_SENT_TO: `/v3/message/sent`,
 	GET_MESSAGE_RECEIVED_FROM: `/v3/message/received`,
 	GET_MESSAGE: (userId: string) => `/v3/messages/${userId}`,
 	EDIT_MESSAGE: (Id: string) => `/v3/messages/${Id}/edit`,
@@ -131,32 +138,32 @@ export const DIRECT_CHAT = {
 
 // Veterinary endpoints
 export const VETERINARY_ENDPOINTS = {
-  GET_NEAREST_DOCTORS: '/v3/get-nearest-veterinary-doctors',
-  ADD_VET_DOCTOR: "/v3/add-veterinary-doctor",
-  GET_ALL_VET_DOCTOR:"/v3/get-all-veterinary-doctors"
+	GET_NEAREST_DOCTORS: '/v3/get-nearest-veterinary-doctors',
+	ADD_VET_DOCTOR: "/v3/add-veterinary-doctor",
+	GET_ALL_VET_DOCTOR: "/v3/get-all-veterinary-doctors"
 } as const;
 
 export const VENDOR_ENDPOINTS = {
-  GET_ALL_VENDOR: "/v3/get-all-vendor"
+	GET_ALL_VENDOR: "/v3/get-all-vendor"
 } as const;
 
-export const VETERINARY_CLINIC ={
+export const VETERINARY_CLINIC = {
 	ADD_VET_CLINIC: "/v3/add-veterinary-clinic",
 	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics"
 }
 
-export const VETERINARY_PARAPROFESSIONAL ={
+export const VETERINARY_PARAPROFESSIONAL = {
 	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional",
 	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals"
 }
 
-export const OTHERS ={
-	ADD_OTHERS:"/v3/add-others"
+export const OTHERS = {
+	ADD_OTHERS: "/v3/add-others"
 }
 
 export const GENERAL = {
-	FEED_CALCULATOR:"/v3/feed-calculator",
-	DISEASE_PREDICTOR:"/v3/disease-predictor"
+	FEED_CALCULATOR: "/v3/feed-calculator",
+	DISEASE_PREDICTOR: "/v3/disease-predictor"
 }
 
 export const CONTACT_US = {
@@ -173,11 +180,11 @@ export const PAYMENTS = {
 	CREATE_PAYMENT: "/v3/orders",
 }
 
-export const ORDER={	
+export const ORDER = {
 	GET_BUYER_ORDERS: "/v3/orders/buyer",
 	GET_MERCHANT_ORDERS: "/v3/orders/merchant",
 	GET_ORDER_BY_ID: (Id: string) => `/v3/orders/${Id}`,
-	ORDER_COMPLAINT: (Id: string) => `/v3/orders/${Id}/complaint`,	
+	ORDER_COMPLAINT: (Id: string) => `/v3/orders/${Id}/complaint`,
 	CONFIRM_ORDER: (Id: string) => `/v3/orders/${Id}/confirm`,
 	CANCELLED_ORDER: (Id: string) => `/v3/orders/${Id}/cancel`,
 }
