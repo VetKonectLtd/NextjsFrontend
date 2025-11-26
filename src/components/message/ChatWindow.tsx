@@ -11,6 +11,7 @@ import AppointmentDetails from "./AppointmentDetails";
 import { useForm } from "react-hook-form";
 import { MessageFormData } from "@/types";
 import { toast } from "sonner";
+import OrderDetailsModal from "./OrderDetailsModal";
 const DEFAULT_AVATAR = User;
 
 interface ChatWindowProps {
@@ -27,13 +28,18 @@ export default function ChatWindow({
 	onMessageChange,
 	onOpenVetDetails,
 }: ChatWindowProps) {
-	const { useGetCancelAppointment, useSendMessage, useGetMessage } =
-		directMessageService();
+	const {
+		useGetCancelAppointment,
+		useSendMessage,
+		useGetMessage,
+	} = directMessageService();
 	const { useCurrentUser } = useAuthService();
 	const [openAppointmentModal, setOpenAppointmentModal] = useState(false);
 	const [selectedAppointment, setSelectedAppointment] = useState<string>("");
 	const [cancelAppointmentId, setCancelAppointmentId] = useState<string>("");
 	const [previews, setPreviews] = useState<string[]>([]);
+	const [openOrderModal, setOpenOrderModal] = useState(false);
+	const [selectedOrderUrl, setSelectedOrderUrl] = useState<string>("");
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
@@ -42,9 +48,7 @@ export default function ChatWindow({
 		false,
 		cancelAppointmentId,
 	);
-
 	const sendMessage = useSendMessage();
-
 	const allMessages: any = messageData ?? [];
 
 	const { register, handleSubmit, getValues, setValue } =
@@ -68,7 +72,6 @@ export default function ChatWindow({
 
 	const handleRemoveImage = (idx: number) => {
 		setPreviews((prev) => prev.filter((_, i) => i !== idx));
-
 		const existingImages = getValues("images") || [];
 		const updatedImages = existingImages.filter((_, i) => i !== idx);
 		setValue("images", updatedImages, { shouldValidate: true });
@@ -101,7 +104,6 @@ export default function ChatWindow({
 				console.error("Echo not initialized");
 				return;
 			}
-			// if (!echo) return;
 
 			const ids = [currentUserId, selectedVet.id].sort((a, b) => a - b);
 			channel = echo.private(`direct-chat.${ids[0]}.${ids[1]}`);
@@ -120,9 +122,8 @@ export default function ChatWindow({
 		};
 	}, [selectedVet?.id, currentUserId]);
 
-	const handleCancel = (appointmentId: string) => async () => {
+	const handleCancelAppointment = (appointmentId: string) => async () => {
 		setCancelAppointmentId(appointmentId);
-
 		setTimeout(async () => {
 			try {
 				const res = await cancelAppointment();
@@ -136,14 +137,13 @@ export default function ChatWindow({
 		}, 0);
 	};
 
-	const handleViewDetails = (appointment: any) => {
+	const handleViewAppointmentDetails = (appointment: any) => {
 		setSelectedAppointment(appointment);
 		setOpenAppointmentModal(true);
 	};
 
-	const handleSend = (data: any) => {
+	const handleSendMessage = (data: any) => {
 		if (!data.content && !data.images) return;
-
 		const formData: any = new FormData();
 		formData.append("content", data.content);
 		formData.append("receiver_id", selectedVet?.id);
@@ -160,17 +160,14 @@ export default function ChatWindow({
 		});
 	};
 
-	const handleCancelOrder = async (url: string) => {
-		try {
-			const res = await fetch(url, { method: "POST" });
-			if (!res.ok) throw new Error();
-
-			toast.success("Order cancelled successfully");
-			refetch();
-		} catch (err) {
-			toast.error("Failed to cancel order");
-		}
+	const handleViewOrder = (url: string) => {
+		console.log("Order Details:", url);
+		const relativeUrl = new URL(url).pathname.replace("/api", "");
+		setSelectedOrderUrl(relativeUrl);
+		setOpenOrderModal(true);
 	};
+
+	console.log("Selected Vet in ChatWindow:", allMessages);
 
 	return (
 		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl md:shadow-md w-full md:max-w-sm flex flex-col overflow-hidden md:border border-gray-200">
@@ -250,14 +247,18 @@ export default function ChatWindow({
 											<div className="flex flex-col gap-2 w-full">
 												<button
 													onClick={() =>
-														handleViewDetails(msg.meta.appointment_id)
+														handleViewAppointmentDetails(
+															msg.meta.appointment_id,
+														)
 													}
 													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
 												>
 													View Details
 												</button>
 												<button
-													onClick={handleCancel(msg.meta.appointment_id)}
+													onClick={handleCancelAppointment(
+														msg.meta.appointment_id,
+													)}
 													className="w-full bg-white border border-primary-400 text-gray-600 font-medium text-xs hover:text-primary-400 py-3 px-5 rounded-md hover:bg-gray-50"
 												>
 													Cancel appointment
@@ -286,21 +287,17 @@ export default function ChatWindow({
 											{/* Buttons */}
 											<div className="flex flex-col gap-2 p-3">
 												{/* View Order Details */}
-												
+												<OrderDetailsModal
+													open={openOrderModal}
+													setOpen={setOpenOrderModal}
+													orderUrl={selectedOrderUrl}
+												/>
 
 												<button
-													
+													onClick={() => handleViewOrder(msg.meta.view_url)}
 													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
 												>
 													Order Details
-												</button>
-
-												{/* Cancel Order */}
-												<button
-													onClick={() => handleCancelOrder(msg.meta.cancel_url)}
-													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
-												>
-													Cancel Order
 												</button>
 											</div>
 										</div>
@@ -398,13 +395,13 @@ export default function ChatWindow({
 					onKeyDown={(e) => {
 						if (e.key === "Enter") {
 							e.preventDefault();
-							handleSubmit(handleSend)();
+							handleSubmit(handleSendMessage)();
 						}
 					}}
 					className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
 				/>
 				<button
-					onClick={handleSubmit(handleSend)}
+					onClick={handleSubmit(handleSendMessage)}
 					className="bg-primary-400 p-2 rounded-2xl hover:bg-primary-400 transition"
 				>
 					<Send className="w-4 h-4 text-white" />
