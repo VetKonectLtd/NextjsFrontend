@@ -1,15 +1,19 @@
 "use client";
+import { directMessageService } from "@/services/directMessageService";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useEffect } from "react";
 
 export default function OrderDetailsModal({
   open,
   setOpen,
-  orderId,
-  onCancelOrder,
-  data,
-  loading,
+  orderUrl
 }: any) {
+
+  const {useGetOrderDetails}= directMessageService();
+  const {data: Order, isLoading} = useGetOrderDetails(!!orderUrl, orderUrl);
+  const orderDetail =  (Order as any)?.product ?? {};
+
+console.log("hello", Order);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-sm rounded-xl p-6 bg-white">
@@ -19,49 +23,33 @@ export default function OrderDetailsModal({
           </DialogTitle>
         </DialogHeader>
 
-        {loading ? (
+        {isLoading ? (
           <p className="text-gray-500 text-sm">Loading...</p>
-        ) : !data ? (
-          <p className="text-gray-500 text-sm">No details available</p>
         ) : (
           <div className="space-y-3 text-sm text-gray-700">
             <p>
-              <strong>Order ID:</strong> {data?.id}
+              <strong>Order ID:</strong> {orderDetail.id}
             </p>
 
             <p>
-              <strong>Status:</strong> {data?.payment_status}
+              <strong>Product Name:</strong> {orderDetail.product_name}
             </p>
 
             <p>
-              <strong>Total Amount:</strong> ₦{data?.total_amount}
+              <strong>Price:</strong> ₦{orderDetail.price}
             </p>
 
             <p>
-              <strong>Payment Method:</strong> {data?.payment_method}
+              <strong>Location:</strong> {orderDetail?.location}
             </p>
 
             <p>
-              <strong>Items:</strong>
+              <strong>Description:</strong> {orderDetail?.description}
             </p>
-
-            <ul className="pl-4 list-disc">
-              {data?.items?.map((item: any, i: number) => (
-                <li key={i}>
-                  {item.product_name} — Qty {item.quantity}
-                </li>
-              ))}
-            </ul>
-
-            <button
-              onClick={onCancelOrder}
-              className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg text-sm"
-            >
-              Cancel Order
-            </button>
           </div>
         )}
       </DialogContent>
     </Dialog>
   );
 }
+
