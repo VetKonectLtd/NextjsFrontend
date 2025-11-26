@@ -108,9 +108,9 @@ const ProductCard = ({
 							</span>
 						</div>
 					</div>
-					<div className="flex justify-end">
+					{/* <div className="flex justify-end">
 						<span className="text-xs text-green-500 font-semibold">Ads</span>
-					</div>
+					</div> */}
 				</div>
 
 				<div className="flex items-center justify-between px-2 mt-3">

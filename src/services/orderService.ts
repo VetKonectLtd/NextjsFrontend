@@ -42,7 +42,7 @@ export const useOrderService = () => {
 				handleSuccess(response.message || "Order cancelled successfully!");
 			},
 			onError: (error) => {
-				handleError(error.message, "Order cancellation failed");
+				handleError(error.message || "Order cancellation failed");
 			},
 		});
 	};
@@ -53,7 +53,7 @@ export const useOrderService = () => {
 				handleSuccess(response.message || "Order confirmed successfully!");
 			},
 			onError: (error) => {
-				handleError(error.message, "Order confirmation failed");
+				handleError(error.message || "Order confirmation failed");
 			},
 		});
 	};
@@ -66,7 +66,7 @@ export const useOrderService = () => {
 				);
 			},
 			onError: (error) => {
-				handleError(error.message, "Order complaint submission failed");
+				handleError(error.message || "Order complaint submission failed");
 			},
 		});
 	};

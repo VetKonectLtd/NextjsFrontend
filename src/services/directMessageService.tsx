@@ -99,6 +99,20 @@ export const directMessageService = () => {
 		});
 	};
 
+	const useCancelOrder = (url:string) => {
+		return usePost<any>(url, {
+			onSuccess: (response) => {
+				handleSuccess(
+					response.message || "Order cancelled successfully!",
+				);
+			},
+
+			onError: (error) => {
+				handleError(error.message, "Order cancellation failed");
+			},
+		});
+	};
+
     const useGetOrderDetails = ( enabled: boolean = false, url:string) => {
 		return useGet<any>(
 			["get-Order-Details"],
@@ -133,6 +147,7 @@ export const directMessageService = () => {
 		useDeleteMessage,
 		useGetAppointment,
 		useGetCancelAppointment,
+        useCancelOrder,
         useGetOrderDetails,
 	};
 };

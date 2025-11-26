@@ -33,6 +33,9 @@ export default function OrderDetailsPage({
 	};
 
 	const [canCancel, setCanCancel] = useState(false);
+	const isCanceled =
+		product.status?.toLowerCase() === "canceled" ||
+		product.status?.toLowerCase() === "cancelled";
 
 	useEffect(() => {
 		if (!order?.created_at) return;
@@ -222,7 +225,7 @@ export default function OrderDetailsPage({
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{canCancel ? (
+						{isCanceled ? null : canCancel ? (
 							<button
 								onClick={handleCancelOrder}
 								className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
