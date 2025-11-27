@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Warning } from "@/app/assets/icons";
 import { useOrderService } from "@/services/orderService";
+import { useAuthService } from "@/services/authService";
 
 export default function OrderDetailsPage({
 	params,
@@ -13,10 +14,24 @@ export default function OrderDetailsPage({
 	params: { id: string };
 }) {
 	const router = useRouter();
-	const { useGetOrderById, useCancelOrder } = useOrderService();
+	const { useCurrentUser } = useAuthService();
+	const { useGetOrderById, useCancelOrder, useConfirmOrder } =
+		useOrderService();
 	const { data: ordersData, isLoading } = useGetOrderById(true, params?.id);
+	const user = useCurrentUser(true);
+	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 
 	const cancelOrderMutation = useCancelOrder(true, params?.id);
+	const confirmOrderMutation = useConfirmOrder(true, params?.id);
+
+
+	const handleConfirmOrder = async () => {
+		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
+			confirmOrderMutation.mutate({
+				onSuccess: () => {},
+			});
+		}
+	};
 
 	const order = (ordersData as any)?.order;
 
@@ -32,6 +47,7 @@ export default function OrderDetailsPage({
 		current_step: order?.timeline?.events?.length ?? 0,
 	};
 
+	const isBuyer = order?.buyer_user_id === currentUserId;
 	const [canCancel, setCanCancel] = useState(false);
 	const isCanceled =
 		product.status?.toLowerCase() === "canceled" ||
@@ -225,20 +241,50 @@ export default function OrderDetailsPage({
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{isCanceled ? null : canCancel ? (
+						{isBuyer ? (
 							<button
-								onClick={handleCancelOrder}
-								className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
+								onClick={handleConfirmOrder}
+								disabled={confirmOrderMutation.isPending}
+								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
 							>
-								Cancel Order
+								{confirmOrderMutation.isPending ? (
+									<div className="flex justify-center items-center gap-2">
+										<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+										<span>Processing...</span>
+									</div>
+								) : (
+									"Mark as Delivered"
+								)}
 							</button>
 						) : (
-							<button
-								onClick={() => router.push("/support")}
-								className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
-							>
-								Contact Support
-							</button>
+							<>
+								{/* Normal buyer buttons */}
+								{!isCanceled && canCancel && (
+									<button
+										onClick={handleCancelOrder}
+										disabled={cancelOrderMutation.isPending}
+										className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
+									>
+										{cancelOrderMutation.isPending ? (
+											<div className="flex justify-center items-center gap-2">
+												<div className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+												<span>Cancelling...</span>
+											</div>
+										) : (
+											"Cancel Order"
+										)}
+									</button>
+								)}
+
+								{!canCancel && !isCanceled && (
+									<button
+										onClick={() => router.push("/support")}
+										className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
+									>
+										Contact Support
+									</button>
+								)}
+							</>
 						)}
 						<button className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold">
 							Buy Again
