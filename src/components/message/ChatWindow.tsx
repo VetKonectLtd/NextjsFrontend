@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { MessageFormData } from "@/types";
 import { toast } from "sonner";
 import OrderDetailsModal from "./OrderDetailsModal";
+import { useRouter } from "next/navigation";
 const DEFAULT_AVATAR = User;
 
 interface ChatWindowProps {
@@ -35,6 +36,7 @@ export default function ChatWindow({
 		useGetMessage,
 	} = directMessageService();
 	const { useCurrentUser } = useAuthService();
+	const router = useRouter();
 	const [openAppointmentModal, setOpenAppointmentModal] = useState(false);
 	const [selectedAppointment, setSelectedAppointment] = useState<string>("");
 	const [cancelAppointmentId, setCancelAppointmentId] = useState<string>("");
@@ -181,7 +183,7 @@ export default function ChatWindow({
 	};
 
 	console.log("Selected Vet in ChatWindow:", allMessages);
-	
+
 	return (
 		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl md:shadow-md w-full md:max-w-sm flex flex-col overflow-hidden md:border border-gray-200">
 			{/* Header */}
@@ -343,7 +345,11 @@ export default function ChatWindow({
 												/>
 
 												<button
-													onClick={() => handleViewOrder(msg.meta.view_url)}
+													onClick={() =>
+														router.push(
+															`/dashboard/orders/${msg.meta.order_id}`,
+														)
+													}
 													className="w-full bg-white border border-primary-400 text-gray-600 font-medium hover:text-primary-400 text-xs py-3 px-5 rounded-md hover:bg-gray-50"
 												>
 													Order Details
@@ -357,7 +363,8 @@ export default function ChatWindow({
 													Cancel Order
 												</button>
 											</div>
-										</div>):(
+										</div>
+									) : (
 										<div className="space-y-1">
 											{/* If there are images */}
 											{msg.image_urls.length === 1 ? (

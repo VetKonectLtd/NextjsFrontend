@@ -43,13 +43,17 @@ export default function OrderHistoryTable() {
 	const [search, setSearch] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 
-	const { useGetBuyersOrder } = useOrderService();
+	const { useGetBuyersOrder, useGetMerchantOrder } = useOrderService();
 	const { data: ordersData, isLoading } = useGetBuyersOrder(true, currentPage);
+	const { data: merchantOrdersData } = useGetMerchantOrder(true, currentPage);
 
-	const orders = (ordersData as any)?.orders?.data || [];
+	const buyerOrders = (ordersData as any)?.orders?.data || [];
+	const merchantOrders = (merchantOrdersData as any)?.orders?.data || [];
 	const totalPages = (ordersData as any)?.orders?.last_page || 1;
 
-	const filtered = orders.filter((o: any) => {
+	const combinedOrders = [...buyerOrders, ...merchantOrders];
+
+	const filtered = combinedOrders.filter((o: any) => {
 		const productName = o.items?.product_name || "";
 		return productName.toLowerCase().includes(search.toLowerCase());
 	});
@@ -100,7 +104,7 @@ export default function OrderHistoryTable() {
 						<tr className="text-left text-gray-500 border-b">
 							<th className="py-3 px-3">Product Name</th>
 							<th className="py-3 px-3">Tracking #</th>
-							<th className="py-3 px-3">Vendor</th>
+							{/* <th className="py-3 px-3">Vendor</th> */}
 							<th className="py-3 px-3">Status</th>
 							<th className="py-3 px-3">Budget (₦)</th>
 							<th className="py-3 px-3">Qty</th>
@@ -110,7 +114,7 @@ export default function OrderHistoryTable() {
 					</thead>
 
 					<tbody>
-						{filtered.map((order: any, idx: number) => {
+						{filtered.reverse().map((order: any, idx: number) => {
 							const style =
 								statusStyles[order.status] || statusStyles["pending"];
 
@@ -123,9 +127,9 @@ export default function OrderHistoryTable() {
 
 									<td className="py-3 px-3">{order.tracking_number}</td>
 
-									<td className="py-3 px-3">
+									{/* <td className="py-3 px-3">
 										{order?.merchant?.first_name} {order?.merchant?.last_name}
-									</td>
+									</td> */}
 
 									<td className="py-3 px-3">
 										<span
@@ -163,7 +167,7 @@ export default function OrderHistoryTable() {
 
 			{/* MOBILE CARD VIEW */}
 			<div className="md:hidden space-y-4">
-				{filtered.map((order: any, idx: number) => {
+				{filtered.reverse().map((order: any, idx: number) => {
 					const style =
 						statusStyles[order.status] || statusStyles["pending"];
 
@@ -187,7 +191,7 @@ export default function OrderHistoryTable() {
 
 							<div className="text-sm text-gray-600 space-y-1">
 								<p><strong>Tracking:</strong> {order.tracking_number}</p>
-								<p><strong>Vendor:</strong> {order?.merchant?.first_name} {order?.merchant?.last_name}</p>
+								{/* <p><strong>Vendor:</strong> {order?.merchant?.first_name} {order?.merchant?.last_name}</p> */}
 								<p><strong>Budget:</strong> ₦{order.items.subtotal}</p>
 								<p><strong>Quantity:</strong> {order.quantity}</p>
 								<p><strong>Timeline:</strong> {order.timeline?.created_at || "N/A"}</p>

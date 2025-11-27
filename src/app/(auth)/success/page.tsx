@@ -19,6 +19,9 @@ const SuccessPage = () => {
 			Cookies.set("auth-token", token, { secure: true, sameSite: "strict" });
 
 			const cleanUrl = `/success?form=${formType || "Login"}`;
+
+			 sessionStorage.setItem("justLoggedIn", "true");
+			 
 			router.replace(cleanUrl, { scroll: false });
 		}
 	}, [token, formType, router]);
