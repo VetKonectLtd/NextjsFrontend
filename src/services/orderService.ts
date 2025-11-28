@@ -1,17 +1,21 @@
 import { useGet, usePost } from "@/lib/hooks";
 import { ORDER } from "@/lib/api-constants";
 import { useHandleError, useHandleSuccess } from "@/lib/hooks/useToastHandlers";
+import Cookies from "js-cookie";
 
 export const useOrderService = () => {
 	const handleSuccess = useHandleSuccess();
 	const handleError = useHandleError();
 
 	const useGetBuyersOrder = (enabled: boolean = false, page: number = 1) => {
+		const token = Cookies.get("auth-token");
+
+		const isEnabled = Boolean(token) && Boolean(enabled);
 		const queryParams = new URLSearchParams();
 		queryParams.append("page", page.toString());
 		const url = `${ORDER.GET_BUYER_ORDERS}?${queryParams.toString()}`;
 		return useGet<any>(["buyersOrder", page.toString()], url, {
-			enabled,
+			enabled: isEnabled,
 			keepPreviousData: true,
 			staleTime: 0,
 		});
@@ -19,11 +23,14 @@ export const useOrderService = () => {
 
 
 	const useGetMerchantOrder = (enabled: boolean = false, page: number = 1) => {
+		const token = Cookies.get("auth-token");
+
+		const isEnabled = Boolean(token) && Boolean(enabled);
 		const queryParams = new URLSearchParams();
 		queryParams.append("page", page.toString());
 		const url = `${ORDER.GET_MERCHANT_ORDERS}?${queryParams.toString()}`;
 		return useGet<any>(["merchantOrder", page.toString()], url, {
-			enabled,
+			enabled:isEnabled,
 			keepPreviousData: true,
 			staleTime: 0,
 		});

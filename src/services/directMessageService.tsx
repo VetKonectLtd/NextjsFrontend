@@ -33,6 +33,7 @@ export const directMessageService = () => {
 	const useGetSentMessage = (enabled: boolean = false) => {
 		return useGet<any>(["sentMessages"], `${DIRECT_CHAT.GET_MESSAGE_SENT_TO}`, {
 			enabled,
+			keepPreviousData: false,
 			staleTime: 0,
 		});
 	};
@@ -43,6 +44,7 @@ export const directMessageService = () => {
 			`${DIRECT_CHAT.GET_MESSAGE_RECEIVED_FROM}`,
 			{
 				enabled,
+				keepPreviousData: false,
 				staleTime: 0,
 			},
 		);
@@ -61,6 +63,7 @@ export const directMessageService = () => {
 			`${DIRECT_CHAT.GET_MESSAGE(Id)}`,
 			{
 				enabled,
+				keepPreviousData: false,
 				staleTime: 0,
 			},
 		);
@@ -72,6 +75,7 @@ export const directMessageService = () => {
 			`${DIRECT_CHAT.GET_APPOINTMENT_BY_ID(Id)}`,
 			{
 				enabled,
+				keepPreviousData: false,
 				staleTime: 0,
 			},
 		);
