@@ -14,12 +14,18 @@ import {
   ChevronDown,
   MessagesSquareIcon,
   Star,
+  Router,
 } from "lucide-react";
 import { AuthBg } from "@/app/assets/images";
 import { AccountAction } from "./";
 import SwitcherIcon from "@/app/assets/icons/switcher.svg";
 import UserIconPng from "@/app/assets/icons/user.png";
 import { useAuthService } from "@/services/authService";
+import { useRoleSwitchingService } from "@/services/roleSwitchingService";
+import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
+import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
+import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
+import { useRouter } from "next/navigation";
 
 interface AnimalOwnerProfileProps {
   isEditMode: boolean;
@@ -30,13 +36,34 @@ const AnimalOwnerProfile = ({
   isEditMode,
   onToggleEdit,
 }: AnimalOwnerProfileProps) => {
+  const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(
     "default"
   );
   const { useCurrentUser } = useAuthService();
-  const { data: user } = useCurrentUser(true);
+  const { data: user, refetch: refetchUser } = useCurrentUser(true);
   const apiProfile = (user as any)?.profile;
   const apiUser = apiProfile?.user;
+
+  const {
+    hasRole,
+    requiresFormData,
+    useSwitchToVeterinarian,
+    useSwitchToParaprofessional,
+    useSwitchToVetClinic,
+    useSwitchToPetOwner,
+    useSwitchToLivestockFarmer,
+    useSwitchToVendor,
+  } = useRoleSwitchingService();
+
+  const petOwnerMutation = useSwitchToPetOwner();
+  const livestockFarmerMutation = useSwitchToLivestockFarmer();
+  const vendorMutation = useSwitchToVendor();
+
+  const [veterinarianModalOpen, setVeterinarianModalOpen] = useState(false);
+  const [paraprofessionalModalOpen, setParaprofessionalModalOpen] =
+    useState(false);
+  const [vetClinicModalOpen, setVetClinicModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     email: apiUser?.email || "",
@@ -58,23 +85,58 @@ const AnimalOwnerProfile = ({
   const statusOptions = ["Available", "Busy", "Away", "Do not disturb"];
 
   // Role switching logic
-  const backendRole: string = ((user as any)?.role || "").toLowerCase();
+  const normalizeRole = (raw: string): string => {
+    const r = (raw || "").toLowerCase();
+    const map: Record<string, string> = {
+      veterinarian: "vertinary_doctor",
+      vet_doctor: "vertinary_doctor",
+      vertinary_doctor: "vertinary_doctor",
+      veterinary_doctor: "vertinary_doctor",
+      "veterinary doctor": "vertinary_doctor",
+      paraprofessional: "vertinary_paraprofessional",
+      "veterinary paraprofessional": "vertinary_paraprofessional",
+      vertinary_paraprofessional: "vertinary_paraprofessional",
+      veterinary_paraprofessional: "vertinary_paraprofessional",
+      vet_clinic: "vertinary_clinic",
+      clinic: "vertinary_clinic",
+      "veterinary clinic": "vertinary_clinic",
+      veterinary_clinic: "vertinary_clinic",
+      vertinary_clinic: "vertinary_clinic",
+      vendor: "vendor",
+      pet_owner: "pet_owner",
+      animal_owner: "pet_owner",
+      "pet owner": "pet_owner",
+      livestock_farmer: "livestock_farmer",
+      "livestock farmer": "livestock_farmer",
+    };
+    return map[r] || r;
+  };
+
+  const backendRole: string = normalizeRole((user as any)?.role || "");
   const allRoles = [
-    { key: "veterinarian", label: "Veterinarian" },
-    { key: "paraprofessional", label: "Paraprofessional" },
-    { key: "vet_clinic", label: "Vet Clinic" },
+    { key: "vertinary_doctor", label: "Veterinarian" },
+    { key: "vertinary_paraprofessional", label: "Paraprofessional" },
+    { key: "vertinary_clinic", label: "Vet Clinic" },
     { key: "vendor", label: "Vendor" },
     { key: "livestock_farmer", label: "Livestock Farmer" },
     { key: "pet_owner", label: "Pet Owner" },
   ];
 
   const switchableRolesMap: Record<string, string[]> = {
-    veterinarian: ["vendor", "vet_clinic"],
-    paraprofessional: ["veterinarian", "vet_clinic", "vendor"],
+    vertinary_doctor: ["vendor", "vertinary_clinic"],
+    vertinary_paraprofessional: [
+      "vertinary_doctor",
+      "vertinary_clinic",
+      "vendor",
+    ],
     pet_owner: allRoles.map((r) => r.key),
-    vendor: ["vet_clinic", "veterinarian", "paraprofessional"],
+    vendor: [
+      "vertinary_clinic",
+      "vertinary_doctor",
+      "vertinary_paraprofessional",
+    ],
     livestock_farmer: allRoles.map((r) => r.key),
-    vet_clinic: ["veterinarian", "paraprofessional", "vendor"],
+    vertinary_clinic: allRoles.map((r) => r.key),
   };
 
   const switchable = useMemo(() => {
@@ -86,9 +148,158 @@ const AnimalOwnerProfile = ({
   const [targetRole, setTargetRole] = useState<string>(backendRole);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Prepare mutations for existing-role no-payload calls
+  const veterinarianMutation = useSwitchToVeterinarian();
+  const paraprofessionalMutation = useSwitchToParaprofessional();
+  const vetClinicMutation = useSwitchToVetClinic();
+
+  // Robust local role check using normalized names from backend (profile.user.roles)
+  const userHasRoleNormalized = (roleKey: string) => {
+    const roles: Array<{ name: string }> = ((apiUser as any)?.roles ||
+      []) as any;
+    const normalize = (raw: string) => normalizeRole(raw);
+    const target = normalizeRole(roleKey);
+    return roles.some((r) => normalize(r.name) === target);
+  };
+
   const handleSwitchProfile = (roleKey: string) => {
-    // Placeholder for API call to switch active role
     setTargetRole(roleKey);
+
+    // Check if user already has this role
+    const userHasRole = userHasRoleNormalized(roleKey);
+
+    if (userHasRole) {
+      // Role exists: per requirement, call same POST endpoint without payload
+      switch (roleKey) {
+        case "vertinary_doctor":
+          veterinarianMutation.mutate({} as any, {
+            onSuccess: () => {
+              refetchUser();
+              setShowSwitcher(true);
+              // window.location.reload();
+              router.refresh();
+            },
+          });
+          return;
+        case "vertinary_paraprofessional":
+          paraprofessionalMutation.mutate({} as any, {
+            onSuccess: () => {
+              refetchUser();
+              setShowSwitcher(true);
+              // window.location.reload();
+              router.refresh();
+            },
+          });
+          return;
+        case "vertinary_clinic":
+          vetClinicMutation.mutate({} as any, {
+            onSuccess: () => {
+              refetchUser();
+              setShowSwitcher(true);
+              // window.location.reload();
+              router.refresh();
+            },
+          });
+          return;
+        case "pet_owner":
+          petOwnerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(true);
+                // window.location.reload();
+                router.refresh();
+              },
+            }
+          );
+          return;
+        case "livestock_farmer":
+          livestockFarmerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(true);
+                // window.location.reload();
+                router.refresh();
+              },
+            }
+          );
+          return;
+        case "vendor":
+          vendorMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(true);
+                // window.location.reload();
+                router.refresh();
+              },
+            }
+          );
+          return;
+      }
+    }
+
+    // Role doesn't exist, need to create it
+    if (requiresFormData(roleKey)) {
+      // Show modal for roles that need form data
+      switch (roleKey) {
+        case "vertinary_doctor":
+          setVeterinarianModalOpen(true);
+          break;
+        case "vertinary_paraprofessional":
+          setParaprofessionalModalOpen(true);
+          break;
+        case "vertinary_clinic":
+          setVetClinicModalOpen(true);
+          break;
+      }
+    } else {
+      // Call API directly for roles without form data
+      switch (roleKey) {
+        case "pet_owner":
+          petOwnerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(false);
+              },
+            }
+          );
+          break;
+        case "livestock_farmer":
+          livestockFarmerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(false);
+              },
+            }
+          );
+          break;
+        case "vendor":
+          vendorMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(false);
+              },
+            }
+          );
+          break;
+      }
+    }
+  };
+
+  const handleModalSuccess = () => {
+    refetchUser();
+    setShowSwitcher(false);
   };
 
   const handlePrevious = () => {
@@ -505,6 +716,23 @@ const AnimalOwnerProfile = ({
           )}
         </div>
       </div>
+
+      {/* Role Switching Modals */}
+      <VeterinarianSwitchModal
+        open={veterinarianModalOpen}
+        onClose={() => setVeterinarianModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
+      <ParaprofessionalSwitchModal
+        open={paraprofessionalModalOpen}
+        onClose={() => setParaprofessionalModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
+      <VetClinicSwitchModal
+        open={vetClinicModalOpen}
+        onClose={() => setVetClinicModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
     </div>
   );
 };

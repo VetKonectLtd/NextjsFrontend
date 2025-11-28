@@ -21,26 +21,46 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
     setIsEditMode(!isEditMode);
   };
 
-  // Map backend roles to grouped profiles
-  // AnimalOwnerProfile group: vendors | livestock_farmer | pet_owner
-  // VetProfile group: veterinarian | paraprofessional | vet_clinic
-  const backendRole: string | undefined = (user as any)?.role;
+  // Map backend roles to grouped profiles using active role id when available
+  const apiUser: any = (user as any)?.profile?.user;
+  const activeRoleId: number | undefined = apiUser?.active_role_id;
+  const activeRoleName: string | undefined = (apiUser?.roles || [])
+    ?.find((r: any) => r?.pivot?.role_id === activeRoleId)?.name;
+  const backendRoleRaw: string | undefined = activeRoleName || (user as any)?.role;
+  const normalizeRole = (raw?: string): string | undefined => {
+    if (!raw) return undefined;
+    const r = raw.toLowerCase();
+    const map: Record<string, string> = {
+      veterinarian: "vertinary_doctor",
+      vet_doctor: "vertinary_doctor",
+      vertinary_doctor: "vertinary_doctor",
+      paraprofessional: "vertinary_paraprofessional",
+      vertinary_paraprofessional: "vertinary_paraprofessional",
+      vet_clinic: "vertinary_clinic",
+      clinic: "vertinary_clinic",
+      vertinary_clinic: "vertinary_clinic",
+      vendor: "vendor",
+      vendors: "vendor",
+      pet_owner: "pet_owner",
+      livestock_farmer: "livestock_farmer",
+      farmer: "livestock_farmer",
+    };
+    return map[r] || r;
+  };
+  const backendRole: string | undefined = normalizeRole(backendRoleRaw);
 
   const derivedUserRole: UserRole | undefined = (() => {
     if (!backendRole) return undefined;
     const role = backendRole.toLowerCase();
     const animalOwnerGroup = new Set([
-      "vendors",
       "vendor",
       "livestock_farmer",
-      "farmer",
       "pet_owner",
     ]);
     const vetGroup = new Set([
-      "veterinarian",
-      "paraprofessional",
-      "vet_clinic",
-      "clinic",
+      "vertinary_doctor",
+      "vertinary_paraprofessional",
+      "vertinary_clinic",
     ]);
     if (animalOwnerGroup.has(role)) return "animal_owner";
     if (vetGroup.has(role)) return "vet";
