@@ -24,9 +24,11 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
   // Map backend roles to grouped profiles using active role id when available
   const apiUser: any = (user as any)?.profile?.user;
   const activeRoleId: number | undefined = apiUser?.active_role_id;
-  const activeRoleName: string | undefined = (apiUser?.roles || [])
-    ?.find((r: any) => r?.pivot?.role_id === activeRoleId)?.name;
-  const backendRoleRaw: string | undefined = activeRoleName || (user as any)?.role;
+  const activeRoleName: string | undefined = (apiUser?.roles || [])?.find(
+    (r: any) => r?.pivot?.role_id === activeRoleId
+  )?.name;
+  const backendRoleRaw: string | undefined =
+    activeRoleName || (user as any)?.role;
   const normalizeRole = (raw?: string): string | undefined => {
     if (!raw) return undefined;
     const r = raw.toLowerCase();

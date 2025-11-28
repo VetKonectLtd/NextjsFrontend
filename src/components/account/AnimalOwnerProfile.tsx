@@ -15,6 +15,7 @@ import {
   MessagesSquareIcon,
   Star,
   Router,
+  ImageIcon,
 } from "lucide-react";
 import { AuthBg } from "@/app/assets/images";
 import { AccountAction } from "./";
@@ -26,6 +27,7 @@ import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
 import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
 import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
 import { useRouter } from "next/navigation";
+// Media is handled inside AccountAction's built-in view
 
 interface AnimalOwnerProfileProps {
   isEditMode: boolean;
@@ -565,6 +567,18 @@ const AnimalOwnerProfile = ({
                 <MessagesSquareIcon size={14} color="#1D2432" />
               </span>
               <span className="text-xs">Message</span>
+            </button>
+
+            <button
+              onClick={() => handleContact("1", "media")}
+              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+            >
+              <span
+                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+              >
+                <ImageIcon size={14} color="#1D2432" />
+              </span>
+              <span className="text-xs">Media</span>
             </button>
 
             <button
