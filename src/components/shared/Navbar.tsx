@@ -214,7 +214,7 @@ const Navbar = () => {
 							)}
 						</div>
 
-						<Link href="/dashboard/orders">
+						<Link className="hidden md:block relative" href="/dashboard/orders">
 							<button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50 relative">
 								<HistoryIcon className="w-5 h-5" />
 							</button>
