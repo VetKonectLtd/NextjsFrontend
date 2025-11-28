@@ -15,16 +15,10 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useHandleError } from "@/lib/hooks/useToastHandlers";
 
-const plans: Plan[] = [
-  { value: "weekly", label: "Weekly Plan", maxProducts: 3, basePrice: 0.99 },
-  { value: "monthly", label: "Monthly Plan", maxProducts: 10, basePrice: 3.99 },
-  { value: "yearly", label: "Yearly Plan", maxProducts: 50, basePrice: 29.99 },
-];
-
 const AdProductForm = (preSelectedId: any) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<string>("weekly");
+  const [selectedPlan, setSelectedPlan] = useState<string>("");
   const [factor, setFactor] = useState<number>(1);
   // Terms checkbox state — users must agree before creating a promotion
   const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
@@ -42,7 +36,25 @@ const AdProductForm = (preSelectedId: any) => {
   const { data: user, isLoading: userLoading } = useCurrentUser(true);
   const { data: promotionPlans } = useGetPromotionPlans();
 
-  console.log("Promotion Plans Data:", promotionPlans);
+  // Transform API data to match Plan interface
+  const transformedPlans: Plan[] =
+    (promotionPlans as any)?.plans?.map((plan: any) => ({
+      value: plan.id.toString(),
+      label: plan.title,
+      maxProducts: parseInt(plan.no_of_products, 10),
+      basePrice: parseFloat(plan.price),
+      duration: parseInt(plan.duration, 10),
+      vat: parseFloat(plan.vat),
+    })) || [];
+
+  // console.log("Promotion Plans Data:", promotionPlans);
+
+  // Set initial selected plan
+  useEffect(() => {
+    if (transformedPlans.length > 0 && !selectedPlan) {
+      setSelectedPlan(transformedPlans[0].value);
+    }
+  }, [transformedPlans, selectedPlan]);
 
   // Extract user_id safely from the response
   const userId = (user as any)?.profile?.user_id;
@@ -107,13 +119,7 @@ const AdProductForm = (preSelectedId: any) => {
     }
 
     // Map plan names to promotion_plan_id (you'll need to update these IDs based on your backend)
-    const planIdMap: Record<string, number> = {
-      weekly: 1,
-      monthly: 2,
-      yearly: 3,
-    };
-
-    const promotionPlanId = planIdMap[selectedPlan];
+    const promotionPlanId = parseInt(selectedPlan);
 
     if (!promotionPlanId) {
       handleError("Please select a valid plan");
@@ -298,7 +304,7 @@ const AdProductForm = (preSelectedId: any) => {
       {/* Plan Selector */}
       {selectedProduct && (
         <PlanSelector
-          plans={plans}
+          plans={transformedPlans}
           selectedPlan={selectedPlan}
           factor={factor}
           onChange={(plan, factor) => {

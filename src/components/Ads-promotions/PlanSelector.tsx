@@ -1,12 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 export interface Plan {
   value: string;
   label: string;
   maxProducts: number;
   basePrice: number;
+  duration: number;
+  vat: number;
 }
 
 interface PlanSelectorProps {
@@ -23,6 +26,11 @@ const PlanSelector = ({
   onChange,
 }: PlanSelectorProps) => {
   const currentPlan = plans.find((p) => p.value === selectedPlan);
+  const [isPlanSelected, setIsPlanSelected] = useState(false);
+
+  useEffect(() => {
+    setIsPlanSelected(false);
+  }, [selectedPlan]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6">
@@ -51,9 +59,9 @@ const PlanSelector = ({
             {/* 1. Header Section - Prevent Wrapping */}
             <h3 className="font-bold text-base mb-1 w-full whitespace-nowrap overflow-hidden text-ellipsis">
               {currentPlan.label}{" "}
-              {selectedPlan !== "weekly" && (
+              {currentPlan.basePrice > 0 && (
                 <span className="text-sm">
-                  ({factor} {selectedPlan})
+                  ({factor} {currentPlan.label.toLowerCase()})
                 </span>
               )}
             </h3>
@@ -62,9 +70,15 @@ const PlanSelector = ({
             </p>
 
             {/* 2. Factor selector - FORCE SINGLE LINE */}
-            {selectedPlan !== "weekly" && (
-              <div className="flex flex-nowrap items-center justify-center gap-2 mb-3 w-full">
-                {[1, 2, 3, 4].map((n) => (
+            {currentPlan.basePrice > 0 && (
+              <div
+                className="flex flex-nowrap items-center justify-start gap-2 mb-3 w-full overflow-x-auto scrollbar-hide"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {Array.from(
+                  { length: currentPlan.duration },
+                  (_, i) => i + 1
+                ).map((n) => (
                   <button
                     key={n}
                     type="button"
@@ -84,7 +98,7 @@ const PlanSelector = ({
             )}
 
             {/* 3. Calculation - Single line, ellipsis if too long */}
-            {selectedPlan !== "weekly" && (
+            {currentPlan.basePrice > 0 && (
               <p className="text-sm font-bold text-[#1D2432] mb-4 w-full whitespace-nowrap overflow-hidden text-ellipsis px-2">
                 ${currentPlan.basePrice} x {factor} = $
                 {(currentPlan.basePrice * factor).toFixed(2)}
@@ -98,7 +112,7 @@ const PlanSelector = ({
               style={{ containerType: "inline-size" }}
             >
               <p className="text-xs text-gray-55 uppercase tracking-wide">
-                Pricing (VAT Inclusive)
+                Pricing{currentPlan.vat > 0 ? " (VAT Inclusive)" : ""}
               </p>
 
               {/* font-bold leading-none: Tight line height
@@ -116,7 +130,7 @@ const PlanSelector = ({
                 className="font-bold mt-2 text-[#1D2432] whitespace-nowrap leading-none"
                 style={{ fontSize: "clamp(1.5rem, 15cqi, 3.5rem)" }}
               >
-                {selectedPlan === "free"
+                {currentPlan.basePrice === 0
                   ? "$0.00"
                   : `$${(currentPlan.basePrice * factor).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
               </p>
@@ -126,7 +140,12 @@ const PlanSelector = ({
           {/* Button */}
           <Button
             type="button"
-            className="w-full rounded-t-none rounded-b-xl bg-[#555555] h-12 flex-shrink-0"
+            onClick={() => setIsPlanSelected(true)}
+            className={`w-full rounded-t-none rounded-b-xl h-12 flex-shrink-0 ${
+              isPlanSelected
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-[#555555] hover:bg-gray-600"
+            }`}
           >
             Select Plan
           </Button>

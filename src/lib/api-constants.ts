@@ -86,12 +86,13 @@ export const BLOG_COMMENTS = {
 };
 
 export const PROMOTION_PLANS = {
-	GET_ALL: "/api/v3/promotion-plans",
+	GET_ALL: "/v3/promotion-plans",
 } as const;
 
 export const ADS_PROMOTION = {
 	INITIALIZE: "/v3/ads-promotion/initialize",
 	GET_USER_PROMOTIONS: "/v3/ads-promotion/user",
+	GET_MY_PROMOTIONS: "/v3/get-my-promotions",
 	GET_PROMOTION_BY_ID: (id: string) => `/v3/ads-promotion/${id}`,
 	CANCEL_PROMOTION: (id: string) => `/v3/ads-promotion/${id}/cancel`,
 } as const;

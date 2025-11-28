@@ -32,10 +32,13 @@ export const useAdsPromotionService = () => {
             ADS_PROMOTION.INITIALIZE,
             {
                 onSuccess: (response: any) => {
-                    handleSuccess(response.message || "Promotion created successfully!");
+                    handleSuccess(response.message || "Promotion initialized successfully!");
+                    if (response.authorization_url) {
+                        window.location.href = response.authorization_url;
+                    }
                 },
                 onError: (error) => {
-                    handleError(error.message || "Failed to create promotion");
+                    handleError(error.message || "Failed to initialize promotion");
                 },
                 invalidateQueries: [["userPromotions"]],
             },
@@ -44,12 +47,12 @@ export const useAdsPromotionService = () => {
 
     /**
      * Get all promotions for the current user
-     * GET /v3/ads-promotion/user
+     * GET /api/v3/get-my-promotions
      */
     const useGetUserPromotions = (enabled: boolean = true) => {
         return useGet<AdsPromotion[]>(
             ["userPromotions"],
-            ADS_PROMOTION.GET_USER_PROMOTIONS,
+            ADS_PROMOTION.GET_MY_PROMOTIONS,
             {
                 enabled,
                 staleTime: 5 * 60 * 1000, // 5 minutes
