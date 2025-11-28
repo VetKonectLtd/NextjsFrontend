@@ -9,13 +9,53 @@ export interface AdsPromotionPayload {
 
 export interface AdsPromotion {
     id: number;
+    user_id: number;
     product_id: number;
     promotion_plan_id: number;
-    status: string;
+    active_role: string;
     start_date: string;
     end_date: string;
+    status: string;
     created_at: string;
     updated_at: string;
+    product: {
+        id: number;
+        user_id: number;
+        store_id: number;
+        product_id: string;
+        product_type: number;
+        product_name: string;
+        category: string;
+        description: string;
+        location: string;
+        price: string;
+        images: string[];
+        availability: boolean;
+        available_unit: number;
+        is_featured: boolean;
+        is_verified: boolean;
+        disabled: number;
+        deleted_at: null;
+        created_at: string;
+        updated_at: string;
+        images_url: string[];
+        ratings: any[];
+        tags: any[];
+    };
+    promotion_plan: {
+        id: number;
+        promotion_code: string;
+        title: string;
+        currency: string;
+        price: string;
+        vat: string;
+        date_option: string;
+        duration: number;
+        no_of_products: string;
+        status: string;
+        created_at: string;
+        updated_at: string;
+    };
 }
 
 // Ads Promotion service using hooks

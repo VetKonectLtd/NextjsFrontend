@@ -18,63 +18,34 @@ const page = () => {
   const { useGetUserPromotions } = useAdsPromotionService();
   const { data: userPromotions } = useGetUserPromotions();
 
-  console.log("User Promotions Data:", userPromotions);
-
-  // Mock data
-  const ads = [
-    {
-      id: "1",
-      title: "Golden Retriever Puppy",
-      price: 50.99,
-      images: [
-        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-        "https://images.unsplash.com/photo-1507149833265-60c372daea22",
-        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-      ],
-      rating: 4.5,
-      location: "Lagos, Nigeria",
-      units: 20,
-      status: "active",
-      open: true,
-      availableUnits: true,
-    },
-    {
-      id: "2",
-      title: "Persian Cat",
-      price: 120.0,
-      images: [
-        "https://images.unsplash.com/photo-1592194996308-7b43878e84a6",
-        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-        "https://images.unsplash.com/photo-1507149833265-60c372daea22",
-        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-      ],
-      rating: 4.8,
-      location: "Abuja, Nigeria",
-      units: 10,
-      status: "active",
-      open: true,
-      availableUnits: true,
-    },
-    {
-      id: "3",
-      title: "African Grey Parrot",
-      price: 299.99,
-      images: [
-        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-        "https://images.unsplash.com/photo-1507149833265-60c372daea22",
-        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d",
-      ],
-      rating: 4.3,
-      location: "Oyo, Nigeria",
-      units: 5,
-      status: "expired",
-      open: false,
-      availableUnits: false,
-    },
-  ];
+  // Map API data to ads format (API returns an array directly)
+  const ads: any[] = Array.isArray(userPromotions)
+    ? userPromotions.map((promotion: any) => ({
+        id: promotion.id.toString(),
+        title: promotion.product.product_name,
+        price: parseFloat(promotion.product.price),
+        images: promotion.product.images_url,
+        rating: 4.5, // Default rating, can be calculated from product.ratings if available
+        location: promotion.product.location,
+        units: promotion.product.available_unit,
+        status: promotion.status === "active" ? "active" : "expired",
+        open: promotion.product.availability,
+        availableUnits: promotion.product.available_unit > 0,
+        endDate: promotion.end_date,
+      }))
+    : [];
 
   const activeAds = ads.filter((ad) => ad.status === "active");
   const expiredAds = ads.filter((ad) => ad.status === "expired");
+
+  // Format date helper
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="w-11/12 mt-3 m-auto">
@@ -100,36 +71,43 @@ const page = () => {
             <h2 className="font-bold text-lg mb-4">Ads Promotions</h2>
 
             {/* Active Section */}
-            <div className="mb-6">
-              <div className="flex text-center justify-center text-sm py-2 items-center bg-[#E7FFE9] rounded-md mb-4">
-                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 inline-block animate-pulse" />
-                <span className="font-semibold">
-                  Active - ( Till Jun 20, 2023)
-                </span>
-              </div>
+            {activeAds.length > 0 && (
+              <div className="mb-6">
+                <div className="flex text-center justify-center text-sm py-2 items-center bg-[#E7FFE9] rounded-md mb-4">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mr-2 inline-block animate-pulse" />
+                  <span className="font-semibold">
+                    Active - ( Till{" "}
+                    {activeAds[0] ? formatDate(activeAds[0].endDate) : ""} )
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 px-6 gap-4">
-                {activeAds.map((ad) => (
-                  <AdCard key={ad.id} {...ad} />
-                ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 px-6 gap-4">
+                  {activeAds.map((ad) => (
+                    <AdCard key={ad.id} {...ad} />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Expired Section */}
-            <div>
-              <div className="flex text-center justify-center text-sm py-2 items-center bg-[#FFE7E7] rounded-md mb-4">
-                <span className="w-2 h-2 rounded-full bg-red-500 mr-2 inline-block animate-pulse" />
-                <span className="font-semibold">
-                  Expired - (On Jan 30, 2023) (Renew Ads Promotion)
-                </span>
-              </div>
+            {expiredAds.length > 0 && (
+              <div>
+                <div className="flex text-center justify-center text-sm py-2 items-center bg-[#FFE7E7] rounded-md mb-4">
+                  <span className="w-2 h-2 rounded-full bg-red-500 mr-2 inline-block animate-pulse" />
+                  <span className="font-semibold">
+                    Expired - (On{" "}
+                    {expiredAds[0] ? formatDate(expiredAds[0].endDate) : ""})
+                    (Renew Ads Promotion)
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-1 px-6 md:grid-cols-2 gap-4">
-                {expiredAds.map((ad) => (
-                  <AdCard key={ad.id} {...ad} />
-                ))}
+                <div className="grid grid-cols-1 px-6 md:grid-cols-2 gap-4">
+                  {expiredAds.map((ad) => (
+                    <AdCard key={ad.id} {...ad} />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
