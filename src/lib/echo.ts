@@ -12,6 +12,8 @@ declare global {
 
 let echo: Echo<any> | null = null;
 
+
+
 if (typeof window !== "undefined") {
   const key = process.env.NEXT_PUBLIC_REVERB_APP_KEY;
   const host = process.env.NEXT_PUBLIC_REVERB_HOST;
@@ -19,7 +21,6 @@ if (typeof window !== "undefined") {
   const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME || "https";
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
-  
   if (!key || !host || !baseURL) {
     console.error("Missing Reverb environment variables. Check your .env file.");
   }
@@ -36,7 +37,7 @@ if (typeof window !== "undefined") {
         wsPort: port,
         wssPort: port,
         forceTLS: scheme === "https",
-        enabledTransports: ["ws"],
+        enabledTransports: scheme === "https" ? ["wss"] : ["ws"],
         disableStats: true,
         authEndpoint: `${baseURL}/broadcasting/auth`,
         auth: {
@@ -50,7 +51,19 @@ if (typeof window !== "undefined") {
       });
     }
     echo = window.Echo;
-    console.log("echo", echo);
+
+    echo.connector.pusher.connection.bind('connected', () => {
+  console.log("REVERB CONNECTED!");
+});
+
+echo.connector.pusher.connection.bind('error', (error: any) => {
+  console.error("REVERB CONNECTION ERROR:", error);
+});
+
+echo.connector.pusher.connection.bind('state_change', (states: any) => {
+  console.log("Reverb State:", states);
+});
+
   } catch (error) {
     console.error("Failed to initialize Echo:", error);
   }
