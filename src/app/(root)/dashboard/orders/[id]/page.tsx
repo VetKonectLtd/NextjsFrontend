@@ -98,9 +98,17 @@ export default function OrderDetailsPage({
 		}
 	};
 
-	const handleMerchantTrackStep = () => {
-		if (!window.confirm("Move order to the next progress step?")) return;
-		trackingMutation.mutate({});
+	const handleAdvanceStep = () => {
+		if (currentStep >= progressSteps.length - 1) return;
+
+		const nextStatus = progressSteps[currentStep + 1];
+
+		trackingMutation.mutate(
+			{ tracking_status: nextStatus },
+			{
+				onSuccess: () => {},
+			},
+		);
 	};
 
 	return (
@@ -256,33 +264,28 @@ export default function OrderDetailsPage({
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{isBuyer && (
+						{isBuyer && trackingStatus === "delivered" && (
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
 								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
 							>
-								{confirmOrderMutation.isPending ? (
-									<div className="flex justify-center items-center gap-2">
-										<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-										<span>Processing...</span>
-									</div>
-								) : (
-									"Mark as Delivered"
-								)}
+								{confirmOrderMutation.isPending
+									? "Processing..."
+									: "Mark as Delivered"}
 							</button>
 						)}
 
 						{/* Merchant button */}
-						{isMerchant && !isCanceled && (
+						{isMerchant && currentStep < progressSteps.length - 1 && (
 							<button
-								onClick={handleMerchantTrackStep}
+								onClick={handleAdvanceStep}
 								disabled={trackingMutation.isPending}
-								className="w-full bg-green-600 text-white rounded-lg py-2 font-semibold"
+								className="w-full mt-4 bg-green-600 text-white rounded-lg py-2 font-semibold"
 							>
 								{trackingMutation.isPending
 									? "Updating..."
-									: "Update Tracking Step"}
+									: "Confirm Next Step"}
 							</button>
 						)}
 
