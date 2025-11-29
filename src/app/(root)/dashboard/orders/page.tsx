@@ -117,7 +117,7 @@ export default function OrderHistoryTable() {
 			)}
 
 			{/* DESKTOP TABLE */}
-			{filtered.length >= 0 && (
+			{filtered.length >= 1 && (
 				<div className="hidden md:block overflow-x-auto">
 					<table className="min-w-full text-sm border border-gray-200 rounded-lg">
 						<thead className="bg-gray-50">
@@ -192,90 +192,94 @@ export default function OrderHistoryTable() {
 			)}
 
 			{/* MOBILE CARD VIEW */}
-			<div className="md:hidden space-y-4">
-				{filtered.reverse().map((order: any, idx: number) => {
-					const style = statusStyles[order.status] || statusStyles["pending"];
+			{filtered.length >= 1 && (
+				<div className="md:hidden space-y-4">
+					{filtered.reverse().map((order: any, idx: number) => {
+						const style = statusStyles[order.status] || statusStyles["pending"];
 
-					return (
-						<div
-							key={idx}
-							className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white"
-						>
-							<div className="flex justify-between items-center mb-3">
-								<h3 className="font-semibold text-gray-800">
-									{order.items?.product_name}
-								</h3>
-
-								<span
-									className={`px-2 py-1 rounded-lg text-xs flex items-center ${style.text} ${style.bg} ${style.border} border`}
-								>
-									<div className={`h-2 w-2 mr-2 rounded-full ${style.dot}`} />
-									{order.status}
-								</span>
-							</div>
-
-							<div className="text-sm text-gray-600 space-y-1">
-								<p>
-									<strong>Tracking:</strong> {order.tracking_number}
-								</p>
-								{/* <p><strong>Vendor:</strong> {order?.merchant?.first_name} {order?.merchant?.last_name}</p> */}
-								<p>
-									<strong>Budget:</strong> ₦{order.items.subtotal}
-								</p>
-								<p>
-									<strong>Quantity:</strong> {order.quantity}
-								</p>
-								<p>
-									<strong>Timeline:</strong>{" "}
-									{order.timeline?.created_at || "N/A"}
-								</p>
-							</div>
-
-							<button
-								onClick={() => router.push(`/dashboard/orders/${order.id}`)}
-								className="mt-4 w-full bg-green-500 text-white py-2 rounded-md text-sm"
+						return (
+							<div
+								key={idx}
+								className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white"
 							>
-								View Progress
-							</button>
-						</div>
-					);
-				})}
-			</div>
+								<div className="flex justify-between items-center mb-3">
+									<h3 className="font-semibold text-gray-800">
+										{order.items?.product_name}
+									</h3>
+
+									<span
+										className={`px-2 py-1 rounded-lg text-xs flex items-center ${style.text} ${style.bg} ${style.border} border`}
+									>
+										<div className={`h-2 w-2 mr-2 rounded-full ${style.dot}`} />
+										{order.status}
+									</span>
+								</div>
+
+								<div className="text-sm text-gray-600 space-y-1">
+									<p>
+										<strong>Tracking:</strong> {order.tracking_number}
+									</p>
+									{/* <p><strong>Vendor:</strong> {order?.merchant?.first_name} {order?.merchant?.last_name}</p> */}
+									<p>
+										<strong>Budget:</strong> ₦{order.items.subtotal}
+									</p>
+									<p>
+										<strong>Quantity:</strong> {order.quantity}
+									</p>
+									<p>
+										<strong>Timeline:</strong>{" "}
+										{order.timeline?.created_at || "N/A"}
+									</p>
+								</div>
+
+								<button
+									onClick={() => router.push(`/dashboard/orders/${order.id}`)}
+									className="mt-4 w-full bg-green-500 text-white py-2 rounded-md text-sm"
+								>
+									View Progress
+								</button>
+							</div>
+						);
+					})}
+				</div>
+			)}
 
 			{/* Pagination */}
-			<div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-6 text-sm text-gray-600">
-				<button
-					onClick={() => goToPage(currentPage - 1)}
-					disabled={currentPage === 1}
-					className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-100 w-full md:w-auto"
-				>
-					Previous
-				</button>
+			{filtered.length >= 1 && (
+				<div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-6 text-sm text-gray-600">
+					<button
+						onClick={() => goToPage(currentPage - 1)}
+						disabled={currentPage === 1}
+						className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-100 w-full md:w-auto"
+					>
+						Previous
+					</button>
 
-				<div className="flex items-center flex-wrap justify-center gap-1">
-					{Array.from({ length: totalPages }, (_, i) => (
-						<button
-							key={i}
-							onClick={() => goToPage(i + 1)}
-							className={`px-3 py-1 rounded-md border ${
-								currentPage === i + 1
-									? "bg-[#FAFAFA] text-gray-800 border-gray-300"
-									: "hover:bg-gray-100"
-							}`}
-						>
-							{i + 1}
-						</button>
-					))}
+					<div className="flex items-center flex-wrap justify-center gap-1">
+						{Array.from({ length: totalPages }, (_, i) => (
+							<button
+								key={i}
+								onClick={() => goToPage(i + 1)}
+								className={`px-3 py-1 rounded-md border ${
+									currentPage === i + 1
+										? "bg-[#FAFAFA] text-gray-800 border-gray-300"
+										: "hover:bg-gray-100"
+								}`}
+							>
+								{i + 1}
+							</button>
+						))}
+					</div>
+
+					<button
+						onClick={() => goToPage(currentPage + 1)}
+						disabled={currentPage === totalPages}
+						className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-100 w-full md:w-auto"
+					>
+						Next
+					</button>
 				</div>
-
-				<button
-					onClick={() => goToPage(currentPage + 1)}
-					disabled={currentPage === totalPages}
-					className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-100 w-full md:w-auto"
-				>
-					Next
-				</button>
-			</div>
+			)}
 		</div>
 	);
 }

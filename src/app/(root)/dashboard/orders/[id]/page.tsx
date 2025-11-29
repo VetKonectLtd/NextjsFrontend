@@ -15,23 +15,11 @@ export default function OrderDetailsPage({
 }) {
 	const router = useRouter();
 	const { useCurrentUser } = useAuthService();
-	const { useGetOrderById, useCancelOrder, useConfirmOrder } =
+	const { useGetOrderById, useTrackOrder, useCancelOrder, useConfirmOrder } =
 		useOrderService();
 	const { data: ordersData, isLoading } = useGetOrderById(true, params?.id);
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
-
-	const cancelOrderMutation = useCancelOrder(true, params?.id);
-	const confirmOrderMutation = useConfirmOrder(true, params?.id);
-
-
-	const handleConfirmOrder = async () => {
-		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
-			confirmOrderMutation.mutate({
-				onSuccess: () => {},
-			});
-		}
-	};
 
 	const order = (ordersData as any)?.order;
 
@@ -48,6 +36,8 @@ export default function OrderDetailsPage({
 	};
 
 	const isBuyer = order?.buyer_user_id === currentUserId;
+	const isMerchant = order?.merchant_user_id === currentUserId;
+
 	const [canCancel, setCanCancel] = useState(false);
 	const isCanceled =
 		product.status?.toLowerCase() === "canceled" ||
@@ -73,15 +63,24 @@ export default function OrderDetailsPage({
 			prev === 0 ? product.images_url.length - 1 : prev - 1,
 		);
 
+	// Tracking steps in correct chronological order
 	const progressSteps = [
-		"Payment initiated",
-		"Pending confirmation",
-		"Processing product(s)",
-		"In Transit",
+		"Payment_Initiated",
+		"Pending_Confirmation",
+		"Processing",
+		"In_Transit",
 		"Delivered",
-		"Delivery confirmed",
+		"delivery_confirmed",
 	];
-	const currentStep = product.current_step;
+
+	// Map tracking_status → index
+	const trackingStatus = product.status ?? "payment_initiated";
+	const currentStep = progressSteps.indexOf(trackingStatus);
+
+	// ---- API Mutation Hooks ---- //
+	const cancelOrderMutation = useCancelOrder(true, params?.id);
+	const confirmOrderMutation = useConfirmOrder(true, params?.id);
+	const trackingMutation = useTrackOrder(true, params?.id);
 
 	const handleCancelOrder = async () => {
 		if (window.confirm(`Are you sure you want to cancel the order?`)) {
@@ -89,6 +88,27 @@ export default function OrderDetailsPage({
 				onSuccess: () => {},
 			});
 		}
+	};
+
+	const handleConfirmOrder = async () => {
+		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
+			confirmOrderMutation.mutate({
+				onSuccess: () => {},
+			});
+		}
+	};
+
+	const handleAdvanceStep = () => {
+		if (currentStep >= progressSteps.length - 1) return;
+
+		const nextStatus = progressSteps[currentStep + 1];
+
+		trackingMutation.mutate(
+			{ tracking_status: nextStatus },
+			{
+				onSuccess: () => {},
+			},
+		);
 	};
 
 	return (
@@ -192,19 +212,22 @@ export default function OrderDetailsPage({
 					{/* Progress Steps */}
 					<div>
 						<h3 className="font-semibold text-gray-800 text-sm mb-2">
-							Order Status: {product.status}
+							Order Status: {trackingStatus.replace("_", " ")}
 						</h3>
 
 						<div className="relative w-full">
+							{/* Track Background */}
 							<div className="absolute top-2 left-[5%] right-[5%] h-1 bg-gray-200"></div>
 
+							{/* Active Track */}
 							<div
-								className="absolute top-2 left-[5%] h-1 bg-green-600"
+								className="absolute top-2 left-[5%] h-1 bg-green-600 transition-all"
 								style={{
 									width: `${(currentStep / (progressSteps.length - 1)) * 90}%`,
 								}}
 							></div>
 
+							{/* Step Indicators */}
 							<div className="flex justify-between relative z-10">
 								{progressSteps.map((step, index) => (
 									<div
@@ -212,20 +235,20 @@ export default function OrderDetailsPage({
 										className="flex flex-col items-center w-full"
 									>
 										<div
-											className={`w-5 h-5 rounded-full border-2 ${
+											className={`w-5 h-5 rounded-full border-2 transition-all ${
 												index <= currentStep
 													? "bg-green-600 border-green-600"
 													: "bg-white border-gray-300"
 											}`}
 										></div>
 										<span
-											className={`text-xs mt-2 ${
+											className={`text-[10px] mt-2 text-center w-16 leading-tight ${
 												index <= currentStep
 													? "text-green-700"
 													: "text-gray-500"
 											}`}
 										>
-											{step}
+											{step.replace("_", " ")}
 										</span>
 									</div>
 								))}
@@ -241,51 +264,51 @@ export default function OrderDetailsPage({
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{/* {isBuyer ? ( */}
+						{isBuyer && trackingStatus === "delivered" && (
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
 								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
 							>
-								{confirmOrderMutation.isPending ? (
-									<div className="flex justify-center items-center gap-2">
-										<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-										<span>Processing...</span>
-									</div>
-								) : (
-									"Mark as Delivered"
-								)}
+								{confirmOrderMutation.isPending
+									? "Processing..."
+									: "Mark as Delivered"}
 							</button>
-						{/* ) : ( */}
-							<>
-								{/* Normal buyer buttons */}
-								{!isCanceled && canCancel && (
-									<button
-										onClick={handleCancelOrder}
-										disabled={cancelOrderMutation.isPending}
-										className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
-									>
-										{cancelOrderMutation.isPending ? (
-											<div className="flex justify-center items-center gap-2">
-												<div className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
-												<span>Cancelling...</span>
-											</div>
-										) : (
-											"Cancel Order"
-										)}
-									</button>
-								)}
+						)}
 
-								{!canCancel && !isCanceled && (
-									<button
-										// onClick={() => router.push("/support")}
-										className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
-									>
-										Contact Support
-									</button>
-								)}
-							</>
-						{/* )} */}
+						{/* Merchant button */}
+						{isMerchant && currentStep < progressSteps.length - 1 && (
+							<button
+								onClick={handleAdvanceStep}
+								disabled={trackingMutation.isPending}
+								className="w-full mt-4 bg-green-600 text-white rounded-lg py-2 font-semibold"
+							>
+								{trackingMutation.isPending
+									? "Updating..."
+									: "Confirm Next Step"}
+							</button>
+						)}
+
+						{/* Cancel Order (buyer only) */}
+						{isBuyer && !isCanceled && canCancel && (
+							<button
+								onClick={handleCancelOrder}
+								disabled={cancelOrderMutation.isPending}
+								className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
+							>
+								{cancelOrderMutation.isPending
+									? "Cancelling..."
+									: "Cancel Order"}
+							</button>
+						)}
+
+						{/* Contact Support */}
+						{isBuyer && !canCancel && !isCanceled && (
+							<button className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold">
+								Contact Support
+							</button>
+						)}
+
 						<button className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold">
 							Buy Again
 						</button>

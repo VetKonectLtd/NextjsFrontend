@@ -212,9 +212,11 @@ const Navbar = () => {
 											height={20}
 										/>
 										{/* Notification Badge */}
-										<span className="absolute -top-1 -right-1 w-6 h-6 p-2 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-											{unreadCount}
-										</span>
+										{unreadCount < 1 && (
+											<span className="absolute -top-1 -right-1 w-6 h-6 p-2 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+												{unreadCount}
+											</span>
+										)}
 									</button>
 								</Link>
 							)}
@@ -231,11 +233,21 @@ const Navbar = () => {
 						)}
 
 						{/* Messages */}
-						<div className="hidden md:block relative">
-							<button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
-								<Image src={MessageNav} alt="Messages" width={20} height={20} />
-							</button>
-						</div>
+						{isAuthenticated && (
+							<Link
+								href="/dashboard/messages"
+								className="hidden md:block relative"
+							>
+								<button className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-green-50">
+									<Image
+										src={MessageNav}
+										alt="Messages"
+										width={20}
+										height={20}
+									/>
+								</button>
+							</Link>
+						)}
 
 						{/* Language Selector */}
 						<div className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600">

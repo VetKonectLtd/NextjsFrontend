@@ -52,7 +52,7 @@ export default function AfriVetChroniclesSection() {
 					<div className="w-full mx-auto">
 						<Swiper
 							modules={[Navigation, Autoplay]}
-							spaceBetween={90}
+							spaceBetween={20}
 							slidesPerView={1.5}
 							centeredSlides={true}
 							loop

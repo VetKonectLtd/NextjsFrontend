@@ -1,6 +1,6 @@
 "use client";
 
-import { Hero1, Hero2 } from "@/app/assets/images";
+import { Hero1, Hero2, Hero3 } from "@/app/assets/images";
 import Image from "next/image";
 
 export default function InitiativesHeroSection() {
@@ -43,7 +43,7 @@ export default function InitiativesHeroSection() {
 					{/* Bottom-left overlay image */}
 					<div className="absolute hidden md:block bottom-0 left-0 md:-left-44 transform md:translate-y-10 translate-y-6 rounded-xl overflow-hidden shadow-md w-[50%] md:w-[45%] h-44">
 						<Image
-							src={Hero2}
+							src={Hero3}
 							alt="Vet konect outreach"
 							width={400}
 							height={300}

@@ -194,4 +194,5 @@ export const ORDER = {
 	ORDER_COMPLAINT: (Id: string) => `/v3/orders/${Id}/complaint`,
 	CONFIRM_ORDER: (Id: string) => `/v3/orders/${Id}/confirm`,
 	CANCELLED_ORDER: (Id: string) => `/v3/orders/${Id}/cancel`,
+	ORDER_TRACTING: (Id:string) => `/v3/orders/${Id}/track`
 }
