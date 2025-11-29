@@ -117,7 +117,7 @@ export default function OrderHistoryTable() {
 			)}
 
 			{/* DESKTOP TABLE */}
-			{filtered.length > 1 && (
+			{filtered.length >= 1 && (
 				<div className="hidden md:block overflow-x-auto">
 					<table className="min-w-full text-sm border border-gray-200 rounded-lg">
 						<thead className="bg-gray-50">
@@ -192,7 +192,7 @@ export default function OrderHistoryTable() {
 			)}
 
 			{/* MOBILE CARD VIEW */}
-			{filtered.length > 1 && (
+			{filtered.length >= 1 && (
 				<div className="md:hidden space-y-4">
 					{filtered.reverse().map((order: any, idx: number) => {
 						const style = statusStyles[order.status] || statusStyles["pending"];
@@ -245,7 +245,7 @@ export default function OrderHistoryTable() {
 			)}
 
 			{/* Pagination */}
-			{filtered.length > 1 && (
+			{filtered.length >= 1 && (
 				<div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-6 text-sm text-gray-600">
 					<button
 						onClick={() => goToPage(currentPage - 1)}
