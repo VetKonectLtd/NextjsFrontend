@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronLeft,
@@ -24,6 +25,12 @@ import { Bg22, User } from "@/app/assets/icons";
 import { useAuthService } from "@/services/authService";
 import Veterinarian from "../Veterinarian/Veterinarian";
 import SwitcherIcon from "@/app/assets/icons/switcher.svg";
+import UserIconPng from "@/app/assets/icons/user.png";
+import { useRoleSwitchingService } from "@/services/roleSwitchingService";
+import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
+import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
+import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
+// Media is handled inside AccountAction's built-in view
 
 const DEFAULT_AVATAR = User;
 interface VetProfileProps {

@@ -3,14 +3,11 @@
 import { Profile } from "@/components/account";
 
 const AccountPage = () => {
-	// Default to vet profile - you can change this based on user authentication/role
-
-	return (
-		<div className="w-11/12 mt-3 m-auto">
-			{" "}
-			<Profile userRole="vet" />{" "}
-		</div>
-	)
+  return (
+    <div className="w-11/12 mt-3 m-auto">
+      <Profile />
+    </div>
+  );
 };
 
 export default AccountPage;

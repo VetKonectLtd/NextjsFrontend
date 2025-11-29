@@ -123,8 +123,8 @@ channel.error((err: any) => console.error("SUBSCRIBE ERROR:", err));
 
 		return () => {
 			if (channel) {
-				// channel.stopListening("direct-message.sent");
-				// console.log("Unsubscribed from channel");
+				channel.stopListening("direct-message.sent");
+				console.log("Unsubscribed from channel");
 			}
 		};
 	}, [selectedVet?.id, currentUserId]);

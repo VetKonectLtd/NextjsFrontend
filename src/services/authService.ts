@@ -23,13 +23,12 @@ export const useAuthService = () => {
 					if (response?.token) {
 						// Store token in localStorage
 						Cookies.set("auth-token", response.token);
-						handleSuccess("Login successfully!");
+						handleSuccess(response.message || "Login successfully!");
 					}
 				},
 				onError: (error) => {
 					handleError(error.message || "Login failed");
 				},
-				invalidateQueries: [["currentUser"]],
 			},
 		);
 	};
@@ -45,7 +44,6 @@ export const useAuthService = () => {
 				onError: (error) => {
 					handleError(error.message || "Signup failed");
 				},
-				invalidateQueries: [["currentUser"]],
 			},
 		);
 	};

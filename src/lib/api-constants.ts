@@ -163,6 +163,11 @@ export const OTHERS = {
 	ADD_OTHERS: "/v3/add-others"
 }
 
+export const MEDIA = {
+	ADD_MEDIA: "/v3/add-media",
+	DELETE_MEDIA: (id: string | number) => `/v3/delete-media/${id}/media`,
+} as const;
+
 export const GENERAL = {
 	FEED_CALCULATOR: "/v3/feed-calculator",
 	DISEASE_PREDICTOR: "/v3/disease-predictor"

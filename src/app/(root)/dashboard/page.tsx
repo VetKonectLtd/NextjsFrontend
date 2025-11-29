@@ -101,8 +101,6 @@ const Dashboard = () => {
 		return baseActions;
 	};
 
-	console.log("ROLE:", role);
-
 	const quickActions = getQuickActions();
 
 	const trending = Array.isArray(getTrendingForum.data)

@@ -3,6 +3,7 @@ import { Copy, Link, Send, Smile, ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
 import { useState, useRef } from "react";
+import { useMediaService, buildImagesFormData } from "@/services/mediaService";
 import ReactStars from "react-stars";
 import { ChatBox } from "@/components/shared";
 import { User } from "@/types";

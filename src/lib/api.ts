@@ -25,12 +25,10 @@ class ApiClient {
 		const isFormData = options.body instanceof FormData;
 
 		const config: RequestInit = {
+			credentials: "include",
 			headers: {
 				Accept: "application/json",
-				credentials: "include",
-				...(isFormData
-					? {  }
-					: { "Content-Type": "application/json" }),
+				...(isFormData ? {} : { "Content-Type": "application/json" }),
 				...options.headers,
 			},
 			...options,
@@ -50,11 +48,13 @@ class ApiClient {
 			const data = await response.json();
 
 			// Handle 401 Unauthorized - Auto logout and redirect
-			if (response.status === 401) {
-				console.warn("401 Unauthorized - Logging out user");
-				this.handleUnauthorized();
-				throw new Error(data.error || data.message || "Unauthorized - Please login again");
-			}
+			// if (response.status === 401) {
+			// 	console.warn("401 Unauthorized - Logging out user");
+			// 	this.handleUnauthorized();
+			// 	throw new Error(
+			// 		data.error || data.message || "Unauthorized - Please login again",
+			// 	);
+			// }
 
 			if (!response.ok) {
 				throw new Error(data.error || data.message || "API request failed");
@@ -62,7 +62,7 @@ class ApiClient {
 
 			return data;
 		} catch (error) {
-			console.error("API request error:", error);
+			// console.error("API request error:", error);
 			throw error;
 		}
 	}
@@ -90,12 +90,14 @@ class ApiClient {
 		if (typeof window !== "undefined") {
 			// Remove auth token
 			this.removeAuthToken();
-			
+
 			// Clear any user data from localStorage if needed
-			localStorage.removeItem("user");
-			
+			Cookies.remove("auth-token");
+
 			// Redirect to login page
-			window.location.href = "/login";
+			if (window.location.pathname !== "/login") {
+				window.location.replace("/login");
+			}
 		}
 	}
 

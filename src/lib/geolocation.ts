@@ -62,7 +62,7 @@ export const getCurrentPosition = (
 			},
 			(error) => {
 				let errorMessage = 'An unknown error occurred.';
-				
+
 				switch (error.code) {
 					case error.PERMISSION_DENIED:
 						errorMessage = 'User denied the request for Geolocation.';
@@ -82,6 +82,87 @@ export const getCurrentPosition = (
 			},
 			options
 		);
+	});
+};
+
+/**
+ * Try to obtain location with a resilient strategy:
+ * 1) High accuracy attempt
+ * 2) Fallback attempt with low accuracy and longer timeout
+ * 3) As a last resort, start a short watch and resolve first fix
+ */
+export const resilientGetLocation = async (
+	options: GeolocationOptions = DEFAULT_OPTIONS
+): Promise<GeolocationCoordinates> => {
+	try {
+		// First attempt: high accuracy
+		return await getCurrentPosition({ ...options, enableHighAccuracy: true });
+	} catch (e: any) {
+		// If unavailable or timeout, try a less strict attempt
+		if (
+			e &&
+			(e.code === 2 /* POSITION_UNAVAILABLE */ || e.code === 3 /* TIMEOUT */)
+		) {
+			try {
+				return await getCurrentPosition({
+					enableHighAccuracy: false,
+					timeout: Math.max(15000, (options.timeout ?? 0)),
+					maximumAge: Math.max(600000, (options.maximumAge ?? 0)), // up to 10 minutes cached
+				});
+			} catch (e2: any) {
+				// Last resort: watch for a short time
+				const result = await getFirstWatchPosition(8000, {
+					enableHighAccuracy: false,
+					maximumAge: Math.max(600000, (options.maximumAge ?? 0)),
+				});
+				if (result) return result;
+				throw e2;
+			}
+		}
+		throw e;
+	}
+};
+
+/**
+ * Wrap watchPosition to resolve on first fix or timeout
+ */
+export const getFirstWatchPosition = (
+	timeoutMs = 8000,
+	options: GeolocationOptions = DEFAULT_OPTIONS
+): Promise<GeolocationCoordinates | null> => {
+	return new Promise((resolve) => {
+		if (!navigator.geolocation) {
+			resolve(null);
+			return;
+		}
+		let settled = false;
+		const id = navigator.geolocation.watchPosition(
+			(pos) => {
+				if (settled) return;
+				settled = true;
+				navigator.geolocation.clearWatch(id);
+				resolve({
+					latitude: pos.coords.latitude,
+					longitude: pos.coords.longitude,
+					accuracy: pos.coords.accuracy,
+					altitude: pos.coords.altitude,
+					altitudeAccuracy: pos.coords.altitudeAccuracy,
+					heading: pos.coords.heading,
+					speed: pos.coords.speed,
+				});
+			},
+			() => {
+				// ignore errors here; rely on timeout to resolve null
+			},
+			options
+		);
+		setTimeout(() => {
+			if (!settled) {
+				settled = true;
+				navigator.geolocation.clearWatch(id);
+				resolve(null);
+			}
+		}, timeoutMs);
 	});
 };
 
@@ -120,7 +201,7 @@ export const watchPosition = (
 		},
 		(error) => {
 			let errorMessage = 'An unknown error occurred.';
-			
+
 			switch (error.code) {
 				case error.PERMISSION_DENIED:
 					errorMessage = 'User denied the request for Geolocation.';
@@ -175,14 +256,14 @@ export const getUserLocation = async (
 		return coords;
 	} catch (error) {
 		console.warn('Geolocation failed:', error);
-		
+
 		if (fallbackCoords) {
 			return {
 				latitude: fallbackCoords.latitude,
 				longitude: fallbackCoords.longitude,
 			};
 		}
-		
+
 		throw error;
 	}
 };
@@ -204,7 +285,7 @@ export const calculateDistance = (
 	const R = 6371; // Radius of the Earth in kilometers
 	const dLat = (lat2 - lat1) * Math.PI / 180;
 	const dLon = (lon2 - lon1) * Math.PI / 180;
-	const a = 
+	const a =
 		Math.sin(dLat / 2) * Math.sin(dLat / 2) +
 		Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
 		Math.sin(dLon / 2) * Math.sin(dLon / 2);
