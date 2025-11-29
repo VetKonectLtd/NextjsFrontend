@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import Image from "next/image";
-import { Filter } from "@/app/assets/icons";
+import { Filter, Hand } from "@/app/assets/icons";
 import { useOrderService } from "@/services/orderService";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 
@@ -65,7 +65,6 @@ export default function OrderHistoryTable() {
 
 	return (
 		<div className="bg-white w-full md:w-11/12 mx-auto p-3 md:p-6">
-			
 			{/* Header */}
 			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
 				<h2 className="text-lg font-semibold text-gray-700">
@@ -97,6 +96,26 @@ export default function OrderHistoryTable() {
 			{/* Loading */}
 			{isLoading && <TableSkeleton rows={5} columns={8} />}
 
+			{!isLoading && filtered.length === 0 && (
+				<div className="w-full flex flex-col items-center justify-center py-16 text-center">
+					<Image
+						src={Hand}
+						width={120}
+						height={120}
+						alt="No orders"
+						className="opacity-80"
+					/>
+
+					<h3 className="mt-4 text-lg font-semibold text-gray-700">
+						No Orders Found
+					</h3>
+
+					<p className="text-gray-500 text-sm mt-1">
+						You have no orders matching your search.
+					</p>
+				</div>
+			)}
+
 			{/* DESKTOP TABLE */}
 			<div className="hidden md:block overflow-x-auto">
 				<table className="min-w-full text-sm border border-gray-200 rounded-lg">
@@ -119,7 +138,10 @@ export default function OrderHistoryTable() {
 								statusStyles[order.status] || statusStyles["pending"];
 
 							return (
-								<tr key={idx} className="border-b hover:bg-gray-50 text-gray-700">
+								<tr
+									key={idx}
+									className="border-b hover:bg-gray-50 text-gray-700"
+								>
 									<td className="py-3 px-3 flex items-center gap-2">
 										<span className="w-3 h-3 rounded-sm bg-green-50"></span>
 										{order.items?.product_name || "N/A"}
@@ -135,7 +157,9 @@ export default function OrderHistoryTable() {
 										<span
 											className={`px-2 py-1 capitalize flex items-center rounded-lg text-xs font-medium ${style.text} ${style.bg} ${style.border} border`}
 										>
-											<div className={`h-2 w-2 mr-2 rounded-full ${style.dot}`} />
+											<div
+												className={`h-2 w-2 mr-2 rounded-full ${style.dot}`}
+											/>
 											{order.status}
 										</span>
 									</td>
@@ -168,8 +192,7 @@ export default function OrderHistoryTable() {
 			{/* MOBILE CARD VIEW */}
 			<div className="md:hidden space-y-4">
 				{filtered.reverse().map((order: any, idx: number) => {
-					const style =
-						statusStyles[order.status] || statusStyles["pending"];
+					const style = statusStyles[order.status] || statusStyles["pending"];
 
 					return (
 						<div
@@ -190,11 +213,20 @@ export default function OrderHistoryTable() {
 							</div>
 
 							<div className="text-sm text-gray-600 space-y-1">
-								<p><strong>Tracking:</strong> {order.tracking_number}</p>
+								<p>
+									<strong>Tracking:</strong> {order.tracking_number}
+								</p>
 								{/* <p><strong>Vendor:</strong> {order?.merchant?.first_name} {order?.merchant?.last_name}</p> */}
-								<p><strong>Budget:</strong> ₦{order.items.subtotal}</p>
-								<p><strong>Quantity:</strong> {order.quantity}</p>
-								<p><strong>Timeline:</strong> {order.timeline?.created_at || "N/A"}</p>
+								<p>
+									<strong>Budget:</strong> ₦{order.items.subtotal}
+								</p>
+								<p>
+									<strong>Quantity:</strong> {order.quantity}
+								</p>
+								<p>
+									<strong>Timeline:</strong>{" "}
+									{order.timeline?.created_at || "N/A"}
+								</p>
 							</div>
 
 							<button
@@ -210,7 +242,6 @@ export default function OrderHistoryTable() {
 
 			{/* Pagination */}
 			<div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-6 text-sm text-gray-600">
-				
 				<button
 					onClick={() => goToPage(currentPage - 1)}
 					disabled={currentPage === 1}
