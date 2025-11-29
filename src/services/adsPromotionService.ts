@@ -134,10 +134,30 @@ export const useAdsPromotionService = () => {
         );
     };
 
+    /**
+     * Cancel a promotion (new endpoint)
+     * POST /v3/cancel-promotion/{id}/ad
+     */
+    const useCancelPromotionAd = (id: string) => {
+        return usePost<void, void>(
+            ADS_PROMOTION.CANCEL_PROMOTION_AD(id),
+            {
+                onSuccess: (response: any) => {
+                    handleSuccess(response.message || "Promotion cancelled successfully!");
+                },
+                onError: (error) => {
+                    handleError(error.message || "Failed to cancel promotion");
+                },
+                invalidateQueries: [["userPromotions"], ["promotion", id]],
+            },
+        );
+    };
+
     return {
         useInitializePromotion,
         useGetUserPromotions,
         useGetPromotionById,
         useCancelPromotion,
+        useCancelPromotionAd,
     };
 };

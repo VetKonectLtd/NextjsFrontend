@@ -22,6 +22,7 @@ const page = () => {
   const ads: any[] = Array.isArray(userPromotions)
     ? userPromotions.map((promotion: any) => ({
         id: promotion.id.toString(),
+        productId: promotion.product.id,
         title: promotion.product.product_name,
         price: parseFloat(promotion.product.price),
         images: promotion.product.images_url,

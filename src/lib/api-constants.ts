@@ -95,6 +95,7 @@ export const ADS_PROMOTION = {
 	GET_MY_PROMOTIONS: "/v3/get-my-promotions",
 	GET_PROMOTION_BY_ID: (id: string) => `/v3/ads-promotion/${id}`,
 	CANCEL_PROMOTION: (id: string) => `/v3/ads-promotion/${id}/cancel`,
+	CANCEL_PROMOTION_AD: (id: string) => `/v3/cancel-promotion/${id}/ad`,
 } as const;
 
 export const ACTIVITIES = {
