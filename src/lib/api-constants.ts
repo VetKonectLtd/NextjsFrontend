@@ -85,9 +85,18 @@ export const BLOG_COMMENTS = {
 	REPORT_COMMENT: (Id: string) => `/v3/comments/${Id}/flag`,
 };
 
-export const PROMOTIONPLAN = {
-	CREATE_PLAN: "/v3/buy-plan",
-};
+export const PROMOTION_PLANS = {
+	GET_ALL: "/v3/promotion-plans",
+} as const;
+
+export const ADS_PROMOTION = {
+	INITIALIZE: "/v3/ads-promotion/initialize",
+	GET_USER_PROMOTIONS: "/v3/ads-promotion/user",
+	GET_MY_PROMOTIONS: "/v3/get-my-promotions",
+	GET_PROMOTION_BY_ID: (id: string) => `/v3/ads-promotion/${id}`,
+	CANCEL_PROMOTION: (id: string) => `/v3/ads-promotion/${id}/cancel`,
+	CANCEL_PROMOTION_AD: (id: string) => `/v3/cancel-promotion/${id}/ad`,
+} as const;
 
 export const ACTIVITIES = {
 	GET_ACTIVITIES: "/v3/get-user-activity",
