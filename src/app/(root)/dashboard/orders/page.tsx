@@ -117,77 +117,79 @@ export default function OrderHistoryTable() {
 			)}
 
 			{/* DESKTOP TABLE */}
-			<div className="hidden md:block overflow-x-auto">
-				<table className="min-w-full text-sm border border-gray-200 rounded-lg">
-					<thead className="bg-gray-50">
-						<tr className="text-left text-gray-500 border-b">
-							<th className="py-3 px-3">Product Name</th>
-							<th className="py-3 px-3">Tracking #</th>
-							{/* <th className="py-3 px-3">Vendor</th> */}
-							<th className="py-3 px-3">Status</th>
-							<th className="py-3 px-3">Budget (₦)</th>
-							<th className="py-3 px-3">Qty</th>
-							<th className="py-3 px-3">Timeline</th>
-							<th className="py-3 px-3">Action</th>
-						</tr>
-					</thead>
+			{filtered.length >= 0 && (
+				<div className="hidden md:block overflow-x-auto">
+					<table className="min-w-full text-sm border border-gray-200 rounded-lg">
+						<thead className="bg-gray-50">
+							<tr className="text-left text-gray-500 border-b">
+								<th className="py-3 px-3">Product Name</th>
+								<th className="py-3 px-3">Tracking #</th>
+								{/* <th className="py-3 px-3">Vendor</th> */}
+								<th className="py-3 px-3">Status</th>
+								<th className="py-3 px-3">Budget (₦)</th>
+								<th className="py-3 px-3">Qty</th>
+								<th className="py-3 px-3">Timeline</th>
+								<th className="py-3 px-3">Action</th>
+							</tr>
+						</thead>
 
-					<tbody>
-						{filtered.reverse().map((order: any, idx: number) => {
-							const style =
-								statusStyles[order.status] || statusStyles["pending"];
+						<tbody>
+							{filtered.reverse().map((order: any, idx: number) => {
+								const style =
+									statusStyles[order.status] || statusStyles["pending"];
 
-							return (
-								<tr
-									key={idx}
-									className="border-b hover:bg-gray-50 text-gray-700"
-								>
-									<td className="py-3 px-3 flex items-center gap-2">
-										<span className="w-3 h-3 rounded-sm bg-green-50"></span>
-										{order.items?.product_name || "N/A"}
-									</td>
+								return (
+									<tr
+										key={idx}
+										className="border-b hover:bg-gray-50 text-gray-700"
+									>
+										<td className="py-3 px-3 flex items-center gap-2">
+											<span className="w-3 h-3 rounded-sm bg-green-50"></span>
+											{order.items?.product_name || "N/A"}
+										</td>
 
-									<td className="py-3 px-3">{order.tracking_number}</td>
+										<td className="py-3 px-3">{order.tracking_number}</td>
 
-									{/* <td className="py-3 px-3">
+										{/* <td className="py-3 px-3">
 										{order?.merchant?.first_name} {order?.merchant?.last_name}
 									</td> */}
 
-									<td className="py-3 px-3">
-										<span
-											className={`px-2 py-1 capitalize flex items-center rounded-lg text-xs font-medium ${style.text} ${style.bg} ${style.border} border`}
-										>
-											<div
-												className={`h-2 w-2 mr-2 rounded-full ${style.dot}`}
-											/>
-											{order.status}
-										</span>
-									</td>
+										<td className="py-3 px-3">
+											<span
+												className={`px-2 py-1 capitalize flex items-center rounded-lg text-xs font-medium ${style.text} ${style.bg} ${style.border} border`}
+											>
+												<div
+													className={`h-2 w-2 mr-2 rounded-full ${style.dot}`}
+												/>
+												{order.status}
+											</span>
+										</td>
 
-									<td className="py-3 px-3">{order.items.subtotal}</td>
+										<td className="py-3 px-3">{order.items.subtotal}</td>
 
-									<td className="py-3 px-3">{order.quantity}</td>
+										<td className="py-3 px-3">{order.quantity}</td>
 
-									<td className="py-3 px-3">
-										{order.timeline?.created_at || "N/A"}
-									</td>
+										<td className="py-3 px-3">
+											{order.timeline?.created_at || "N/A"}
+										</td>
 
-									<td className="py-3 px-3">
-										<button
-											onClick={() =>
-												router.push(`/dashboard/orders/${order.id}`)
-											}
-											className="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600"
-										>
-											View Progress
-										</button>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
-			</div>
+										<td className="py-3 px-3">
+											<button
+												onClick={() =>
+													router.push(`/dashboard/orders/${order.id}`)
+												}
+												className="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600"
+											>
+												View Progress
+											</button>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+			)}
 
 			{/* MOBILE CARD VIEW */}
 			<div className="md:hidden space-y-4">

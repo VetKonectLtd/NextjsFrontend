@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ROLE_NAV_ACCESS, navItems } from "@/components/constant/data";
 
 const protectedRoutes = ["/dashboard"];
-const authPages = ["/login", "/signup", "/reset-password"];
+const authPages = ["/login", "/success", "/signup", "/reset-password"];
 
 export function middleware(request: NextRequest) {
 	
