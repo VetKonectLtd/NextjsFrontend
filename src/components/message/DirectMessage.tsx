@@ -45,50 +45,68 @@ export default function DirectMessage() {
 					/>
 				)}
 
-				{selectedVet ? (
-					<>
-						<ChatWindow
-							selectedVet={selectedVet}
-							message={message}
-							key={selectedVet.id}
-							onBack={() => {}}
-							onMessageChange={setMessage}
-							onOpenVetDetails={() => {}}
-						/>
-						<VetDetails
-							selectedVet={selectedVet}
-							selectedAction={selectedAction}
-							onBack={() => {}}
-							handleContact={handleContact}
-						/>
-					</>
-				) : (
-					<div className="col-span-2 flex items-center justify-center">
-						<p className="text-gray-500">Select a chat to start messaging</p>
-					</div>
-				)}
+				{messages.length > 0 &&
+					(selectedVet ? (
+						<>
+							<ChatWindow
+								selectedVet={selectedVet}
+								message={message}
+								key={selectedVet.id}
+								onBack={() => {}}
+								onMessageChange={setMessage}
+								onOpenVetDetails={() => {}}
+							/>
+							<VetDetails
+								selectedVet={selectedVet}
+								selectedAction={selectedAction}
+								onBack={() => {}}
+								handleContact={handleContact}
+							/>
+						</>
+					) : (
+						<div className="col-span-2 flex items-center justify-center">
+							<p className="text-gray-500">Select a chat to start messaging</p>
+						</div>
+					))}
 			</div>
 
 			{/* RESPONSIVE MOBILE VIEW */}
 			<div className="md:hidden flex flex-col">
 				{/* Chat List (default view) */}
+
+				{/* Empty state full screen on mobile */}
 				{!showChat &&
 					!showDetails &&
-					(!messages.length ? (
-						<ChatListSkeleton />
-					) : (
-						<ChatList
-							getChatList={getChatList}
-							messages={messages}
-							selectedVet={selectedVet}
-							onSelectVet={(vet) => {
-								setSelectedVet(vet);
-								setShowChat(true);
-							}}
-						/>
-					))}
+					!getChatList.isLoading &&
+					!messages.length && (
+						<div className="flex items-center justify-center min-h-screen px-4">
+							<EmptyState
+								title="No Messages Yet"
+								image={Hand}
+								description="Start a conversation with a vet or vendor. When you contact someone, your chats will appear here."
+							/>
+						</div>
+					)}
 
-				{/* Chat Window (middle card) */}
+				{/* Skeleton while loading */}
+				{!showChat && !showDetails && getChatList.isLoading && (
+					<ChatListSkeleton />
+				)}
+
+				{/* Chat list */}
+				{!showChat && !showDetails && messages.length > 0 && (
+					<ChatList
+						getChatList={getChatList}
+						messages={messages}
+						selectedVet={selectedVet}
+						onSelectVet={(vet) => {
+							setSelectedVet(vet);
+							setShowChat(true);
+						}}
+					/>
+				)}
+
+				{/* Chat window */}
 				{showChat && !showDetails && (
 					<ChatWindow
 						selectedVet={selectedVet}
@@ -99,7 +117,7 @@ export default function DirectMessage() {
 					/>
 				)}
 
-				{/* Vet Details (right card) */}
+				{/* Vet details */}
 				{showDetails && (
 					<VetDetails
 						selectedVet={selectedVet}
