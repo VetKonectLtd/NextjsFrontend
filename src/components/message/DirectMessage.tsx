@@ -5,6 +5,8 @@ import ChatWindow from "./ChatWindow";
 import VetDetails from "./VetDetails";
 import { directMessageService } from "@/services/directMessageService";
 import ChatListSkeleton from "./ChatListSkeleton";
+import EmptyState from "../shared/EmptyState";
+import { Hand } from "@/app/assets/icons";
 
 export default function DirectMessage() {
 	const { useGetChatList } = directMessageService();
@@ -25,8 +27,15 @@ export default function DirectMessage() {
 		<div className="min-h-screen ">
 			{/* GRID LAYOUT FOR DESKTOP */}
 			<div className="hidden md:grid md:grid-cols-3 gap-4">
-				{!messages.length ? (
+				{getChatList.isLoading ? (
 					<ChatListSkeleton />
+				) : !messages.length ? (
+					<EmptyState
+						title="No Messages Yet"
+						image={Hand}
+						description="Start a conversation with a vet or vendor.  
+				When you contact someone, your chats will appear here."
+					/>
 				) : (
 					<ChatList
 						messages={messages}
@@ -69,7 +78,7 @@ export default function DirectMessage() {
 						<ChatListSkeleton />
 					) : (
 						<ChatList
-						getChatList={getChatList}
+							getChatList={getChatList}
 							messages={messages}
 							selectedVet={selectedVet}
 							onSelectVet={(vet) => {
