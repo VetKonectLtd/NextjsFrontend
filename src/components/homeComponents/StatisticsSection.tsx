@@ -18,7 +18,7 @@ interface StatisticItem {
 const statistics: StatisticItem[] = [
   {
     id: 1,
-    value: 8000,
+    value: 3,
     suffix: 'k+',
     title: 'Number of',
     subtitle: 'Veterinarians',
@@ -27,35 +27,35 @@ const statistics: StatisticItem[] = [
   },
   {
     id: 2,
-    value: 1200,
+    value: 15,
     suffix: 'k+',
-    title: 'Number of',
-    subtitle: 'Vet Paraprofessionals',
+    title: 'Social media',
+    subtitle: 'presence',
     background: BrownBg,
     textColor: 'text-white'
   },
   {
     id: 3,
-    value: 5700,
-    suffix: 'k+',
-    title: 'Number of',
-    subtitle: 'Vet Clinics',
+    value: 200,
+    suffix: '',
+    title: 'Vendor store &',
+    subtitle: 'Vet Clinic',
     background: YellowBg,
     textColor: 'text-gray-900'
   },
   {
     id: 4,
-    value: 9300,
+    value: 4,
     suffix: 'k+',
-    title: 'Vet Vendor',
-    subtitle: '& Store',
+    title: 'Mobile app',
+    subtitle: 'downloads',
     background: CreamBg,
     textColor: 'text-gray-900'
   },
   {
     id: 5,
-    value: 2000000,
-    suffix: 'm+',
+    value: 140,
+    suffix: 'k+',
     title: 'Pet Owners &',
     subtitle: 'livestock Farmers',
     background: PinkBg,
@@ -77,7 +77,7 @@ function Counter({ end, suffix, duration }: CounterProps) {
     if (suffix === 'm+') {
       return (num / 1000000).toFixed(1);
     } else if (suffix === 'k+') {
-      return (num / 1000).toFixed(1);
+      return (num / 1).toFixed(1);
     }
     return num.toString();
   };
