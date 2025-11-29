@@ -95,9 +95,9 @@ class ApiClient {
 			Cookies.remove("auth-token");
 
 			// Redirect to login page
-			if (window.location.pathname !== "/login") {
-				window.location.replace("/login");
-			}
+			// if (window.location.pathname !== "/login") {
+			// 	window.location.replace("/login");
+			// }
 		}
 	}
 
