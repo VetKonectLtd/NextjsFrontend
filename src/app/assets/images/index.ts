@@ -31,6 +31,13 @@ export { default as AboutImage } from './aboutImage.svg';
 export { default as YounglanTalyoung } from './younglan-talyoung.png';
 export { default as Team1 } from './team1.jpg';
 export { default as Team2 } from './team2.jpg';
+
+export { default as Jacob } from './Jacob.png';
+export { default as Moturayo } from './Moturayo.png';
+export { default as Osakuni } from './Osakuni.png';
+export { default as Godwin } from './Godwin.png';
+export { default as Aondover } from './Aondover.png';
+
 export { default as EyaboGodwin } from './eyabo.png';
 export { default as Isa } from './isa.jpg';
 export { default as Lucy } from './lucy.jpg';
