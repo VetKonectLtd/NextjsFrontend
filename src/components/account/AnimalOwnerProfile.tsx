@@ -23,6 +23,8 @@ import SwitcherIcon from "@/app/assets/icons/switcher.svg";
 import UserIconPng from "@/app/assets/icons/user.png";
 import { useAuthService } from "@/services/authService";
 import { useRoleSwitchingService } from "@/services/roleSwitchingService";
+import SwitchProfilePanel from "@/components/shared/SwitchProfilePanel";
+import { ALL_ROLES, ROLE, normalizeRole, RoleKey } from "@/lib/roles";
 import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
 import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
 import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
@@ -42,8 +44,10 @@ const AnimalOwnerProfile = ({
   const [selectedAction, setSelectedAction] = useState<string | null>(
     "default"
   );
-  const { useCurrentUser } = useAuthService();
+  const { useCurrentUser, useUpdateProfile } = useAuthService();
   const { data: user, refetch: refetchUser } = useCurrentUser(true);
+
+  const updateProfileMutation = useUpdateProfile();
   const apiProfile = (user as any)?.profile;
   const apiUser = apiProfile?.user;
 
@@ -73,72 +77,35 @@ const AnimalOwnerProfile = ({
     lastName: apiUser?.last_name || "",
     phoneNo: apiUser?.phone_num || "",
     location: apiUser?.state
-      ? `${apiUser?.state}, ${apiUser?.country || ""}`
+      ? `${apiUser?.state}${apiUser?.country ? ", " + apiUser?.country : ""}`
       : "",
     status: "Available",
-    bio: "",
+    bio: apiUser?.profile?.bio || "",
   });
 
-  const [profileImage, setProfileImage] = useState(
-    apiProfile?.profile || UserIconPng
+  const [profileImage, setProfileImage] = useState<any>(
+    apiUser?.profile?.profile_image_url || apiProfile?.profile || UserIconPng
   );
-  const [coverImage, setCoverImage] = useState("/api/placeholder/400/200");
+  const [coverImage, setCoverImage] = useState<any>(
+    apiUser?.profile?.cover_page_image_url || "/api/placeholder/400/200"
+  );
 
   const statusOptions = ["Available", "Busy", "Away", "Do not disturb"];
 
-  // Role switching logic
-  const normalizeRole = (raw: string): string => {
-    const r = (raw || "").toLowerCase();
-    const map: Record<string, string> = {
-      veterinarian: "vertinary_doctor",
-      vet_doctor: "vertinary_doctor",
-      vertinary_doctor: "vertinary_doctor",
-      veterinary_doctor: "vertinary_doctor",
-      "veterinary doctor": "vertinary_doctor",
-      paraprofessional: "vertinary_paraprofessional",
-      "veterinary paraprofessional": "vertinary_paraprofessional",
-      vertinary_paraprofessional: "vertinary_paraprofessional",
-      veterinary_paraprofessional: "vertinary_paraprofessional",
-      vet_clinic: "vertinary_clinic",
-      clinic: "vertinary_clinic",
-      "veterinary clinic": "vertinary_clinic",
-      veterinary_clinic: "vertinary_clinic",
-      vertinary_clinic: "vertinary_clinic",
-      vendor: "vendor",
-      pet_owner: "pet_owner",
-      animal_owner: "pet_owner",
-      "pet owner": "pet_owner",
-      livestock_farmer: "livestock_farmer",
-      "livestock farmer": "livestock_farmer",
-    };
-    return map[r] || r;
-  };
+  const backendRole: RoleKey | string = normalizeRole(
+    (user as any)?.role || ""
+  );
+  const allRoles = ALL_ROLES;
 
-  const backendRole: string = normalizeRole((user as any)?.role || "");
-  const allRoles = [
-    { key: "vertinary_doctor", label: "Veterinarian" },
-    { key: "vertinary_paraprofessional", label: "Paraprofessional" },
-    { key: "vertinary_clinic", label: "Vet Clinic" },
-    { key: "vendor", label: "Vendor" },
-    { key: "livestock_farmer", label: "Livestock Farmer" },
-    { key: "pet_owner", label: "Pet Owner" },
-  ];
-
-  const switchableRolesMap: Record<string, string[]> = {
-    vertinary_doctor: ["vendor", "vertinary_clinic"],
-    vertinary_paraprofessional: [
-      "vertinary_doctor",
-      "vertinary_clinic",
-      "vendor",
-    ],
-    pet_owner: allRoles.map((r) => r.key),
-    vendor: [
-      "vertinary_clinic",
-      "vertinary_doctor",
-      "vertinary_paraprofessional",
-    ],
-    livestock_farmer: allRoles.map((r) => r.key),
-    vertinary_clinic: allRoles.map((r) => r.key),
+  const switchableRolesMap: Record<string, RoleKey[]> = {
+    [ROLE.VETERINARIAN]: allRoles
+      .filter((r) => r.key !== ROLE.PARAPROFESSIONAL)
+      .map((r) => r.key as RoleKey),
+    [ROLE.PARAPROFESSIONAL]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.PET_OWNER]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.VENDOR]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.LIVESTOCK_FARMER]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
   };
 
   const switchable = useMemo(() => {
@@ -147,10 +114,11 @@ const AnimalOwnerProfile = ({
   }, [backendRole]);
 
   const [showSwitcher, setShowSwitcher] = useState(false);
+  const [switchingLoading, setSwitchingLoading] = useState(false);
   const [targetRole, setTargetRole] = useState<string>(backendRole);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Prepare mutations for existing-role no-payload calls
+  const currentRoleLabel =
+    allRoles.find((r) => r.key === backendRole)?.label || String(backendRole);
   const veterinarianMutation = useSwitchToVeterinarian();
   const paraprofessionalMutation = useSwitchToParaprofessional();
   const vetClinicMutation = useSwitchToVetClinic();
@@ -170,132 +138,77 @@ const AnimalOwnerProfile = ({
     // Check if user already has this role
     const userHasRole = userHasRoleNormalized(roleKey);
 
-    if (userHasRole) {
-      // Role exists: per requirement, call same POST endpoint without payload
-      switch (roleKey) {
-        case "vertinary_doctor":
-          veterinarianMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              // window.location.reload();
-              router.refresh();
-            },
-          });
-          return;
-        case "vertinary_paraprofessional":
-          paraprofessionalMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              // window.location.reload();
-              router.refresh();
-            },
-          });
-          return;
-        case "vertinary_clinic":
-          vetClinicMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              // window.location.reload();
-              router.refresh();
-            },
-          });
-          return;
-        case "pet_owner":
-          petOwnerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                // window.location.reload();
-                router.refresh();
-              },
-            }
-          );
-          return;
-        case "livestock_farmer":
-          livestockFarmerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                // window.location.reload();
-                router.refresh();
-              },
-            }
-          );
-          return;
-        case "vendor":
-          vendorMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                // window.location.reload();
-                router.refresh();
-              },
-            }
-          );
-          return;
-      }
+    // Decide action by role and whether form data is required
+    const normalized = normalizeRole(roleKey);
+    const needsForm = requiresFormData ? requiresFormData(normalized) : false;
+
+    // Open modals when form is required
+    if (needsForm) {
+      if (normalized === ROLE.VETERINARIAN) setVeterinarianModalOpen(true);
+      else if (normalized === ROLE.PARAPROFESSIONAL)
+        setParaprofessionalModalOpen(true);
+      else if (normalized === ROLE.CLINIC) setVetClinicModalOpen(true);
+      return;
     }
 
-    // Role doesn't exist, need to create it
-    if (requiresFormData(roleKey)) {
-      // Show modal for roles that need form data
-      switch (roleKey) {
-        case "vertinary_doctor":
-          setVeterinarianModalOpen(true);
-          break;
-        case "vertinary_paraprofessional":
-          setParaprofessionalModalOpen(true);
-          break;
-        case "vertinary_clinic":
-          setVetClinicModalOpen(true);
-          break;
-      }
-    } else {
-      // Call API directly for roles without form data
-      switch (roleKey) {
-        case "pet_owner":
-          petOwnerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-              },
-            }
-          );
-          break;
-        case "livestock_farmer":
-          livestockFarmerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-              },
-            }
-          );
-          break;
-        case "vendor":
-          vendorMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-              },
-            }
-          );
-          break;
-      }
+    // Otherwise, trigger switch via respective mutation (even if user already has role)
+    setSwitchingLoading(true);
+    if (normalized === ROLE.VETERINARIAN) {
+      veterinarianMutation.mutate({} as any, {
+        onSuccess: () => {
+          refetchUser();
+          setShowSwitcher(true);
+          setSwitchingLoading(false);
+          router.refresh();
+        },
+        onError: () => setSwitchingLoading(false),
+      });
+      return;
+    }
+
+    if (normalized === ROLE.LIVESTOCK_FARMER) {
+      livestockFarmerMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
+    }
+
+    if (normalized === ROLE.VENDOR) {
+      vendorMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
+    }
+
+    if (normalized === ROLE.PET_OWNER) {
+      petOwnerMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
     }
   };
 
@@ -305,11 +218,15 @@ const AnimalOwnerProfile = ({
   };
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? switchable.length - 1 : prev - 1));
+    setCurrentIndex((prev: number) =>
+      prev === 0 ? switchable.length - 1 : prev - 1
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === switchable.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev: number) =>
+      prev === switchable.length - 1 ? 0 : prev + 1
+    );
   };
 
   const handleInputChange = (
@@ -343,8 +260,36 @@ const AnimalOwnerProfile = ({
   };
 
   const handleSave = () => {
-    // Save logic here
-    onToggleEdit();
+    // Build FormData for the update endpoint (expects form-data)
+    const payload = new FormData();
+    if (formData.email) payload.append("email", formData.email);
+    if (formData.firstName) payload.append("first_name", formData.firstName);
+    if (formData.lastName) payload.append("last_name", formData.lastName);
+    if (formData.phoneNo) payload.append("phone_num", formData.phoneNo);
+    if (formData.bio) payload.append("bio", formData.bio);
+
+    // Split location into state,country if provided
+    if (formData.location) {
+      const parts = formData.location.split(",").map((s) => s.trim());
+      if (parts[0]) payload.append("state", parts[0]);
+      if (parts[1]) payload.append("country", parts[1]);
+    }
+
+    // Append images only when they are File objects (UI not yet exposing file inputs)
+    if (profileImage && (profileImage as any) instanceof File) {
+      payload.append("profile_image", profileImage as any);
+    }
+    if (coverImage && (coverImage as any) instanceof File) {
+      payload.append("cover_page_image", coverImage as any);
+    }
+
+    updateProfileMutation.mutate(payload, {
+      onSuccess: () => {
+        // refresh user via refetch from invalidation and close edit mode
+        refetchUser();
+        onToggleEdit();
+      },
+    });
   };
 
   if (isEditMode) {
@@ -456,29 +401,124 @@ const AnimalOwnerProfile = ({
               onChange={handleInputChange}
               placeholder="Write a short bio about yourself"
               rows={4}
+              maxLength={150}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
             />
+            <div className="text-xs text-gray-500 mt-1 text-right">
+              {formData.bio.length}/150
+            </div>
           </div>
 
           {/* Change Password Button */}
-          <button className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+          {/* <button className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
             Change Password
-          </button>
+          </button> */}
 
           {/* Profile Image Upload */}
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors">
-            <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-600 mb-1">Add Image</p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Profile image
+          </label>
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center transition-colors cursor-pointer"
+            onClick={() =>
+              document.getElementById("profile_image_input")?.click()
+            }
+          >
+            <div className="w-24 h-24 mx-auto mb-2 rounded-full overflow-hidden bg-white border">
+              <Image
+                src={
+                  profileImage instanceof File
+                    ? URL.createObjectURL(profileImage)
+                    : (profileImage as string)
+                }
+                alt="Profile preview"
+                width={96}
+                height={96}
+              />
+            </div>
+            <p className="text-gray-600 mb-1">Click to upload profile image</p>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="profile_image_input"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setProfileImage(file as any);
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="mt-2 text-sm text-green-600 hover:underline"
+              onClick={() =>
+                document.getElementById("profile_image_input")?.click()
+              }
+            >
+              Choose file
+            </button>
           </div>
           <p className="text-sm text-gray-500 text-center">
             Add profile page image
           </p>
 
           {/* Cover Image Upload */}
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors">
-            <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-600 mb-1">Add Image</p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Cover image
+          </label>
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center transition-colors cursor-pointer"
+            onClick={() =>
+              document.getElementById("cover_image_input")?.click()
+            }
+          >
+            <div className="w-full max-w-md mx-auto mb-2 h-24 rounded-lg overflow-hidden bg-white border">
+              <Image
+                src={
+                  coverImage instanceof File
+                    ? URL.createObjectURL(coverImage)
+                    : (coverImage as string)
+                }
+                alt="Cover preview"
+                width={400}
+                height={96}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p className="text-gray-600 mb-1">Click to upload cover image</p>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="cover_image_input"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setCoverImage(file as any);
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="mt-2 text-sm text-green-600 hover:underline"
+              onClick={() =>
+                document.getElementById("cover_image_input")?.click()
+              }
+            >
+              Choose file
+            </button>
           </div>
+
+          {/* Save Button */}
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={updateProfileMutation.isLoading}
+            className={`w-full py-3 px-4 rounded-xl transition-colors font-medium mt-6 ${updateProfileMutation.isLoading ? "bg-gray-400 text-white cursor-not-allowed" : "bg-gray-800 text-white hover:bg-gray-900"}`}
+          >
+            {updateProfileMutation.isLoading ? "Saving..." : "Save Changes"}
+          </button>
         </div>
       </div>
     );
@@ -486,7 +526,7 @@ const AnimalOwnerProfile = ({
 
   // View Mode
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full mx-auto">
       {/* Back Button - Mobile */}
       <div className="flex items-center justify-between p-4 md:p-6">
         <button className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors">
@@ -506,7 +546,9 @@ const AnimalOwnerProfile = ({
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-4 md:mx-6">
         {/* Cover Image */}
         <div
-          style={{ backgroundImage: `url(${AuthBg.src})` }}
+          style={{
+            backgroundImage: `url(${(apiUser?.profile?.cover_page_image_url as string) || AuthBg.src})`,
+          }}
           className="h-32 bg-gray-100 bg-cover bg-center relative"
         >
           {/* Decorative pattern overlay */}
@@ -537,101 +579,132 @@ const AnimalOwnerProfile = ({
           </div>
 
           {/* Name */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h1 className="text-xl font-bold text-gray-900 mb-6">
               {formData.firstName} {formData.lastName}
             </h1>
           </div>
 
+          {/* Bio */}
+          {formData.bio && (
+            <div className="max-w-xl mx-auto text-center mb-6">
+              <p className="text-sm text-gray-700 whitespace-pre-line">
+                {formData.bio}
+              </p>
+            </div>
+          )}
+
+          {/* Role */}
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+              {currentRoleLabel}
+            </span>
+          </div>
+
           {/* Action Buttons */}
-          <div className="flex w-full border-b pb-5 border-gray-225 justify-center items-center md:gap-3 gap-2">
+          <div className="flex flex-wrap w-full border-b pb-5 border-gray-225 justify-center items-center gap-2 sm:gap-3 md:gap-4">
             <button
               onClick={() => handleContact("1", "phone")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "phone" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "phone" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Phone size={14} color="#1D2432" />
+                <Phone size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Call</span>
+              <span className="text-[10px] sm:text-xs text-center">Call</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "message")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "message" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "message" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <MessagesSquareIcon size={14} color="#1D2432" />
+                <MessagesSquareIcon
+                  size={14}
+                  color="#1D2432"
+                  className="sm:w-4 sm:h-4"
+                />
               </span>
-              <span className="text-xs">Message</span>
+              <span className="text-[10px] sm:text-xs text-center">
+                Message
+              </span>
             </button>
 
             <button
               onClick={() => handleContact("1", "media")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <ImageIcon size={14} color="#1D2432" />
+                <ImageIcon
+                  size={14}
+                  color="#1D2432"
+                  className="sm:w-4 sm:h-4"
+                />
               </span>
-              <span className="text-xs">Media</span>
+              <span className="text-[10px] sm:text-xs text-center">Media</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "mail")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "mail" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "mail" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Mail size={14} color="#1D2432" />
+                <Mail size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Email</span>
+              <span className="text-[10px] sm:text-xs text-center">Email</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "location")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "location" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "location" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <MapPin size={14} color="#1D2432" />
+                <MapPin size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Location</span>
+              <span className="text-[10px] sm:text-xs text-center">
+                Location
+              </span>
             </button>
 
             <button
               onClick={() => handleContact("1", "share")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "share" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "share" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Share2 size={14} color="#1D2432" />
+                <Share2 size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Share</span>
+              <span className="text-[10px] sm:text-xs text-center">Share</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "switch-profile")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
                 <Image
                   src={SwitcherIcon}
                   alt="Switch profile"
                   width={14}
                   height={14}
+                  className="sm:w-4 sm:h-4"
                 />
               </span>
-              <span className="text-xs">Switch profile</span>
+              <span className="text-[10px] sm:text-xs text-center leading-tight">
+                Switch profile
+              </span>
             </button>
           </div>
 

@@ -18,30 +18,55 @@ const page = () => {
   const { useGetUserPromotions } = useAdsPromotionService();
   const { data: userPromotions } = useGetUserPromotions();
 
-  // Map API data to ads format (API returns an array directly)
-  const ads: any[] = Array.isArray(userPromotions)
-    ? userPromotions.map((promotion: any) => ({
-        id: promotion.id.toString(),
-        productId: promotion.product.id,
-        title: promotion.product.product_name,
-        price: parseFloat(promotion.product.price),
-        images: promotion.product.images_url,
-        rating: 4.5, // Default rating, can be calculated from product.ratings if available
-        location: promotion.product.location,
-        units: promotion.product.available_unit,
-        status: promotion.status === "active" ? "active" : "expired",
-        open: promotion.product.availability,
-        availableUnits: promotion.product.available_unit > 0,
-        endDate: promotion.end_date,
-      }))
-    : [];
+  // Map API data to ads format with strong null-safety and sensible defaults
+  const ads: any[] = (Array.isArray(userPromotions) ? userPromotions : [])
+    .map((promotion: any) => {
+      const product = promotion?.product ?? {};
+      const id = promotion?.id ?? product?.id;
+
+      // Skip entries without a usable id or product
+      if (!id || !product) return null;
+
+      const priceRaw = product?.price;
+      const price =
+        typeof priceRaw === "number"
+          ? priceRaw
+          : parseFloat(String(priceRaw ?? 0));
+
+      const availableUnit =
+        typeof product?.available_unit === "number"
+          ? product.available_unit
+          : parseInt(String(product?.available_unit ?? 0));
+
+      return {
+        id: String(id),
+        productId: product?.id ?? "",
+        title: product?.product_name ?? "Untitled Product",
+        price: Number.isFinite(price) ? price : 0,
+        images: Array.isArray(product?.images_url) ? product.images_url : [],
+        rating:
+          typeof product?.ratings_average === "number"
+            ? product.ratings_average
+            : 4.5,
+        location: product?.location ?? "",
+        units: availableUnit,
+        status: promotion?.status === "active" ? "active" : "expired",
+        open: Boolean(product?.availability),
+        availableUnits: availableUnit > 0,
+        endDate: promotion?.end_date ?? null,
+      };
+    })
+    .filter(Boolean) as any[];
 
   const activeAds = ads.filter((ad) => ad.status === "active");
   const expiredAds = ads.filter((ad) => ad.status === "expired");
 
   // Format date helper
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+  const formatDate = (dateString?: string | null) => {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",

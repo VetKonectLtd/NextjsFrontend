@@ -63,6 +63,20 @@ export const useAuthService = () => {
 		);
 	};
 
+	// Update profile (expects FormData or JSON depending on caller)
+	const useUpdateProfile = () => {
+		return usePost<{ message: string }, FormData | Record<string, any>>(
+			"/v3/update-profile",
+			{
+				onSuccess: (response: any) => {
+					handleSuccess(response.message || "Profile updated successfully!");
+				},
+				// invalidate current user so UI refreshes
+				invalidateQueries: [["currentUser"]],
+			},
+		);
+	};
+
 	// Google login
 	const useGoogleLogin = (enabled: boolean = false) => {
 		return useGet<{ user: User; token: string }>(
@@ -98,7 +112,7 @@ export const useAuthService = () => {
 	// Logout mutation
 	const useLogout = () => {
 		return usePost<void, void>(AUTH_ENDPOINTS.LOGOUT, {
-			onSuccess: (res:any) => {
+			onSuccess: (res: any) => {
 				// Remove token from localStorage
 				Cookies.remove("auth-token");
 				handleSuccess(res.message || "Logout successfully!");
@@ -159,6 +173,7 @@ export const useAuthService = () => {
 		useLogin,
 		useSignup,
 		useCompleteProfile,
+		useUpdateProfile,
 		useResendVerification,
 		useGoogleLogin,
 		// useLinkedInLogin,

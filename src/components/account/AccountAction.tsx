@@ -1,5 +1,6 @@
 "use client";
 import { Copy, Link, Send, Smile, ImageIcon, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
 import { useState, useRef } from "react";
@@ -31,7 +32,11 @@ const AccountAction = ({
 }: AccountActionProps) => {
   const [copied, setCopied] = useState<string | null>(null);
   const [uploadedMedia, setUploadedMedia] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { useUploadMedia, useDeleteMedia } = useMediaService();
+  const uploadMutation = useUploadMedia();
+  const deleteMediaMutation = useDeleteMedia();
 
   const ratingChanged = (newRating: any) => {
     // console.log(newRating);
@@ -116,47 +121,84 @@ const AccountAction = ({
 
           {/* Media Upload Area */}
           <div className="mb-6">
-            {uploadedMedia.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                {uploadedMedia.map((media, index) => (
-                  <div key={index} className="relative group">
-                    <div className="w-full h-32 border-2 border-gray-300 rounded-lg overflow-hidden">
-                      <Image
-                        src={media}
-                        alt={`Media ${index + 1}`}
-                        width={200}
-                        height={128}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <button
-                      onClick={() => {
-                        const newMedia = [...uploadedMedia];
-                        newMedia.splice(index, 1);
-                        setUploadedMedia(newMedia);
-                      }}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+            {(() => {
+              const existingMedia: Array<{ id: number; file_url: string }> =
+                (selectedUser?.user?.media as any) || [];
+              const previews = [
+                ...existingMedia.map((m) => ({
+                  type: "server" as const,
+                  id: m.id,
+                  url: m.file_url,
+                })),
+                ...uploadedMedia.map((url, index) => ({
+                  type: "local" as const,
+                  index,
+                  url,
+                })),
+              ];
+
+              return (
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {previews.map((item, idx) => (
+                    <div
+                      key={`${item.type}-${item.url}-${idx}`}
+                      className="relative group"
                     >
-                      <X className="w-4 h-4" />
-                    </button>
+                      <div className="w-full h-32 border-2 border-gray-300 rounded-lg overflow-hidden">
+                        <Image
+                          src={item.url}
+                          alt={`Media ${idx + 1}`}
+                          width={200}
+                          height={128}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (item.type === "server") {
+                            deleteMediaMutation.mutate(item.id, {
+                              onSuccess: () => {
+                                if (Array.isArray(selectedUser?.user?.media)) {
+                                  const list = (
+                                    selectedUser.user.media as any[]
+                                  ).filter((m: any) => m.id !== item.id);
+                                  selectedUser.user.media = list as any;
+                                }
+                              },
+                            });
+                          } else {
+                            const newMedia = [...uploadedMedia];
+                            newMedia.splice(item.index!, 1);
+                            setUploadedMedia(newMedia);
+                            const newFiles = [...selectedFiles];
+                            newFiles.splice(item.index!, 1);
+                            setSelectedFiles(newFiles);
+                          }
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Always show the add tile alongside previews */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-green-500 transition-colors"
+                  >
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                        <ImageIcon className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-600 font-medium">
+                        Click to add media
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-green-500 transition-colors"
-              >
-                <div className="flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-                    <ImageIcon className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <p className="text-gray-600 font-medium">
-                    Click to add media
-                  </p>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
 
           {/* Hidden File Input */}
@@ -170,6 +212,9 @@ const AccountAction = ({
               const files = e.target.files;
               if (files) {
                 const fileArray = Array.from(files);
+                // Keep files for upload button; also show previews
+                setSelectedFiles((prev) => [...prev, ...fileArray]);
+
                 const newMediaPromises = fileArray.map((file) => {
                   return new Promise<string>((resolve) => {
                     const reader = new FileReader();
@@ -189,10 +234,36 @@ const AccountAction = ({
 
           {/* Add Media Button */}
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50 transition-colors"
+            onClick={() => {
+              if (uploadMutation.isLoading) return;
+              if (selectedFiles.length === 0) {
+                fileInputRef.current?.click();
+                return;
+              }
+              const imagesOnly = selectedFiles.filter((f) =>
+                ["image/jpeg", "image/png", "image/jpg"].includes(f.type)
+              );
+              if (imagesOnly.length > 0) {
+                const fd = buildImagesFormData(imagesOnly);
+                uploadMutation.mutate(fd, {
+                  onSuccess: () => {
+                    // Clear selected files after successful upload
+                    setSelectedFiles([]);
+                  },
+                });
+              }
+            }}
+            disabled={uploadMutation.isLoading}
+            className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            Add media
+            {uploadMutation.isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              "Add media"
+            )}
           </button>
         </div>
       )}
@@ -341,25 +412,7 @@ const AccountAction = ({
         </>
       )}
 
-      {selectedAction === "switch-profile" && (
-        <>
-          <p className="text-gray-55 font-bold">Switch Profile</p>
-          <p className="text-sm mt-2 w-60 m-auto text-gray-55">
-            Switch between different profile types
-          </p>
-          <div className="flex items-center py-3 justify-center">
-            <button
-              onClick={() => {
-                // Handle profile switching logic here
-                // console.log("Switching profile...");
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-            >
-              Switch Profile
-            </button>
-          </div>
-        </>
-      )}
+      {selectedAction === "switch-profile" && null}
     </div>
   );
 };
