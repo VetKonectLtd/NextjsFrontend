@@ -410,9 +410,9 @@ const AnimalOwnerProfile = ({
           </div>
 
           {/* Change Password Button */}
-          <button className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+          {/* <button className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
             Change Password
-          </button>
+          </button> */}
 
           {/* Profile Image Upload */}
           <label className="block text-sm font-medium text-gray-700 mb-2">
