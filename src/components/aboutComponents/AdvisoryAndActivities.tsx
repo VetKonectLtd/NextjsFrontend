@@ -24,33 +24,27 @@ import { Navigation } from "swiper/modules";
 
 const advisors = [
 	{
-		name: "Dr. Gani Enahoro",
-		image: Gani.src,
-		linkedin: "https://linkedin.com/in/janesmith",
-	},
-
-	{
-		name: "Dr. Moses Another",
-		image: Dr_Moses.src,
-		linkedin: "https://linkedin.com/in/janesmith",
-	},
-	{
-		name: "Dr. Moses Arokoyo",
-		image: Moses.src,
-		linkedin: "https://linkedin.com/in/janesmith",
-	},
-	{
 		name: "Tayo Olosunde",
 		image: Tayo.src,
 		linkedin: "https://linkedin.com/in/johndoe",
 	},
 	{
-		name: "Olajuwon Kayode",
+		name: "Sarah Lee Wolfe",
 		image: Koyode,
 		linkedin: "https://linkedin.com/in/janesmith",
 	},
-	
-	
+
+	{
+		name: "Dr. Moses Arokoyo",
+		image: Moses.src,
+		linkedin: "https://linkedin.com/in/janesmith",
+	},
+
+	{
+		name: "Dr. Gani Enahoro",
+		image: Gani.src,
+		linkedin: "https://linkedin.com/in/janesmith",
+	},
 ];
 
 const activities = [
@@ -98,7 +92,7 @@ export default function AdvisoryAndActivities() {
 								},
 							},
 							768: {
-								slidesPerView: 5,
+								slidesPerView: 4,
 								autoplay: false,
 							},
 						}}
