@@ -44,8 +44,10 @@ const AnimalOwnerProfile = ({
   const [selectedAction, setSelectedAction] = useState<string | null>(
     "default"
   );
-  const { useCurrentUser } = useAuthService();
+  const { useCurrentUser, useUpdateProfile } = useAuthService();
   const { data: user, refetch: refetchUser } = useCurrentUser(true);
+
+  const updateProfileMutation = useUpdateProfile();
   const apiProfile = (user as any)?.profile;
   const apiUser = apiProfile?.user;
 
@@ -75,16 +77,18 @@ const AnimalOwnerProfile = ({
     lastName: apiUser?.last_name || "",
     phoneNo: apiUser?.phone_num || "",
     location: apiUser?.state
-      ? `${apiUser?.state}, ${apiUser?.country || ""}`
+      ? `${apiUser?.state}${apiUser?.country ? ", " + apiUser?.country : ""}`
       : "",
     status: "Available",
-    bio: "",
+    bio: apiUser?.profile?.bio || "",
   });
 
-  const [profileImage, setProfileImage] = useState(
-    apiProfile?.profile || UserIconPng
+  const [profileImage, setProfileImage] = useState<any>(
+    apiUser?.profile?.profile_image_url || apiProfile?.profile || UserIconPng
   );
-  const [coverImage, setCoverImage] = useState("/api/placeholder/400/200");
+  const [coverImage, setCoverImage] = useState<any>(
+    apiUser?.profile?.cover_page_image_url || "/api/placeholder/400/200"
+  );
 
   const statusOptions = ["Available", "Busy", "Away", "Do not disturb"];
 
@@ -110,6 +114,7 @@ const AnimalOwnerProfile = ({
   }, [backendRole]);
 
   const [showSwitcher, setShowSwitcher] = useState(false);
+  const [switchingLoading, setSwitchingLoading] = useState(false);
   const [targetRole, setTargetRole] = useState<string>(backendRole);
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentRoleLabel =
@@ -133,43 +138,77 @@ const AnimalOwnerProfile = ({
     // Check if user already has this role
     const userHasRole = userHasRoleNormalized(roleKey);
 
-    if (userHasRole) {
-      // Role exists: per requirement, call same POST endpoint without payload
-      switch (roleKey) {
-        case "vertinary_doctor":
-          veterinarianMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              // window.location.reload();
-              router.refresh();
-            },
-          });
-          return;
+    // Decide action by role and whether form data is required
+    const normalized = normalizeRole(roleKey);
+    const needsForm = requiresFormData ? requiresFormData(normalized) : false;
 
-        case "livestock_farmer":
-          livestockFarmerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-              },
-            }
-          );
-          break;
-        case "vendor":
-          vendorMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-              },
-            }
-          );
-          break;
-      }
+    // Open modals when form is required
+    if (needsForm) {
+      if (normalized === ROLE.VETERINARIAN) setVeterinarianModalOpen(true);
+      else if (normalized === ROLE.PARAPROFESSIONAL)
+        setParaprofessionalModalOpen(true);
+      else if (normalized === ROLE.CLINIC) setVetClinicModalOpen(true);
+      return;
+    }
+
+    // Otherwise, trigger switch via respective mutation (even if user already has role)
+    setSwitchingLoading(true);
+    if (normalized === ROLE.VETERINARIAN) {
+      veterinarianMutation.mutate({} as any, {
+        onSuccess: () => {
+          refetchUser();
+          setShowSwitcher(true);
+          setSwitchingLoading(false);
+          router.refresh();
+        },
+        onError: () => setSwitchingLoading(false),
+      });
+      return;
+    }
+
+    if (normalized === ROLE.LIVESTOCK_FARMER) {
+      livestockFarmerMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
+    }
+
+    if (normalized === ROLE.VENDOR) {
+      vendorMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
+    }
+
+    if (normalized === ROLE.PET_OWNER) {
+      petOwnerMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
     }
   };
 
@@ -221,8 +260,36 @@ const AnimalOwnerProfile = ({
   };
 
   const handleSave = () => {
-    // Save logic here
-    onToggleEdit();
+    // Build FormData for the update endpoint (expects form-data)
+    const payload = new FormData();
+    if (formData.email) payload.append("email", formData.email);
+    if (formData.firstName) payload.append("first_name", formData.firstName);
+    if (formData.lastName) payload.append("last_name", formData.lastName);
+    if (formData.phoneNo) payload.append("phone_num", formData.phoneNo);
+    if (formData.bio) payload.append("bio", formData.bio);
+
+    // Split location into state,country if provided
+    if (formData.location) {
+      const parts = formData.location.split(",").map((s) => s.trim());
+      if (parts[0]) payload.append("state", parts[0]);
+      if (parts[1]) payload.append("country", parts[1]);
+    }
+
+    // Append images only when they are File objects (UI not yet exposing file inputs)
+    if (profileImage && (profileImage as any) instanceof File) {
+      payload.append("profile_image", profileImage as any);
+    }
+    if (coverImage && (coverImage as any) instanceof File) {
+      payload.append("cover_page_image", coverImage as any);
+    }
+
+    updateProfileMutation.mutate(payload, {
+      onSuccess: () => {
+        // refresh user via refetch from invalidation and close edit mode
+        refetchUser();
+        onToggleEdit();
+      },
+    });
   };
 
   if (isEditMode) {
@@ -334,8 +401,12 @@ const AnimalOwnerProfile = ({
               onChange={handleInputChange}
               placeholder="Write a short bio about yourself"
               rows={4}
+              maxLength={150}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
             />
+            <div className="text-xs text-gray-500 mt-1 text-right">
+              {formData.bio.length}/150
+            </div>
           </div>
 
           {/* Change Password Button */}
@@ -344,19 +415,110 @@ const AnimalOwnerProfile = ({
           </button>
 
           {/* Profile Image Upload */}
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors">
-            <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-600 mb-1">Add Image</p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Profile image
+          </label>
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center transition-colors cursor-pointer"
+            onClick={() =>
+              document.getElementById("profile_image_input")?.click()
+            }
+          >
+            <div className="w-24 h-24 mx-auto mb-2 rounded-full overflow-hidden bg-white border">
+              <Image
+                src={
+                  profileImage instanceof File
+                    ? URL.createObjectURL(profileImage)
+                    : (profileImage as string)
+                }
+                alt="Profile preview"
+                width={96}
+                height={96}
+              />
+            </div>
+            <p className="text-gray-600 mb-1">Click to upload profile image</p>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="profile_image_input"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setProfileImage(file as any);
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="mt-2 text-sm text-green-600 hover:underline"
+              onClick={() =>
+                document.getElementById("profile_image_input")?.click()
+              }
+            >
+              Choose file
+            </button>
           </div>
           <p className="text-sm text-gray-500 text-center">
             Add profile page image
           </p>
 
           {/* Cover Image Upload */}
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors">
-            <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-600 mb-1">Add Image</p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Cover image
+          </label>
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center transition-colors cursor-pointer"
+            onClick={() =>
+              document.getElementById("cover_image_input")?.click()
+            }
+          >
+            <div className="w-full max-w-md mx-auto mb-2 h-24 rounded-lg overflow-hidden bg-white border">
+              <Image
+                src={
+                  coverImage instanceof File
+                    ? URL.createObjectURL(coverImage)
+                    : (coverImage as string)
+                }
+                alt="Cover preview"
+                width={400}
+                height={96}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p className="text-gray-600 mb-1">Click to upload cover image</p>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="cover_image_input"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setCoverImage(file as any);
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="mt-2 text-sm text-green-600 hover:underline"
+              onClick={() =>
+                document.getElementById("cover_image_input")?.click()
+              }
+            >
+              Choose file
+            </button>
           </div>
+
+          {/* Save Button */}
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={updateProfileMutation.isLoading}
+            className={`w-full py-3 px-4 rounded-xl transition-colors font-medium mt-6 ${updateProfileMutation.isLoading ? "bg-gray-400 text-white cursor-not-allowed" : "bg-gray-800 text-white hover:bg-gray-900"}`}
+          >
+            {updateProfileMutation.isLoading ? "Saving..." : "Save Changes"}
+          </button>
         </div>
       </div>
     );
@@ -384,7 +546,9 @@ const AnimalOwnerProfile = ({
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-4 md:mx-6">
         {/* Cover Image */}
         <div
-          style={{ backgroundImage: `url(${AuthBg.src})` }}
+          style={{
+            backgroundImage: `url(${(apiUser?.profile?.cover_page_image_url as string) || AuthBg.src})`,
+          }}
           className="h-32 bg-gray-100 bg-cover bg-center relative"
         >
           {/* Decorative pattern overlay */}
@@ -420,6 +584,15 @@ const AnimalOwnerProfile = ({
               {formData.firstName} {formData.lastName}
             </h1>
           </div>
+
+          {/* Bio */}
+          {formData.bio && (
+            <div className="max-w-xl mx-auto text-center mb-6">
+              <p className="text-sm text-gray-700 whitespace-pre-line">
+                {formData.bio}
+              </p>
+            </div>
+          )}
 
           {/* Role */}
           <div className="flex flex-wrap justify-center gap-2 mb-6">
