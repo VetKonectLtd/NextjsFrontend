@@ -1,5 +1,6 @@
 "use client";
 import { Copy, Link, Send, Smile, ImageIcon, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
 import { useState, useRef } from "react";
@@ -252,9 +253,17 @@ const AccountAction = ({
                 });
               }
             }}
-            className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50 transition-colors"
+            disabled={uploadMutation.isLoading}
+            className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            Add media
+            {uploadMutation.isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              "Add media"
+            )}
           </button>
         </div>
       )}
@@ -403,25 +412,7 @@ const AccountAction = ({
         </>
       )}
 
-      {selectedAction === "switch-profile" && (
-        <>
-          <p className="text-gray-55 font-bold">Switch Profile</p>
-          <p className="text-sm mt-2 w-60 m-auto text-gray-55">
-            Switch between different profile types
-          </p>
-          <div className="flex items-center py-3 justify-center">
-            <button
-              onClick={() => {
-                // Handle profile switching logic here
-                // console.log("Switching profile...");
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-            >
-              Switch Profile
-            </button>
-          </div>
-        </>
-      )}
+      {selectedAction === "switch-profile" && null}
     </div>
   );
 };

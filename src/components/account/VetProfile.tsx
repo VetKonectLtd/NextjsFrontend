@@ -305,94 +305,103 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex w-full border-b pb-5 border-gray-225 justify-center items-center md:gap-3 gap-2">
+          <div className="flex flex-wrap w-full border-b pb-5 border-gray-225 justify-center items-center gap-2 sm:gap-3 md:gap-4">
             <button
               onClick={() => handleContact("1", "phone")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "phone" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "phone" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Phone size={14} color="#1D2432" />
+                <Phone size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Call</span>
+              <span className="text-[10px] sm:text-xs text-center">Call</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "media")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <ImageIcon size={14} color="#1D2432" />
+                <ImageIcon
+                  size={14}
+                  color="#1D2432"
+                  className="sm:w-4 sm:h-4"
+                />
               </span>
-              <span className="text-xs">Media</span>
+              <span className="text-[10px] sm:text-xs text-center">Media</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "mail")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "mail" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "mail" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Mail size={14} color="#1D2432" />
+                <Mail size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Email</span>
+              <span className="text-[10px] sm:text-xs text-center">Email</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "info")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "info" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "info" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Info size={14} color="#1D2432" />
+                <Info size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Bio</span>
+              <span className="text-[10px] sm:text-xs text-center">Bio</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "location")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "location" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "location" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <MapPin size={14} color="#1D2432" />
+                <MapPin size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Location</span>
+              <span className="text-[10px] sm:text-xs text-center">
+                Location
+              </span>
             </button>
 
             <button
               onClick={() => handleContact("1", "share")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "share" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "share" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Share2 size={14} color="#1D2432" />
+                <Share2 size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Share</span>
+              <span className="text-[10px] sm:text-xs text-center">Share</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "switch-profile")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
                 <Image
                   src={SwitcherIcon}
                   alt="Switch profile"
                   width={14}
                   height={14}
+                  className="sm:w-4 sm:h-4"
                 />
               </span>
-              <span className="text-xs">Switch profile</span>
+              <span className="text-[10px] sm:text-xs text-center leading-tight">
+                Switch profile
+              </span>
             </button>
           </div>
 

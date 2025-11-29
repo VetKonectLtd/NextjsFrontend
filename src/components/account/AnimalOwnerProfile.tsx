@@ -23,6 +23,8 @@ import SwitcherIcon from "@/app/assets/icons/switcher.svg";
 import UserIconPng from "@/app/assets/icons/user.png";
 import { useAuthService } from "@/services/authService";
 import { useRoleSwitchingService } from "@/services/roleSwitchingService";
+import SwitchProfilePanel from "@/components/shared/SwitchProfilePanel";
+import { ALL_ROLES, ROLE, normalizeRole, RoleKey } from "@/lib/roles";
 import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
 import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
 import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
@@ -86,59 +88,20 @@ const AnimalOwnerProfile = ({
 
   const statusOptions = ["Available", "Busy", "Away", "Do not disturb"];
 
-  // Role switching logic
-  const normalizeRole = (raw: string): string => {
-    const r = (raw || "").toLowerCase();
-    const map: Record<string, string> = {
-      veterinarian: "vertinary_doctor",
-      vet_doctor: "vertinary_doctor",
-      vertinary_doctor: "vertinary_doctor",
-      veterinary_doctor: "vertinary_doctor",
-      "veterinary doctor": "vertinary_doctor",
-      paraprofessional: "vertinary_paraprofessional",
-      "veterinary paraprofessional": "vertinary_paraprofessional",
-      vertinary_paraprofessional: "vertinary_paraprofessional",
-      veterinary_paraprofessional: "vertinary_paraprofessional",
-      vet_clinic: "vertinary_clinic",
-      clinic: "vertinary_clinic",
-      "veterinary clinic": "vertinary_clinic",
-      veterinary_clinic: "vertinary_clinic",
-      vertinary_clinic: "vertinary_clinic",
-      vendor: "vendor",
-      pet_owner: "pet_owner",
-      animal_owner: "pet_owner",
-      "pet owner": "pet_owner",
-      livestock_farmer: "livestock_farmer",
-      "livestock farmer": "livestock_farmer",
-    };
-    return map[r] || r;
-  };
+  const backendRole: RoleKey | string = normalizeRole(
+    (user as any)?.role || ""
+  );
+  const allRoles = ALL_ROLES;
 
-  const backendRole: string = normalizeRole((user as any)?.role || "");
-  const allRoles = [
-    { key: "vertinary_doctor", label: "Veterinarian" },
-    { key: "vertinary_paraprofessional", label: "Paraprofessional" },
-    { key: "vertinary_clinic", label: "Vet Clinic" },
-    { key: "vendor", label: "Vendor" },
-    { key: "livestock_farmer", label: "Livestock Farmer" },
-    { key: "pet_owner", label: "Pet Owner" },
-  ];
-
-  const switchableRolesMap: Record<string, string[]> = {
-    vertinary_doctor: ["vendor", "vertinary_clinic"],
-    vertinary_paraprofessional: [
-      "vertinary_doctor",
-      "vertinary_clinic",
-      "vendor",
-    ],
-    pet_owner: allRoles.map((r) => r.key),
-    vendor: [
-      "vertinary_clinic",
-      "vertinary_doctor",
-      "vertinary_paraprofessional",
-    ],
-    livestock_farmer: allRoles.map((r) => r.key),
-    vertinary_clinic: allRoles.map((r) => r.key),
+  const switchableRolesMap: Record<string, RoleKey[]> = {
+    [ROLE.VETERINARIAN]: allRoles
+      .filter((r) => r.key !== ROLE.PARAPROFESSIONAL)
+      .map((r) => r.key as RoleKey),
+    [ROLE.PARAPROFESSIONAL]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.PET_OWNER]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.VENDOR]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.LIVESTOCK_FARMER]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
   };
 
   const switchable = useMemo(() => {
@@ -149,8 +112,8 @@ const AnimalOwnerProfile = ({
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [targetRole, setTargetRole] = useState<string>(backendRole);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Prepare mutations for existing-role no-payload calls
+  const currentRoleLabel =
+    allRoles.find((r) => r.key === backendRole)?.label || String(backendRole);
   const veterinarianMutation = useSwitchToVeterinarian();
   const paraprofessionalMutation = useSwitchToParaprofessional();
   const vetClinicMutation = useSwitchToVetClinic();
@@ -183,96 +146,7 @@ const AnimalOwnerProfile = ({
             },
           });
           return;
-        case "vertinary_paraprofessional":
-          paraprofessionalMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              // window.location.reload();
-              router.refresh();
-            },
-          });
-          return;
-        case "vertinary_clinic":
-          vetClinicMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              // window.location.reload();
-              router.refresh();
-            },
-          });
-          return;
-        case "pet_owner":
-          petOwnerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                // window.location.reload();
-                router.refresh();
-              },
-            }
-          );
-          return;
-        case "livestock_farmer":
-          livestockFarmerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                // window.location.reload();
-                router.refresh();
-              },
-            }
-          );
-          return;
-        case "vendor":
-          vendorMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                // window.location.reload();
-                router.refresh();
-              },
-            }
-          );
-          return;
-      }
-    }
 
-    // Role doesn't exist, need to create it
-    if (requiresFormData(roleKey)) {
-      // Show modal for roles that need form data
-      switch (roleKey) {
-        case "vertinary_doctor":
-          setVeterinarianModalOpen(true);
-          break;
-        case "vertinary_paraprofessional":
-          setParaprofessionalModalOpen(true);
-          break;
-        case "vertinary_clinic":
-          setVetClinicModalOpen(true);
-          break;
-      }
-    } else {
-      // Call API directly for roles without form data
-      switch (roleKey) {
-        case "pet_owner":
-          petOwnerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-              },
-            }
-          );
-          break;
         case "livestock_farmer":
           livestockFarmerMutation.mutate(
             {},
@@ -305,11 +179,15 @@ const AnimalOwnerProfile = ({
   };
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? switchable.length - 1 : prev - 1));
+    setCurrentIndex((prev: number) =>
+      prev === 0 ? switchable.length - 1 : prev - 1
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === switchable.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev: number) =>
+      prev === switchable.length - 1 ? 0 : prev + 1
+    );
   };
 
   const handleInputChange = (
@@ -486,7 +364,7 @@ const AnimalOwnerProfile = ({
 
   // View Mode
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full mx-auto">
       {/* Back Button - Mobile */}
       <div className="flex items-center justify-between p-4 md:p-6">
         <button className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors">
@@ -537,101 +415,123 @@ const AnimalOwnerProfile = ({
           </div>
 
           {/* Name */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h1 className="text-xl font-bold text-gray-900 mb-6">
               {formData.firstName} {formData.lastName}
             </h1>
           </div>
 
+          {/* Role */}
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+              {currentRoleLabel}
+            </span>
+          </div>
+
           {/* Action Buttons */}
-          <div className="flex w-full border-b pb-5 border-gray-225 justify-center items-center md:gap-3 gap-2">
+          <div className="flex flex-wrap w-full border-b pb-5 border-gray-225 justify-center items-center gap-2 sm:gap-3 md:gap-4">
             <button
               onClick={() => handleContact("1", "phone")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "phone" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "phone" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Phone size={14} color="#1D2432" />
+                <Phone size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Call</span>
+              <span className="text-[10px] sm:text-xs text-center">Call</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "message")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "message" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "message" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <MessagesSquareIcon size={14} color="#1D2432" />
+                <MessagesSquareIcon
+                  size={14}
+                  color="#1D2432"
+                  className="sm:w-4 sm:h-4"
+                />
               </span>
-              <span className="text-xs">Message</span>
+              <span className="text-[10px] sm:text-xs text-center">
+                Message
+              </span>
             </button>
 
             <button
               onClick={() => handleContact("1", "media")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <ImageIcon size={14} color="#1D2432" />
+                <ImageIcon
+                  size={14}
+                  color="#1D2432"
+                  className="sm:w-4 sm:h-4"
+                />
               </span>
-              <span className="text-xs">Media</span>
+              <span className="text-[10px] sm:text-xs text-center">Media</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "mail")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "mail" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "mail" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Mail size={14} color="#1D2432" />
+                <Mail size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Email</span>
+              <span className="text-[10px] sm:text-xs text-center">Email</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "location")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "location" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "location" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <MapPin size={14} color="#1D2432" />
+                <MapPin size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Location</span>
+              <span className="text-[10px] sm:text-xs text-center">
+                Location
+              </span>
             </button>
 
             <button
               onClick={() => handleContact("1", "share")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "share" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "share" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
-                <Share2 size={14} color="#1D2432" />
+                <Share2 size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
               </span>
-              <span className="text-xs">Share</span>
+              <span className="text-[10px] sm:text-xs text-center">Share</span>
             </button>
 
             <button
               onClick={() => handleContact("1", "switch-profile")}
-              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
             >
               <span
-                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+                className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
               >
                 <Image
                   src={SwitcherIcon}
                   alt="Switch profile"
                   width={14}
                   height={14}
+                  className="sm:w-4 sm:h-4"
                 />
               </span>
-              <span className="text-xs">Switch profile</span>
+              <span className="text-[10px] sm:text-xs text-center leading-tight">
+                Switch profile
+              </span>
             </button>
           </div>
 
