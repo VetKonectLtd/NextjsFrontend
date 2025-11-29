@@ -241,7 +241,7 @@ export default function OrderDetailsPage({
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{isBuyer ? (
+						{/* {isBuyer ? ( */}
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
@@ -256,7 +256,7 @@ export default function OrderDetailsPage({
 									"Mark as Delivered"
 								)}
 							</button>
-						) : (
+						{/* ) : ( */}
 							<>
 								{/* Normal buyer buttons */}
 								{!isCanceled && canCancel && (
@@ -278,14 +278,14 @@ export default function OrderDetailsPage({
 
 								{!canCancel && !isCanceled && (
 									<button
-										onClick={() => router.push("/support")}
+										// onClick={() => router.push("/support")}
 										className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
 									>
 										Contact Support
 									</button>
 								)}
 							</>
-						)}
+						{/* )} */}
 						<button className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold">
 							Buy Again
 						</button>
