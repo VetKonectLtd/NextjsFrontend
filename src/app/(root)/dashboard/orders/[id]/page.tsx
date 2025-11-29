@@ -65,16 +65,16 @@ export default function OrderDetailsPage({
 
 	// Tracking steps in correct chronological order
 	const progressSteps = [
-		"payment_initiated",
-		"pending_confirmation",
-		"processing",
-		"in_transit",
-		"delivered",
+		"Payment_Initiated",
+		"Pending_Confirmation",
+		"Processing",
+		"In_Transit",
+		"Delivered",
 		"delivery_confirmed",
 	];
 
 	// Map tracking_status → index
-	const trackingStatus = order?.tracking_status ?? "payment_initiated";
+	const trackingStatus = product.status ?? "payment_initiated";
 	const currentStep = progressSteps.indexOf(trackingStatus);
 
 	// ---- API Mutation Hooks ---- //
