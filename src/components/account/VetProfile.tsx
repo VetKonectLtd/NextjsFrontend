@@ -39,52 +39,27 @@ interface VetProfileProps {
 }
 
 const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
-  const router = useRouter();
   const [selectedAction, setSelectedAction] = useState<string | null>(
     "default"
   );
   const { useCurrentUser } = useAuthService();
-  const { data: user, refetch: refetchUser } = useCurrentUser(true);
+  const { data: user } = useCurrentUser(true);
 
   const currentUser = (user as any)?.profile;
-  const apiUser = currentUser?.user;
-
-  const {
-    hasRole,
-    requiresFormData,
-    useSwitchToVeterinarian,
-    useSwitchToParaprofessional,
-    useSwitchToVetClinic,
-    useSwitchToPetOwner,
-    useSwitchToLivestockFarmer,
-    useSwitchToVendor,
-  } = useRoleSwitchingService();
-
-  const petOwnerMutation = useSwitchToPetOwner();
-  const livestockFarmerMutation = useSwitchToLivestockFarmer();
-  const vendorMutation = useSwitchToVendor();
-
-  const [veterinarianModalOpen, setVeterinarianModalOpen] = useState(false);
-  const [paraprofessionalModalOpen, setParaprofessionalModalOpen] =
-    useState(false);
-  const [vetClinicModalOpen, setVetClinicModalOpen] = useState(false);
+  // console.log(currentUser);
 
   const [formData, setFormData] = useState({
-    email: apiUser?.email || "",
-    specialty: currentUser?.specialty || "Small Animal Medicine",
-    firstName: apiUser?.first_name || "",
-    lastName: apiUser?.last_name || "",
-    phoneNo: apiUser?.phone_num || "",
-    location: apiUser?.state
-      ? `${apiUser?.state}, ${apiUser?.country || ""}`
-      : "",
-    bio: currentUser?.bio || "",
-    isAvailable: currentUser?.availability || false,
+    email: "dr.amechi@vetkonnect.com",
+    specialty: "Small Animal Medicine",
+    firstName: "Amechi",
+    lastName: "Anayor",
+    phoneNo: "+234 801 234 5678",
+    location: "Lagos, Nigeria",
+    bio: "Experienced veterinarian specializing in small animal medicine with over 10 years of practice.",
+    isAvailable: true,
   });
 
-  const [profileImage, setProfileImage] = useState(
-    currentUser?.profile || UserIconPng
-  );
+  const [profileImage, setProfileImage] = useState("/api/placeholder/150/150");
   const [coverImage, setCoverImage] = useState("/api/placeholder/400/200");
 
   const specialties = [
@@ -98,247 +73,16 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
     "Dermatology",
   ];
 
-  // Role switching logic using normalized enums
-  const normalizeRole = (raw: string): string => {
-    const r = (raw || "").toLowerCase();
-    const map: Record<string, string> = {
-      veterinarian: "vertinary_doctor",
-      vet_doctor: "vertinary_doctor",
-      vertinary_doctor: "vertinary_doctor",
-      veterinary_doctor: "vertinary_doctor",
-      "veterinary doctor": "vertinary_doctor",
-      paraprofessional: "vertinary_paraprofessional",
-      "veterinary paraprofessional": "vertinary_paraprofessional",
-      vertinary_paraprofessional: "vertinary_paraprofessional",
-      veterinary_paraprofessional: "vertinary_paraprofessional",
-      vet_clinic: "vertinary_clinic",
-      clinic: "vertinary_clinic",
-      "veterinary clinic": "vertinary_clinic",
-      veterinary_clinic: "vertinary_clinic",
-      vertinary_clinic: "vertinary_clinic",
-      vendor: "vendor",
-      pet_owner: "pet_owner",
-      "pet owner": "pet_owner",
-      livestock_farmer: "livestock_farmer",
-      "livestock farmer": "livestock_farmer",
-    };
-    return map[r] || r;
-  };
-
-  const activeRoleId: number | undefined = apiUser?.active_role_id;
-  const activeRoleName: string | undefined = (apiUser?.roles || [])?.find(
-    (r: any) => r?.pivot?.role_id === activeRoleId
-  )?.name;
-  const backendRole: string = normalizeRole(
-    activeRoleName || (user as any)?.role || ""
-  );
-  const allRoles = [
-    { key: "vertinary_doctor", label: "Veterinarian" },
-    { key: "vertinary_paraprofessional", label: "Paraprofessional" },
-    { key: "vertinary_clinic", label: "Vet Clinic" },
-    { key: "vendor", label: "Vendor" },
-    { key: "livestock_farmer", label: "Livestock Farmer" },
-    { key: "pet_owner", label: "Pet Owner" },
-  ];
-
-  const switchableRolesMap: Record<string, string[]> = {
-    vertinary_doctor: ["vendor", "vertinary_clinic"],
-    vertinary_paraprofessional: [
-      "vertinary_doctor",
-      "vertinary_clinic",
-      "vendor",
-    ],
-    pet_owner: allRoles.map((r) => r.key),
-    vendor: [
-      "vertinary_clinic",
-      "vertinary_doctor",
-      "vertinary_paraprofessional",
-    ],
-    livestock_farmer: allRoles.map((r) => r.key),
-    vertinary_clinic: allRoles.map((r) => r.key),
-  };
-
-  const switchable = useMemo(() => {
-    const list = switchableRolesMap[backendRole] || [];
-    return allRoles.filter((r) => list.includes(r.key));
-  }, [backendRole]);
-
-  // Robust local role check using normalized names from backend (profile.user.roles)
-  const userHasRoleNormalized = (roleKey: string) => {
-    const roles: Array<{ name: string }> = ((apiUser as any)?.roles ||
-      []) as any;
-    const normalize = (raw: string) => normalizeRole(raw);
-    const target = normalizeRole(roleKey);
-    return roles.some((r) => normalize(r.name) === target);
-  };
-
-  const [showSwitcher, setShowSwitcher] = useState(false);
-  const [targetRole, setTargetRole] = useState<string>(backendRole);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Prepare mutations upfront to avoid conditional hook calls
-  const veterinarianMutation = useSwitchToVeterinarian();
-  const paraprofessionalMutation = useSwitchToParaprofessional();
-  const vetClinicMutation = useSwitchToVetClinic();
-
-  const handleSwitchProfile = (roleKey: string) => {
-    setTargetRole(roleKey);
-
-    // Check if user already has this role (normalized against backend names)
-    const userHasRole = userHasRoleNormalized(roleKey);
-
-    if (userHasRole) {
-      // Role exists: per requirement, call same POST endpoint without payload
-      switch (roleKey) {
-        case "vertinary_doctor":
-          veterinarianMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              router.refresh();
-            },
-          });
-          return;
-        case "vertinary_paraprofessional":
-          paraprofessionalMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              router.refresh();
-            },
-          });
-          return;
-        case "vertinary_clinic":
-          vetClinicMutation.mutate({} as any, {
-            onSuccess: () => {
-              refetchUser();
-              setShowSwitcher(true);
-              router.refresh();
-            },
-          });
-          return;
-        case "pet_owner":
-          petOwnerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                router.refresh();
-              },
-            }
-          );
-          return;
-        case "livestock_farmer":
-          livestockFarmerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                router.refresh();
-              },
-            }
-          );
-          return;
-        case "vendor":
-          vendorMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(true);
-                router.refresh();
-              },
-            }
-          );
-          return;
-      }
-    }
-
-    // Role doesn't exist, need to create it
-    if (requiresFormData(roleKey)) {
-      // Show modal for roles that need form data
-      switch (roleKey) {
-        case "vertinary_doctor":
-          setVeterinarianModalOpen(true);
-          break;
-        case "vertinary_paraprofessional":
-          setParaprofessionalModalOpen(true);
-          break;
-        case "vertinary_clinic":
-          setVetClinicModalOpen(true);
-          break;
-      }
-    } else {
-      // Call API directly for roles without form data
-      switch (roleKey) {
-        case "pet_owner":
-          petOwnerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                refetchUser();
-                setShowSwitcher(false);
-                router.refresh();
-              },
-            }
-          );
-          break;
-        case "livestock_farmer":
-          livestockFarmerMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                setShowSwitcher(false);
-                router.refresh();
-              },
-            }
-          );
-          break;
-        case "vendor":
-          vendorMutation.mutate(
-            {},
-            {
-              onSuccess: () => {
-                setShowSwitcher(false);
-                router.refresh();
-              },
-            }
-          );
-          break;
-      }
-    }
-  };
-
-  const handleModalSuccess = () => {
-    setShowSwitcher(false);
-    router.refresh();
-  };
-
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? switchable.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === switchable.length - 1 ? 0 : prev + 1));
-  };
-
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleContact = (id: string, type: string) => {
     setSelectedAction(type);
-    if (type === "switch-profile") {
-      setShowSwitcher(true);
-    } else {
-      setShowSwitcher(false);
-    }
   };
 
   const currentUsers = {
-    id: apiUser?.id?.toString() || "",
+    id: "1",
     name: `${formData.firstName} ${formData.lastName}`,
     email: formData.email,
     phone: formData.phoneNo,
@@ -513,12 +257,11 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
             <div className="relative">
               <div className="w-24 h-24 rounded-full border-4 border-green-500 overflow-hidden bg-white">
                 <Image
-                  src={profileImage}
-                  alt={`${formData.firstName} ${formData.lastName}`}
+                  src={currentUser?.profile || DEFAULT_AVATAR}
+                  alt={currentUser?.user.first_name}
                   width={96}
                   height={96}
                   className="w-full h-full object-cover"
-                  onError={() => setProfileImage(UserIconPng)}
                 />
               </div>
               {/* Online Status */}
@@ -653,118 +396,13 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
             </button>
           </div>
 
-          {/* Switcher Panel - Carousel */}
-          {showSwitcher && switchable.length > 0 && (
-            <div className="mt-6 flex flex-col items-center">
-              {(() => {
-                const role = switchable[currentIndex];
-                const isCurrent = role.key === backendRole;
-                const isTarget = role.key === targetRole;
-                return (
-                  <div className="w-full max-w-sm">
-                    <div className={` flex flex-col items-center text-center `}>
-                      <div
-                        className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${isCurrent ? "ring-4 ring-green-500 ring-opacity-30" : "ring-2 ring-gray-200"} bg-gray-100`}
-                      >
-                        <Image
-                          src={UserIconPng}
-                          alt={role.label}
-                          width={48}
-                          height={48}
-                        />
-                      </div>
-                      <h3 className="font-bold text-lg mb-2 text-[#1D2432]">
-                        {role.label}
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-6">
-                        {isCurrent
-                          ? `You are currently signed in as a '${role.label}'`
-                          : `Kindly click on the select button to switch to ${role.label} account`}
-                      </p>
-                      <button
-                        type="button"
-                        disabled={isCurrent}
-                        onClick={() => handleSwitchProfile(role.key)}
-                        className={`w-full py-3 text-base font-medium rounded-xl border-2 transition-colors ${isCurrent ? "bg-white text-green-600 border-green-500 cursor-default" : "bg-white text-gray-900 hover:bg-gray-50 border-gray-900"}`}
-                      >
-                        {isCurrent ? "Selected" : "Select"}
-                      </button>
-                    </div>
-
-                    {/* Carousel Dots */}
-                    <div className="flex justify-center items-center gap-2 mt-6">
-                      {switchable.map((_, idx) => (
-                        <div
-                          key={idx}
-                          className={`h-2 rounded-full transition-all ${idx === currentIndex ? "w-8 bg-gray-900" : "w-2 bg-gray-300"}`}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Carousel Navigation */}
-                    <div className="flex justify-center items-center gap-4 mt-6">
-                      <button
-                        type="button"
-                        onClick={handlePrevious}
-                        className="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                        aria-label="Previous profile"
-                      >
-                        <ChevronLeft className="w-5 h-5 text-gray-600" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleNext}
-                        className="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                        aria-label="Next profile"
-                      >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7.5 15L12.5 10L7.5 5"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          )}
-          {!showSwitcher && (
-            <AccountAction
-              selectedUser={currentUser}
-              selectedAction={selectedAction}
-              accountType="veterinarian"
-            />
-          )}
+          <AccountAction
+            selectedUser={currentUser}
+            selectedAction={selectedAction}
+            accountType="veterinarian"
+          />
         </div>
       </div>
-
-      {/* Role Switching Modals */}
-      <VeterinarianSwitchModal
-        open={veterinarianModalOpen}
-        onClose={() => setVeterinarianModalOpen(false)}
-        onSuccess={handleModalSuccess}
-      />
-      <ParaprofessionalSwitchModal
-        open={paraprofessionalModalOpen}
-        onClose={() => setParaprofessionalModalOpen(false)}
-        onSuccess={handleModalSuccess}
-      />
-      <VetClinicSwitchModal
-        open={vetClinicModalOpen}
-        onClose={() => setVetClinicModalOpen(false)}
-        onSuccess={handleModalSuccess}
-      />
     </div>
   );
 };
