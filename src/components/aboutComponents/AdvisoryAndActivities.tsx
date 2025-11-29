@@ -5,7 +5,6 @@ import {
 	Activity1,
 	Activity2,
 	Activity3,
-	Dr_Moses,
 	Gani,
 	Koyode,
 	Moses,
@@ -15,7 +14,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CurvedImage from "./CurvedImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -63,15 +62,32 @@ const activities = [
 ];
 
 export default function AdvisoryAndActivities() {
-	const [currentIndex, setCurrentIndex] = useState(0);
+	const swiperRef = useRef<any>(null);
+	const [isMobile, setIsMobile] = useState(false);
 
-	const handleNext = () => {
-		setCurrentIndex((prev) => (prev + 1) % activities.length);
-	};
+	useEffect(() => {
+		const handleResize = () => setIsMobile(window.innerWidth < 768);
+		handleResize();
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
 
-	const handlePrev = () => {
-		setCurrentIndex((prev) => (prev === 0 ? activities.length - 1 : prev - 1));
-	};
+	// Start/stop autoplay whenever screen size changes
+	useEffect(() => {
+		if (!swiperRef.current) return;
+		const swiper = swiperRef.current.swiper;
+		if (isMobile) {
+			swiper.params.autoplay = {
+				delay: 5000,
+				disableOnInteraction: false,
+			};
+			swiper.autoplay.start();
+		} else {
+			swiper.autoplay.stop();
+		}
+	}, [isMobile]);
+
+	
 
 	return (
 		<div className="w-full py-10">
@@ -81,19 +97,13 @@ export default function AdvisoryAndActivities() {
 
 				<div className="w-11/12 m-auto">
 					<Swiper
+						ref={swiperRef}
 						modules={[Autoplay]}
 						spaceBetween={10}
+						slidesPerView={1.5}
 						breakpoints={{
-							0: {
-								slidesPerView: 1.5,
-								autoplay: {
-									delay: 5000,
-									disableOnInteraction: false,
-								},
-							},
 							768: {
 								slidesPerView: 4,
-								autoplay: false,
 							},
 						}}
 					>
