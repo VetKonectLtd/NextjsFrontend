@@ -20,6 +20,7 @@ export const useOrderService = () => {
 			staleTime: 0,
 		});
 	};
+	
 
 
 	const useGetMerchantOrder = (enabled: boolean = false, page: number = 1) => {
@@ -54,6 +55,18 @@ export const useOrderService = () => {
 		});
 	};
 
+	const useTrackOrder = (enabled: boolean = false, id: string) => {
+		return usePost<{ message: string }>(ORDER.ORDER_TRACTING(id), {
+			onSuccess: (response) => {
+				handleSuccess(response.message || "Successful");
+			},
+			onError: (error) => {
+				handleError(error.message || "failed");
+			},
+		});
+	};
+
+
 	const useConfirmOrder = (enabled: boolean = false, id: string) => {
 		return usePost<{ message: string }>(ORDER.CONFIRM_ORDER(id), {
 			onSuccess: (response) => {
@@ -85,5 +98,6 @@ export const useOrderService = () => {
 		useConfirmOrder,
 		useCompaintOrder,
 		useGetOrderById,
+		useTrackOrder
 	};
 };
