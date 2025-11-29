@@ -1,70 +1,345 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { 
-  ChevronLeft, 
-  Edit, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Share2, 
+import { useState, useMemo } from "react";
+import Image from "next/image";
+import {
+  ChevronLeft,
+  Edit,
+  Phone,
+  Mail,
+  MapPin,
+  Share2,
   UserPlus,
   Camera,
   ChevronDown,
   MessagesSquareIcon,
-  Star
-} from 'lucide-react';
-import { AuthBg } from '@/app/assets/images';
-import { AccountAction } from './';
-import SwitcherIcon from '@/app/assets/icons/switcher.svg';
+  Star,
+  Router,
+  ImageIcon,
+} from "lucide-react";
+import { AuthBg } from "@/app/assets/images";
+import { AccountAction } from "./";
+import SwitcherIcon from "@/app/assets/icons/switcher.svg";
+import UserIconPng from "@/app/assets/icons/user.png";
+import { useAuthService } from "@/services/authService";
+import { useRoleSwitchingService } from "@/services/roleSwitchingService";
+import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
+import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
+import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
+import { useRouter } from "next/navigation";
+// Media is handled inside AccountAction's built-in view
 
 interface AnimalOwnerProfileProps {
   isEditMode: boolean;
   onToggleEdit: () => void;
 }
 
-const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProps) => {
-  const [selectedAction, setSelectedAction] = useState<string | null>('default');
+const AnimalOwnerProfile = ({
+  isEditMode,
+  onToggleEdit,
+}: AnimalOwnerProfileProps) => {
+  const router = useRouter();
+  const [selectedAction, setSelectedAction] = useState<string | null>(
+    "default"
+  );
+  const { useCurrentUser } = useAuthService();
+  const { data: user, refetch: refetchUser } = useCurrentUser(true);
+  const apiProfile = (user as any)?.profile;
+  const apiUser = apiProfile?.user;
+
+  const {
+    hasRole,
+    requiresFormData,
+    useSwitchToVeterinarian,
+    useSwitchToParaprofessional,
+    useSwitchToVetClinic,
+    useSwitchToPetOwner,
+    useSwitchToLivestockFarmer,
+    useSwitchToVendor,
+  } = useRoleSwitchingService();
+
+  const petOwnerMutation = useSwitchToPetOwner();
+  const livestockFarmerMutation = useSwitchToLivestockFarmer();
+  const vendorMutation = useSwitchToVendor();
+
+  const [veterinarianModalOpen, setVeterinarianModalOpen] = useState(false);
+  const [paraprofessionalModalOpen, setParaprofessionalModalOpen] =
+    useState(false);
+  const [vetClinicModalOpen, setVetClinicModalOpen] = useState(false);
+
   const [formData, setFormData] = useState({
-    email: 'dolapo.adaba@vetkonnect.com',
-    firstName: 'Dolapo',
-    lastName: 'Adaba',
-    phoneNo: '+234 801 234 5678',
-    location: 'Lagos, Nigeria',
-    status: 'Available',
-    bio: 'Passionate animal owner with experience in livestock and pet care.'
+    email: apiUser?.email || "",
+    firstName: apiUser?.first_name || "",
+    lastName: apiUser?.last_name || "",
+    phoneNo: apiUser?.phone_num || "",
+    location: apiUser?.state
+      ? `${apiUser?.state}, ${apiUser?.country || ""}`
+      : "",
+    status: "Available",
+    bio: "",
   });
 
-  const [profileImage, setProfileImage] = useState('/api/placeholder/150/150');
-  const [coverImage, setCoverImage] = useState('/api/placeholder/400/200');
+  const [profileImage, setProfileImage] = useState(
+    apiProfile?.profile || UserIconPng
+  );
+  const [coverImage, setCoverImage] = useState("/api/placeholder/400/200");
 
-  const statusOptions = [
-    'Available',
-    'Busy',
-    'Away',
-    'Do not disturb'
+  const statusOptions = ["Available", "Busy", "Away", "Do not disturb"];
+
+  // Role switching logic
+  const normalizeRole = (raw: string): string => {
+    const r = (raw || "").toLowerCase();
+    const map: Record<string, string> = {
+      veterinarian: "vertinary_doctor",
+      vet_doctor: "vertinary_doctor",
+      vertinary_doctor: "vertinary_doctor",
+      veterinary_doctor: "vertinary_doctor",
+      "veterinary doctor": "vertinary_doctor",
+      paraprofessional: "vertinary_paraprofessional",
+      "veterinary paraprofessional": "vertinary_paraprofessional",
+      vertinary_paraprofessional: "vertinary_paraprofessional",
+      veterinary_paraprofessional: "vertinary_paraprofessional",
+      vet_clinic: "vertinary_clinic",
+      clinic: "vertinary_clinic",
+      "veterinary clinic": "vertinary_clinic",
+      veterinary_clinic: "vertinary_clinic",
+      vertinary_clinic: "vertinary_clinic",
+      vendor: "vendor",
+      pet_owner: "pet_owner",
+      animal_owner: "pet_owner",
+      "pet owner": "pet_owner",
+      livestock_farmer: "livestock_farmer",
+      "livestock farmer": "livestock_farmer",
+    };
+    return map[r] || r;
+  };
+
+  const backendRole: string = normalizeRole((user as any)?.role || "");
+  const allRoles = [
+    { key: "vertinary_doctor", label: "Veterinarian" },
+    { key: "vertinary_paraprofessional", label: "Paraprofessional" },
+    { key: "vertinary_clinic", label: "Vet Clinic" },
+    { key: "vendor", label: "Vendor" },
+    { key: "livestock_farmer", label: "Livestock Farmer" },
+    { key: "pet_owner", label: "Pet Owner" },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const switchableRolesMap: Record<string, string[]> = {
+    vertinary_doctor: ["vendor", "vertinary_clinic"],
+    vertinary_paraprofessional: [
+      "vertinary_doctor",
+      "vertinary_clinic",
+      "vendor",
+    ],
+    pet_owner: allRoles.map((r) => r.key),
+    vendor: [
+      "vertinary_clinic",
+      "vertinary_doctor",
+      "vertinary_paraprofessional",
+    ],
+    livestock_farmer: allRoles.map((r) => r.key),
+    vertinary_clinic: allRoles.map((r) => r.key),
+  };
+
+  const switchable = useMemo(() => {
+    const list = switchableRolesMap[backendRole] || [];
+    return allRoles.filter((r) => list.includes(r.key));
+  }, [backendRole]);
+
+  const [showSwitcher, setShowSwitcher] = useState(false);
+  const [targetRole, setTargetRole] = useState<string>(backendRole);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Prepare mutations for existing-role no-payload calls
+  const veterinarianMutation = useSwitchToVeterinarian();
+  const paraprofessionalMutation = useSwitchToParaprofessional();
+  const vetClinicMutation = useSwitchToVetClinic();
+
+  // Robust local role check using normalized names from backend (profile.user.roles)
+  const userHasRoleNormalized = (roleKey: string) => {
+    const roles: Array<{ name: string }> = ((apiUser as any)?.roles ||
+      []) as any;
+    const normalize = (raw: string) => normalizeRole(raw);
+    const target = normalizeRole(roleKey);
+    return roles.some((r) => normalize(r.name) === target);
+  };
+
+  const handleSwitchProfile = (roleKey: string) => {
+    setTargetRole(roleKey);
+
+    // Check if user already has this role
+    const userHasRole = userHasRoleNormalized(roleKey);
+
+    if (userHasRole) {
+      // Role exists: per requirement, call same POST endpoint without payload
+      switch (roleKey) {
+        case "vertinary_doctor":
+          veterinarianMutation.mutate({} as any, {
+            onSuccess: () => {
+              refetchUser();
+              setShowSwitcher(true);
+              // window.location.reload();
+              router.refresh();
+            },
+          });
+          return;
+        case "vertinary_paraprofessional":
+          paraprofessionalMutation.mutate({} as any, {
+            onSuccess: () => {
+              refetchUser();
+              setShowSwitcher(true);
+              // window.location.reload();
+              router.refresh();
+            },
+          });
+          return;
+        case "vertinary_clinic":
+          vetClinicMutation.mutate({} as any, {
+            onSuccess: () => {
+              refetchUser();
+              setShowSwitcher(true);
+              // window.location.reload();
+              router.refresh();
+            },
+          });
+          return;
+        case "pet_owner":
+          petOwnerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(true);
+                // window.location.reload();
+                router.refresh();
+              },
+            }
+          );
+          return;
+        case "livestock_farmer":
+          livestockFarmerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(true);
+                // window.location.reload();
+                router.refresh();
+              },
+            }
+          );
+          return;
+        case "vendor":
+          vendorMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(true);
+                // window.location.reload();
+                router.refresh();
+              },
+            }
+          );
+          return;
+      }
+    }
+
+    // Role doesn't exist, need to create it
+    if (requiresFormData(roleKey)) {
+      // Show modal for roles that need form data
+      switch (roleKey) {
+        case "vertinary_doctor":
+          setVeterinarianModalOpen(true);
+          break;
+        case "vertinary_paraprofessional":
+          setParaprofessionalModalOpen(true);
+          break;
+        case "vertinary_clinic":
+          setVetClinicModalOpen(true);
+          break;
+      }
+    } else {
+      // Call API directly for roles without form data
+      switch (roleKey) {
+        case "pet_owner":
+          petOwnerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(false);
+              },
+            }
+          );
+          break;
+        case "livestock_farmer":
+          livestockFarmerMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(false);
+              },
+            }
+          );
+          break;
+        case "vendor":
+          vendorMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                refetchUser();
+                setShowSwitcher(false);
+              },
+            }
+          );
+          break;
+      }
+    }
+  };
+
+  const handleModalSuccess = () => {
+    refetchUser();
+    setShowSwitcher(false);
+  };
+
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? switchable.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === switchable.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleContact = (id: string, type: string) => {
     setSelectedAction(type);
+    if (type === "switch-profile") {
+      setShowSwitcher(true);
+    } else {
+      setShowSwitcher(false);
+    }
   };
 
   const currentUser = {
-    id: '1',
+    id: apiUser?.id?.toString() || "",
     name: `${formData.firstName} ${formData.lastName}`,
     email: formData.email,
     phone: formData.phoneNo,
     location: formData.location,
-    type: 'animal_owner' as const
+    type: "animal_owner" as const,
   };
 
   const handleSave = () => {
@@ -76,7 +351,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
     return (
       <div className="w-full mx-auto">
         {/* Back Button */}
-        <button 
+        <button
           onClick={onToggleEdit}
           className="flex items-center text-sm mb-6 text-gray-600 hover:text-green-600 transition-colors"
         >
@@ -86,8 +361,12 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Account Details</h1>
-          <p className="text-gray-600">You can update your profile information by filling the field below</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            Account Details
+          </h1>
+          <p className="text-gray-600">
+            You can update your profile information by filling the field below
+          </p>
         </div>
 
         {/* Form */}
@@ -191,7 +470,9 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
             <p className="text-gray-600 mb-1">Add Image</p>
           </div>
-          <p className="text-sm text-gray-500 text-center">Add profile page image</p>
+          <p className="text-sm text-gray-500 text-center">
+            Add profile page image
+          </p>
 
           {/* Cover Image Upload */}
           <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors">
@@ -212,7 +493,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
           <ChevronLeft className="w-5 h-5 mr-1" />
           Back
         </button>
-        <button 
+        <button
           onClick={onToggleEdit}
           className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
         >
@@ -224,16 +505,17 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
       {/* Profile Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-4 md:mx-6">
         {/* Cover Image */}
-        <div 
+        <div
           style={{ backgroundImage: `url(${AuthBg.src})` }}
           className="h-32 bg-gray-100 bg-cover bg-center relative"
         >
           {/* Decorative pattern overlay */}
-          <div className="absolute inset-0 bg-white bg-opacity-10" 
-               style={{
-                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='2'/%3E%3Ccircle cx='27' cy='7' r='2'/%3E%3Ccircle cx='47' cy='7' r='2'/%3E%3Ccircle cx='7' cy='27' r='2'/%3E%3Ccircle cx='27' cy='27' r='2'/%3E%3Ccircle cx='47' cy='27' r='2'/%3E%3Ccircle cx='7' cy='47' r='2'/%3E%3Ccircle cx='27' cy='47' r='2'/%3E%3Ccircle cx='47' cy='47' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-               }}>
-          </div>
+          <div
+            className="absolute inset-0 bg-white bg-opacity-10"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='2'/%3E%3Ccircle cx='27' cy='7' r='2'/%3E%3Ccircle cx='47' cy='7' r='2'/%3E%3Ccircle cx='7' cy='27' r='2'/%3E%3Ccircle cx='27' cy='27' r='2'/%3E%3Ccircle cx='47' cy='27' r='2'/%3E%3Ccircle cx='7' cy='47' r='2'/%3E%3Ccircle cx='27' cy='47' r='2'/%3E%3Ccircle cx='47' cy='47' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
         </div>
 
         {/* Profile Content */}
@@ -248,6 +530,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
                   width={96}
                   height={96}
                   className="w-full h-full object-cover"
+                  onError={() => setProfileImage(UserIconPng)}
                 />
               </div>
             </div>
@@ -263,7 +546,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
           {/* Action Buttons */}
           <div className="flex w-full border-b pb-5 border-gray-225 justify-center items-center md:gap-3 gap-2">
             <button
-              onClick={() => handleContact('1', 'phone')}
+              onClick={() => handleContact("1", "phone")}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
@@ -275,7 +558,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             </button>
 
             <button
-              onClick={() => handleContact('1', 'message')}
+              onClick={() => handleContact("1", "message")}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
@@ -287,7 +570,19 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             </button>
 
             <button
-              onClick={() => handleContact('1', 'mail')}
+              onClick={() => handleContact("1", "media")}
+              className="flex flex-col justify-center items-center space-y-3 text-gray-500"
+            >
+              <span
+                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
+              >
+                <ImageIcon size={14} color="#1D2432" />
+              </span>
+              <span className="text-xs">Media</span>
+            </button>
+
+            <button
+              onClick={() => handleContact("1", "mail")}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
@@ -299,7 +594,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             </button>
 
             <button
-              onClick={() => handleContact('1', 'location')}
+              onClick={() => handleContact("1", "location")}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
@@ -311,7 +606,7 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             </button>
 
             <button
-              onClick={() => handleContact('1', 'share')}
+              onClick={() => handleContact("1", "share")}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
@@ -323,25 +618,135 @@ const AnimalOwnerProfile = ({ isEditMode, onToggleEdit }: AnimalOwnerProfileProp
             </button>
 
             <button
-              onClick={() => handleContact('1', 'switch-profile')}
+              onClick={() => handleContact("1", "switch-profile")}
               className="flex flex-col justify-center items-center space-y-3 text-gray-500"
             >
               <span
                 className={`bg-white border ${selectedAction == "switch-profile" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center`}
               >
-                <Image src={SwitcherIcon} alt="Switch profile" width={14} height={14} />
+                <Image
+                  src={SwitcherIcon}
+                  alt="Switch profile"
+                  width={14}
+                  height={14}
+                />
               </span>
               <span className="text-xs">Switch profile</span>
             </button>
           </div>
 
-          <AccountAction
-            selectedUser={currentUser}
-            selectedAction={selectedAction}
-            accountType="animal_owner"
-          />
+          {/* Switcher Panel - Carousel */}
+          {showSwitcher && switchable.length > 0 && (
+            <div className="mt-6 flex flex-col items-center">
+              {(() => {
+                const role = switchable[currentIndex];
+                const isCurrent = role.key === backendRole;
+                const isTarget = role.key === targetRole;
+                return (
+                  <div className="w-full max-w-sm">
+                    <div className={` flex flex-col items-center text-center `}>
+                      <div
+                        className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${isCurrent ? "ring-4 ring-green-500 ring-opacity-30" : "ring-2 ring-gray-200"} bg-gray-100`}
+                      >
+                        <Image
+                          src={UserIconPng}
+                          alt={role.label}
+                          width={48}
+                          height={48}
+                        />
+                      </div>
+                      <h3 className="font-bold text-lg mb-2 text-[#1D2432]">
+                        {role.label}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-6">
+                        {isCurrent
+                          ? `You are currently signed in as a '${role.label}'`
+                          : `Kindly click on the select button to switch to ${role.label} account`}
+                      </p>
+                      <button
+                        type="button"
+                        disabled={isCurrent}
+                        onClick={() => handleSwitchProfile(role.key)}
+                        className={`w-full py-3 text-base font-medium rounded-xl border-2 transition-colors ${isCurrent ? "bg-white text-green-600 border-green-500 cursor-default" : "bg-white text-gray-900 hover:bg-gray-50 border-gray-900"}`}
+                      >
+                        {isCurrent ? "Selected" : "Select"}
+                      </button>
+                    </div>
+
+                    {/* Carousel Dots */}
+                    <div className="flex justify-center items-center gap-2 mt-6">
+                      {switchable.map((_, idx) => (
+                        <div
+                          key={idx}
+                          className={`h-2 rounded-full transition-all ${idx === currentIndex ? "w-8 bg-gray-900" : "w-2 bg-gray-300"}`}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Carousel Navigation */}
+                    <div className="flex justify-center items-center gap-4 mt-6">
+                      <button
+                        type="button"
+                        onClick={handlePrevious}
+                        className="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        aria-label="Previous profile"
+                      >
+                        <ChevronLeft className="w-5 h-5 text-gray-600" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        className="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        aria-label="Next profile"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7.5 15L12.5 10L7.5 5"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+          {!showSwitcher && (
+            <AccountAction
+              selectedUser={apiProfile}
+              selectedAction={selectedAction}
+              accountType="animal_owner"
+            />
+          )}
         </div>
       </div>
+
+      {/* Role Switching Modals */}
+      <VeterinarianSwitchModal
+        open={veterinarianModalOpen}
+        onClose={() => setVeterinarianModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
+      <ParaprofessionalSwitchModal
+        open={paraprofessionalModalOpen}
+        onClose={() => setParaprofessionalModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
+      <VetClinicSwitchModal
+        open={vetClinicModalOpen}
+        onClose={() => setVetClinicModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
     </div>
   );
 };
