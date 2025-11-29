@@ -25,9 +25,9 @@ class ApiClient {
 		const isFormData = options.body instanceof FormData;
 
 		const config: RequestInit = {
+			credentials: "include",
 			headers: {
 				Accept: "application/json",
-				credentials: "include",
 				...(isFormData ? {} : { "Content-Type": "application/json" }),
 				...options.headers,
 			},
