@@ -74,7 +74,8 @@ export default function OrderDetailsPage({
 	];
 
 	// Map tracking_status → index
-	const trackingStatus = order?.tracking_status ?? "payment_initiated";
+	const trackingStatus = order?.tracking_status;
+	console.log(trackingStatus)
 	const currentStep = progressSteps.indexOf(trackingStatus);
 
 	// ---- API Mutation Hooks ---- //
