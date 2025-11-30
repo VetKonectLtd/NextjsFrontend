@@ -213,7 +213,7 @@ export default function OrderDetailsPage({
 					{/* Progress Steps */}
 					<div>
 						<h3 className="font-semibold text-gray-800 text-sm mb-2">
-							Order Status: {trackingStatus.replace("_", " ")}
+							Order Status: {trackingStatus}
 						</h3>
 
 						<div className="relative w-full">
