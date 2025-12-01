@@ -59,6 +59,7 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 				name: fullName,
 				location: location,
 				role:vet.role,
+				specialty:vet.specialty,
 				image: vet.user.profile  || GENERIC_VET_IMAGE,
 				rating: averageRating,
 				totalRatings: totalRatings,
