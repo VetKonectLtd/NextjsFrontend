@@ -15,12 +15,15 @@ import {
 import { RecOverlay } from '@/app/assets/images';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
 
+// Generic veterinarian placeholder image URL from Unsplash
+const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+
+
 export interface VetProfileProps {
     id: string;
     name: string;
     location: string;
-    image: StaticImageData | string;
-    user?:any;
+    image: StaticImageData | string | any;
     rating: number;
     totalRatings: number;
     isAvailable: boolean;
@@ -39,7 +42,6 @@ const VetProfile: React.FC<VetProfileProps> = ({
     name,
     location,
     image,
-    user,
     rating,
     totalRatings,
     isAvailable,
@@ -50,7 +52,6 @@ const VetProfile: React.FC<VetProfileProps> = ({
     const renderStars = (rating: number) => {
         const hasRating = rating > 0;
 
-        console.log(user)
 
         return (
             <Image
@@ -79,7 +80,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             <div className="relative">
                 <div className="aspect-[4/3] relative">
                     <Image
-                        src={image}
+                        src={image?.profile_image_url || GENERIC_VET_IMAGE}
                         alt={name}
                         fill
                         className="object-cover"

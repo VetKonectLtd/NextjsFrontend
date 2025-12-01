@@ -43,14 +43,14 @@ const CustomerSupportPage = () => {
 						<div className="flex flex-col space-y-8">
 							<div className="flex flex-col">
 								<h3 className="font-bold text-lg text-gray-900">Address:</h3>
-								<p className="text-gray-700">
+								<p className="text-gray-700 w-3/4">
 									No. 20, Tony Ijohor way, Off Ugbokolo Street, 7th Avenue, High Level, Makurdi.
 								</p>
 							</div>
 
 							<div className="flex flex-col">
 								<h3 className="font-bold text-lg text-gray-900">Email:</h3>
-								<p className="text-gray-700">admin@vetkonect</p>
+								<p className="text-gray-700">admin@vetkonect.com</p>
 							</div>
 
 							<div className="flex flex-col">

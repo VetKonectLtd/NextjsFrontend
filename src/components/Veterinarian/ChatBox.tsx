@@ -8,6 +8,11 @@ import { directMessageService } from "@/services/directMessageService";
 import { useForm } from "react-hook-form";
 import { MessageFormData } from "@/types";
 
+
+// Generic veterinarian placeholder image URL from Unsplash
+const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+
+
 const ChatBox = ({ selectedVet }: any) => {
 	const [showEmoji, setShowEmoji] = useState(false);
 	const [previews, setPreviews] = useState<string[]>([]);
@@ -75,7 +80,7 @@ const ChatBox = ({ selectedVet }: any) => {
 				<div className="flex w-full items-center gap-2">
 					<div className="w-7 h-7 rounded-full border border-gray-225 overflow-hidden">
 						<Image
-							src={selectedVet?.image || "/default-vet.png"}
+							src={selectedVet?.image.profile_image_url || GENERIC_VET_IMAGE}
 							alt={selectedVet?.name || "Vet"}
 							width={40}
 							height={40}

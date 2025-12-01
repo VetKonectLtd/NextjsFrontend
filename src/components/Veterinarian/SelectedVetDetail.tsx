@@ -15,6 +15,10 @@ import { VetProfileProps } from "../shared/VetProfile";
 import VetAccount from "./VetAction";
 import { Bg22, StarEmpty, StarFill } from "@/app/assets/icons";
 
+// Generic veterinarian placeholder image URL from Unsplash
+const GENERIC_VET_IMAGE =
+	"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+
 interface VeterinarianProps {
 	handleContact?: (
 		id: string,
@@ -44,6 +48,8 @@ const SelectedVet = ({
 		);
 	};
 
+	console.log(selectedVet?.image.cover_page_image_url);
+
 	return (
 		<>
 			{selectedVet && (
@@ -60,11 +66,17 @@ const SelectedVet = ({
 
 					<div className="lg:col-span-2 mb-4 shadow-md border rounded-2xl border-gray-225 bg-white">
 						<div
-							style={{ backgroundImage: `url(${Bg22.src})` }}
+							style={{
+								backgroundImage: `url(${
+									selectedVet?.image?.cover_page_image_url
+										? selectedVet.image.cover_page_image_url
+										: Bg22.src
+								})`,
+							}}
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">
-								<button 
+								<button
 									onClick={() => setSelectedVet(null)}
 									className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2 hover:bg-gray-50 transition-colors"
 									aria-label="Close profile"
@@ -78,7 +90,9 @@ const SelectedVet = ({
 							<div className="flex relative">
 								<div className="w-24 h-24 rounded-full border-4 border-green-50 overflow-hidden">
 									<Image
-										src={selectedVet.image}
+										src={
+											selectedVet.image.profile_image_url || GENERIC_VET_IMAGE
+										}
 										alt={selectedVet.name}
 										width={150}
 										height={150}
