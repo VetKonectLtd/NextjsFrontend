@@ -20,6 +20,7 @@ export interface VetProfileProps {
     name: string;
     location: string;
     image: StaticImageData | string;
+    user?:any;
     rating: number;
     totalRatings: number;
     isAvailable: boolean;
@@ -38,6 +39,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
     name,
     location,
     image,
+    user,
     rating,
     totalRatings,
     isAvailable,
@@ -47,6 +49,8 @@ const VetProfile: React.FC<VetProfileProps> = ({
 }) => {
     const renderStars = (rating: number) => {
         const hasRating = rating > 0;
+
+        console.log(user)
 
         return (
             <Image
