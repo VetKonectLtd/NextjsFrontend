@@ -78,7 +78,7 @@ const ProductCard = ({
 						<span className="text-white text-xs font-medium">{average_rating} of 5</span>
 					</span>
 					<span className="text-lg font-bold text-white">
-						${Number(price)?.toFixed(2) || '0.00'}
+						₦{Number(price)?.toFixed(2) || '0.00'}
 					</span>
 				</div>
 			</div>
