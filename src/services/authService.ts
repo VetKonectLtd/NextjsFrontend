@@ -66,7 +66,7 @@ export const useAuthService = () => {
 	// Update profile (expects FormData or JSON depending on caller)
 	const useUpdateProfile = () => {
 		return usePost<{ message: string }, FormData | Record<string, any>>(
-			USER_ENDPOINTS.UPDATE_PROFILE,
+			AUTH_ENDPOINTS.UPDATE_PROFILE,
 			{
 				onSuccess: (response: any) => {
 					handleSuccess(response.message || "Profile updated successfully!");
