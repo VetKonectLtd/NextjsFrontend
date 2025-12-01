@@ -25,24 +25,24 @@ const advisors = [
 	{
 		name: "Tayo Olosunde",
 		image: Tayo.src,
-		linkedin: "https://linkedin.com/in/johndoe",
+		linkedin: "https://www.linkedin.com/in/tayo-olosunde-51b4021b/",
 	},
 	{
 		name: "Sarah Lee Wolfe",
 		image: Koyode,
-		linkedin: "https://linkedin.com/in/janesmith",
+		linkedin: "https://www.linkedin.com/in/sara-lee-wolfe-garc%C3%ADa-01213266/",
 	},
 
 	{
 		name: "Dr. Moses Arokoyo",
 		image: Moses.src,
-		linkedin: "https://linkedin.com/in/janesmith",
+		linkedin: "https://www.linkedin.com/in/moses-arokoyo-6587b7172/",
 	},
 
 	{
 		name: "Dr. Gani Enahoro",
 		image: Gani.src,
-		linkedin: "https://linkedin.com/in/janesmith",
+		linkedin: "https://www.linkedin.com/in/dr-gani-enahoro-79001b21/",
 	},
 ];
 
