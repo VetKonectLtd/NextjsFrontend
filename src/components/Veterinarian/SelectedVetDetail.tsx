@@ -48,8 +48,6 @@ const SelectedVet = ({
 		);
 	};
 
-	console.log(selectedVet?.image.cover_page_image_url);
-
 	return (
 		<>
 			{selectedVet && (

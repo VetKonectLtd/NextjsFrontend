@@ -53,7 +53,6 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 				title: chat.title,
 				visibility: chat.visibility,
 				content: chat.content,
-				image: undefined,
 			});
 			setPreview(chat.image_url || null);
 		}
