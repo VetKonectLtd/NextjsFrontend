@@ -12,6 +12,7 @@ export const AUTH_ENDPOINTS = {
 	RESENDVERIFICATION: "/v3/resendVerificationEmail",
 	ME: "/me",
 	GET_PROFILE: "/v3/get-profile",
+	UPDATE_PROFILE: "/v3/update-profile",
 	FORGOT_PASSWORD: "/v3/reset-mail",
 	RESET_PASSWORD: "/v3/reset-password",
 } as const;

@@ -52,7 +52,7 @@ const ChatBox = ({ selectedClinic }: any) => {
 					</div>
 					<div className="flex items-start text-left flex-col text-gray-55">
 						<p className="text-sm font-semibold">{selectedClinic?.name}</p>
-						<p className="text-xs">Veterinarian</p>
+						<p className="text-xs">{selectedClinic?.role}</p>
 					</div>
 				</div>
 

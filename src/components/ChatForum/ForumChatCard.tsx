@@ -143,6 +143,7 @@ const ForumChatCard = () => {
 		});
 	};
 
+
 	return (
 		<div>
 			{/* Search Bar */}

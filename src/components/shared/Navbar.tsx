@@ -212,7 +212,7 @@ const Navbar = () => {
 											height={20}
 										/>
 										{/* Notification Badge */}
-										{unreadCount < 1 && (
+										{unreadCount >= 1 && (
 											<span className="absolute -top-1 -right-1 w-6 h-6 p-2 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
 												{unreadCount}
 											</span>

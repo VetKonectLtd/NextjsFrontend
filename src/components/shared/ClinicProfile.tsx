@@ -18,6 +18,7 @@ import { MessageCircle, Phone, Mail } from 'lucide-react';
 export interface ClinicProfileProps {
     id: string;
     name: string;
+    name_of_clinic?:string;
     location: string;
     image: StaticImageData | string;
     rating: number;
@@ -25,6 +26,8 @@ export interface ClinicProfileProps {
     isAvailable: boolean;
     isVerified?: boolean;
     email?: string;
+    specialty:string;
+    role?:string;
     phone?: string;
     userId?: string;
     onViewProfile?: (id: string) => void;

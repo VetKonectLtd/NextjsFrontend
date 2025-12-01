@@ -27,6 +27,7 @@ export default function ChatList({
 		);
 	}, [searchTerm, messages]);
 
+	// console.log(filteredMessages)
 	return (
 		<div
 			className={`

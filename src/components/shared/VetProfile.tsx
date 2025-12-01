@@ -25,6 +25,7 @@ export interface VetProfileProps {
     location: string;
     image: StaticImageData | string | any;
     rating: number;
+    specialty?:string;
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;

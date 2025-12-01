@@ -118,18 +118,18 @@ const SelectedVet = ({
 
 							<div className="flex py-6 w-72 m-auto flex-wrap gap-2 mb-4">
 								<div className="flex flex-wrap gap-2">
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Small Animal Medicine
-									</span>
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Avian Medicine
-									</span>
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Ruminant medicine
-									</span>
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Wildlife medicine
-									</span>
+									{selectedVet?.specialty
+										?.split(",")
+										.map((item) => item.trim())
+										.filter((item) => item.length > 0)
+										.map((spec, index) => (
+											<span
+												key={index}
+												className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full"
+											>
+												{spec}
+											</span>
+										))}
 								</div>
 							</div>
 

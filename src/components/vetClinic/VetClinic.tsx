@@ -25,26 +25,26 @@ const VetClinic: React.FC<VetClinicProps> = () => {
     const { data: apiData, isLoading, error } = useGetAllVetClinic(currentPage);
     
     // Cast to actual response type since API returns data directly
-    const data = apiData as unknown as GetAllVetClinicResponse | undefined;
+    const data:any = apiData as unknown as GetAllVetClinicResponse | undefined;
 
     // Transform API data to ClinicProfile props
     const transformedClinics: ClinicProfileProps[] = useMemo(() => {
-        if (!data?.veterinary_clinics?.data) return [];
+        if (!data?.clinics?.data) return [];
 
         // Combine all loaded clinics
         const combinedClinics = currentPage === 1 
-            ? data.veterinary_clinics.data 
+            ? data.clinics.data 
             : [...allClinics, ...data.veterinary_clinics.data];
 
         // Update allClinics state
-        if (data.veterinary_clinics.data.length > 0 && currentPage > 1) {
+        if (data.clinics.data.length > 0 && currentPage > 1) {
             setAllClinics(combinedClinics);
         } else if (currentPage === 1) {
-            setAllClinics(data.veterinary_clinics.data);
+            setAllClinics(data.clinics.data);
         }
 
         return combinedClinics.map((clinic: VetClinicData) => {
-            const fullName = clinic.clinic_name;
+            const fullName = (clinic as any).name_of_clinic;
             const location = `${clinic.user.state}, ${clinic.user.country}`;
             
             // Calculate average rating from ratings array
@@ -57,7 +57,9 @@ const VetClinic: React.FC<VetClinicProps> = () => {
                 id: clinic.id.toString(),
                 name: fullName,
                 location: location,
-                image: clinic.user.profile || GENERIC_VET_IMAGE,
+                role:clinic.role,
+                specialty:clinic.specialty,
+                image: (clinic.user.profile as any).profile_image_url || GENERIC_VET_IMAGE,
                 rating: averageRating,
                 totalRatings: totalRatings,
                 isAvailable: clinic.availability === 1,
