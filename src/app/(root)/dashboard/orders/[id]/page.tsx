@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Warning } from "@/app/assets/icons";
 import { useOrderService } from "@/services/orderService";
 import { useAuthService } from "@/services/authService";
+import Link from "next/link";
 
 export default function OrderDetailsPage({
 	params,
@@ -17,7 +18,7 @@ export default function OrderDetailsPage({
 	const { useCurrentUser } = useAuthService();
 	const { useGetOrderById, useTrackOrder, useCancelOrder, useConfirmOrder } =
 		useOrderService();
-	const { data: ordersData, isLoading } = useGetOrderById(true, params?.id);
+	const { data: ordersData, refetch, isLoading } = useGetOrderById(true, params?.id);
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 
@@ -74,7 +75,6 @@ export default function OrderDetailsPage({
 
 	// Map tracking_status → index
 	const trackingStatus = order?.tracking_status;
-	console.log(order)
 	const currentStep = progressSteps.indexOf(trackingStatus);
 
 	// ---- API Mutation Hooks ---- //
@@ -85,7 +85,9 @@ export default function OrderDetailsPage({
 	const handleCancelOrder = async () => {
 		if (window.confirm(`Are you sure you want to cancel the order?`)) {
 			cancelOrderMutation.mutate({
-				onSuccess: () => {},
+				onSuccess: () => {
+					refetch()
+				},
 			});
 		}
 	};
@@ -93,7 +95,9 @@ export default function OrderDetailsPage({
 	const handleConfirmOrder = async () => {
 		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
 			confirmOrderMutation.mutate({
-				onSuccess: () => {},
+				onSuccess: () => {
+					refetch()
+				},
 			});
 		}
 	};
@@ -106,7 +110,9 @@ export default function OrderDetailsPage({
 		trackingMutation.mutate(
 			{ tracking_status: nextStatus },
 			{
-				onSuccess: () => {},
+				onSuccess: () => {
+					refetch()
+				},
 			},
 		);
 	};
@@ -326,9 +332,9 @@ export default function OrderDetailsPage({
 							</button>
 						)}
 
-						<button className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold">
+						<Link href="/dashboard/vet-vendor?category=Vendor" className="w-full bg-primary-400 text-white text-center rounded-lg py-2 font-semibold">
 							Buy Again
-						</button>
+						</Link>
 					</div>
 
 					<p className="text-xs text-gray-55 mt-6">
