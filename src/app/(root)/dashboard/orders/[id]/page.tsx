@@ -112,9 +112,7 @@ export default function OrderDetailsPage({
 	};
 
 	const isCompleted =
-	product.status?.toLowerCase() === "completed" ||
-	trackingStatus === "Delivered" ||
-	trackingStatus === "delivery_confirmed";
+	product.status?.toLowerCase() === "completed"
 
 
 	return (
@@ -254,7 +252,8 @@ export default function OrderDetailsPage({
 													: "text-gray-500"
 											}`}
 										>
-											{step.replace("_", " ")}
+											{step.replace(/_/g, " ")
+}
 										</span>
 									</div>
 								))}
@@ -265,12 +264,12 @@ export default function OrderDetailsPage({
 					{/* Warning */}
 					<div className="text-gray-55 flex items-center text-xs py-5 gap-3">
 						<Image src={Warning} alt="warning" width={20} height={20} />
-						Please make sure your customer clicks “Delivery confirmed”.
+						Please make sure you click “Delivery confirmed”.
 					</div>
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{!isCompleted && trackingStatus === "Delivered" && (
+						{isMerchant && !isCompleted && trackingStatus === "Delivered" && (
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
@@ -282,7 +281,7 @@ export default function OrderDetailsPage({
 							</button>
 						)}
 
-						{!isCompleted && trackingStatus === "Delivered" && (
+						{isBuyer && !isCompleted && trackingStatus === "Delivered" && (
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
@@ -290,7 +289,7 @@ export default function OrderDetailsPage({
 							>
 								{confirmOrderMutation.isPending
 									? "Processing..."
-									: "Mark as Delivered"}
+									: "Delivery confirmed"}
 							</button>
 						)}
 
@@ -299,7 +298,7 @@ export default function OrderDetailsPage({
 							<button
 								onClick={handleAdvanceStep}
 								disabled={trackingMutation.isPending}
-								className="w-full mt-4 bg-green-600 text-white rounded-lg py-2 font-semibold"
+								className="w-full mt-4 bg-primary-400 text-white rounded-lg py-2 font-semibold"
 							>
 								{trackingMutation.isPending
 									? "Updating..."
