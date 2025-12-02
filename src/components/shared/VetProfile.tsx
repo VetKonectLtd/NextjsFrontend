@@ -141,7 +141,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             <div className="p-4">
                 {/* Name */}
                 <h3 className="font-nunito font-semibold text-lg text-gray-900 mb-1">
-                    {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
+                    Dr. {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
                 </h3>
 
                 {/* Location */}

@@ -89,7 +89,6 @@ export default function DiseasePredictorPage() {
     };
 
     const onSubmit = (data: DiseasePredictorFormData) => {
-        console.log("Form submitted:", data);
 
         try {
             // Transform form data to API request format
@@ -101,7 +100,7 @@ export default function DiseasePredictorPage() {
             // Call the API
             diseasePredictorMutation.mutate(apiRequest, {
                 onSuccess: (response) => {
-                    console.log('Disease Predictor API Response:', response);
+                    // console.log('Disease Predictor API Response:', response);
                     
                     // Since API returns data directly (not wrapped), extract the actual response
                     const responseData = response?.data || response;
@@ -120,7 +119,7 @@ export default function DiseasePredictorPage() {
                             setShowResults(true);
                         } catch (formatError) {
                             console.error('Error formatting response:', formatError);
-                            console.log('Response data:', responseData);
+                            // console.log('Response data:', responseData);
                             
                             // Fallback: show raw response data
                             const fallbackData = responseData as any;

@@ -88,7 +88,7 @@ const ChatBox = ({ selectedVet }: any) => {
 						/>
 					</div>
 					<div className="flex items-start text-left flex-col text-gray-55">
-						<p className="text-sm font-semibold">{selectedVet?.name}</p>
+						<p className="text-sm font-semibold">Dr. {selectedVet?.name}</p>
 						<p className="text-xs">{selectedVet.role}</p>
 					</div>
 				</div>

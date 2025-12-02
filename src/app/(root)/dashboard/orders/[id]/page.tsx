@@ -67,15 +67,14 @@ export default function OrderDetailsPage({
 	const progressSteps = [
 		"Payment_Initiated",
 		"Pending_Confirmation",
-		"Processing",
+		"Processing_Product(s)",
 		"In_Transit",
 		"Delivered",
-		"delivery_confirmed",
 	];
 
 	// Map tracking_status → index
 	const trackingStatus = order?.tracking_status;
-	console.log(trackingStatus)
+	console.log(order)
 	const currentStep = progressSteps.indexOf(trackingStatus);
 
 	// ---- API Mutation Hooks ---- //
@@ -111,6 +110,12 @@ export default function OrderDetailsPage({
 			},
 		);
 	};
+
+	const isCompleted =
+	product.status?.toLowerCase() === "completed" ||
+	trackingStatus === "Delivered" ||
+	trackingStatus === "delivery_confirmed";
+
 
 	return (
 		<main className="w-11/12 m-auto min-h-screen">
@@ -265,7 +270,19 @@ export default function OrderDetailsPage({
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{isBuyer && trackingStatus === "delivered" && (
+						{!isCompleted && trackingStatus === "Delivered" && (
+							<button
+								onClick={handleConfirmOrder}
+								disabled={confirmOrderMutation.isPending}
+								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
+							>
+								{confirmOrderMutation.isPending
+									? "Processing..."
+									: "Mark as Delivered"}
+							</button>
+						)}
+
+						{!isCompleted && trackingStatus === "Delivered" && (
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
@@ -278,7 +295,7 @@ export default function OrderDetailsPage({
 						)}
 
 						{/* Merchant button */}
-						{isMerchant && currentStep < progressSteps.length - 1 && (
+						{isMerchant && !isCompleted && currentStep < progressSteps.length - 1 && (
 							<button
 								onClick={handleAdvanceStep}
 								disabled={trackingMutation.isPending}
@@ -291,7 +308,7 @@ export default function OrderDetailsPage({
 						)}
 
 						{/* Cancel Order (buyer only) */}
-						{isBuyer && !isCanceled && canCancel && (
+						{isBuyer && !isCompleted && !isCanceled && canCancel && (
 							<button
 								onClick={handleCancelOrder}
 								disabled={cancelOrderMutation.isPending}
@@ -304,7 +321,7 @@ export default function OrderDetailsPage({
 						)}
 
 						{/* Contact Support */}
-						{isBuyer && !canCancel && !isCanceled && (
+						{isBuyer && !isCompleted && !canCancel && !isCanceled && (
 							<button className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold">
 								Contact Support
 							</button>
