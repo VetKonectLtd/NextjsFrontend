@@ -111,7 +111,7 @@ const SelectedVet = ({
 
 							<div className="text-center">
 								<h1 className="mt-3 text-lg font-semibold">
-									{selectedVet.name}
+									Dr. {selectedVet.name}
 								</h1>
 								<p className="text-sm mt-2 text-gray-500">{selectedVet.role}</p>
 							</div>
