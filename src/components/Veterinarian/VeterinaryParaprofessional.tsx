@@ -22,7 +22,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ()
 	const [selectedAction, setSelectedAction] = useState<string>("default");
 
 	const { useGetAllVetParaprofessional } = useVeterinaryParaprofessionalService();
-	const { data: apiData, isLoading, error , refetch } = useGetAllVetParaprofessional(currentPage);
+	const { data: apiData, isLoading, error , refetch  } = useGetAllVetParaprofessional(currentPage);
 	
 	// Cast to actual response type since API returns data directly
 	const data = apiData as unknown as GetAllVetParaprofessionalResponse | undefined;

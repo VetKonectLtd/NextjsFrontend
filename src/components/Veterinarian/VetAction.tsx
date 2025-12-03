@@ -21,11 +21,13 @@ const VetAccount = ({ selectedVet, selectedAction, refetchData }: VeterinarianPr
 
 	const ratingMutation = useRating();
 
+	const userType = selectedVet?.role == "Veterinarian" ? "App\\Models\\VeterinaryDoctor" : "App\\Models\\VeterinaryParaprofessional";
+
 	const ratingChanged = (newRating: any) => {
 		ratingMutation.mutate(
 			{
 				rateable_id: selectedVet?.id,
-				rateable_type: "App\\Models\\VeterinaryDoctor",
+				rateable_type: userType,
 				rating: newRating,
 			},
 			{
