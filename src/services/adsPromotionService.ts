@@ -140,22 +140,12 @@ export const useAdsPromotionService = () => {
      * GET /v3/cancel-promotion/{id}/ad
      */
     const useCancelPromotionAd = (id: string) => {
-        const queryClient = useQueryClient();
-
+        // Use GET with manual triggering via refetch from the component
         return useGet<void>(
             ["cancelPromotionAd", id],
             ADS_PROMOTION.CANCEL_PROMOTION_AD(id),
             {
-                enabled: false, // Don't auto-fetch, only trigger manually
-                onSuccess: (response: any) => {
-                    handleSuccess(response.message || "Promotion cancelled successfully!");
-                    // Invalidate and refetch user promotions
-                    queryClient.invalidateQueries({ queryKey: ["userPromotions"] });
-                    queryClient.invalidateQueries({ queryKey: ["promotion", id] });
-                },
-                onError: (error) => {
-                    handleError(error.message || "Failed to cancel promotion");
-                },
+                enabled: false, // Don't auto-fetch; component will call refetch()
             },
         );
     };
