@@ -163,11 +163,11 @@ export default function GooglePlacesAutocomplete({
                 className={className}
             />
             {/* Debug info - remove in production */}
-            {process.env.NODE_ENV === "development" && (
+            {/* {process.env.NODE_ENV === "development" && (
                 <div className="text-xs text-gray-500 mt-1">
                     Ready: {isReady ? "Yes" : "No"}
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

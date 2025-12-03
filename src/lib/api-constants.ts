@@ -19,6 +19,7 @@ export const AUTH_ENDPOINTS = {
 
 // User endpoints
 export const USER_ENDPOINTS = {
+	ADD_PAYMENT_DETAILS: "/v3/merchant/paystack/connect",
 	PROFILE: "/users/profile",
 	COMPLETE_PROFILE: "/v3/complete-profile",
 	UPDATE_PROFILE: "/users/profile",
@@ -196,4 +197,7 @@ export const ORDER = {
 	CONFIRM_ORDER: (Id: string) => `/v3/orders/${Id}/confirm`,
 	CANCELLED_ORDER: (Id: string) => `/v3/orders/${Id}/cancel`,
 	ORDER_TRACTING: (Id:string) => `/v3/orders/${Id}/track`
+}
+export const RATING ={
+	RATING:"/v3/rate-entity"
 }

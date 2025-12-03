@@ -19,6 +19,7 @@ import ProductCard from "@/components/vet-vendor/ProductCard";
 import { usePaymentService } from "@/services/paymentService";
 import { useAuthService } from "@/services/authService";
 import { useProductService } from "@/services/productService";
+import ProductSkeleton from "@/components/shared/ProductSkeleton";
 
 export default function ProductDetailsPage({
 	params,
@@ -34,17 +35,19 @@ export default function ProductDetailsPage({
 	const user = useCurrentUser(true);
 	const userId = (user?.data as any)?.profile?.user_id;
 
-	const productData: any = useGetProductById(true, params.id);
-	const product = productData.data?.product;
-
-
-	const relatedProductsData = useGetRelatedProduct(true, params.id);
-
 	const orderPayment = useOrderPayment();
 	const paymentMutation = usePayment();
 
+	const productData: any = useGetProductById(true, params.id);
+	const product = productData.data?.product;
+	const relatedProductsData = useGetRelatedProduct(true, params.id);
 	const relatedProducts =
 		(relatedProductsData.data as Record<string, any>)?.products?.data || [];
+
+		console.log(product)
+	if (productData.isLoading) {
+		return <ProductSkeleton />;
+	}
 
 	const handleBack = () => {
 		router.back();
@@ -106,17 +109,17 @@ export default function ProductDetailsPage({
 		}
 	};
 
-	// const renderStars = (rating: number) => {
-	// 	return Array.from({ length: 5 }, (_, i) => (
-	// 		<Star
-	// 			key={i}
-	// 			size={14}
-	// 			className={
-	// 				i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-	// 			}
-	// 		/>
-	// 	));
-	// };
+	const renderStars = (rating: number) => {
+		return Array.from({ length: 5 }, (_, i) => (
+			<Star
+				key={i}
+				size={14}
+				className={
+					i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+				}
+			/>
+		));
+	};
 
 	return (
 		<div className="w-11/12 m-auto">
@@ -198,7 +201,7 @@ export default function ProductDetailsPage({
 
 						{/* Price */}
 						<div className="text-white text-xl font-bold">
-							${Number(product?.price).toFixed(2)}
+							₦ {Number(product?.price).toFixed(2)}
 						</div>
 					</div>
 				</div>
@@ -246,33 +249,39 @@ export default function ProductDetailsPage({
 				</div>
 
 				{/* Reviews */}
-				{/* <div className="mb-6">
+				<div className="mb-6">
 					<h3 className="text-base font-semibold text-gray-900 mb-3">
 						Reviews
 					</h3>
-					<div className="w-full overflow-x-scroll">
-						<div className="flex space-x-4 pb-2">
-							{product?.reviews.map((review) => (
-								<div
-									key={review.id}
-									className="flex-shrink-0 w-full bg-gray-50 rounded-lg p-4"
-								>
-									<div className="flex items-center justify-between mb-2">
-										<span className="font-medium text-gray-900">
-											{review.name}
-										</span>
-										<div className="flex items-center">
-											{renderStars(review.rating)}
+					{product?.ratings?.length === 0 ? (
+						<p className="text-sm text-gray-500">
+							No reviews yet. Be the first to leave a review!
+						</p>
+					) : (
+						<div className="w-full overflow-x-scroll">
+							<div className="flex space-x-4 pb-2">
+								{product?.ratings.map((review: any) => (
+									<div
+										key={review.id}
+										className="flex-shrink-0 w-full bg-gray-50 rounded-lg p-4"
+									>
+										<div className="flex items-center justify-between mb-2">
+											<span className="font-medium text-gray-900">
+												{review.name}
+											</span>
+											<div className="flex items-center">
+												{renderStars(review.rating)}
+											</div>
 										</div>
+										<p className="text-sm text-gray-600 leading-relaxed">
+											{review.comment}
+										</p>
 									</div>
-									<p className="text-sm text-gray-600 leading-relaxed">
-										{review.comment}
-									</p>
-								</div>
-							))}
+								))}
+							</div>
 						</div>
-					</div>
-				</div> */}
+					)}
+				</div>
 
 				{/* Tags */}
 				<div className="mb-6">
@@ -312,9 +321,16 @@ export default function ProductDetailsPage({
 
 				{/* Action Buttons */}
 				<div className="space-y-3 mb-8">
-					<button className="w-full py-3 bg-gray-100 text-gray-700 rounded-lg font-medium">
-						Available - ({product?.available_unit} Units)
-					</button>
+					{product?.available_unit == 0 ? (
+						<div className="flex items-center  rounded-lg  text-xs font-medium">
+							<span className="w-2 h-2  animate-pulse rounded-full bg-red-700 mr-2 inline-block" />
+							<span>Sold Out</span>
+						</div>
+					) : (
+						<button className="w-full py-3 bg-gray-100 text-gray-700 rounded-lg font-medium">
+							Available - ({product?.available_unit} Units)
+						</button>
+					)}
 					<button
 						onClick={handlePayment}
 						className="w-full py-3 bg-green-600 text-white rounded-lg font-medium"
@@ -344,7 +360,7 @@ export default function ProductDetailsPage({
 									average_rating={product.average_rating}
 									seller={product.seller}
 									location={product.location}
-									open={product.open}
+									availability={product.availability}
 									onViewProduct={(id) =>
 										router.push(`/dashboard/products/${id}`)
 									}
