@@ -51,6 +51,11 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
   const currentUser = (user as any)?.profile;
   // console.log(currentUser);
 
+  // Get the normalized backend role
+  const backendRole: RoleKey | string = normalizeRole(
+    (user as any)?.role || ""
+  );
+
   const [formData, setFormData] = useState({
     email: (currentUser?.user?.email as string) || "",
     specialty: (currentUser?.specialty as string) || "",
@@ -184,7 +189,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
                     {specialty}
                   </option>
                 ))}
-
               </select>
               <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
             </div>
@@ -453,19 +457,18 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {currentUser?.specialty && (
                 <span className="px-3 py-1 text-gray-700 rounded-full text-sm">
-                 
                   {currentUser?.specialty
-										?.split(",")
-										.map((item:any) => item.trim())
-										.filter((item:any) => item.length > 0)
-										.map((spec:any, index:any) => (
-											<span
-												key={index}
-												className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full"
-											>
-												{spec}
-											</span>
-										))}
+                    ?.split(",")
+                    .map((item: any) => item.trim())
+                    .filter((item: any) => item.length > 0)
+                    .map((spec: any, index: any) => (
+                      <span
+                        key={index}
+                        className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full"
+                      >
+                        {spec}
+                      </span>
+                    ))}
                 </span>
               )}
               <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
@@ -502,21 +505,29 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
               <span className="text-[10px] sm:text-xs text-center">Call</span>
             </button>
 
-            <button
-              onClick={() => handleContact("1", "media")}
-              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
-            >
-              <span
-                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+            {/* Media button - only show for specific roles */}
+            {(backendRole === ROLE.VETERINARIAN ||
+              backendRole === ROLE.PARAPROFESSIONAL ||
+              backendRole === ROLE.CLINIC ||
+              backendRole === ROLE.VENDOR) && (
+              <button
+                onClick={() => handleContact("1", "media")}
+                className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
               >
-                <ImageIcon
-                  size={14}
-                  color="#1D2432"
-                  className="sm:w-4 sm:h-4"
-                />
-              </span>
-              <span className="text-[10px] sm:text-xs text-center">Media</span>
-            </button>
+                <span
+                  className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+                >
+                  <ImageIcon
+                    size={14}
+                    color="#1D2432"
+                    className="sm:w-4 sm:h-4"
+                  />
+                </span>
+                <span className="text-[10px] sm:text-xs text-center">
+                  Media
+                </span>
+              </button>
+            )}
 
             <button
               onClick={() => handleContact("1", "mail")}
@@ -619,11 +630,13 @@ const VetSwitcher = ({ currentUser }: { currentUser: any }) => {
     useSwitchToPetOwner,
     useSwitchToLivestockFarmer,
     useSwitchToVendor,
+    useSwitchToOthers,
   } = useRoleSwitchingService();
 
   const petOwnerMutation = useSwitchToPetOwner();
   const livestockFarmerMutation = useSwitchToLivestockFarmer();
   const vendorMutation = useSwitchToVendor();
+  const othersMutation = useSwitchToOthers();
   const veterinarianMutation = useSwitchToVeterinarian();
   const paraprofessionalMutation = useSwitchToParaprofessional();
   const vetClinicMutation = useSwitchToVetClinic();
@@ -643,6 +656,7 @@ const VetSwitcher = ({ currentUser }: { currentUser: any }) => {
     [ROLE.VENDOR]: allRoles.map((r) => r.key as RoleKey),
     [ROLE.LIVESTOCK_FARMER]: allRoles.map((r) => r.key as RoleKey),
     [ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.OTHERS]: allRoles.map((r) => r.key as RoleKey),
   };
 
   const switchable = useMemo(() => {
@@ -730,6 +744,21 @@ const VetSwitcher = ({ currentUser }: { currentUser: any }) => {
       );
       return;
     }
+
+    if (normalized === ROLE.OTHERS) {
+      othersMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
+    }
+
     if (normalized === ROLE.CLINIC) {
       vetClinicMutation.mutate({} as any, {
         onSuccess: () => {
