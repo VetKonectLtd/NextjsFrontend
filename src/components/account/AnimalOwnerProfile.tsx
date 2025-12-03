@@ -60,11 +60,13 @@ const AnimalOwnerProfile = ({
     useSwitchToPetOwner,
     useSwitchToLivestockFarmer,
     useSwitchToVendor,
+    useSwitchToOthers,
   } = useRoleSwitchingService();
 
   const petOwnerMutation = useSwitchToPetOwner();
   const livestockFarmerMutation = useSwitchToLivestockFarmer();
   const vendorMutation = useSwitchToVendor();
+  const othersMutation = useSwitchToOthers();
 
   const [veterinarianModalOpen, setVeterinarianModalOpen] = useState(false);
   const [paraprofessionalModalOpen, setParaprofessionalModalOpen] =
@@ -106,6 +108,7 @@ const AnimalOwnerProfile = ({
     [ROLE.VENDOR]: allRoles.map((r) => r.key as RoleKey),
     [ROLE.LIVESTOCK_FARMER]: allRoles.map((r) => r.key as RoleKey),
     [ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
+    [ROLE.OTHERS]: allRoles.map((r) => r.key as RoleKey),
   };
 
   const switchable = useMemo(() => {
@@ -198,6 +201,21 @@ const AnimalOwnerProfile = ({
 
     if (normalized === ROLE.PET_OWNER) {
       petOwnerMutation.mutate(
+        {},
+        {
+          onSuccess: () => {
+            refetchUser();
+            setShowSwitcher(false);
+            setSwitchingLoading(false);
+          },
+          onError: () => setSwitchingLoading(false),
+        }
+      );
+      return;
+    }
+
+    if (normalized === ROLE.OTHERS) {
+      othersMutation.mutate(
         {},
         {
           onSuccess: () => {
@@ -633,21 +651,29 @@ const AnimalOwnerProfile = ({
               </span>
             </button>
 
-            <button
-              onClick={() => handleContact("1", "media")}
-              className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
-            >
-              <span
-                className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+            {/* Media button - only show for specific roles */}
+            {(backendRole === ROLE.VETERINARIAN ||
+              backendRole === ROLE.PARAPROFESSIONAL ||
+              backendRole === ROLE.CLINIC ||
+              backendRole === ROLE.VENDOR) && (
+              <button
+                onClick={() => handleContact("1", "media")}
+                className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
               >
-                <ImageIcon
-                  size={14}
-                  color="#1D2432"
-                  className="sm:w-4 sm:h-4"
-                />
-              </span>
-              <span className="text-[10px] sm:text-xs text-center">Media</span>
-            </button>
+                <span
+                  className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+                >
+                  <ImageIcon
+                    size={14}
+                    color="#1D2432"
+                    className="sm:w-4 sm:h-4"
+                  />
+                </span>
+                <span className="text-[10px] sm:text-xs text-center">
+                  Media
+                </span>
+              </button>
+            )}
 
             <button
               onClick={() => handleContact("1", "mail")}

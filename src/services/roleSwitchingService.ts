@@ -6,6 +6,7 @@ import {
     PET_OwNER_ENDPOINTS,
     LIVE_STOCK_ENDPOINTS,
     STORE,
+    OTHERS,
 } from "@/lib/api-constants";
 import { VetDoctor, VetClinic, VetParaprofessional } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
@@ -49,6 +50,7 @@ export const useRoleSwitchingService = () => {
             vendor: ["vendor", "Vendor"],
             livestock_farmer: ["livestock_farmer", "Livestock Farmer"],
             pet_owner: ["pet_owner", "Pet Owner"],
+            others: ["others", "Others", "other"],
         };
 
         const possibleNames = roleMap[roleKey] || [roleKey];
@@ -174,6 +176,21 @@ export const useRoleSwitchingService = () => {
         });
     };
 
+    // Others (no payload)
+    const useSwitchToOthers = () => {
+        return usePost(OTHERS.ADD_OTHERS, {
+            onSuccess: (response: any) => {
+                handleSuccess(
+                    response.message || "Others profile created successfully!"
+                );
+            },
+            onError: (error) => {
+                handleError(error.message || "Failed to create others profile");
+            },
+            invalidateQueries: [["currentUser"]],
+        });
+    };
+
     return {
         hasRole,
         requiresFormData,
@@ -183,5 +200,6 @@ export const useRoleSwitchingService = () => {
         useSwitchToPetOwner,
         useSwitchToLivestockFarmer,
         useSwitchToVendor,
+        useSwitchToOthers,
     };
 };

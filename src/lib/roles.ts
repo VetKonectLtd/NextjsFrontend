@@ -4,7 +4,8 @@ export type RoleKey =
     | "vertinary_clinic"
     | "vendor"
     | "livestock_farmer"
-    | "pet_owner";
+    | "pet_owner"
+    | "others";
 
 export const ROLE_LABELS: Record<RoleKey, string> = {
     vertinary_doctor: "Veterinarian",
@@ -13,6 +14,7 @@ export const ROLE_LABELS: Record<RoleKey, string> = {
     vendor: "Vendor",
     livestock_farmer: "Livestock Farmer",
     pet_owner: "Pet Owner",
+    others: "Others",
 };
 
 // Accept many backend spellings and normalize to RoleKey
@@ -42,6 +44,9 @@ const NORMALIZE_MAP: Record<string, RoleKey> = {
 
     livestock_farmer: "livestock_farmer",
     "livestock farmer": "livestock_farmer",
+
+    others: "others",
+    other: "others",
 };
 
 export const normalizeRole = (raw: string): RoleKey | (string & {}) => {
@@ -64,4 +69,5 @@ export const ROLE = {
     VENDOR: "vendor" as RoleKey,
     LIVESTOCK_FARMER: "livestock_farmer" as RoleKey,
     PET_OWNER: "pet_owner" as RoleKey,
+    OTHERS: "others" as RoleKey,
 } as const;

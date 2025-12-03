@@ -5,6 +5,9 @@ import { useAdsPromotionService } from "@/services/adsPromotionService";
 import Image from "next/image";
 import { Map } from "@/app/assets/icons/vet-vendor";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useHandleSuccess } from "@/lib/hooks/useToastHandlers";
+import ConfirmModal from "@/components/modals/ConfirmModal";
 
 interface AdCardProps {
   // promotion id (for cancellation)
@@ -34,12 +37,29 @@ const AdCard = ({
   status,
 }: AdCardProps) => {
   const [index, setIndex] = useState(0);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const handleSuccess = useHandleSuccess();
   const { useCancelPromotionAd } = useAdsPromotionService();
-  const { mutate: cancelPromotion, isLoading: cancelling } =
+  const { refetch: cancelPromotion, isFetching: cancelling } =
     useCancelPromotionAd(id);
 
   const nextImage = () => setIndex((prev) => (prev + 1) % images.length);
+
+  const handleCancelPromotion = async () => {
+    try {
+      const result = await cancelPromotion();
+      // Force refresh the promotions list immediately
+      queryClient.invalidateQueries({ queryKey: ["userPromotions"] });
+      // Show success toast locally to ensure user feedback
+      handleSuccess("Promotion cancelled successfully!");
+      setShowConfirmModal(false);
+      return result;
+    } catch (error) {
+      console.error("Failed to cancel promotion:", error);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -110,9 +130,7 @@ const AdCard = ({
               className="p-1.5 bg-white rounded-full shadow hover:bg-red-50 transition disabled:opacity-50"
               onClick={() => {
                 if (cancelling) return;
-                if (window.confirm("Cancel this promotion?")) {
-                  cancelPromotion();
-                }
+                setShowConfirmModal(true);
               }}
               disabled={cancelling || status === "expired"}
               aria-label="Cancel Promotion"
@@ -181,6 +199,20 @@ const AdCard = ({
           </span>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        open={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleCancelPromotion}
+        title="Cancel Promotion"
+        message={`Are you sure you want to cancel the promotion for "${title}"? This action cannot be undone.`}
+        confirmText="Yes, Cancel"
+        cancelText="Keep Promotion"
+        variant="destructive"
+        icon={<Trash2 className="w-6 h-6 text-red-500" />}
+        isLoading={cancelling}
+      />
     </div>
   );
 };
