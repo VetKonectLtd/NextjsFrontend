@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -47,12 +47,19 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 	const { useCurrentUser, useUpdateProfile } = useAuthService();
 	const { useAddPaymentDetails } = usePaymentService();
 	const paymentDetailsMutation = useAddPaymentDetails();
-	const { data: user, refetch: refetchUser } = useCurrentUser(true);
+
+	const { data: user, refetch: refetchUser, isLoading } = useCurrentUser(true);
 
 	const updateProfileMutation = useUpdateProfile();
 
 	const currentUser = (user as any)?.profile;
 	// console.log(currentUser);
+
+	// Get the normalized backend role
+	const backendRole: RoleKey | string = normalizeRole(
+		(user as any)?.role || "",
+	);
+
 
 	const [formData, setFormData] = useState({
 		email: (currentUser?.user?.email as string) || "",
@@ -104,16 +111,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		type: "veterinarian" as const,
 	};
 
-	const handleAddPaymentDetail = () => {
-		paymentDetailsMutation.mutate({
-			onSuccess: (data: any) => {
-				if (data?.authorization_url) {
-					window.location.href = data.authorization_url;
-				}
-			},
-		});
-	};
-
 	const handleSave = () => {
 		// Build FormData for the update endpoint (expects form-data)
 		const payload = new FormData();
@@ -146,6 +143,17 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 			},
 		});
 	};
+
+	const handleAddPaymentDetail = () => {
+		paymentDetailsMutation.mutate({
+			onSuccess: (data: any) => {
+				if (data?.authorization_url) {
+					window.location.href = data.authorization_url;
+				}
+			},
+		});
+	};
+
 
 	if (isEditMode) {
 		return (
@@ -484,14 +492,14 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 							</span>
 						</div>
 
-						{/* <div className="w-full flex justify-center mb-6">
+						{backendRole === ROLE.VENDOR && (
 							<button
+								className="w-1/3 font-medium m-auto rounded-lg my-3 bg-primary-400 py-2 text-white text-sm"
 								onClick={handleAddPaymentDetail}
-								className="w-1/2 py-2 bg-green-600 text-white rounded-lg font-medium"
 							>
-								Add Paystack details
+								Add Paystack Details
 							</button>
-						</div> */}
+					 )} 
 
 						{/* Availability */}
 						<div className="mb-6">
@@ -522,21 +530,29 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 							<span className="text-[10px] sm:text-xs text-center">Call</span>
 						</button>
 
-						<button
-							onClick={() => handleContact("1", "media")}
-							className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
-						>
-							<span
-								className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+						{/* Media button - only show for specific roles */}
+						{(backendRole === ROLE.VETERINARIAN ||
+							backendRole === ROLE.PARAPROFESSIONAL ||
+							backendRole === ROLE.CLINIC ||
+							backendRole === ROLE.VENDOR) && (
+							<button
+								onClick={() => handleContact("1", "media")}
+								className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
 							>
-								<ImageIcon
-									size={14}
-									color="#1D2432"
-									className="sm:w-4 sm:h-4"
-								/>
-							</span>
-							<span className="text-[10px] sm:text-xs text-center">Media</span>
-						</button>
+								<span
+									className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+								>
+									<ImageIcon
+										size={14}
+										color="#1D2432"
+										className="sm:w-4 sm:h-4"
+									/>
+								</span>
+								<span className="text-[10px] sm:text-xs text-center">
+									Media
+								</span>
+							</button>
+						)}
 
 						<button
 							onClick={() => handleContact("1", "mail")}
@@ -639,11 +655,13 @@ const VetSwitcher = ({ currentUser }: { currentUser: any }) => {
 		useSwitchToPetOwner,
 		useSwitchToLivestockFarmer,
 		useSwitchToVendor,
+		useSwitchToOthers,
 	} = useRoleSwitchingService();
 
 	const petOwnerMutation = useSwitchToPetOwner();
 	const livestockFarmerMutation = useSwitchToLivestockFarmer();
 	const vendorMutation = useSwitchToVendor();
+	const othersMutation = useSwitchToOthers();
 	const veterinarianMutation = useSwitchToVeterinarian();
 	const paraprofessionalMutation = useSwitchToParaprofessional();
 	const vetClinicMutation = useSwitchToVetClinic();
@@ -663,6 +681,7 @@ const VetSwitcher = ({ currentUser }: { currentUser: any }) => {
 		[ROLE.VENDOR]: allRoles.map((r) => r.key as RoleKey),
 		[ROLE.LIVESTOCK_FARMER]: allRoles.map((r) => r.key as RoleKey),
 		[ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
+		[ROLE.OTHERS]: allRoles.map((r) => r.key as RoleKey),
 	};
 
 	const switchable = useMemo(() => {
@@ -750,6 +769,21 @@ const VetSwitcher = ({ currentUser }: { currentUser: any }) => {
 			);
 			return;
 		}
+
+		if (normalized === ROLE.OTHERS) {
+			othersMutation.mutate(
+				{},
+				{
+					onSuccess: () => {
+						refetchUser();
+						setSwitchingLoading(false);
+					},
+					onError: () => setSwitchingLoading(false),
+				},
+			);
+			return;
+		}
+
 		if (normalized === ROLE.CLINIC) {
 			vetClinicMutation.mutate({} as any, {
 				onSuccess: () => {
