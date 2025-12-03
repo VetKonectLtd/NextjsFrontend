@@ -44,7 +44,6 @@ export default function ProductDetailsPage({
 	const relatedProducts =
 		(relatedProductsData.data as Record<string, any>)?.products?.data || [];
 
-		console.log(product)
 	if (productData.isLoading) {
 		return <ProductSkeleton />;
 	}
@@ -266,8 +265,8 @@ export default function ProductDetailsPage({
 										className="flex-shrink-0 w-full bg-gray-50 rounded-lg p-4"
 									>
 										<div className="flex items-center justify-between mb-2">
-											<span className="font-medium text-gray-900">
-												{review.name}
+											<span className="font-medium text-sm text-gray-900">
+												{review.user.first_name} {review.user.last_name}
 											</span>
 											<div className="flex items-center">
 												{renderStars(review.rating)}

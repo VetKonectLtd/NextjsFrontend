@@ -31,7 +31,6 @@ import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
 import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
 import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
 import { ALL_ROLES, ROLE, normalizeRole, RoleKey } from "@/lib/roles";
-import { usePaymentService } from "@/services/paymentService";
 // Media is handled inside AccountAction's built-in view
 
 const DEFAULT_AVATAR = User;
@@ -45,8 +44,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		"default",
 	);
 	const { useCurrentUser, useUpdateProfile } = useAuthService();
-	const { useAddPaymentDetails } = usePaymentService();
-	const paymentDetailsMutation = useAddPaymentDetails();
+
 
 	const { data: user, refetch: refetchUser, isLoading } = useCurrentUser(true);
 
@@ -140,16 +138,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 				// close edit mode and rely on invalidateQueries to refresh currentUser
 				refetchUser();
 				onToggleEdit();
-			},
-		});
-	};
-
-	const handleAddPaymentDetail = () => {
-		paymentDetailsMutation.mutate({
-			onSuccess: (data: any) => {
-				if (data?.authorization_url) {
-					window.location.href = data.authorization_url;
-				}
 			},
 		});
 	};
@@ -492,14 +480,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 							</span>
 						</div>
 
-						{backendRole === ROLE.VENDOR && (
-							<button
-								className="w-1/3 font-medium m-auto rounded-lg my-3 bg-primary-400 py-2 text-white text-sm"
-								onClick={handleAddPaymentDetail}
-							>
-								Add Paystack Details
-							</button>
-					 )} 
 
 						{/* Availability */}
 						<div className="mb-6">
