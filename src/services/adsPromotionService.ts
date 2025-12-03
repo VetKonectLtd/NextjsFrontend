@@ -145,7 +145,7 @@ export const useAdsPromotionService = () => {
             ["cancelPromotionAd", id],
             ADS_PROMOTION.CANCEL_PROMOTION_AD(id),
             {
-                enabled: false, // Don't auto-fetch; component will call refetch()
+                enabled: false, 
             },
         );
     };
