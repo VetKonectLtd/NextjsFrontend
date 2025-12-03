@@ -109,7 +109,7 @@ export default function FeedCalculatorPage() {
   };
 
   const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
+    // console.log("Form submitted:", data);
     
     try {
       // Transform form data to API request format
@@ -118,7 +118,7 @@ export default function FeedCalculatorPage() {
       // Call the API
       feedCalculatorMutation.mutate(apiRequest, {
         onSuccess: (response) => {
-          console.log('API Response:', response);
+          // console.log('API Response:', response);
           
           // Since API returns data directly (not wrapped), extract the actual response
           const responseData = response?.data || response;
@@ -131,7 +131,7 @@ export default function FeedCalculatorPage() {
               setShowResults(true);
             } catch (formatError) {
               console.error('Error formatting response:', formatError);
-              console.log('Response data:', responseData);
+              // console.log('Response data:', responseData);
               
               // Fallback: show raw response data
               const fallbackData = responseData as any;

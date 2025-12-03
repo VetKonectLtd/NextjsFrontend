@@ -66,13 +66,14 @@ export const useAuthService = () => {
 	// Update profile (expects FormData or JSON depending on caller)
 	const useUpdateProfile = () => {
 		return usePost<{ message: string }, FormData | Record<string, any>>(
-			"/v3/update-profile",
+			AUTH_ENDPOINTS.UPDATE_PROFILE,
 			{
 				onSuccess: (response: any) => {
 					handleSuccess(response.message || "Profile updated successfully!");
 				},
-				// invalidate current user so UI refreshes
-				invalidateQueries: [["currentUser"]],
+				onError: (error) => {
+					handleError(error.message || "Profile update failed");
+				},
 			},
 		);
 	};
@@ -141,7 +142,7 @@ export const useAuthService = () => {
 					handleSuccess(response.message || "Password reset link sent!");
 				},
 				onError: (error) => {
-					handleError(error, "Failed to send reset link.");
+					handleError(error.message || "Failed to send reset link.");
 				},
 			},
 		);
@@ -153,10 +154,10 @@ export const useAuthService = () => {
 			AUTH_ENDPOINTS.RESET_PASSWORD,
 			{
 				onSuccess: (response) => {
-					handleSuccess("Password reset successfully!");
+					handleSuccess(response.message || "Password reset successfully!");
 				},
-				onError: (error) => {
-					handleError(error, "Failed to reset password.");
+				onError: (error: any) => {
+					handleError(error.error || error.message || "Failed to reset password.");
 				},
 			},
 		);

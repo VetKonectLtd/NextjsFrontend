@@ -70,7 +70,7 @@ export default function ContactSection() {
 								Send Message
 							</h3>
 							<p className="text-gray-600 text-sm">
-								Reach out to us by via mail by using form below
+								Reach out to us via mail by using form below
 							</p>
 						</div>
 

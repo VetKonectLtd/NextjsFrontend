@@ -28,6 +28,8 @@ const Dashboard = () => {
 
 	const role = (user as any)?.profile?.role;
 
+	console.log(user)
+
 	const getQuickActions = () => {
 		const baseActions = [
 			{

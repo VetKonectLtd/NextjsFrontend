@@ -32,6 +32,7 @@ const NearYou: React.FC<NearYouProps> = ({
   const [selectedAction, setSelectedAction] = useState<string>('default');
   const carouselRef = useRef<HTMLDivElement>(null);
 
+
   const { useGetNearestVets } = useVeterinaryService();
 
   // Default images array for cycling through

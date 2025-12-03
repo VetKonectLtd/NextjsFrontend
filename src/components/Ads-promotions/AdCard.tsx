@@ -78,7 +78,7 @@ const AdCard = ({
             <button
               className="p-1.5 bg-white rounded-full shadow hover:bg-gray-100 transition"
               onClick={() => {
-                if (productId) router.push(`/products/${productId}`);
+                if (productId) router.push(`/dashboard/products/${productId}`);
               }}
               aria-label="View Product"
             >

@@ -53,7 +53,6 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 				title: chat.title,
 				visibility: chat.visibility,
 				content: chat.content,
-				image: undefined,
 			});
 			setPreview(chat.image_url || null);
 		}
@@ -80,6 +79,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 		const formData: any = new FormData();
 		formData.append("title", data.title);
 		formData.append("visibility", data.visibility);
+		formData.append("category", data.category);
 		formData.append("content", data.content);
 
 		if (data.image instanceof File) formData.append("image", data.image);

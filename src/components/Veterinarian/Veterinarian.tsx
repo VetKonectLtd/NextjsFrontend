@@ -53,13 +53,14 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 			const averageRating = totalRatings > 0 
 				? vet.ratings.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / totalRatings 
 				: vet.average_rating;
-
+				
 			return {
 				id: vet.id.toString(),
 				name: fullName,
 				location: location,
 				role:vet.role,
-				image: vet.user.profile || GENERIC_VET_IMAGE,
+				specialty:vet.specialty,
+				image: vet.user.profile  || GENERIC_VET_IMAGE,
 				rating: averageRating,
 				totalRatings: totalRatings,
 				isAvailable: vet.availability === 1,

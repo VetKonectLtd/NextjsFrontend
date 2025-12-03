@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Warning } from "@/app/assets/icons";
 import { useOrderService } from "@/services/orderService";
 import { useAuthService } from "@/services/authService";
+import Link from "next/link";
 
 export default function OrderDetailsPage({
 	params,
@@ -17,7 +18,7 @@ export default function OrderDetailsPage({
 	const { useCurrentUser } = useAuthService();
 	const { useGetOrderById, useTrackOrder, useCancelOrder, useConfirmOrder } =
 		useOrderService();
-	const { data: ordersData, isLoading } = useGetOrderById(true, params?.id);
+	const { data: ordersData, refetch, isLoading } = useGetOrderById(true, params?.id);
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 
@@ -67,14 +68,13 @@ export default function OrderDetailsPage({
 	const progressSteps = [
 		"Payment_Initiated",
 		"Pending_Confirmation",
-		"Processing",
+		"Processing_Product(s)",
 		"In_Transit",
 		"Delivered",
-		"delivery_confirmed",
 	];
 
 	// Map tracking_status → index
-	const trackingStatus = product.status ?? "payment_initiated";
+	const trackingStatus = order?.tracking_status;
 	const currentStep = progressSteps.indexOf(trackingStatus);
 
 	// ---- API Mutation Hooks ---- //
@@ -85,7 +85,9 @@ export default function OrderDetailsPage({
 	const handleCancelOrder = async () => {
 		if (window.confirm(`Are you sure you want to cancel the order?`)) {
 			cancelOrderMutation.mutate({
-				onSuccess: () => {},
+				onSuccess: () => {
+					refetch()
+				},
 			});
 		}
 	};
@@ -93,7 +95,9 @@ export default function OrderDetailsPage({
 	const handleConfirmOrder = async () => {
 		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
 			confirmOrderMutation.mutate({
-				onSuccess: () => {},
+				onSuccess: () => {
+					refetch()
+				},
 			});
 		}
 	};
@@ -106,10 +110,16 @@ export default function OrderDetailsPage({
 		trackingMutation.mutate(
 			{ tracking_status: nextStatus },
 			{
-				onSuccess: () => {},
+				onSuccess: () => {
+					refetch()
+				},
 			},
 		);
 	};
+
+	const isCompleted =
+	product.status?.toLowerCase() === "completed"
+
 
 	return (
 		<main className="w-11/12 m-auto min-h-screen">
@@ -212,7 +222,7 @@ export default function OrderDetailsPage({
 					{/* Progress Steps */}
 					<div>
 						<h3 className="font-semibold text-gray-800 text-sm mb-2">
-							Order Status: {trackingStatus.replace("_", " ")}
+							Order Status: {trackingStatus}
 						</h3>
 
 						<div className="relative w-full">
@@ -248,7 +258,8 @@ export default function OrderDetailsPage({
 													: "text-gray-500"
 											}`}
 										>
-											{step.replace("_", " ")}
+											{step.replace(/_/g, " ")
+}
 										</span>
 									</div>
 								))}
@@ -259,12 +270,12 @@ export default function OrderDetailsPage({
 					{/* Warning */}
 					<div className="text-gray-55 flex items-center text-xs py-5 gap-3">
 						<Image src={Warning} alt="warning" width={20} height={20} />
-						Please make sure your customer clicks “Delivery confirmed”.
+						Please make sure you click “Delivery confirmed”.
 					</div>
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
-						{isBuyer && trackingStatus === "delivered" && (
+						{isMerchant && !isCompleted && trackingStatus === "Delivered" && (
 							<button
 								onClick={handleConfirmOrder}
 								disabled={confirmOrderMutation.isPending}
@@ -276,12 +287,24 @@ export default function OrderDetailsPage({
 							</button>
 						)}
 
+						{isBuyer && !isCompleted && trackingStatus === "Delivered" && (
+							<button
+								onClick={handleConfirmOrder}
+								disabled={confirmOrderMutation.isPending}
+								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
+							>
+								{confirmOrderMutation.isPending
+									? "Processing..."
+									: "Delivery confirmed"}
+							</button>
+						)}
+
 						{/* Merchant button */}
-						{isMerchant && currentStep < progressSteps.length - 1 && (
+						{isMerchant && !isCompleted && currentStep < progressSteps.length - 1 && (
 							<button
 								onClick={handleAdvanceStep}
 								disabled={trackingMutation.isPending}
-								className="w-full mt-4 bg-green-600 text-white rounded-lg py-2 font-semibold"
+								className="w-full mt-4 bg-primary-400 text-white rounded-lg py-2 font-semibold"
 							>
 								{trackingMutation.isPending
 									? "Updating..."
@@ -290,7 +313,7 @@ export default function OrderDetailsPage({
 						)}
 
 						{/* Cancel Order (buyer only) */}
-						{isBuyer && !isCanceled && canCancel && (
+						{isBuyer && !isCompleted && !isCanceled && canCancel && (
 							<button
 								onClick={handleCancelOrder}
 								disabled={cancelOrderMutation.isPending}
@@ -303,15 +326,15 @@ export default function OrderDetailsPage({
 						)}
 
 						{/* Contact Support */}
-						{isBuyer && !canCancel && !isCanceled && (
+						{isBuyer && !isCompleted && !canCancel && !isCanceled && (
 							<button className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold">
 								Contact Support
 							</button>
 						)}
 
-						<button className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold">
+						<Link href="/dashboard/vet-vendor?category=Vendor" className="w-full bg-primary-400 text-white text-center rounded-lg py-2 font-semibold">
 							Buy Again
-						</button>
+						</Link>
 					</div>
 
 					<p className="text-xs text-gray-55 mt-6">

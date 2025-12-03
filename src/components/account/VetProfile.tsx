@@ -184,6 +184,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
                     {specialty}
                   </option>
                 ))}
+
               </select>
               <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
             </div>
@@ -451,8 +452,20 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
             {/* Specialties */}
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {currentUser?.specialty && (
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                  {currentUser?.specialty}
+                <span className="px-3 py-1 text-gray-700 rounded-full text-sm">
+                 
+                  {currentUser?.specialty
+										?.split(",")
+										.map((item:any) => item.trim())
+										.filter((item:any) => item.length > 0)
+										.map((spec:any, index:any) => (
+											<span
+												key={index}
+												className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full"
+											>
+												{spec}
+											</span>
+										))}
                 </span>
               )}
               <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">

@@ -15,6 +15,10 @@ import { VetProfileProps } from "../shared/VetProfile";
 import VetAccount from "./VetAction";
 import { Bg22, StarEmpty, StarFill } from "@/app/assets/icons";
 
+// Generic veterinarian placeholder image URL from Unsplash
+const GENERIC_VET_IMAGE =
+	"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+
 interface VeterinarianProps {
 	handleContact?: (
 		id: string,
@@ -60,11 +64,17 @@ const SelectedVet = ({
 
 					<div className="lg:col-span-2 mb-4 shadow-md border rounded-2xl border-gray-225 bg-white">
 						<div
-							style={{ backgroundImage: `url(${Bg22.src})` }}
+							style={{
+								backgroundImage: `url(${
+									selectedVet?.image?.cover_page_image_url
+										? selectedVet.image.cover_page_image_url
+										: Bg22.src
+								})`,
+							}}
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">
-								<button 
+								<button
 									onClick={() => setSelectedVet(null)}
 									className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2 hover:bg-gray-50 transition-colors"
 									aria-label="Close profile"
@@ -78,7 +88,9 @@ const SelectedVet = ({
 							<div className="flex relative">
 								<div className="w-24 h-24 rounded-full border-4 border-green-50 overflow-hidden">
 									<Image
-										src={selectedVet.image}
+										src={
+											selectedVet.image.profile_image_url || GENERIC_VET_IMAGE
+										}
 										alt={selectedVet.name}
 										width={150}
 										height={150}
@@ -99,25 +111,25 @@ const SelectedVet = ({
 
 							<div className="text-center">
 								<h1 className="mt-3 text-lg font-semibold">
-									{selectedVet.name}
+									Dr. {selectedVet.name}
 								</h1>
 								<p className="text-sm mt-2 text-gray-500">{selectedVet.role}</p>
 							</div>
 
 							<div className="flex py-6 w-72 m-auto flex-wrap gap-2 mb-4">
 								<div className="flex flex-wrap gap-2">
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Small Animal Medicine
-									</span>
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Avian Medicine
-									</span>
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Ruminant medicine
-									</span>
-									<span className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full">
-										Wildlife medicine
-									</span>
+									{selectedVet?.specialty
+										?.split(",")
+										.map((item) => item.trim())
+										.filter((item) => item.length > 0)
+										.map((spec, index) => (
+											<span
+												key={index}
+												className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full"
+											>
+												{spec}
+											</span>
+										))}
 								</div>
 							</div>
 
