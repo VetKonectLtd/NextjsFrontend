@@ -16,7 +16,8 @@ const page = () => {
   const preSelectedId = searchParams.get("productId");
 
   const { useGetUserPromotions } = useAdsPromotionService();
-  const { data: userPromotions } = useGetUserPromotions();
+  const { data: userPromotions, refetch: refetchPromotions } =
+    useGetUserPromotions();
 
   // Map API data to ads format with strong null-safety and sensible defaults
   const ads: any[] = (Array.isArray(userPromotions) ? userPromotions : [])

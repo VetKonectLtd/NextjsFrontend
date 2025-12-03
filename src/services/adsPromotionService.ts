@@ -1,6 +1,7 @@
 import { usePost, useGet } from "@/lib/hooks";
 import { ADS_PROMOTION } from "@/lib/api-constants";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface AdsPromotionPayload {
     product_id: number;
@@ -136,19 +137,15 @@ export const useAdsPromotionService = () => {
 
     /**
      * Cancel a promotion (new endpoint)
-     * POST /v3/cancel-promotion/{id}/ad
+     * GET /v3/cancel-promotion/{id}/ad
      */
     const useCancelPromotionAd = (id: string) => {
-        return usePost<void, void>(
+        // Use GET with manual triggering via refetch from the component
+        return useGet<void>(
+            ["cancelPromotionAd", id],
             ADS_PROMOTION.CANCEL_PROMOTION_AD(id),
             {
-                onSuccess: (response: any) => {
-                    handleSuccess(response.message || "Promotion cancelled successfully!");
-                },
-                onError: (error) => {
-                    handleError(error.message || "Failed to cancel promotion");
-                },
-                invalidateQueries: [["userPromotions"], ["promotion", id]],
+                enabled: false, 
             },
         );
     };
