@@ -6,17 +6,34 @@ import { Hand, StarFill } from "@/app/assets/icons";
 import { useState } from "react";
 import ChatBox from "./ChatBox";
 import ReactStars from "react-stars";
+import { useRatingService } from "@/services/ratingService";
 
 interface VeterinarianProps {
 	selectedVet: VetProfileProps | null;
 	selectedAction: string | null;
+	refetchData:any;
 }
 
-const VetAccount = ({ selectedVet, selectedAction }: VeterinarianProps) => {
+const VetAccount = ({ selectedVet, selectedAction, refetchData }: VeterinarianProps) => {
 	const [copied, setCopied] = useState<string | null>(null);
 
+	const { useRating } = useRatingService();
+
+	const ratingMutation = useRating();
+
 	const ratingChanged = (newRating: any) => {
-		console.log(newRating);
+		ratingMutation.mutate(
+			{
+				rateable_id: selectedVet?.id,
+				rateable_type: "App\\Models\\VeterinaryDoctor",
+				rating: newRating,
+			},
+			{
+				onSuccess: () => {
+					refetchData();
+				},
+			},
+		);
 	};
 
 	const handleCopy = async (text: string) => {
@@ -73,16 +90,10 @@ const VetAccount = ({ selectedVet, selectedAction }: VeterinarianProps) => {
 			{selectedAction === "mail" && (
 				<>
 					<p className="text-gray-55 font-bold">User’s Email Address</p>
-					<p className="text-sm mt-2">
-						{selectedVet?.email}
-					</p>
+					<p className="text-sm mt-2">{selectedVet?.email}</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
-							onClick={() =>
-								handleCopy(
-									`${selectedVet?.email}`,
-								)
-							}
+							onClick={() => handleCopy(`${selectedVet?.email}`)}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
 						>
@@ -158,9 +169,11 @@ const VetAccount = ({ selectedVet, selectedAction }: VeterinarianProps) => {
 					<div className="flex justify-center items-center mt-3">
 						<ReactStars
 							count={5}
+							value={selectedVet?.rating || 0} 
 							onChange={ratingChanged}
 							size={24}
 							color2={"#ffd700"}
+							half={false} 
 						/>
 					</div>
 				</>

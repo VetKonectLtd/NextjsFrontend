@@ -131,7 +131,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                             {renderStars(rating)}
                         </div>
                         <span className="text-xs font-medium text-white font-nunito">
-                            {rating.toFixed(1)} of {totalRatings}
+                            {rating.toFixed(1)} of 5
                         </span>
                     </div>
                 </div>

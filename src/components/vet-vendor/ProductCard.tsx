@@ -18,7 +18,7 @@ interface ProductCardProps {
 	average_rating?: number;
 	seller?: string;
 	location: string;
-	open: boolean;
+	availability: boolean;
 	onViewProduct?: (id: string) => void;
 }
 
@@ -28,7 +28,7 @@ const ProductCard = ({
 	images_url,
 	average_rating,
 	location,
-	open,
+	availability,
 	id,
 	onViewProduct,
 }: ProductCardProps) => {
@@ -43,7 +43,7 @@ const ProductCard = ({
 
 			<div>
 				<div className="absolute top-3 left-3 flex items-center gap-2 z-10">
-					{open ?
+					{availability ?
 						<div className="flex items-center bg-white rounded-lg px-5 py-1 shadow text-xs font-medium">
 							<span className="w-2 h-2 rounded-full bg-green-50 mr-2 inline-block" />
 							Open
@@ -53,9 +53,9 @@ const ProductCard = ({
 						</div>
 					}
 				</div>
-				<div className="absolute rounded-full text-white p-1 bg-green-50 top-3 right-3 z-10">
+				{/* <div className="absolute rounded-full text-white p-1 bg-green-50 top-3 right-3 z-10">
 					<Check size={14} />
-				</div>
+				</div> */}
 			</div>
 
 			<div className="rounded-t-xl overflow-hidden w-full h-[190px] mb-1 relative">
@@ -78,7 +78,7 @@ const ProductCard = ({
 						<span className="text-white text-xs font-medium">{average_rating} of 5</span>
 					</span>
 					<span className="text-lg font-bold text-white">
-						₦{Number(price)?.toFixed(2) || '0.00'}
+						₦ {Number(price)?.toFixed(2) || '0.00'}
 					</span>
 				</div>
 			</div>

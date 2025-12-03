@@ -27,6 +27,7 @@ interface VeterinarianProps {
 
 	selectedVet: VetProfileProps | null;
 	selectedAction: string | null;
+	refetchData?: any,
 	setSelectedVet: React.Dispatch<React.SetStateAction<VetProfileProps | null>>;
 }
 
@@ -35,6 +36,7 @@ const SelectedVet = ({
 	selectedAction,
 	setSelectedVet,
 	handleContact,
+	refetchData
 }: VeterinarianProps) => {
 	const renderStars = (rating: number) => {
 		const hasRating = rating > 0;
@@ -103,8 +105,7 @@ const SelectedVet = ({
 										{renderStars(selectedVet.rating)}
 									</p>
 									<span className="text-xs font-medium text-gray-55 font-nunito">
-										{selectedVet.rating.toFixed(1)} of{" "}
-										{selectedVet.totalRatings}
+										{selectedVet.rating} of 5
 									</span>
 								</div>
 							</div>
@@ -210,6 +211,7 @@ const SelectedVet = ({
 							<VetAccount
 								selectedVet={selectedVet}
 								selectedAction={selectedAction}
+								refetchData={refetchData}
 							/>
 						</div>
 					</div>

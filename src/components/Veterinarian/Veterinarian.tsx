@@ -22,12 +22,11 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 	const [selectedAction, setSelectedAction] = useState<string>("default");
 
 	const { useGetAllVetDoctor } = useVeterinaryService();
-	const { data: apiData, isLoading, error } = useGetAllVetDoctor(currentPage);
+	const { data: apiData, isLoading, error, refetch: refetchData } = useGetAllVetDoctor(currentPage);
 	
 	// Cast to actual response type since API returns data directly
 	const data = apiData as unknown as GetAllVetDoctorResponse | undefined;
 
-	
 	// Transform API data to VetProfile props
 	const transformedVets: VetProfileProps[] = useMemo(() => {
 		if (!data?.veterinary_doctors?.data) return [];
@@ -170,6 +169,7 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 				selectedVet={selectedVet}
 				selectedAction={selectedAction}
 				setSelectedVet={setSelectedVet}
+				refetchData={refetchData}
 			/>
 		</section>
 	);

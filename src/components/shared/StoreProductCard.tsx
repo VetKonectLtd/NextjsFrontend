@@ -79,7 +79,7 @@ const StoreProductCard = ({
 
 				{/* Price */}
 				<div className="absolute bottom-2 right-2 text-white font-bold rounded-md">
-					${Number(price).toFixed(2)}
+					₦ {Number(price).toFixed(2)}
 				</div>
 
 				{/* Indicator dots */}
@@ -135,7 +135,7 @@ const StoreProductCard = ({
 
 				<div className="flex items-center justify-center shadow-md bg-[#F1F1F1] rounded-lg px-4 mt-3 py-2 mb-4">
 					<span className="text-gray-55 text-center text-sm">
-						{availability ? (
+						{Number(available_unit) > 0 ? (
 							<div className="flex items-center rounded-lg  text-xs font-medium">
 								<span className="w-2 h-2 rounded-full bg-green-500 mr-2 inline-block animate-pulse" />
 

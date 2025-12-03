@@ -9,7 +9,7 @@ import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
 import ProductCard from "@/components/vet-vendor/ProductCard";
 
-import { Dog, Shop, Cart, Message } from "@/app/assets/icons/vet-vendor";
+import { Cart, Message } from "@/app/assets/icons/vet-vendor";
 import {
 	Paws,
 	Cow,
@@ -30,6 +30,18 @@ export default function VetVendorPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const initialCategory = searchParams.get("category") || "Veterinarian";
+
+	// State for selected location from Google Places
+	const [selectedLocation, setSelectedLocation] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
+	// State for selected country
+	const [selectedCountry, setSelectedCountry] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
 
 	const [activeCategory, setActiveCategory] = useState(initialCategory);
 
@@ -62,20 +74,20 @@ export default function VetVendorPage() {
 
 	// categories
 	const categories = [
-		{ name: "Pets", icon: Paws },
+		{ name: "Pet", icon: Paws },
 		{ name: "Livestock", icon: Cow },
-		{ name: "Feed", icon: Icon11 },
+		{ name: "Feeds", icon: Icon11 },
 		{ name: "Drugs", icon: Icon12 },
-		{ name: "Tools and materials", icon: Icon13 },
+		{ name: "Tool and Materials", icon: Icon13 },
 	];
 
+	
 	// categories tabs
 	const tabs = categories.map((c) => {
 		const count =
 			c.name === "All"
 				? allProducts.length
 				: allProducts.filter((p: any) => p.category === c.name).length;
-
 		return { ...c, count };
 	});
 
@@ -94,6 +106,8 @@ export default function VetVendorPage() {
 			? allProducts
 			: allProducts.filter((p: any) => p.category === activeTab);
 
+			
+
 	return (
 		<div className="w-11/12 m-auto bg-white">
 			<div className="font-semibold flex items-end justify-end text-[#0F0F0F]">
@@ -106,7 +120,7 @@ export default function VetVendorPage() {
 			/>
 
 			<div className="flex md:flex-row flex-col items-center gap-4 w-full py-2">
-				<SearchBar />
+				<SearchBar setSelectedLocation={setSelectedLocation} setSelectedCountry={setSelectedCountry}  />
 
 				{activeCategory == "Vendor" && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
@@ -155,7 +169,7 @@ export default function VetVendorPage() {
 			{activeCategory === "Vendor" && (
 				<>
 					<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-						{allProducts.map((product: any) => (
+						{filteredProducts.map((product: any) => (
 							<ProductCard
 								key={product.id}
 								{...product}
