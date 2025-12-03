@@ -6,20 +6,36 @@ import { useState } from "react";
 import { ClinicProfileProps } from "../shared/ClinicProfile";
 import ChatBox from "./ChatBox";
 import ReactStars from "react-stars";
+import { useRatingService } from "@/services/ratingService";
 
 interface VetClinicProps {
 	selectedClinic: ClinicProfileProps | null;
 	selectedAction: string | null;
+	refetchData?:any;
 }
 
-const ClinicAccount = ({ selectedClinic, selectedAction }: VetClinicProps) => {
+const ClinicAccount = ({ selectedClinic, selectedAction, refetchData }: VetClinicProps) => {
 	const [copied, setCopied] = useState<string | null>(null);
 	
     
-    const ratingChanged = (newRating: any) => {
-		console.log(newRating);
+   const { useRating } = useRatingService();
+   
+	const ratingMutation = useRating();
+   
+	const ratingChanged = (newRating: any) => {
+		ratingMutation.mutate(
+			{
+				rateable_id: selectedClinic?.id,
+				rateable_type: "App\\Models\\VeterinaryClinic",
+				rating: newRating,
+			},
+			{
+				onSuccess: () => {
+					refetchData();
+				},
+			},
+		);
 	};
-
 	const handleCopy = async (text: string) => {
 		try {
 			await navigator.clipboard.writeText(text);
@@ -163,9 +179,11 @@ const ClinicAccount = ({ selectedClinic, selectedAction }: VetClinicProps) => {
 					<div className="flex justify-center items-center mt-3">
 						<ReactStars
 							count={5}
+							value={selectedClinic?.rating || 0} 
 							onChange={ratingChanged}
 							size={24}
 							color2={"#ffd700"}
+							half={false} 
 						/>
 					</div>
 				</div>

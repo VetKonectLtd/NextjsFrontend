@@ -127,7 +127,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
                             {renderStars(rating)}
                         </div>
                         <span className="text-xs font-medium text-white font-nunito">
-                            {rating.toFixed(1)} of {totalRatings}
+                            {rating} of 5
                         </span>
                     </div>
                 </div>

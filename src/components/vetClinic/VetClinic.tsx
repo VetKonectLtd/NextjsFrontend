@@ -22,7 +22,7 @@ const VetClinic: React.FC<VetClinicProps> = () => {
     const [selectedAction, setSelectedAction] = useState<string>("default");
 
     const { useGetAllVetClinic } = useVeterinaryClinicService();
-    const { data: apiData, isLoading, error } = useGetAllVetClinic(currentPage);
+    const { data: apiData, isLoading, error , refetch: refetchData} = useGetAllVetClinic(currentPage);
     
     // Cast to actual response type since API returns data directly
     const data:any = apiData as unknown as GetAllVetClinicResponse | undefined;
@@ -169,6 +169,7 @@ const VetClinic: React.FC<VetClinicProps> = () => {
                     selectedClinic={selectedClinic}
                     selectedAction={selectedAction}
                     setSelectedClinic={setSelectedClinic}
+                    refetchData={refetchData}
                 />
         
         </section>

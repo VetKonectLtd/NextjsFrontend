@@ -10,6 +10,7 @@ import {
 	MessagesSquareIcon,
 	Plus,
 	ChevronLeft,
+	X,
 } from "lucide-react";
 import { StarEmpty, StarFill } from "@/app/assets/icons";
 import { ClinicProfileProps } from "../shared/ClinicProfile";
@@ -23,6 +24,7 @@ interface VetClinicProps {
 
 	selectedClinic: ClinicProfileProps | null;
 	selectedAction: string | null;
+	refetchData?: any,
 	setSelectedClinic: React.Dispatch<
 		React.SetStateAction<ClinicProfileProps | null>
 	>;
@@ -33,6 +35,7 @@ const SelectedClinic = ({
 	selectedAction,
 	setSelectedClinic,
 	handleContact,
+	refetchData,
 }: VetClinicProps) => {
 	const renderStars = (rating: number) => {
 		const hasRating = rating > 0;
@@ -66,8 +69,8 @@ const SelectedClinic = ({
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">
-								<button className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2">
-									<Plus className="w-7 h-7" size={16} />
+								<button onClick={() => setSelectedClinic(null)} className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2">
+									<X className="w-7 h-7" size={16} />
 								</button>
 							</div>
 						</div>
@@ -89,8 +92,7 @@ const SelectedClinic = ({
 										{renderStars(selectedClinic.rating)}
 									</p>
 									<span className="text-xs font-medium text-gray-55 font-nunito">
-										{selectedClinic.rating.toFixed(1)} of{" "}
-										{selectedClinic.totalRatings}
+										{selectedClinic.rating.toFixed(1)} of 5
 									</span>
 								</div>
 							</div>
@@ -198,6 +200,7 @@ const SelectedClinic = ({
 							<ClinicAccount
 								selectedClinic={selectedClinic}
 								selectedAction={selectedAction}
+								refetchData={refetchData}
 							/>
 						</div>
 					</div>
