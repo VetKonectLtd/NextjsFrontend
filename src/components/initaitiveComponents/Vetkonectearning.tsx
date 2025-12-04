@@ -1,7 +1,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Image from "next/image";
-import { Bot, Learning1, Learning2 } from "@/app/assets/images";
+import { Bot, Learning1, Learning2, Learning3 } from "@/app/assets/images";
 import { Autoplay, Pagination } from "swiper/modules";
 
 const Vetkonectearning = () => {
@@ -50,6 +50,15 @@ const Vetkonectearning = () => {
 								width={500}
 								height={350}
 								className="object-cover w-full h-[300px] md:h-[350px]"
+							/>
+						</SwiperSlide>
+						<SwiperSlide>
+							<Image
+								src={Learning3}
+								alt="Vet konect field work"
+								width={500}
+								height={350}
+								className="object-contain w-full h-[300px] md:h-[350px]"
 							/>
 						</SwiperSlide>
 					</Swiper>

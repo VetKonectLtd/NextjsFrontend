@@ -21,13 +21,15 @@ export default function InitiativesPage() {
 			<InitiativesHeroSection />
 
 			<VetkonectChampionProgram />
-			<PartnershipSection/>
-			<SupportsSection/>
+			
 			<Vetkonectearning />
 			<VetDiary/>
 			<AfriVetChroniclesSection/>
 			<Wipi />
 			{/* Contact Section */}
+			<PartnershipSection/>
+			<SupportsSection/>
+			
 			<ContactSection />
 
 			{/* Footer */}

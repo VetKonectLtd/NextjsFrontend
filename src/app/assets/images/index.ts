@@ -79,6 +79,7 @@ export { default as Chronicle1 } from './Chronicle1.png';
 export { default as Dairy } from './diary.jpeg';
 export { default as Learning1 } from './learning1.jpeg';
 export { default as Learning2 } from './learning2.png';
+export { default as Learning3 } from './learning3.jpeg';
 export { default as Bot } from './bot.png';
 
 export { default as Wipi1 } from './wipi1.jpeg';
