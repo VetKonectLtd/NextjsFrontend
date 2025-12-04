@@ -21,19 +21,19 @@ export default function Wipi() {
 		<section className="relative bg-[#FFFEF4] py-16 overflow-hidden">
 			<div className="text-center">
 				<div className=" w-4/5 mx-auto">
-				<h2 className="text-lg md:text-3xl font-extrabold text-gray-900 pb-5">
-					Women in Poultry Initiative
-				</h2>
+					<h2 className="text-lg md:text-3xl font-extrabold text-gray-900 pb-5">
+						Women in Poultry Initiative
+					</h2>
 
-				<p className="text-gray-600 md:text-left leading-relaxed md:text-xl py-6">
-					WIPI empowers rural women with training, starter packs, and access
-					to markets, helping them run successful poultry businesses. By
-					fostering a supportive community and sustainable opportunities, the
-					program strengthens households, boosts incomes, and builds a
-					thriving local poultry sector.
-				</p>
+					<p className="text-gray-600 md:text-left leading-relaxed md:text-xl py-6">
+						WIPI empowers rural women with training, starter packs, and access
+						to markets, helping them run successful poultry businesses. By
+						fostering a supportive community and sustainable opportunities, the
+						program strengthens households, boosts incomes, and builds a
+						thriving local poultry sector.
+					</p>
 				</div>
-				
+
 				{/* Carousel Section */}
 				<div className="relative  w-11/12 mx-auto flex justify-center items-center mt-9">
 					{/* Left Arrow */}
@@ -59,6 +59,10 @@ export default function Wipi() {
 							slidesPerView={1.5}
 							centeredSlides={true}
 							loop
+							autoplay={{
+								delay: 2000,
+								disableOnInteraction: false,
+							}}
 							navigation={{
 								prevEl: "#prev-btn-1",
 								nextEl: "#next-btn-1",
@@ -66,11 +70,10 @@ export default function Wipi() {
 							breakpoints={{
 								0: {
 									slidesPerView: 1,
-									autoplay: { delay: 6000, disableOnInteraction: false },
+									
 								},
 								768: {
 									slidesPerView: 2.5,
-									autoplay: { delay: 6000, disableOnInteraction: false },
 								},
 							}}
 						>
