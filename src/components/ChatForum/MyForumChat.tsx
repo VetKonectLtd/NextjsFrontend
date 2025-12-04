@@ -103,12 +103,6 @@ const MyForumChat = () => {
 		router.push(`/dashboard/chat-forum/${post.id}/${slug}`);
 	};
 
-	// Restore search history
-	useEffect(() => {
-		const saved = localStorage.getItem("forumSearchHistory");
-		if (saved) setSearchHistory(JSON.parse(saved));
-	}, []);
-
 	// Handle search
 	const handleSearch = () => {
 		if (!searchTerm.trim()) return;
@@ -117,12 +111,6 @@ const MyForumChat = () => {
 			...searchHistory.filter((t) => t !== searchTerm),
 		].slice(0, 5);
 		setSearchHistory(updated);
-		localStorage.setItem("forumSearchHistory", JSON.stringify(updated));
-	};
-
-	const handleClearHistory = () => {
-		setSearchHistory([]);
-		localStorage.removeItem("forumSearchHistory");
 	};
 
 	// Load More logic
@@ -194,28 +182,6 @@ const MyForumChat = () => {
 				</div>
 			</div>
 
-			{/* Search Tags */}
-			{searchHistory.length > 0 && (
-				<div className="flex items-center justify-between mb-4">
-					<div className="flex pb-4 md:max-w-full max-w-xs overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
-						{searchHistory.map((term) => (
-							<span
-								key={term}
-								onClick={() => setSearchTerm(term)}
-								className="px-3 py-1 text-sm bg-white border border-gray-200 shadow-sm text-gray-700 rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0 hover:bg-gray-100"
-							>
-								{term}
-							</span>
-						))}
-					</div>
-					<button
-						onClick={handleClearHistory}
-						className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1"
-					>
-						<X size={12} /> Clear
-					</button>
-				</div>
-			)}
 
 			{/* Posts */}
 			{isLoading ? (

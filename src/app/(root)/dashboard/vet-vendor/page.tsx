@@ -111,7 +111,7 @@ export default function VetVendorPage() {
 	return (
 		<div className="w-11/12 m-auto bg-white">
 			<div className="font-semibold flex items-end justify-end text-[#0F0F0F]">
-				<span>Currency $</span>
+				<span>Currency ₦</span>
 			</div>
 
 			<CategorySelector
