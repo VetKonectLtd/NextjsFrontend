@@ -418,12 +418,13 @@ export default function OrderDetailsPage({
 							</button>
 						)}
 
+						{isBuyer &&  !canCancel && !isCanceled && (
 						<Link
 							href="/dashboard/vet-vendor?category=Vendor"
 							className="w-full bg-primary-400 text-white text-center rounded-lg py-2 font-semibold"
 						>
 							Buy Again
-						</Link>
+						</Link>)}
 					</div>
 
 					<p className="text-xs text-gray-55 mt-6">

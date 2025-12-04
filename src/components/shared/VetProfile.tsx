@@ -44,7 +44,6 @@ const VetProfile: React.FC<VetProfileProps> = ({
     location,
     image,
     rating,
-    totalRatings,
     isAvailable,
     isVerified = false,
     onViewProfile,
@@ -79,7 +78,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             {/* Image Container with overlays */}
             <div className="relative">
-                <div className="aspect-[4/3] relative">
+                <div onClick={handleViewProfile} className="aspect-[4/3] cursor-pointer relative">
                     <Image
                         src={image?.profile_image_url || GENERIC_VET_IMAGE}
                         alt={name}

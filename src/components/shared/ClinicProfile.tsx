@@ -74,7 +74,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             {/* Image Container with overlays */}
-            <div className="relative">
+            <div onClick={handleViewProfile} className=" cursor-pointer relative">
                 <div className="aspect-[4/3] relative">
                     <Image
                         src={image}

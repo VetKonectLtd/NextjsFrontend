@@ -6,97 +6,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { Chronicle1, Hero2 } from "@/app/assets/images";
 
 export default function AfriVetChroniclesSection() {
-	const activities = [
-		{
-			image: Chronicle1.src,
-			text: "An Outreach carried out at Benue state to sensitize farmers, butchers on zoonotic diseases like Brucellosis.",
-		},
-		{
-			image: Hero2.src,
-			text: " The Vet konect AfriVet Chronicles provides a platform for knowledge sharing, collaboration, and storytelling among animal health professionals across the African continent with focus on addressing emerging challenges.",
-		},
-		{
-			image: Chronicle1.src,
-			text: "Third activity with image and description.",
-		},
-	];
-
 	return (
 		<section className="relative bg-[#FFFEF4] py-16 overflow-hidden">
 			<div className=" text-center">
-				<div className="flex md:flex-row flex-col justify-between px-4 pb-5 md:pb-10 max-w-4xl mx-auto items-center">
+				<div className=" w-4/5 mx-auto">
 					<h2 className="text-lg md:text-3xl font-extrabold text-gray-900">
 						Vet konect AfriVet Chronicles
 					</h2>
-					<div className="flex justify-center items-end gap-3">
-						<button
-							id="prev-btn-1"
-							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
-						>
-							<ArrowLeft size={16} />
-						</button>
-						<button
-							id="next-btn-1"
-							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
-						>
-							<ArrowRight size={16} />
-						</button>
-					</div>
-				</div>
 
-				{/* Carousel Section */}
-				<div className="relative flex justify-center items-center">
-					<div className="w-full mx-auto">
-						<Swiper
-							modules={[Navigation, Autoplay]}
-							spaceBetween={20}
-							slidesPerView={1.5}
-							centeredSlides={true}
-							loop
-							navigation={{
-								prevEl: "#prev-btn-1",
-								nextEl: "#next-btn-1",
-							}}
-							breakpoints={{
-							0: {
-								slidesPerView: 1,
-								autoplay: {
-									delay: 6000,
-									disableOnInteraction: false,
-								},
-							},
-							768: {
-								slidesPerView: 1.5,
-								autoplay: {
-									delay: 6000,
-									disableOnInteraction: false,
-								},
-							},
-						}}
-						>
-							{activities.map((activity, i) => (
-								<SwiperSlide key={i}>
-									<div className="flex flex-col items-center w-11/12 md:h-auto h-96 m-auto">
-										<div className="w-full h-72 overflow-hidden shadow-md rounded-xl">
-											<Image
-												src={activity.image}
-												alt="AfriVet main group"
-												width={600}
-												height={400}
-												className="object-cover w-full h-full"
-											/>
-										</div>
-										<p className="mt-4 text-gray-700 px-5 text-sm md:text-base">
-											{activity.text}
-										</p>
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
-					</div>
+					<p className="text-gray-600 md:text-left leading-relaxed md:text-xl py-6">
+						AfriVet Chronicles is a monthly Pan-African series by Vet Konect
+						that celebrates the stories, journeys, and impact of veterinary
+						professionals across Africa. By highlighting their passion,
+						challenges, and triumphs, the series inspires connection,
+						knowledge-sharing, and meaningful action within the veterinary
+						community.
+					</p>
 				</div>
 			</div>
 		</section>

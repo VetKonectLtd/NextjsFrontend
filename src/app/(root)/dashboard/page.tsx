@@ -27,8 +27,9 @@ const Dashboard = () => {
 	const { data: user } = useCurrentUser(true);
 
 	const role = (user as any)?.profile?.role;
+	const approved = (user as any)?.profile?.is_approved;
 
-	console.log(user)
+	console.log(user);
 
 	const getQuickActions = () => {
 		const baseActions = [
@@ -133,19 +134,32 @@ const Dashboard = () => {
 	return (
 		<div className="w-11/12 m-auto">
 			{/* ✅ Congratulations Card */}
-			{role == "Veterinarian" && (
-				<div className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-1 mb-2 transition">
-					<div className="text-gray-55 flex flex-col">
-						<span className="text-xs font-normal">Congratulations</span>
-						<p className="text-gray-55 text-sm font-medium">
-							Your Vet Number (VCN) has been verified and Approved
-						</p>
+			{role == "Veterinarian" &&
+				(approved ? (
+					<div className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-1 mb-2 transition">
+						<div className="text-gray-55 flex flex-col">
+							<span className="text-xs font-normal">Congratulations</span>
+							<p className="text-gray-55 text-sm font-medium">
+								Your Veterinary Council Number (VCN) has been successfully verified and approved.
+							</p>
+						</div>
+						<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
+							<Check className="w-5 h-5 font-bold text-white " />
+						</div>
 					</div>
-					<div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
-						<Check className="w-5 h-5 font-bold text-white " />
+				) : (
+					<div className="flex items-center justify-between w-full border-2 pl-2 bg-white border-red-500 rounded-xl p-1 mb-2 transition">
+						<div className="text-gray-55 flex flex-col">
+							<span className="text-xs font-normal">Verification Pending</span>
+							<p className="text-gray-55 text-sm font-medium">
+								Your Veterinary Council Number (VCN) could not be verified or approved at this time.
+							</p>
+						</div>
+						<div className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-xl text-xl">
+							<Check className="w-5 h-5 font-bold text-white " />
+						</div>
 					</div>
-				</div>
-			)}
+				))}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{quickActions.slice(0, 5).map((action, idx) => (

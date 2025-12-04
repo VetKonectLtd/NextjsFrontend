@@ -52,7 +52,7 @@ const StoreCard = ({
 				</div>
 			</div>
 
-			<div className="rounded-t-xl overflow-hidden w-full h-[190px] mb-1 relative">
+			<div onClick={handleViewProduct} className="rounded-t-xl cursor-pointer overflow-hidden w-full h-[190px] mb-1 relative">
 				<Image
 					src={picture_url}
 					alt={store_name}

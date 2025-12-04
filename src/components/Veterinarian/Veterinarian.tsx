@@ -27,6 +27,7 @@ const Veterinarian: React.FC<VeterinarianProps> = () => {
 	// Cast to actual response type since API returns data directly
 	const data = apiData as unknown as GetAllVetDoctorResponse | undefined;
 
+
 	// Transform API data to VetProfile props
 	const transformedVets: VetProfileProps[] = useMemo(() => {
 		if (!data?.veterinary_doctors?.data) return [];
