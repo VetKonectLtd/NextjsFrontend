@@ -45,6 +45,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
     image,
     rating,
     isAvailable,
+    role,
     isVerified = false,
     onViewProfile,
     onContact
@@ -130,7 +131,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                             {renderStars(rating)}
                         </div>
                         <span className="text-xs font-medium text-white font-nunito">
-                            {rating.toFixed(1)} of 5
+                            {rating} of 5
                         </span>
                     </div>
                 </div>
@@ -140,7 +141,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             <div className="p-4">
                 {/* Name */}
                 <h3 className="font-nunito font-semibold text-lg text-gray-900 mb-1">
-                    Dr. {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
+                   {role == "Veterinarian" && "Dr."}  {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
                 </h3>
 
                 {/* Location */}

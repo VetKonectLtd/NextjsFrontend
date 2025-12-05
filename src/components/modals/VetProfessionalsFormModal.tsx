@@ -20,6 +20,7 @@ import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { useAuthService } from "@/services/authService";
 import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
 import FormSelect from "../form/FormSelect";
+import TagInput from "../form/TagInput";
 
 const VetProfessionalsFormModal = ({
 	progressOpen,
@@ -174,8 +175,10 @@ const VetProfessionalsFormModal = ({
 									options={[
 										"Small Animal",
 										"Large Animal",
+										"Avian/Poultry",
 										"Exotic",
 										"Wildlife",
+										"Aquatic or Fishery",
 										"Others",
 									]}
 									error={errors.specialty?.message}
@@ -184,13 +187,19 @@ const VetProfessionalsFormModal = ({
 							)}
 						/>
 
-						<FormInput
-							label="List them"
-							type="text"
-							focusLabel="List them (Required) :"
-							isRequired
-							error={errors.list_them?.message}
-							{...register("list_them", { required: "List them is required" })}
+						<Controller
+							name="list_them"
+							control={control}
+							rules={{ required: "List them is required" }}
+							render={({ field }) => (
+								<TagInput
+									label="List them"
+									focusLabel="List them (Required) :"
+									isRequired
+									error={errors.list_them?.message}
+									onChange={(tags) => field.onChange(tags)}
+								/>
+							)}
 						/>
 
 						<FormInput

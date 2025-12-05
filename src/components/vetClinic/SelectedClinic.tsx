@@ -11,6 +11,7 @@ import {
 	Plus,
 	ChevronLeft,
 	X,
+	ImageIcon,
 } from "lucide-react";
 import { StarEmpty, StarFill } from "@/app/assets/icons";
 import { ClinicProfileProps } from "../shared/ClinicProfile";
@@ -19,12 +20,12 @@ import ClinicAccount from "./ClinicAction";
 interface VetClinicProps {
 	handleContact?: (
 		id: string,
-		type: "phone" | "message" | "mail" | "location" | "share" | "rate",
+		type: "phone" | "media" | "message" | "mail" | "location" | "share" | "rate",
 	) => void;
 
 	selectedClinic: ClinicProfileProps | null;
 	selectedAction: string | null;
-	refetchData?: any,
+	refetchData?: any;
 	setSelectedClinic: React.Dispatch<
 		React.SetStateAction<ClinicProfileProps | null>
 	>;
@@ -69,7 +70,10 @@ const SelectedClinic = ({
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">
-								<button onClick={() => setSelectedClinic(null)} className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2">
+								<button
+									onClick={() => setSelectedClinic(null)}
+									className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2"
+								>
 									<X className="w-7 h-7" size={16} />
 								</button>
 							</div>
@@ -136,6 +140,23 @@ const SelectedClinic = ({
 									<span className="text-xs">Call</span>
 								</button>
 
+								<button
+									onClick={() => handleContact?.(selectedClinic.id, "media")}
+									className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
+								>
+									<span
+										className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+									>
+										<ImageIcon
+											size={14}
+											color="#1D2432"
+											className="sm:w-4 sm:h-4"
+										/>
+									</span>
+									<span className="text-[10px] sm:text-xs text-center">
+										Media
+									</span>
+								</button>
 								<button
 									onClick={() => handleContact?.(selectedClinic.id, "message")}
 									className="flex flex-col justify-center items-center space-y-3 text-gray-500"

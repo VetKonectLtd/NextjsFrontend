@@ -11,17 +11,20 @@ import { useRatingService } from "@/services/ratingService";
 interface VetClinicProps {
 	selectedClinic: ClinicProfileProps | null;
 	selectedAction: string | null;
-	refetchData?:any;
+	refetchData?: any;
 }
 
-const ClinicAccount = ({ selectedClinic, selectedAction, refetchData }: VetClinicProps) => {
+const ClinicAccount = ({
+	selectedClinic,
+	selectedAction,
+	refetchData,
+}: VetClinicProps) => {
 	const [copied, setCopied] = useState<string | null>(null);
-	
-    
-   const { useRating } = useRatingService();
-   
+
+	const { useRating } = useRatingService();
+
 	const ratingMutation = useRating();
-   
+// console.log(selectedClinic.media);
 	const ratingChanged = (newRating: any) => {
 		ratingMutation.mutate(
 			{
@@ -49,6 +52,24 @@ const ClinicAccount = ({ selectedClinic, selectedAction, refetchData }: VetClini
 	return (
 		<div className="mt-12 pb-3 text-center w-full m-auto text-gray-500 text-sm">
 			{selectedAction === "default" && (
+				<>
+					<div className="flex justify-center mb-2">
+						<Image
+							src={Hand.src}
+							alt="hand"
+							width={50}
+							height={50}
+							className="object-cover"
+						/>
+					</div>
+					<p className="text-gray-55 font-bold">Hey! Users</p>
+					<p className="w-3/5 m-auto">
+						Kindly click on the button above to add a new product to your store
+					</p>
+				</>
+			)}
+
+			{selectedAction === "media" && (
 				<>
 					<div className="flex justify-center mb-2">
 						<Image
@@ -179,11 +200,11 @@ const ClinicAccount = ({ selectedClinic, selectedAction, refetchData }: VetClini
 					<div className="flex justify-center items-center mt-3">
 						<ReactStars
 							count={5}
-							value={selectedClinic?.rating || 0} 
+							value={selectedClinic?.rating || 0}
 							onChange={ratingChanged}
 							size={24}
 							color2={"#ffd700"}
-							half={false} 
+							half={false}
 						/>
 					</div>
 				</div>

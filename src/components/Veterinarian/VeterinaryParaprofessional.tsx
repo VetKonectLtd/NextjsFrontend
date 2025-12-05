@@ -77,7 +77,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ()
 
 	const handleContact = (
 		id: string,
-		type: "phone" | "message" | "mail" | "location" | "share" | "rate",
+		type: "phone" | "media" | "message" | "mail" | "location" | "share" | "rate",
 	) => {
 		const vet = transformedVets.find((v) => v.id === id);
 		

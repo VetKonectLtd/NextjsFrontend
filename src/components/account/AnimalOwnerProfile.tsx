@@ -86,7 +86,6 @@ const AnimalOwnerProfile = ({
 			},
 		});
 	};
-
 	const [formData, setFormData] = useState({
 		email: apiUser?.email || "",
 		firstName: apiUser?.first_name || "",
@@ -124,6 +123,7 @@ const AnimalOwnerProfile = ({
 		[ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
 		[ROLE.OTHERS]: allRoles.map((r) => r.key as RoleKey),
 	};
+
 
 	const switchable = useMemo(() => {
 		const list = switchableRolesMap[backendRole] || [];

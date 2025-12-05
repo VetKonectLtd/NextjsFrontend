@@ -144,7 +144,8 @@ export const DIRECT_CHAT = {
 export const VETERINARY_ENDPOINTS = {
 	GET_NEAREST_DOCTORS: '/v3/get-nearest-veterinary-doctors',
 	ADD_VET_DOCTOR: "/v3/add-veterinary-doctor",
-	GET_ALL_VET_DOCTOR: "/v3/get-all-veterinary-doctors"
+	GET_ALL_VET_DOCTOR: "/v3/get-all-veterinary-doctors",
+	GET_VET_BY_ID:(Id: string) => `/v3/get-veterinary-doctor/${Id}/doctor`
 } as const;
 
 export const VENDOR_ENDPOINTS = {
@@ -158,7 +159,8 @@ export const VETERINARY_CLINIC = {
 
 export const VETERINARY_PARAPROFESSIONAL = {
 	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional",
-	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals"
+	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals",
+	GET_VET_PARA_BY_ID: (Id: string) =>  `/v3/get-veterinary-paraprofessional/${Id}/paraprofessional`
 }
 
 export const OTHERS = {
