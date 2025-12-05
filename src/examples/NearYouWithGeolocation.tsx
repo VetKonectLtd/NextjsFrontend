@@ -20,7 +20,7 @@ const NearYouWithGeolocation: React.FC = () => {
     // Navigate to vet profile page
   };
 
-  const handleContact = (id: string, type: 'phone' | 'message' | 'mail' | 'location' | 'share' | 'rate') => {
+  const handleContact = (id: string, type: 'phone' | 'media' | 'message' | 'mail' | 'location' | 'share' | 'rate') => {
     console.log('Contact vet:', id, 'via:', type);
     // Handle contact action
   };
