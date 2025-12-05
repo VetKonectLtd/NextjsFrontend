@@ -19,6 +19,7 @@ import { useAuthService } from "@/services/authService";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { Controller, useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
+import TagInput from "../form/TagInput";
 
 const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) => {
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -147,13 +148,19 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 							)}
 						/>
 
-						<FormInput
-							label="List them"
-							type="text"
-							focusLabel="List them (Required) :"
-							isRequired
-							error={errors.list_them?.message}
-							{...register("list_them", { required: "List them is required" })}
+						<Controller
+							name="list_them"
+							control={control}
+							rules={{ required: "List them is required" }}
+							render={({ field }) => (
+								<TagInput
+									label="List them"
+									focusLabel="List them (Required) :"
+									isRequired
+									error={errors.list_them?.message}
+									onChange={(tags) => field.onChange(tags)}
+								/>
+							)}
 						/>
 
 						<FormInput

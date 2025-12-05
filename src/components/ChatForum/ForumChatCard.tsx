@@ -23,6 +23,7 @@ import { slugify } from "@/lib/slugify";
 import FilterDropdownMenu from "./DropdownMenu";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { forumCategories } from "./forumCategories";
+import ShareModal from "./ShareModal";
 
 const DEFAULT_AVATAR = User;
 
@@ -35,6 +36,8 @@ const ForumChatCard = () => {
 	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
 	const [searchHistory, setSearchHistory] = useState<string[]>([]);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [shareOpen, setShareOpen] = useState(false);
+	const [shareLink, setShareLink] = useState("");
 
 	const {
 		useLikeForum,
@@ -321,13 +324,23 @@ const ForumChatCard = () => {
 								</div>
 
 								<div className="flex items-center">
-									<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+									<span
+										onClick={() => {
+											const slug = slugify(post.slug);
+											const link = `https://nextjs-frontend-beta-drab.vercel.app/dashboard/chat-forum/${post.id}/${slug}`;
+											setShareLink(link);
+											setShareOpen(true);
+										}}
+										className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+									>
 										<Share2 size={14} color="#1D2432" />
 									</span>
 									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
 										{post.shares_count}
 									</span>
 								</div>
+								<ShareModal open={shareOpen} setOpen={setShareOpen} id={post.id} link={shareLink} />
+
 
 								<div className="flex items-center">
 									<span

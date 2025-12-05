@@ -22,15 +22,19 @@ const TagInput: React.FC<TagInputProps> = ({
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
+  const addTag = () => {
+    if (input.trim() !== "" && !tags.includes(input.trim())) {
+      const newTags = [...tags, input.trim()];
+      setTags(newTags);
+      onChange?.(newTags);
+      setInput("");
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if ((e.key === "Enter" || e.key === ",") && input.trim() !== "") {
       e.preventDefault();
-      if (!tags.includes(input.trim())) {
-        const newTags = [...tags, input.trim()];
-        setTags(newTags);
-        onChange?.(newTags);
-      }
-      setInput("");
+      addTag();
     }
   };
 
@@ -42,30 +46,43 @@ const TagInput: React.FC<TagInputProps> = ({
 
   return (
     <div className="relative w-full font-sans">
-      {/* Input field */}
-      <div className="relative">
-        <input
-          type="text"
-          value={input}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={label}
-          className={`peer block w-full px-4 pt-5 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
-            ${error ? "border-red-500" : ""}
-          `}
-        />
+      <div className="flex items-center gap-2">
+        {/* Input field */}
+        <div className="relative flex-1">
+          <input
+            type="text"
+            value={input}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={label}
+            className={`peer block w-full px-4 pt-5 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
+              ${error ? "border-red-500" : ""}
+            `}
+          />
 
-        <label
-          className={`absolute left-4 top-2 text-[#555555] text-xs transition-all
-            peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-1 peer-focus:text-xs
-          `}
+          <label
+            className={`absolute left-4 top-2 text-[#555555] text-xs transition-all
+              peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-[#555555] peer-focus:top-1 peer-focus:text-xs
+            `}
+          >
+            {isFocused && focusLabel ? focusLabel : label}
+          </label>
+        </div>
+
+        {/* Add Button */}
+        <button
+          type="button"
+          onClick={addTag}
+          disabled={!input.trim()}
+          className="px-3 py-3 bg-[#1D2432] text-white rounded-md text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {isFocused && focusLabel ? focusLabel : label}
-        </label>
+          Add
+        </button>
       </div>
 
+      {/* Tags Display */}
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
           {tags.map((tag, i) => (
@@ -85,6 +102,7 @@ const TagInput: React.FC<TagInputProps> = ({
           ))}
         </div>
       )}
+
       {error && <span className="text-red-600 text-sm mt-1">{error}</span>}
     </div>
   );

@@ -254,7 +254,7 @@ const AccountAction = ({
               }
             }}
             disabled={uploadMutation.isLoading}
-            className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full py-3 px-4 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {uploadMutation.isLoading ? (
               <>
@@ -262,7 +262,7 @@ const AccountAction = ({
                 Uploading...
               </>
             ) : (
-              "Add media"
+              "Save media"
             )}
           </button>
         </div>
@@ -295,9 +295,9 @@ const AccountAction = ({
 
       {selectedAction === "info" && (
         <>
-          <p className="text-gray-55 font-bold">Email Address</p>
+          <p className="text-gray-55 font-bold">Bio</p>
           <p className="text-sm mt-2">
-            {selectedUser?.user.email || `${selectedUser?.user.email}`}
+            {selectedUser?.user.profile.bio || `${selectedUser?.user.profile.bio}`}
           </p>
         </>
       )}

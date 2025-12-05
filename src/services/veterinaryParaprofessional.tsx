@@ -23,7 +23,12 @@ export const useVeterinaryParaprofessionalService = () => {
         );
     };
 
-
+const useGetVetParaById = (enabled: boolean = false, id: string) => {
+        return useGet<any>(["getVetParaById"], VETERINARY_PARAPROFESSIONAL.GET_VET_PARA_BY_ID(id), {
+            enabled,
+            staleTime: 0,
+        });
+    };
 
     const useGetAllVetParaprofessional = (page: number = 1, enabled: boolean = true) => {
         const queryParams = new URLSearchParams();
@@ -43,6 +48,7 @@ export const useVeterinaryParaprofessionalService = () => {
 
     return {
       useAddVetProfessional,
-      useGetAllVetParaprofessional
+      useGetAllVetParaprofessional,
+      useGetVetParaById
     };
 };

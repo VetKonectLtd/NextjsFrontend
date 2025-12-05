@@ -21,6 +21,8 @@ import { User } from "@/app/assets/icons";
 import { useRouter } from "next/navigation";
 import { useAuthService } from "@/services/authService";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ShareModal from "./ShareModal";
+import { slugify } from "@/lib/slugify";
 
 const DEFAULT_AVATAR = User;
 
@@ -56,6 +58,8 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	const deleteCommentMutation = useDeleteForumComment(commentId);
 	const updateCommentMutation = useUpdateForumComment(editingCommentId);
 	const { data: user } = useCurrentUser(true);
+	const [shareOpen, setShareOpen] = useState(false);
+	const [shareLink, setShareLink] = useState("");
 	const currentUserId = (user as any)?.profile?.user_id;
 
 	const detail: any = getForumBySlug?.data;
@@ -258,13 +262,27 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						</span>
 					</div>
 					<div className="flex items-center">
-						<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+						<span
+							onClick={() => {
+								const slug = slugify(detail.slug);
+								const link = `https://nextjs-frontend-beta-drab.vercel.app/dashboard/chat-forum/${detail.id}/${slug}`;
+								setShareLink(link);
+								setShareOpen(true);
+							}}
+							className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+						>
 							<Share2 size={14} color="#1D2432" />
 						</span>
 						<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
 							{detail?.shares_count}
 						</span>
 					</div>
+					<ShareModal
+						open={shareOpen}
+						setOpen={setShareOpen}
+						id={detail.id}
+						link={shareLink}
+					/>
 				</div>
 
 				{/* Comments Section */}

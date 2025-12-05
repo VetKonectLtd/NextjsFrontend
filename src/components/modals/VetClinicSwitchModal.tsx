@@ -20,6 +20,7 @@ import { useRoleSwitchingService } from "@/services/roleSwitchingService";
 import { VetClinic } from "@/types";
 import FormSelect from "../form/FormSelect";
 import { State } from "country-state-city";
+import TagInput from "../form/TagInput";
 
 interface VetClinicSwitchModalProps {
   open: boolean;
@@ -191,14 +192,20 @@ const VetClinicSwitchModal = ({
             )}
           />
 
-          <FormInput
-            label="List them"
-            type="text"
-            focusLabel="List them (Required) :"
-            isRequired
-            error={errors.list_them?.message}
-            {...register("list_them", { required: "List them is required" })}
-          />
+         <Controller
+							name="list_them"
+							control={control}
+							rules={{ required: "List them is required" }}
+							render={({ field }) => (
+								<TagInput
+									label="List them"
+									focusLabel="List them (Required) :"
+									isRequired
+									error={errors.list_them?.message}
+									onChange={(tags) => field.onChange(tags)}
+								/>
+							)}
+						/>
 
           <FormInput
             label="Contact Number"

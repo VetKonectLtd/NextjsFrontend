@@ -78,7 +78,7 @@ const VetClinic: React.FC<VetClinicProps> = () => {
 
     const handleContact = (
         id: string,
-        type: "phone" | "message" | "mail" | "location" | "share" | "rate",
+        type: "phone" | "media" | "message" | "mail" | "location" | "share" | "rate",
     ) => {
         const clinic = transformedClinics.find((v) => v.id === id);
         
@@ -91,7 +91,6 @@ const VetClinic: React.FC<VetClinicProps> = () => {
             handleViewProfile(id);
             setSelectedAction("message");
         } else {
-            console.log("Contact clinic:", id, "via:", type);
             setSelectedAction(type);
         }
     };
