@@ -9,10 +9,13 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { caseFormSchema, CaseFormData, validateStep1, validateStep2, validateStep3, validateStep4, speciesOptions, livestockTypes, clinicalSignsOptions, diseaseClassificationOptions } from "@/lib/validations/case-form";
+import { casesService } from "@/services/casesService";
+import { toast } from "sonner";
 
 const AddCasePage = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string[]>([]);
   const [selectedClinicalSigns, setSelectedClinicalSigns] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -106,8 +109,9 @@ const AddCasePage = () => {
     setImagePreview(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const currentData = form.getValues();
+    console.log("handleNext called. Current Step:", currentStep, "Form Data:", currentData);
     
     if (currentStep === 1) {
       // Validate step 1 fields including conditional pet/farm fields
@@ -122,16 +126,87 @@ const AddCasePage = () => {
       
       if (step1Valid && conditionalValid) {
         setCurrentStep(2);
+      } else {
+        console.log("Step 1 validation failed:", { step1Valid, conditionalValid });
       }
     } else if (currentStep === 2) {
-      // Handle form submission
-      form.handleSubmit(onSubmit)();
+      // Handle form submission directly without relying on Zod validation
+      console.log("Submitting form directly...");
+      await onSubmit(currentData);
     }
   };
   
-  const onSubmit = (data: CaseFormData) => {
-    console.log("Form submitted:", data);
-    router.push("/dashboard/cases");
+  const onSubmit = async (data: CaseFormData) => {
+    console.log("onSubmit called with data:", data);
+    setIsSubmitting(true);
+    try {
+        // Split treatment_regimen by newlines to create array
+        const treatmentRegimenArray = data.treatmentRegimen 
+          ? data.treatmentRegimen.split('\n').map(line => line.trim()).filter(line => line !== '') 
+          : [];
+
+        // Map form data to API payload
+        // Note: For Pet cases, use clinicPhysicalAddress as location since form doesn't have separate location field
+        const locationValue = data.petOrFarm === 'Pet' 
+          ? (data.clinicPhysicalAddress || "") 
+          : (data.location || "");
+
+        const payload: any = {
+            case_title: data.caseTitle,
+            client_name: data.clientName,
+            client_phone_number: data.clientPhoneNumber,
+            pet_or_farm: data.petOrFarm,
+            pet_name: data.petName || null,
+            specie: data.species || null,
+            breed: data.breed || null,
+            pet_number: data.petNumber || null,
+            farm_name: data.farmName || null,
+            type_of_livestock: data.typeOfLivestock || null,
+            number_of_livestock: data.numberOfLivestock || null,
+            number_of_workers: data.numberOfWorkers || null,
+            age: data.age || 0,
+            sex: data.sex || "Male",
+            location: locationValue,
+            other_details: data.otherDetails || "",
+            date_occurred: data.dateOccurred,
+            date_presented: new Date().toISOString().split('T')[0],
+            history: data.history || "",
+            clinical_signs: data.clinicalSigns || [],
+            temperature: "N/A",
+            heart_rate: "N/A",
+            weight: "N/A",
+            tentative_diagnosis: data.tentativeDiagnosis || "N/A",
+            differential_diagnosis: data.differentialDiagnosis || "N/A",
+            lab_confirm: data.labConfirmed || "No",
+            mortality: data.mortality || "None",
+            treatment_regimen: treatmentRegimenArray,
+            picture: data.images && data.images.length > 0 ? data.images[0] : null,
+        };
+
+        console.log("Sending payload to API:", payload);
+
+        const res = await casesService.addCase(payload);
+        console.log("API Response:", res);
+        
+        if (res.success) {
+            toast.success("Case added successfully");
+            router.push("/dashboard/cases");
+        } else {
+            console.error("API returned failure:", res);
+            // Try to get message from response, could be res.message or res.data.message
+            const errorMessage = res.message || res.data?.message || "Failed to add case";
+            toast.error(errorMessage);
+        }
+    } catch (error: any) {
+        console.error("Error adding case:", error);
+        // Try to extract message from error response
+        const errorMessage = error?.response?.data?.message 
+          || error?.message 
+          || "An error occurred while adding the case";
+        toast.error(errorMessage);
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -156,7 +231,9 @@ const AddCasePage = () => {
       
       return step1Valid && conditionalValid;
     } else if (currentStep === 2) {
-      return !!(currentData.dateOccurred && currentData.clinicalSigns && currentData.clinicalSigns.length > 0 && currentData.clinicPhysicalAddress && currentData.mobileVeterinarian);
+      // Only require dateOccurred and at least one clinical sign for Step 2
+      // Removed clinicPhysicalAddress and mobileVeterinarian as required
+      return !!(currentData.dateOccurred && currentData.clinicalSigns && currentData.clinicalSigns.length > 0);
     }
     return false;
   };
@@ -805,10 +882,10 @@ const AddCasePage = () => {
             <div className="pt-4">
               <Button
                 onClick={handleNext}
-                disabled={!isCurrentStepValid()}
+                disabled={!isCurrentStepValid() || isSubmitting}
                 className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                Add
+                {isSubmitting ? "Adding Case..." : "Add"}
               </Button>
             </div>
           </div>

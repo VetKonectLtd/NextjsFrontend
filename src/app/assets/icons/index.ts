@@ -36,3 +36,6 @@ export {default as Clock} from './clock.png'
 export {default as Filter} from './Filter.png'
 export {default as Warning} from './warning.png'
 export {default as Down} from './down.png'
+export {default as CasesDownload} from './cases-download.svg'
+export {default as CasesAdd} from './cases-add.svg'
+export { default as CasesLoadMore } from '../images/cases-load-more.svg';
