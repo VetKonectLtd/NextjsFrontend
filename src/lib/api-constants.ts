@@ -19,6 +19,7 @@ export const AUTH_ENDPOINTS = {
 
 // User endpoints
 export const USER_ENDPOINTS = {
+	ADD_PAYMENT_DETAILS: "/v3/merchant/paystack/connect",
 	PROFILE: "/users/profile",
 	COMPLETE_PROFILE: "/v3/complete-profile",
 	UPDATE_PROFILE: "/users/profile",
@@ -143,7 +144,8 @@ export const DIRECT_CHAT = {
 export const VETERINARY_ENDPOINTS = {
 	GET_NEAREST_DOCTORS: '/v3/get-nearest-veterinary-doctors',
 	ADD_VET_DOCTOR: "/v3/add-veterinary-doctor",
-	GET_ALL_VET_DOCTOR: "/v3/get-all-veterinary-doctors"
+	GET_ALL_VET_DOCTOR: "/v3/get-all-veterinary-doctors",
+	GET_VET_BY_ID:(Id: string) => `/v3/get-veterinary-doctor/${Id}/doctor`
 } as const;
 
 export const VENDOR_ENDPOINTS = {
@@ -152,12 +154,13 @@ export const VENDOR_ENDPOINTS = {
 
 export const VETERINARY_CLINIC = {
 	ADD_VET_CLINIC: "/v3/add-veterinary-clinic",
-	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics"
+	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics",
+	GET_VET_CLINIC_BY_ID: (Id: string) => `/v3/get-veterinary-clinic/${Id}/clinic`,
 }
-
 export const VETERINARY_PARAPROFESSIONAL = {
 	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional",
-	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals"
+	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals",
+	GET_VET_PARA_BY_ID: (Id: string) =>  `/v3/get-veterinary-paraprofessional/${Id}/paraprofessional`
 }
 
 export const OTHERS = {
@@ -196,4 +199,7 @@ export const ORDER = {
 	CONFIRM_ORDER: (Id: string) => `/v3/orders/${Id}/confirm`,
 	CANCELLED_ORDER: (Id: string) => `/v3/orders/${Id}/cancel`,
 	ORDER_TRACTING: (Id:string) => `/v3/orders/${Id}/track`
+}
+export const RATING ={
+	RATING:"/v3/rate-entity"
 }

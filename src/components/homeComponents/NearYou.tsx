@@ -12,7 +12,7 @@ import { GetNearestVetsRequest, ApiResponse } from '@/types';
 interface NearYouProps {
   vets?: VetProfileProps[];
   onViewProfile?: (id: string) => void;
-  onContact?: (id: string, type: 'phone' | 'message' | 'mail' | 'location' | 'share' | 'rate') => void;
+  onContact?: (id: string, type: 'phone' | 'media' | 'message' | 'mail' | 'location' | 'share' | 'rate') => void;
   userLocation?: { latitude: number; longitude: number };
   useRealData?: boolean; // Flag to determine whether to use real API or sample data
 }
@@ -109,7 +109,7 @@ const NearYou: React.FC<NearYouProps> = ({
     }
   };
 
-  const handleContact = (id: string, type: 'phone' | 'message' | 'mail' | 'location' | 'share' | 'rate') => {
+  const handleContact = (id: string, type: 'phone' | 'media' | 'message' | 'mail' | 'location' | 'share' | 'rate') => {
     if (onContact) {
       onContact(id, type);
     } else {

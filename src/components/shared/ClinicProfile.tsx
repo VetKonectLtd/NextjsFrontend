@@ -25,6 +25,10 @@ export interface ClinicProfileProps {
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
+    latitude?: string | number;
+    longitude?: string | number;
+    state?: string;
+    country?: string;
     email?: string;
     specialty:string;
     role?:string;
@@ -74,7 +78,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             {/* Image Container with overlays */}
-            <div className="relative">
+            <div onClick={handleViewProfile} className=" cursor-pointer relative">
                 <div className="aspect-[4/3] relative">
                     <Image
                         src={image}
@@ -127,7 +131,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
                             {renderStars(rating)}
                         </div>
                         <span className="text-xs font-medium text-white font-nunito">
-                            {rating.toFixed(1)} of {totalRatings}
+                            {rating} of 5
                         </span>
                     </div>
                 </div>

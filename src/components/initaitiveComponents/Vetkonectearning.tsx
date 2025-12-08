@@ -1,7 +1,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Image from "next/image";
-import { Bot, Learning } from "@/app/assets/images";
+import { Bot, Learning1, Learning2, Learning3 } from "@/app/assets/images";
 import { Autoplay, Pagination } from "swiper/modules";
 
 const Vetkonectearning = () => {
@@ -11,12 +11,16 @@ const Vetkonectearning = () => {
 			<h1 className="text-2xl md:text-3xl text-center font-bold text-gray-800 mb-7 leading-snug">
 				Vet konect Early Learning <br /> & <br /> Warning System
 			</h1>
-			<div className="flex flex-col md:flex-row items-center justify-between w-5/6 m-auto gap-10">
-				<div className="md:w-1/2 text-center md:text-left">
-					<p className="mt-6 text-gray-700 text-base md:text-2xl leading-relaxed">
-						We are part of Vet konect’s mission to democratize animal health and
-						become empowered as students of Veterinary medicine, animal science,
-						and related fields to become leaders in our communities.
+			<div className="flex flex-col md:flex-row items-center justify-between md:w-4/5 w-11/12 m-auto gap-10">
+				<div className="md:w-1/2 w-full text-left">
+					<p className="mt-6 text-gray-700 text-base md:text-xl leading-relaxed">
+						Vet Konect’s Early Learning & Warning System uses real-time data and
+						AI to track livestock health and predict outbreaks before they
+						spread. With alerts reaching 120,000+ farmers, communities can take
+						quick action against zoonotic and transboundary diseases. The system
+						also shares easy-to-use guidelines, best practices, and
+						training—strengthening early-warning networks and improving
+						preparedness across the livestock sector.
 					</p>
 				</div>
 
@@ -32,7 +36,7 @@ const Vetkonectearning = () => {
 					>
 						<SwiperSlide>
 							<Image
-								src={Learning}
+								src={Learning1}
 								alt="Vet konect students"
 								width={500}
 								height={350}
@@ -41,7 +45,7 @@ const Vetkonectearning = () => {
 						</SwiperSlide>
 						<SwiperSlide>
 							<Image
-								src={Learning}
+								src={Learning2}
 								alt="Vet konect field work"
 								width={500}
 								height={350}
@@ -50,11 +54,11 @@ const Vetkonectearning = () => {
 						</SwiperSlide>
 						<SwiperSlide>
 							<Image
-								src={Learning}
-								alt="Vet konect training"
+								src={Learning3}
+								alt="Vet konect field work"
 								width={500}
 								height={350}
-								className="object-cover w-full h-[300px] md:h-[350px]"
+								className="object-contain bg-white w-full h-[300px] md:h-[350px]"
 							/>
 						</SwiperSlide>
 					</Swiper>

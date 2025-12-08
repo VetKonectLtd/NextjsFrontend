@@ -118,7 +118,7 @@ const ProductDetailsPage = ({ params }: { params: { productId: string, id:string
 
 							{/* Price */}
 							<div className="text-white text-xl font-bold">
-								${Number(product?.price).toFixed(2)}
+								₦ {Number(product?.price).toFixed(2)}
 							</div>
 						</div>
 					</div>

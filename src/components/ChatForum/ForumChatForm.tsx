@@ -18,6 +18,7 @@ import { useForumService } from "@/services/forumService";
 import { Loader2 } from "lucide-react";
 import { useAuthService } from "@/services/authService";
 import { formatRole } from "@/components/shared/TimeFormat";
+import { forumCategories } from "./forumCategories";
 
 type ForumChatFormProps = {
 	mode: "create" | "edit";
@@ -165,77 +166,11 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 										</SelectTrigger>
 
 										<SelectContent>
-											<SelectItem value="⁠General Pet Health & Wellness">
-											 ⁠General Pet Health & Wellness
-											</SelectItem>
-											<SelectItem value="Canine Medicine & Care">
-												Canine Medicine & Care
-											</SelectItem>
-											<SelectItem value="Feline Medicine & Care">
-												Feline Medicine & Care
-											</SelectItem>
-											<SelectItem value="Small Animal Clinical Cases">
-												Small Animal Clinical Cases
-											</SelectItem>
-											<SelectItem value="Livestock Health & Farm Management">
-												Livestock Health & Farm Management
-											</SelectItem>
-
-											<SelectItem value="Poultry Production & Disease Control">
-												Poultry Production & Disease Control
-											</SelectItem>
-											<SelectItem value="Veterinary Diagnostics & Laboratory Findings">
-												Veterinary Diagnostics & Laboratory Findings
-											</SelectItem>
-											<SelectItem value="Veterinary Drugs, Vaccines & Therapeutics">
-												Veterinary Drugs, Vaccines & Therapeutics
-											</SelectItem>
-											<SelectItem value="Nutrition, Feeding & Supplementation">
-												Nutrition, Feeding & Supplementation
-											</SelectItem>
-
-											<SelectItem value="Animal Reproduction & Breeding Management">
-												Animal Reproduction & Breeding Management
-											</SelectItem>
-											<SelectItem value="Zoonotic Diseases & Public Health">
-												Zoonotic Diseases & Public Health
-											</SelectItem>
-											<SelectItem value="Emergency Care & First Aid Procedures">
-												Emergency Care & First Aid Procedures
-											</SelectItem>
-											<SelectItem value="Surgery, Orthopedics & Radiology">
-												Surgery, Orthopedics & Radiology
-											</SelectItem>
-
-											<SelectItem value="Veterinary Research, Innovations & Technology">
-												Veterinary Research, Innovations & Technology
-											</SelectItem>
-											<SelectItem value="Case Discussions & Expert Consultations">
-												Case Discussions & Expert Consultations
-											</SelectItem>
-											<SelectItem value="Animal Welfare, Ethics & Best Practices">
-												Animal Welfare, Ethics & Best Practices
-											</SelectItem>
-											<SelectItem value="Pet Behaviour & Training">
-												Pet Behaviour & Training
-											</SelectItem>
-
-											<SelectItem value="Veterinary Practice Manag. & Business Tips">
-												Veterinary Practice Manag. & Business Tips
-											</SelectItem>
-											<SelectItem value="Regulations, Policies & Veterinary Law">
-												Regulations, Policies & Veterinary Law
-											</SelectItem>
-											<SelectItem value="Pet Adoption, Rescue & Lost/Found Network">
-												Pet Adoption, Rescue & Lost/Found Network
-											</SelectItem>
-											<SelectItem value="Pet Adoption, Rescue & Lost/Found Networking">
-												Pet Adoption, Rescue & Lost/Found Networking
-											</SelectItem>
-
-											<SelectItem value="Vet Konnect Platform Updates & Community Announcements">
-												Vet Konnect Platform Updates & Community Announcements
-											</SelectItem>
+											{forumCategories.map((category) => (
+												<SelectItem key={category} value={category}>
+													{category}
+												</SelectItem>
+											))}
 
 											{/* Custom option */}
 											<SelectItem value="Others">Others</SelectItem>

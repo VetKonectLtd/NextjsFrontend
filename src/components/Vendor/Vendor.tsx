@@ -105,7 +105,7 @@ const Vendor: React.FC<VendorProps> = () => {
 
   const handleContact = (
     id: string,
-    type: "phone" | "message" | "mail" | "location" | "share" | "rate"
+    type: "phone" | "media" | "message" | "mail" | "location" | "share" | "rate"
   ) => {
     const vendor = transformedVendors.find((v) => v.id === id);
 

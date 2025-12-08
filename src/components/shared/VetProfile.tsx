@@ -30,6 +30,10 @@ export interface VetProfileProps {
     isAvailable: boolean;
     isVerified?: boolean;
     role?:string;
+    latitude?:string;
+    longitude?:string;
+    state?:string;
+    country?:string;
     email?: string;
     phone?: string;
     userId?: string;
@@ -44,15 +48,14 @@ const VetProfile: React.FC<VetProfileProps> = ({
     location,
     image,
     rating,
-    totalRatings,
     isAvailable,
-    isVerified = false,
+    role,
+    isVerified,
     onViewProfile,
     onContact
 }) => {
     const renderStars = (rating: number) => {
         const hasRating = rating > 0;
-
 
         return (
             <Image
@@ -79,7 +82,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             {/* Image Container with overlays */}
             <div className="relative">
-                <div className="aspect-[4/3] relative">
+                <div onClick={handleViewProfile} className="aspect-[4/3] cursor-pointer relative">
                     <Image
                         src={image?.profile_image_url || GENERIC_VET_IMAGE}
                         alt={name}
@@ -131,7 +134,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                             {renderStars(rating)}
                         </div>
                         <span className="text-xs font-medium text-white font-nunito">
-                            {rating.toFixed(1)} of {totalRatings}
+                            {rating} of 5
                         </span>
                     </div>
                 </div>
@@ -141,7 +144,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             <div className="p-4">
                 {/* Name */}
                 <h3 className="font-nunito font-semibold text-lg text-gray-900 mb-1">
-                    Dr. {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
+                   {role == "Veterinarian" && "Dr."}  {name && name.length > 10 ? `${name.slice(0, 10)}...` : name || 'Untitled'}
                 </h3>
 
                 {/* Location */}
@@ -154,7 +157,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                        {location}
+                         {location && location.length > 15 ? `${location.slice(0, 15)}...` : location || 'Untitled'}
                     </span>
                 </div>
 

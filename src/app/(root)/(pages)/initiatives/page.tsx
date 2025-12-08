@@ -6,11 +6,10 @@ import {
 } from "@/components/aboutComponents";
 import AfriVetChroniclesSection from "@/components/initaitiveComponents/AfriVetChroniclesSection";
 import InitiativesHeroSection from "@/components/initaitiveComponents/InitiativesHeroSection";
-import PartnershipSection from "@/components/initaitiveComponents/PartnershipSection";
-import SupportsSection from "@/components/initaitiveComponents/SupportsSection";
 import VetDiary from "@/components/initaitiveComponents/VetDiary";
 import VetkonectChampionProgram from "@/components/initaitiveComponents/VetkonectChampionProgram";
 import Vetkonectearning from "@/components/initaitiveComponents/Vetkonectearning";
+import Wipi from "@/components/initaitiveComponents/Wipi";
 import { Footer } from "@/components/shared";
 import React from "react";
 
@@ -20,12 +19,14 @@ export default function InitiativesPage() {
 			<InitiativesHeroSection />
 
 			<VetkonectChampionProgram />
-			<PartnershipSection/>
-			<SupportsSection/>
+			
 			<Vetkonectearning />
 			<VetDiary/>
-			<AfriVetChroniclesSection />
+			<AfriVetChroniclesSection/>
+			<Wipi />
 			{/* Contact Section */}
+			
+			
 			<ContactSection />
 
 			{/* Footer */}

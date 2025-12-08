@@ -124,11 +124,10 @@ export default function Home() {
 										Quality animal care at your fingertips
 									</h1>
 									<p className="text-xl text-gray-500 mb-8 max-w-2xl mx-auto lg:mx-0">
-										Making animal care available and accessible to everyone
-										everywhere.{" "}
-										<span className="font-medium text-green-400 inline-block animate-bounce">
+										Bringing expert animal care closer to every home and farm{" "}
+										{/* <span className="font-medium text-green-400 inline-block animate-bounce">
 											<ArrowDown size={24} />
-										</span>
+										</span> */}
 									</p>
 
 									<div className="flex flex-wrap justify-center lg:justify-start sm:justify-between gap-4 mb-8">
@@ -222,9 +221,9 @@ export default function Home() {
 						userLocation={
 							activeCoordinates
 								? {
-									latitude: activeCoordinates.latitude,
-									longitude: activeCoordinates.longitude,
-								}
+										latitude: activeCoordinates.latitude,
+										longitude: activeCoordinates.longitude,
+									}
 								: undefined
 						}
 						useRealData={true}

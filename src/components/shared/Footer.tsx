@@ -79,7 +79,7 @@ export default function Footer() {
                 className="w-8 h-8"
               />
               <span className="text-xl font-bold text-gray-900 font-nunito">
-                Vet konect
+                Vet Konect
               </span>
             </div>
             
@@ -111,7 +111,7 @@ export default function Footer() {
             </div>
 
             <p className="text-sm text-gray-500">
-              Copyright Vet konect {currentYear}
+              Copyright Vet Konect {currentYear}
             </p>
           </motion.div>
 

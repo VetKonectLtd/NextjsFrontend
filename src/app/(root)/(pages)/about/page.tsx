@@ -1,32 +1,44 @@
-'use client';
+"use client";
 
-import { AboutSection, OurValuesSection, AreaCoveredSection, TeamMembersSection, ContactSection } from '@/components/aboutComponents';
-import AdvisoryAndActivities from '@/components/aboutComponents/AdvisoryAndActivities';
-import { Footer } from '@/components/shared';
-import React from 'react';
+import {
+	AboutSection,
+	OurValuesSection,
+	AreaCoveredSection,
+	TeamMembersSection,
+	ContactSection,
+} from "@/components/aboutComponents";
+import AdvisoryAndActivities from "@/components/aboutComponents/AdvisoryAndActivities";
+import PartnershipSection from "@/components/aboutComponents/PartnershipSection";
+import SupportsSection from "@/components/aboutComponents/SupportsSection";
+import { Footer } from "@/components/shared";
+import React from "react";
 
 export default function AboutPage() {
-  return (
-    <div className=" bg-white overflow-hidden">
-      {/* About Section */}
-      <AboutSection />
+	return (
+		<div className=" bg-white overflow-hidden">
+			{/* About Section */}
+			<AboutSection />
 
-      {/* Our Values Section */}
-      <OurValuesSection />
+			{/* Our Values Section */}
+			<OurValuesSection />
 
-      {/* Area Covered Section */}
-      <AreaCoveredSection title="Area Covered on Map" />
+			{/* Area Covered Section */}
+			<AreaCoveredSection title="Area Covered on Map" />
 
-      {/* Team Members Section */}
-      <TeamMembersSection />
+			{/* Team Members Section */}
+			<TeamMembersSection />
 
-      <AdvisoryAndActivities />
+			<AdvisoryAndActivities />
 
-      {/* Contact Section */}
-      <ContactSection />
+			<PartnershipSection />
+			<SupportsSection />
 
-      {/* Footer */}
-      <Footer />
-    </div>
-  );
+			{/* Contact Section */}
+
+			<ContactSection />
+
+			{/* Footer */}
+			<Footer />
+		</div>
+	);
 }

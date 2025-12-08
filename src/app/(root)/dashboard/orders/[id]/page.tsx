@@ -8,6 +8,9 @@ import { Warning } from "@/app/assets/icons";
 import { useOrderService } from "@/services/orderService";
 import { useAuthService } from "@/services/authService";
 import Link from "next/link";
+import ReactStars from "react-stars";
+import { useRatingService } from "@/services/ratingService";
+import { Rating } from "@/types";
 
 export default function OrderDetailsPage({
 	params,
@@ -18,14 +21,21 @@ export default function OrderDetailsPage({
 	const { useCurrentUser } = useAuthService();
 	const { useGetOrderById, useTrackOrder, useCancelOrder, useConfirmOrder } =
 		useOrderService();
-	const { data: ordersData, refetch, isLoading } = useGetOrderById(true, params?.id);
+	const {
+		data: ordersData,
+		refetch,
+		isLoading,
+	} = useGetOrderById(true, params?.id);
 	const user = useCurrentUser(true);
 	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 
 	const order = (ordersData as any)?.order;
 
+	
+
 	const product = {
-		id: order?.tracking_number,
+		tracking_number: order?.tracking_number,
+		id:order?.id,
 		product_name: order?.items?.product_name,
 		price: Number(order?.items?.price),
 		location: order?.buyer?.address ?? "Unknown",
@@ -82,11 +92,41 @@ export default function OrderDetailsPage({
 	const confirmOrderMutation = useConfirmOrder(true, params?.id);
 	const trackingMutation = useTrackOrder(true, params?.id);
 
+	// ---- API Mutation Hooks for Rating---- //
+	const { useRating } = useRatingService();
+	const rateMerchantMutation = useRating();
+
+	const [rating, setRating] = useState(0);
+	const [review, setReview] = useState("");
+
+	const ratingChanged = (newRating: any) => {
+		setRating(newRating);
+	}
+
+	const handleRating = () => {
+		rateMerchantMutation.mutate(
+			{
+				rateable_id: product.id,
+				rateable_type: "App\\Models\\Products",
+				rating: rating,
+				comment:review
+			},
+			{
+				onSuccess: () => {
+					setReview("");
+					setRating(0);
+					refetch();
+				},
+			},
+		);
+	};
+	
+
 	const handleCancelOrder = async () => {
 		if (window.confirm(`Are you sure you want to cancel the order?`)) {
 			cancelOrderMutation.mutate({
 				onSuccess: () => {
-					refetch()
+					refetch();
 				},
 			});
 		}
@@ -96,7 +136,7 @@ export default function OrderDetailsPage({
 		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
 			confirmOrderMutation.mutate({
 				onSuccess: () => {
-					refetch()
+					refetch();
 				},
 			});
 		}
@@ -111,15 +151,13 @@ export default function OrderDetailsPage({
 			{ tracking_status: nextStatus },
 			{
 				onSuccess: () => {
-					refetch()
+					refetch();
 				},
 			},
 		);
 	};
 
-	const isCompleted =
-	product.status?.toLowerCase() === "completed"
-
+	const isCompleted = product.status?.toLowerCase() === "completed";
 
 	return (
 		<main className="w-11/12 m-auto min-h-screen">
@@ -190,7 +228,7 @@ export default function OrderDetailsPage({
 							))}
 						</div>
 						<div className="text-white text-xl font-bold">
-							₦{product.price.toLocaleString()}
+							₦ {product.price.toLocaleString()}
 						</div>
 					</div>
 				</div>
@@ -198,11 +236,16 @@ export default function OrderDetailsPage({
 				{/* Content */}
 				<div className="p-6 space-y-4">
 					<h2 className="text-lg font-semibold text-gray-800">
-						{product.product_name} - {product.id}
+						{product.product_name}
 					</h2>
 
 					<p className="text-sm text-gray-500">
-						Sold by: {order?.merchant?.first_name} {order?.merchant?.last_name}
+						<strong>Tracking Id: </strong> {product.tracking_number}
+					</p>
+
+					<p className="text-sm text-gray-500">
+						<strong> Sold by: </strong> {order?.merchant?.first_name}{" "}
+						{order?.merchant?.last_name}
 					</p>
 
 					<div>
@@ -258,8 +301,7 @@ export default function OrderDetailsPage({
 													: "text-gray-500"
 											}`}
 										>
-											{step.replace(/_/g, " ")
-}
+											{step.replace(/_/g, " ")}
 										</span>
 									</div>
 								))}
@@ -272,6 +314,48 @@ export default function OrderDetailsPage({
 						<Image src={Warning} alt="warning" width={20} height={20} />
 						Please make sure you click “Delivery confirmed”.
 					</div>
+
+					{/* Rating Section */}
+					{isBuyer && isCompleted && (
+						<div className="mt-8 border rounded-lg p-5 bg-gray-50">
+							<h3 className="font-semibold text-gray-700 mb-3">
+								Rate Your Experience
+							</h3>
+
+							{/* Stars */}
+							<div className="flex gap-2 mb-4">
+								<ReactStars
+									count={5}
+									onChange={ratingChanged}
+									size={24}
+									color2={"#ffd700"}
+									half={false}
+								/>
+							</div>
+
+							{/* Review Input */}
+							<textarea
+								value={review}
+								onChange={(e) => setReview(e.target.value)}
+								placeholder="Write a short review (optional)"
+								className="w-full border rounded-md p-3 text-sm"
+								rows={3}
+							/>
+
+							{/* Submit Button */}
+							<button
+								onClick={handleRating}
+								disabled={rating === 0 || rateMerchantMutation.isPending}
+								className="mt-4 w-full bg-primary-400 text-white py-2 rounded-lg font-semibold
+                       disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								{rateMerchantMutation.isPending
+									? "Submitting..."
+									: "Submit Rating"}
+							</button>
+						</div>
+					)}
+
 
 					{/* Buttons */}
 					<div className="flex flex-col gap-6 mt-6">
@@ -300,17 +384,19 @@ export default function OrderDetailsPage({
 						)}
 
 						{/* Merchant button */}
-						{isMerchant && !isCompleted && currentStep < progressSteps.length - 1 && (
-							<button
-								onClick={handleAdvanceStep}
-								disabled={trackingMutation.isPending}
-								className="w-full mt-4 bg-primary-400 text-white rounded-lg py-2 font-semibold"
-							>
-								{trackingMutation.isPending
-									? "Updating..."
-									: "Confirm Next Step"}
-							</button>
-						)}
+						{isMerchant &&
+							!isCompleted &&
+							currentStep < progressSteps.length - 1 && (
+								<button
+									onClick={handleAdvanceStep}
+									disabled={trackingMutation.isPending}
+									className="w-full mt-4 bg-primary-400 text-white rounded-lg py-2 font-semibold"
+								>
+									{trackingMutation.isPending
+										? "Updating..."
+										: "Confirm Next Step"}
+								</button>
+							)}
 
 						{/* Cancel Order (buyer only) */}
 						{isBuyer && !isCompleted && !isCanceled && canCancel && (
@@ -332,9 +418,13 @@ export default function OrderDetailsPage({
 							</button>
 						)}
 
-						<Link href="/dashboard/vet-vendor?category=Vendor" className="w-full bg-primary-400 text-white text-center rounded-lg py-2 font-semibold">
+						{isBuyer &&  !canCancel && !isCanceled && (
+						<Link
+							href="/dashboard/vet-vendor?category=Vendor"
+							className="w-full bg-primary-400 text-white text-center rounded-lg py-2 font-semibold"
+						>
 							Buy Again
-						</Link>
+						</Link>)}
 					</div>
 
 					<p className="text-xs text-gray-55 mt-6">

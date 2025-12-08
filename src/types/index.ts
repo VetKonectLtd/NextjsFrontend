@@ -603,3 +603,10 @@ export interface Payment {
 	productId: string;
 	quantity: number;
 }
+
+export interface Rating {
+	rateable_id: string;
+	rateable_type: string;
+	rating: number;
+	comment?: string;
+}

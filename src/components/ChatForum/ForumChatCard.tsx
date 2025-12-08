@@ -22,6 +22,8 @@ import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
 import FilterDropdownMenu from "./DropdownMenu";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { forumCategories } from "./forumCategories";
+import ShareModal from "./ShareModal";
 
 const DEFAULT_AVATAR = User;
 
@@ -34,6 +36,8 @@ const ForumChatCard = () => {
 	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
 	const [searchHistory, setSearchHistory] = useState<string[]>([]);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [shareOpen, setShareOpen] = useState(false);
+	const [shareLink, setShareLink] = useState("");
 
 	const {
 		useLikeForum,
@@ -50,8 +54,6 @@ const ForumChatCard = () => {
 		!!visibilityFilter,
 		visibilityFilter,
 	);
-
-	console.log("getAllForum", getAllForum.data);
 
 	const likeMutation = useLikeForum(activePost || "");
 
@@ -98,12 +100,6 @@ const ForumChatCard = () => {
 		router.push(`/dashboard/chat-forum/${post.id}/${slug}`);
 	};
 
-	// Restore search history
-	useEffect(() => {
-		const saved = localStorage.getItem("forumSearchHistory");
-		if (saved) setSearchHistory(JSON.parse(saved));
-	}, []);
-
 	// Handle search
 	const handleSearch = () => {
 		if (!searchTerm.trim()) return;
@@ -115,11 +111,6 @@ const ForumChatCard = () => {
 		localStorage.setItem("forumSearchHistory", JSON.stringify(updated));
 	};
 
-	const handleClearHistory = () => {
-		setSearchHistory([]);
-		localStorage.removeItem("forumSearchHistory");
-	};
-
 	// Load More logic
 	const handleLoadMore = () => {
 		const nextPage = (getAllForum.data as any)?.chats?.next_page_url;
@@ -128,9 +119,14 @@ const ForumChatCard = () => {
 
 	const isLoading = getAllForum.isLoading && page === 1;
 
-	const postsToRender = allPosts.filter((post) =>
-		post.title.toLowerCase().includes(searchTerm.toLowerCase()),
-	);
+	const postsToRender = allPosts.filter((post) => {
+		const term = searchTerm.toLowerCase();
+		return (
+			post.title.toLowerCase().includes(term) ||
+			post.category.toLowerCase().includes(term) ||
+			post.content.toLowerCase().includes(term)
+		);
+	});
 
 	// Handle like
 	const handleLike = (postId: any) => {
@@ -142,7 +138,6 @@ const ForumChatCard = () => {
 			},
 		});
 	};
-
 
 	return (
 		<div>
@@ -175,27 +170,31 @@ const ForumChatCard = () => {
 			</div>
 
 			{/* Search Tags */}
-			{searchHistory.length > 0 && (
-				<div className="flex items-center justify-between mb-4">
-					<div className="flex pb-4 md:max-w-full max-w-xs overflow-x-auto scrollbar-hide md:overflow-hidden md:gap-3">
-						{searchHistory.map((term) => (
-							<span
-								key={term}
-								onClick={() => setSearchTerm(term)}
-								className="px-3 py-1 text-sm bg-white border border-gray-200 shadow-sm text-gray-700 rounded-full cursor-pointer transition whitespace-nowrap mr-2 md:mr-0 hover:bg-gray-100"
-							>
-								{term}
-							</span>
-						))}
-					</div>
-					<button
-						onClick={handleClearHistory}
-						className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1"
-					>
-						<X size={12} /> Clear
-					</button>
+
+			<div className="flex items-center justify-between mb-4">
+				<div
+					className="
+			flex flex-wrap gap-2 pb-4 
+			w-full
+		 md:overflow-x-visible 
+			overflow-x-auto scrollbar-hide
+		"
+				>
+					{forumCategories.map((category) => (
+						<span
+							key={category}
+							onClick={() => setSearchTerm(category)}
+							className="
+					px-3 py-1 text-sm bg-white border border-gray-200 
+					shadow-sm text-gray-700 rounded-full cursor-pointer 
+					transition whitespace-nowrap hover:bg-gray-100
+				"
+						>
+							{category}
+						</span>
+					))}
 				</div>
-			)}
+			</div>
 
 			{/* Posts */}
 			{isLoading ? (
@@ -325,13 +324,23 @@ const ForumChatCard = () => {
 								</div>
 
 								<div className="flex items-center">
-									<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+									<span
+										onClick={() => {
+											const slug = slugify(post.slug);
+											const link = `https://nextjs-frontend-beta-drab.vercel.app/dashboard/chat-forum/${post.id}/${slug}`;
+											setShareLink(link);
+											setShareOpen(true);
+										}}
+										className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
+									>
 										<Share2 size={14} color="#1D2432" />
 									</span>
 									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
 										{post.shares_count}
 									</span>
 								</div>
+								<ShareModal open={shareOpen} setOpen={setShareOpen} id={post.id} link={shareLink} />
+
 
 								<div className="flex items-center">
 									<span

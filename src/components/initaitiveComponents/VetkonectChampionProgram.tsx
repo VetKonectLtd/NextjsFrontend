@@ -11,16 +11,18 @@ import {
 export default function VetkonectChampionProgram() {
 	return (
 		<section className="relative bg-[#FAFFF4] py-20 overflow-hidden">
-      <h2 className="text-2xl w-4/5 m-auto pb-8 md:text-3xl font-extrabold text-gray-900">
-						Vet konect Champion Program
-					</h2>
-			<div className="w-4/5 m-auto grid md:grid-cols-3 gap-12 items-start">
+			<h2 className="text-2xl md:w-4/5 w-11/12  m-auto pb-8 md:text-3xl font-extrabold text-gray-900">
+				Vet konect Champion Program
+			</h2>
+			<div className="md:w-4/5 w-11/12 m-auto grid md:grid-cols-3 gap-12 items-start">
 				{/* Left Text Section */}
 				<div className="space-y-4 col-span-1">
-					<p className="text-gray-600 leading-relaxed md:text-2xl md:max-w-xs">
-						We are part of Vet konect’s mission to democratize animal health and
-						become empowered as students of Veterinary medicine, animal science,
-						and related fields to become leaders in our communities.
+					<p className="text-gray-600 leading-relaxed md:text-xl md:max-w-xs">
+						This equips vet students and One Health learners with skills,
+						mentorship, and networking. With 300+ Champions in Nigeria and
+						growing chapters in Cameroon, Kenya, and Uganda, the impact is real,
+						over 5,000 people reached through awareness campaigns and 800+
+						animals supported in vaccination outreaches.
 					</p>
 				</div>
 
@@ -67,6 +69,6 @@ export default function VetkonectChampionProgram() {
 					</div>
 				</div>
 			</div>
-</section>
+		</section>
 	);
 }

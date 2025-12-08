@@ -66,8 +66,8 @@ export { default as Activity3 } from './activity3.jpg';
 export { default as Dr_Moses } from './Dr_moses.jpg';
 export { default as Koyode } from './koyode.jpg';
 
-export { default as Hero1 } from './hero1.png';
-export { default as Hero2 } from './hero2.png';
+export { default as Hero1 } from './hero1.jpeg';
+export { default as Hero2 } from './hero2.jpeg';
 export { default as Hero3 } from './hero3.png';
 
 export { default as Champion1 } from './Champion1.png';
@@ -76,6 +76,19 @@ export { default as Champion3 } from './Champion3.png';
 export { default as Champion4 } from './Champion4.png';
 export { default as Chronicle1 } from './Chronicle1.png';
 
-export { default as Learning } from './learning1.png';
+export { default as Dairy } from './diary.jpeg';
+export { default as Learning1 } from './learning1.jpeg';
+export { default as Learning2 } from './learning2.png';
+export { default as Learning3 } from './learning3.jpeg';
 export { default as Bot } from './bot.png';
+
+export { default as Wipi1 } from './wipi1.jpeg';
+export { default as Wipi2 } from './wipi2.jpeg';
+export { default as Wipi3 } from './wipi3.jpeg';
+export { default as Wipi4 } from './wipi4.jpeg';
+export { default as Wipi5 } from './wipi5.jpeg';
+
+
+export { default as DATSU } from './DATSU.jpeg';
+export { default as Atohunse } from './Atohunse.jpeg';
 

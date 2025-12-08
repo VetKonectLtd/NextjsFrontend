@@ -10,6 +10,7 @@ import {
 	MessagesSquareIcon,
 	X,
 	ChevronLeft,
+	ImageIcon,
 } from "lucide-react";
 import { VetProfileProps } from "../shared/VetProfile";
 import VetAccount from "./VetAction";
@@ -22,11 +23,19 @@ const GENERIC_VET_IMAGE =
 interface VeterinarianProps {
 	handleContact?: (
 		id: string,
-		type: "phone" | "message" | "mail" | "location" | "share" | "rate",
+		type:
+			| "phone"
+			| "media"
+			| "message"
+			| "mail"
+			| "location"
+			| "share"
+			| "rate",
 	) => void;
 
 	selectedVet: VetProfileProps | null;
 	selectedAction: string | null;
+	refetchData?: any;
 	setSelectedVet: React.Dispatch<React.SetStateAction<VetProfileProps | null>>;
 }
 
@@ -35,7 +44,10 @@ const SelectedVet = ({
 	selectedAction,
 	setSelectedVet,
 	handleContact,
+	refetchData,
 }: VeterinarianProps) => {
+
+
 	const renderStars = (rating: number) => {
 		const hasRating = rating > 0;
 
@@ -103,8 +115,7 @@ const SelectedVet = ({
 										{renderStars(selectedVet.rating)}
 									</p>
 									<span className="text-xs font-medium text-gray-55 font-nunito">
-										{selectedVet.rating.toFixed(1)} of{" "}
-										{selectedVet.totalRatings}
+										{selectedVet.rating} of 5
 									</span>
 								</div>
 							</div>
@@ -144,6 +155,24 @@ const SelectedVet = ({
 										<Phone size={14} color="#1D2432" />
 									</span>
 									<span className="text-xs">Call</span>
+								</button>
+
+								<button
+									onClick={() => handleContact?.(selectedVet.id, "media")}
+									className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
+								>
+									<span
+										className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+									>
+										<ImageIcon
+											size={14}
+											color="#1D2432"
+											className="sm:w-4 sm:h-4"
+										/>
+									</span>
+									<span className="text-[10px] sm:text-xs text-center">
+										Media
+									</span>
 								</button>
 
 								<button
@@ -210,6 +239,7 @@ const SelectedVet = ({
 							<VetAccount
 								selectedVet={selectedVet}
 								selectedAction={selectedAction}
+								refetchData={refetchData}
 							/>
 						</div>
 					</div>

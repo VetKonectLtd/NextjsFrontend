@@ -12,16 +12,16 @@ export default function InitiativesHeroSection() {
 					<h2 className="text-2xl md:text-3xl font-bold text-gray-900">
 						Initiatives
 					</h2>
-					<p className="text-gray-55 md:w-52 leading-relaxed md:text-2xl">
-						At Vet konect, it all starts with taking initiatives
+					<p className="text-gray-55 md:w-72 leading-relaxed md:text-xl">
+						This represent our commitment to improving animal health, strengthening communities, and advancing One Health across Africa.
 					</p>
 				</div>
 
 				{/* Right Images Section */}
 				<div className="relative flex flex-col col-span-2 items-end md:items-start md:mt-20">
-					<div className="relative rounded-xl overflow-hidden shadow-md mb-3 md:mb-8 w-[100%] h-[370px]">
+					<div className="relative rounded-xl overflow-hidden shadow-md mb-3 md:mb-8 w-full md:w-11/12 h-[370px]">
 						<Image
-							src={Hero1}
+							src={Hero3}
 							alt="Vet konect Initiative group"
 							width={600}
 							height={400}
@@ -43,7 +43,7 @@ export default function InitiativesHeroSection() {
 					{/* Bottom-left overlay image */}
 					<div className="absolute hidden md:block bottom-0 left-0 md:-left-44 transform md:translate-y-10 translate-y-6 rounded-xl overflow-hidden shadow-md w-[50%] md:w-[45%] h-44">
 						<Image
-							src={Hero3}
+							src={Hero1}
 							alt="Vet konect outreach"
 							width={400}
 							height={300}

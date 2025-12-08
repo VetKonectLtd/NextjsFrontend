@@ -10,7 +10,7 @@ import {
 	Moses,
 	Tayo,
 } from "@/app/assets/images";
-import { motion } from "framer-motion";
+import { motion, useAnimationFrame } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +20,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { Navigation } from "swiper/modules";
+import * as Activities from "@/app/assets/activities";
 
 const advisors = [
 	{
@@ -30,7 +31,8 @@ const advisors = [
 	{
 		name: "Sarah Lee Wolfe",
 		image: Koyode,
-		linkedin: "https://www.linkedin.com/in/sara-lee-wolfe-garc%C3%ADa-01213266/",
+		linkedin:
+			"https://www.linkedin.com/in/sara-lee-wolfe-garc%C3%ADa-01213266/",
 	},
 
 	{
@@ -65,6 +67,23 @@ export default function AdvisoryAndActivities() {
 	const swiperRef = useRef<any>(null);
 	const [isMobile, setIsMobile] = useState(false);
 
+	const activityImages = Object.values(Activities);
+	const baseX = useRef(0);
+	const containerRef = useRef<HTMLDivElement | null>(null);
+	const SPEED = 0.5;
+
+	useAnimationFrame(() => {
+		if (!containerRef.current) return;
+
+		baseX.current -= SPEED;
+		containerRef.current.style.transform = `translateX(${baseX.current}px)`;
+
+		const width = containerRef.current.scrollWidth / 2;
+		if (Math.abs(baseX.current) >= width) {
+			baseX.current = 0;
+		}
+	});
+
 	useEffect(() => {
 		const handleResize = () => setIsMobile(window.innerWidth < 768);
 		handleResize();
@@ -86,8 +105,6 @@ export default function AdvisoryAndActivities() {
 			swiper.autoplay.stop();
 		}
 	}, [isMobile]);
-
-	
 
 	return (
 		<div className="w-full py-10">
@@ -153,51 +170,78 @@ export default function AdvisoryAndActivities() {
 
 			{/* Activities Carousel */}
 			<section className="text-center h-auto py-5 bg-[#FFFEF4] relative">
-				<div className="flex justify-between items-center w-11/12 m-auto py-5 mb-6">
-					<h2 className="text-2xl font-bold">Activities</h2>
-					{/* Custom Controls */}
-					<div className="flex justify-center mt-4 gap-3">
-						<button
-							id="prev-btn"
-							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
-						>
-							<ArrowLeft size={16} />
-						</button>
-						<button
-							id="next-btn"
-							className="w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
-						>
-							<ArrowRight size={16} />
-						</button>
-					</div>
+				<div className=" w-4/5 mx-auto">
+					<h2 className="text-lg md:text-3xl font-extrabold text-gray-900 pb-5">
+						Activities
+					</h2>
+
+					<p className="text-gray-600 md:text-left leading-relaxed md:text-xl py-6">
+						These pictures highlight the diverse impact of team members and
+						Champions, showcasing our global participation in leading innovation
+						programs and national challenges, as well as our community-driven
+						outreaches focused on advancing animal health and improving
+						livestock care across Africa.
+					</p>
 				</div>
-				<div className="w-full mx-auto">
-					<Swiper
-						modules={[Navigation, Autoplay]}
-						spaceBetween={50}
-						slidesPerView={1.8} // show 1 full + part of next
-						centeredSlides={true}
-						loop
-						navigation={{
-							prevEl: "#prev-btn",
-							nextEl: "#next-btn",
-						}}
-						className="pb-10"
+
+				<div className="relative  w-11/12 mx-auto flex justify-center items-center mt-9">
+					{/* Left Arrow */}
+					<button
+						id="prev-btn-1"
+						className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
 					>
-						{activities.map((activity, i) => (
-							<SwiperSlide key={i}>
-								<div
-									className="flex flex-col items-center  transition-transform duration-300
-    swiper-slide-active:translate-y-5"
-								>
-									<CurvedImage src={activity.image} alt="Activity" />
-									<p className="mt-4 text-gray-700 text-sm md:text-base">
-										{activity.text}
-									</p>
-								</div>
-							</SwiperSlide>
-						))}
-					</Swiper>
+						<ArrowLeft size={16} />
+					</button>
+
+					{/* Right Arrow */}
+					<button
+						id="next-btn-1"
+						className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center border border-gray-50 bg-white text-black shadow-sm rounded-full"
+					>
+						<ArrowRight size={16} />
+					</button>
+
+					<div className="w-full mx-auto">
+						<Swiper
+							modules={[Navigation, Autoplay]}
+							spaceBetween={20}
+							slidesPerView={1.5}
+							centeredSlides={true}
+							loop
+							autoplay={{
+								delay: 2000,
+								disableOnInteraction: false,
+							}}
+							navigation={{
+								prevEl: "#prev-btn-1",
+								nextEl: "#next-btn-1",
+							}}
+							breakpoints={{
+								0: {
+									slidesPerView: 1,
+								},
+								768: {
+									slidesPerView: 2.5,
+								},
+							}}
+						>
+							{[...activityImages, ...activityImages].map((activity, i) => (
+								<SwiperSlide key={i}>
+									<div className="flex flex-col items-center w-11/12 md:h-auto h-96 m-auto">
+										<div className="w-full h-96 overflow-hidden shadow-md rounded-xl">
+											<Image
+												src={activity}
+												alt="AfriVet main group"
+												width={600}
+												height={400}
+												className="object-cover w-full h-full"
+											/>
+										</div>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
 				</div>
 			</section>
 		</div>
