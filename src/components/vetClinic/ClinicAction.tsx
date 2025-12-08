@@ -1,5 +1,5 @@
 "use client";
-import { Copy, Link, Send, Smile } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon, Copy, Link, Send, Smile, X } from "lucide-react";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { ClinicProfileProps } from "../shared/ClinicProfile";
 import ChatBox from "./ChatBox";
 import ReactStars from "react-stars";
 import { useRatingService } from "@/services/ratingService";
+import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
 
 interface VetClinicProps {
 	selectedClinic: ClinicProfileProps | null;
@@ -19,12 +20,20 @@ const ClinicAccount = ({
 	selectedAction,
 	refetchData,
 }: VetClinicProps) => {
+	const { useGetVetClinicById } = useVeterinaryClinicService();
+	const id = selectedClinic?.id as any;
+
 	const [copied, setCopied] = useState<string | null>(null);
+	const [activeImage, setActiveImage] = useState<number | null>(null);
+	const { data: getVetClinic} = useGetVetClinicById(true, id);
+
+
+	const media = (getVetClinic as any)?.clinic?.user.media
 
 	const { useRating } = useRatingService();
 
 	const ratingMutation = useRating();
-// console.log(selectedClinic.media);
+	
 	const ratingChanged = (newRating: any) => {
 		ratingMutation.mutate(
 			{
@@ -69,23 +78,92 @@ const ClinicAccount = ({
 				</>
 			)}
 
+
 			{selectedAction === "media" && (
-				<>
-					<div className="flex justify-center mb-2">
-						<Image
-							src={Hand.src}
-							alt="hand"
-							width={50}
-							height={50}
-							className="object-cover"
-						/>
-					</div>
-					<p className="text-gray-55 font-bold">Hey! Users</p>
-					<p className="w-3/5 m-auto">
-						Kindly click on the button above to add a new product to your store
-					</p>
-				</>
-			)}
+							<div className="w-full px-4">
+								{/* If no media */}
+								{(!media || media.length === 0) && (
+									<div className="flex flex-col items-center text-center text-gray-400 mt-6">
+										<Image
+											src={Hand.src}
+											alt="empty"
+											width={60}
+											height={60}
+											className="opacity-40"
+										/>
+										<p className="text-sm mt-2">No media uploaded yet</p>
+									</div>
+								)}
+			
+								{/* IMAGE PREVIEW MODAL STATE */}
+								{media && media.length > 0 && (
+									<>
+										{/* CLICKABLE MEDIA GRID */}
+										<div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4">
+											{media.map((item: any, index: number) => (
+												<div
+													key={index}
+													className="relative w-full h-24 sm:h-28 bg-gray-100 rounded-lg overflow-hidden border cursor-pointer"
+													onClick={() => setActiveImage(index)}
+												>
+													<Image
+														src={item.file_url}
+														alt={`media-${index}`}
+														fill
+														className="object-cover"
+													/>
+												</div>
+											))}
+										</div>
+			
+										{/* MODAL OVERLAY */}
+										{activeImage !== null && (
+											<div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]">
+												<div className="relative w-[90%] max-w-2xl">
+													{/* IMAGE */}
+													<div className="relative w-full h-[60vh] sm:h-[70vh]">
+														<Image
+															src={media[activeImage].file_url}
+															alt="Preview"
+															fill
+															className="object-contain rounded-lg"
+														/>
+													</div>
+			
+													{/* CLOSE BUTTON */}
+													<button
+														onClick={() => setActiveImage(null)}
+														className="absolute top-2 right-2 bg-white rounded-full p-2 shadow"
+													>
+														<X size={16} />
+													</button>
+			
+													{/* LEFT ARROW */}
+													{activeImage > 0 && (
+														<button
+															onClick={() => setActiveImage((prev) => prev! - 1)}
+															className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow"
+														>
+															<ArrowLeftIcon size={16}/>
+														</button>
+													)}
+			
+													{/* RIGHT ARROW */}
+													{activeImage < media.length - 1 && (
+														<button
+															onClick={() => setActiveImage((prev) => prev! + 1)}
+															className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow"
+														>
+															<ArrowRightIcon size={16}/>
+														</button>
+													)}
+												</div>
+											</div>
+										)}
+									</>
+								)}
+							</div>
+						)}
 
 			{selectedAction === "phone" && (
 				<>

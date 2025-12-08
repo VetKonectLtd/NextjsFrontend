@@ -154,9 +154,9 @@ export const VENDOR_ENDPOINTS = {
 
 export const VETERINARY_CLINIC = {
 	ADD_VET_CLINIC: "/v3/add-veterinary-clinic",
-	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics"
+	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics",
+	GET_VET_CLINIC_BY_ID: (Id: string) => `/v3/get-veterinary-clinic/${Id}/clinic`,
 }
-
 export const VETERINARY_PARAPROFESSIONAL = {
 	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional",
 	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals",

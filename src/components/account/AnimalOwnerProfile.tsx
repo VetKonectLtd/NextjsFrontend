@@ -47,7 +47,7 @@ const AnimalOwnerProfile = ({
 	);
 	const { useCurrentUser, useUpdateProfile } = useAuthService();
 	const { data: user, refetch: refetchUser } = useCurrentUser(true);
-  	const { useAddPaymentDetails } = usePaymentService();
+	const { useAddPaymentDetails } = usePaymentService();
 	const paymentDetailsMutation = useAddPaymentDetails();
 
 	const updateProfileMutation = useUpdateProfile();
@@ -76,8 +76,7 @@ const AnimalOwnerProfile = ({
 		useState(false);
 	const [vetClinicModalOpen, setVetClinicModalOpen] = useState(false);
 
-
-  const handleAddPaymentDetail = () => {
+	const handleAddPaymentDetail = () => {
 		paymentDetailsMutation.mutate({
 			onSuccess: (data: any) => {
 				if (data?.authorization_url) {
@@ -112,6 +111,8 @@ const AnimalOwnerProfile = ({
 	);
 	const allRoles = ALL_ROLES;
 
+	console.log(user);
+
 	const switchableRolesMap: Record<string, RoleKey[]> = {
 		[ROLE.VETERINARIAN]: allRoles
 			.filter((r) => r.key !== ROLE.PARAPROFESSIONAL)
@@ -122,8 +123,8 @@ const AnimalOwnerProfile = ({
 		[ROLE.LIVESTOCK_FARMER]: allRoles.map((r) => r.key as RoleKey),
 		[ROLE.CLINIC]: allRoles.map((r) => r.key as RoleKey),
 		[ROLE.OTHERS]: allRoles.map((r) => r.key as RoleKey),
+		[ROLE.BASIC]: allRoles.map((r) => r.key as RoleKey),
 	};
-
 
 	const switchable = useMemo(() => {
 		const list = switchableRolesMap[backendRole] || [];
@@ -409,7 +410,7 @@ const AnimalOwnerProfile = ({
 					</div>
 
 					{/* Status Dropdown */}
-					<div className="relative">
+					{/* <div className="relative">
 						<select
 							name="status"
 							value={formData.status}
@@ -423,7 +424,7 @@ const AnimalOwnerProfile = ({
 							))}
 						</select>
 						<ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-					</div>
+					</div> */}
 
 					{/* Bio */}
 					<div>
@@ -613,7 +614,9 @@ const AnimalOwnerProfile = ({
 					{/* Name */}
 					<div className="text-center mb-6">
 						<h1 className="text-xl font-bold text-gray-900 mb-6">
-							{formData.firstName} {formData.lastName}
+							{(user as any)?.role === "basic_user"
+								? `${apiProfile.first_name} ${apiProfile.last_name}`
+								: `${formData.firstName} ${formData.lastName}`}
 						</h1>
 					</div>
 

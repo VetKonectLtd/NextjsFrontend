@@ -19,7 +19,6 @@ const ChatBox = ({ selectedVet }: any) => {
 	const { useSendMessage } = directMessageService();
 	const sendMessageMutation = useSendMessage();
 
-	console.log(selectedVet);
 
 	const { register, handleSubmit, getValues, setValue } =
 		useForm<MessageFormData>();

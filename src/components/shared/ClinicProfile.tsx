@@ -25,6 +25,10 @@ export interface ClinicProfileProps {
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
+    latitude?: string | number;
+    longitude?: string | number;
+    state?: string;
+    country?: string;
     email?: string;
     specialty:string;
     role?:string;

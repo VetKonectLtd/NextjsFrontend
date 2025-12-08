@@ -10,13 +10,13 @@ import "swiper/css/navigation";
 export default function AfriVetChroniclesSection() {
 	return (
 		<section className="relative bg-[#FFFEF4] py-16 overflow-hidden">
-			<div className=" text-center">
-				<div className=" w-4/5 mx-auto">
-					<h2 className="text-lg md:text-3xl font-extrabold text-gray-900">
+			<div >
+				<div className="md:w-4/5 w-11/12 mx-auto">
+					<h2 className="text-lg text-center md:text-3xl font-extrabold text-gray-900">
 						Vet konect AfriVet Chronicles
 					</h2>
 
-					<p className="text-gray-600 md:text-left leading-relaxed md:text-xl py-6">
+					<p className="text-gray-600 text-left leading-relaxed md:text-xl py-6">
 						AfriVet Chronicles is a monthly Pan-African series by Vet Konect
 						that celebrates the stories, journeys, and impact of veterinary
 						professionals across Africa. By highlighting their passion,

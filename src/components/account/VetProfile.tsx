@@ -45,19 +45,16 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 	);
 	const { useCurrentUser, useUpdateProfile } = useAuthService();
 
-
 	const { data: user, refetch: refetchUser, isLoading } = useCurrentUser(true);
 
 	const updateProfileMutation = useUpdateProfile();
 
 	const currentUser = (user as any)?.profile;
-	
 
 	// Get the normalized backend role
 	const backendRole: RoleKey | string = normalizeRole(
 		(user as any)?.role || "",
 	);
-
 
 	const [formData, setFormData] = useState({
 		email: (currentUser?.user?.email as string) || "",
@@ -71,6 +68,8 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		bio: (currentUser?.user?.profile?.bio as string) || "",
 		isAvailable: Boolean(currentUser?.availability),
 	});
+
+	console.log(currentUser, "availability");
 
 	const [profileImage, setProfileImage] = useState<any>(
 		(currentUser?.user?.profile?.profile_image_url as string) ||
@@ -117,6 +116,8 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		if (formData.lastName) payload.append("last_name", formData.lastName);
 		if (formData.phoneNo) payload.append("phone_num", formData.phoneNo);
 		if (formData.bio) payload.append("bio", formData.bio);
+		payload.append("availability", formData.isAvailable ? "1" : "0");
+
 
 		// Try to split location into state, country if the UI provides a single string
 		if (formData.location) {
@@ -141,7 +142,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 			},
 		});
 	};
-
 
 	if (isEditMode) {
 		return (
@@ -242,6 +242,20 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 								onChange={(e) => handleInputChange("location", e.target.value)}
 								placeholder="Location / Address"
 								className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+							/>
+						</div>
+
+						{/* Availability Toggle */}
+						<div className="flex items-center justify-between py-3">
+							<label className="text-sm font-medium text-gray-700">
+								Available for Consultation
+							</label>
+							<Switch
+								checked={formData.isAvailable}
+								onCheckedChange={(checked) =>
+									setFormData((prev) => ({ ...prev, isAvailable: checked }))
+								}
+								className="data-[state=checked]:bg-green-500"
 							/>
 						</div>
 
@@ -443,7 +457,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 					{/* Name and Title */}
 					<div className="text-center mb-6">
 						<h1 className="text-xl font-bold capitalize text-gray-900 mb-1">
-							{currentUser?.role == "Veterinarian" ? "Dr." : ""}
+							{currentUser?.role == "Veterinarian" ? "Dr. " : ""}
 							{currentUser?.user.first_name} {currentUser?.user.last_name}
 						</h1>
 						<p className="text-gray-600 mb-4">{currentUser?.role}</p>
@@ -480,16 +494,15 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 							</span>
 						</div>
 
-
 						{/* Availability */}
 						<div className="mb-6">
 							<p className="text-sm text-gray-600 mb-2">Availability</p>
 							<div className="flex items-center justify-center gap-3">
 								<Switch
 									checked={currentUser?.availability}
-									onCheckedChange={(checked) =>
-										setFormData((prev) => ({ ...prev, isAvailable: checked }))
-									}
+									// onCheckedChange={(checked) =>
+									// 	setFormData((prev) => ({ ...prev, isAvailable: checked }))
+									// }
 									className="data-[state=checked]:bg-green-500"
 								/>
 							</div>
