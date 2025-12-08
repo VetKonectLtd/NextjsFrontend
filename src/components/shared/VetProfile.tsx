@@ -30,6 +30,10 @@ export interface VetProfileProps {
     isAvailable: boolean;
     isVerified?: boolean;
     role?:string;
+    latitude?:string;
+    longitude?:string;
+    state?:string;
+    country?:string;
     email?: string;
     phone?: string;
     userId?: string;
@@ -46,13 +50,12 @@ const VetProfile: React.FC<VetProfileProps> = ({
     rating,
     isAvailable,
     role,
-    isVerified = false,
+    isVerified,
     onViewProfile,
     onContact
 }) => {
     const renderStars = (rating: number) => {
         const hasRating = rating > 0;
-
 
         return (
             <Image
@@ -141,7 +144,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             <div className="p-4">
                 {/* Name */}
                 <h3 className="font-nunito font-semibold text-lg text-gray-900 mb-1">
-                   {role == "Veterinarian" && "Dr."}  {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
+                   {role == "Veterinarian" && "Dr."}  {name && name.length > 10 ? `${name.slice(0, 10)}...` : name || 'Untitled'}
                 </h3>
 
                 {/* Location */}
@@ -154,7 +157,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                        {location}
+                         {location && location.length > 15 ? `${location.slice(0, 15)}...` : location || 'Untitled'}
                     </span>
                 </div>
 

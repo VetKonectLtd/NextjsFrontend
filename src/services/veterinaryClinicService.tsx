@@ -23,6 +23,12 @@ export const useVeterinaryClinicService = () => {
         );
     };
 
+    const useGetVetClinicById = (enabled: boolean = false, id: string) => {
+            return useGet<any>(["getVetParaById"], VETERINARY_CLINIC.GET_VET_CLINIC_BY_ID(id), {
+                enabled,
+                staleTime: 0,
+            });
+        };
 
 
     const useGetAllVetClinic = (page: number = 1, enabled: boolean = true) => {
@@ -43,6 +49,7 @@ export const useVeterinaryClinicService = () => {
 
     return {
       useAddVetClinic,
-      useGetAllVetClinic
+      useGetAllVetClinic,
+      useGetVetClinicById
     };
 };

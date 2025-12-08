@@ -81,7 +81,6 @@ export default function VetVendorPage() {
 		{ name: "Tool and Materials", icon: Icon13 },
 	];
 
-	
 	// categories tabs
 	const tabs = categories.map((c) => {
 		const count =
@@ -106,8 +105,6 @@ export default function VetVendorPage() {
 			? allProducts
 			: allProducts.filter((p: any) => p.category === activeTab);
 
-			
-
 	return (
 		<div className="w-11/12 m-auto bg-white">
 			<div className="font-semibold flex items-end justify-end text-[#0F0F0F]">
@@ -120,7 +117,10 @@ export default function VetVendorPage() {
 			/>
 
 			<div className="flex md:flex-row flex-col items-center gap-4 w-full py-2">
-				<SearchBar setSelectedLocation={setSelectedLocation} setSelectedCountry={setSelectedCountry}  />
+				<SearchBar
+					setSelectedLocation={setSelectedLocation}
+					setSelectedCountry={setSelectedCountry}
+				/>
 
 				{activeCategory == "Vendor" && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
@@ -205,9 +205,14 @@ export default function VetVendorPage() {
 				/>
 			</div>
 
-			{activeCategory == "Veterinarian" && <Veterinarian />}
-			{activeCategory == "VPP" && <VeterinaryParaprofessional />}
-			{activeCategory == "Vet Clinic" && <VetClinic />}
+			{activeCategory == "Veterinarian" && (
+				<Veterinarian
+					selectedLocation={selectedLocation}
+					selectedCountry={selectedCountry}
+				/>
+			)}
+			{activeCategory == "VPP" && <VeterinaryParaprofessional selectedLocation={selectedLocation}/>}
+			{activeCategory == "Vet Clinic" && <VetClinic selectedLocation={selectedLocation}/>}
 		</div>
 	);
 }

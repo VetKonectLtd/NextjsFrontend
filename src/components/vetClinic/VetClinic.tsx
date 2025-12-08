@@ -13,9 +13,10 @@ const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba
 
 interface VetClinicProps {
     clinics?: ClinicProfileProps[];
+    selectedLocation?: { latitude: number; longitude: number } | null;
 }
 
-const VetClinic: React.FC<VetClinicProps> = () => {
+const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [allClinics, setAllClinics] = useState<VetClinicData[]>([]);
     const [selectedClinic, setSelectedClinic] = useState<ClinicProfileProps | null>(null);
@@ -62,14 +63,91 @@ const VetClinic: React.FC<VetClinicProps> = () => {
                 image: (clinic.user.profile as any).profile_image_url || GENERIC_VET_IMAGE,
                 rating: averageRating,
                 totalRatings: totalRatings,
-                isAvailable: clinic.availability === 1,
-                isVerified: clinic.is_approved === 1,
+                isAvailable: clinic.availability == 1,
+                isVerified: clinic.is_approved == 1,
                 email: clinic.user.email,
                 phone: clinic.user.phone_num,
                 userId: clinic.user_id.toString(),
+
+                latitude: clinic.latitude,
+                longitude: clinic.longitude,
+                state: clinic.user.state,
+                country: clinic.user.country
             };
         });
     }, [data, currentPage, allClinics]);
+
+
+    // ---------------------------------------------------
+	// 1️⃣ FILTER VETS WITHIN 50KM RADIUS
+	// ---------------------------------------------------
+	const vetsWithinRadius = useMemo(() => {
+		if (!selectedLocation) return transformedClinics;
+
+		const R = 6371;
+		const calculateDistance = (
+			lat1: number,
+			lon1: number,
+			lat2: number,
+			lon2: number,
+		) => {
+			const dLat = (lat2 - lat1) * (Math.PI / 180);
+			const dLon = (lon2 - lon1) * (Math.PI / 180);
+
+			const a =
+				Math.sin(dLat / 2) ** 2 +
+				Math.cos((lat1 * Math.PI) / 180) *
+					Math.cos((lat2 * Math.PI) / 180) *
+					Math.sin(dLon / 2) ** 2;
+
+			return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		};
+
+		return transformedClinics.filter((clinic) => {
+			if (!clinic.latitude || !clinic.longitude) return false;
+
+			const dist = calculateDistance(
+				selectedLocation.latitude,
+				selectedLocation.longitude,
+				Number(clinic.latitude),
+				Number(clinic.longitude),
+			);
+
+			return dist <= 50;
+		});
+	}, [selectedLocation, transformedClinics]);
+
+	// ---------------------------------------------------
+	// 2️⃣ IF NO VET NEARBY → SEARCH NEARBY STATES
+	// ---------------------------------------------------
+	const vetsInNearbyStates = useMemo(() => {
+		if (!selectedLocation) return [];
+
+		// get user current state based on geocode (assuming backend stores state)
+		const userState = transformedClinics.find(
+			(v) => v.latitude && v.longitude,
+		)?.state;
+
+		if (!userState) return [];
+
+		// find all vets NOT in the user state but in same country
+		const nearbyStates = transformedClinics.filter(
+			(v) => v.state !== userState && v.country === "Nigeria",
+		);
+
+		return nearbyStates;
+	}, [selectedLocation, transformedClinics]);
+
+	// ---------------------------------------------------
+	// 3️⃣ FINAL RESULT
+	// ---------------------------------------------------
+	const finalFilteredClinic =
+		selectedLocation && vetsWithinRadius.length > 0
+			? vetsWithinRadius
+			: selectedLocation && vetsWithinRadius.length === 0
+				? vetsInNearbyStates
+				: transformedClinics;
+
 
     const handleViewProfile = (id: string) => {
         const clinic = transformedClinics.find((v) => v.id === id) || null;
@@ -126,7 +204,7 @@ const VetClinic: React.FC<VetClinicProps> = () => {
                         title="Failed to Load"
                         description="Failed to load veterinary clinics. Please try again."
                     />
-                ) : transformedClinics.length === 0 ? (
+                ) : finalFilteredClinic.length === 0 ? (
                     <EmptyState
                         title="No Clinics Found"
                         description="There are no veterinary clinics available at the moment."
@@ -137,7 +215,7 @@ const VetClinic: React.FC<VetClinicProps> = () => {
                             className={`grid mt-3 md:gap-6 gap-3
             ${selectedClinic ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 md:grid-cols-4"}`}
                         >
-                            {transformedClinics.map((clinic) => (
+                            {finalFilteredClinic.map((clinic) => (
                                 <ClinicProfile
                                     key={clinic.id}
                                     {...clinic}

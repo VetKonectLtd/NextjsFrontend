@@ -21,7 +21,7 @@ const SearchBar = ({ setSelectedLocation, setSelectedCountry }: any) => {
 					// setSelectedCountry(null);
 				}}
 				placeholder="Type in your location"
-				className="flex-1 bg-transparent outline-none text-sm px-2"
+				className="flex-1 w-full bg-transparent outline-none text-sm px-2"
 			/>
 			<button className="bg-gray-500 rounded-r-full p-3 flex items-center justify-center">
 				<Search size={15} color="#fff" />

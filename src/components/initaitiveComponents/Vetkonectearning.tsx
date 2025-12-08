@@ -11,8 +11,8 @@ const Vetkonectearning = () => {
 			<h1 className="text-2xl md:text-3xl text-center font-bold text-gray-800 mb-7 leading-snug">
 				Vet konect Early Learning <br /> & <br /> Warning System
 			</h1>
-			<div className="flex flex-col md:flex-row items-center justify-between w-5/6 m-auto gap-10">
-				<div className="md:w-1/2 text-center md:text-left">
+			<div className="flex flex-col md:flex-row items-center justify-between md:w-4/5 w-11/12 m-auto gap-10">
+				<div className="md:w-1/2 w-full text-left">
 					<p className="mt-6 text-gray-700 text-base md:text-xl leading-relaxed">
 						Vet Konect’s Early Learning & Warning System uses real-time data and
 						AI to track livestock health and predict outbreaks before they

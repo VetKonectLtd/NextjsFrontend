@@ -76,6 +76,7 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 		setValue("role", (user as Record<string, any>).data?.role);
 	}, [setValue, user]);
 
+
 	const countries = Country.getAllCountries().map((c) => ({
 		value: c.isoCode,
 		label: `${c.name}`,

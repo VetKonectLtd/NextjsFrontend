@@ -13,9 +13,10 @@ const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba
 
 interface VeterinaryParaprofessionalProps {
 	vets?: VetProfileProps[];
+	selectedLocation?: { latitude: number; longitude: number } | null;
 }
 
-const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = () => {
+const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ({selectedLocation}) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [allVPPs, setAllVPPs] = useState<VetParaprofessionalData[]>([]);
 	const [selectedVet, setSelectedVet] = useState<VetProfileProps | null>(null);
@@ -61,14 +62,93 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ()
 				rating: averageRating,
 				role:vpp.role,
 				totalRatings: totalRatings,
-				isAvailable: vpp.availability === 1,
-				isVerified: vpp.is_approved === 1,
+				isAvailable: vpp.availability == 1,
+				isVerified: vpp.is_approved == 1,
 				email: vpp.user.email,
 				phone: vpp.user.phone_num,
 				userId: vpp.user_id.toString(),
+
+				latitude: vpp.latitude,
+				longitude: vpp.longitude,
+				state: vpp.user.state,
+				country: vpp.user.country,
 			};
 		});
 	}, [data, currentPage, allVPPs]);
+
+
+
+	// ---------------------------------------------------
+	// 1️⃣ FILTER VETS WITHIN 50KM RADIUS
+	// ---------------------------------------------------
+	const vetsWithinRadius = useMemo(() => {
+		if (!selectedLocation) return transformedVets;
+
+		const R = 6371;
+		const calculateDistance = (
+			lat1: number,
+			lon1: number,
+			lat2: number,
+			lon2: number,
+		) => {
+			const dLat = (lat2 - lat1) * (Math.PI / 180);
+			const dLon = (lon2 - lon1) * (Math.PI / 180);
+
+			const a =
+				Math.sin(dLat / 2) ** 2 +
+				Math.cos((lat1 * Math.PI) / 180) *
+					Math.cos((lat2 * Math.PI) / 180) *
+					Math.sin(dLon / 2) ** 2;
+
+			return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		};
+
+		return transformedVets.filter((vpp) => {
+			if (!vpp.latitude || !vpp.longitude) return false;
+
+			const dist = calculateDistance(
+				selectedLocation.latitude,
+				selectedLocation.longitude,
+				Number(vpp.latitude),
+				Number(vpp.longitude),
+			);
+
+			return dist <= 50;
+		});
+	}, [selectedLocation, transformedVets]);
+
+	// ---------------------------------------------------
+	// 2️⃣ IF NO VET NEARBY → SEARCH NEARBY STATES
+	// ---------------------------------------------------
+	const vetsInNearbyStates = useMemo(() => {
+		if (!selectedLocation) return [];
+
+		// get user current state based on geocode (assuming backend stores state)
+		const userState = transformedVets.find(
+			(v) => v.latitude && v.longitude,
+		)?.state;
+
+		if (!userState) return [];
+
+		// find all vets NOT in the user state but in same country
+		const nearbyStates = transformedVets.filter(
+			(v) => v.state !== userState && v.country === "Nigeria",
+		);
+
+		return nearbyStates;
+	}, [selectedLocation, transformedVets]);
+
+	// ---------------------------------------------------
+	// 3️⃣ FINAL RESULT
+	// ---------------------------------------------------
+	const finalFilteredPara =
+		selectedLocation && vetsWithinRadius.length > 0
+			? vetsWithinRadius
+			: selectedLocation && vetsWithinRadius.length === 0
+				? vetsInNearbyStates
+				: transformedVets;
+
+
 
 	const handleViewProfile = (id: string) => {
 		const vet = transformedVets.find((v) => v.id === id) || null;
@@ -126,7 +206,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ()
 						title="Failed to Load"
 						description="Failed to load veterinary paraprofessionals. Please try again."
 					/>
-				) : transformedVets.length === 0 ? (
+				) : finalFilteredPara.length === 0 ? (
 					<EmptyState
 						title="No Paraprofessionals Found"
 						description="There are no veterinary paraprofessionals available at the moment."
@@ -137,7 +217,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ()
 							className={`grid mt-3 md:gap-6 gap-3
             ${selectedVet ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 md:grid-cols-4"}`}
 						>
-							{transformedVets.map((vet) => (
+							{finalFilteredPara.map((vet) => (
 								<VetProfile
 									key={vet.id}
 									{...vet}

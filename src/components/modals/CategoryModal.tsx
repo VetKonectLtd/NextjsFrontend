@@ -125,7 +125,7 @@ const CategoryModal = () => {
 
 		const userRole = (user as any)?.role || (user as any)?.profile?.role;
 
-		if (!userRole && justLoggedIn) {
+		if (userRole == "basic_user" && justLoggedIn) {
 			setOpen(true);
 			sessionStorage.removeItem("justLoggedIn");
 		} else {

@@ -1,5 +1,5 @@
 "use client";
-import { Copy, Link, Send, Smile } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon, Copy, Link, Send, Smile, X} from "lucide-react";
 import { VetProfileProps } from "../shared/VetProfile";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
@@ -28,14 +28,16 @@ const VetAccount = ({
 	const role = selectedVet?.role as any;
 
 	const { useGetVetDoctorById } = useVeterinaryService();
-	const {useGetVetParaById}= useVeterinaryParaprofessionalService()
+	const { useGetVetParaById } = useVeterinaryParaprofessionalService();
 
 	const { data: getVetDotors } = useGetVetDoctorById(true, id);
-	const {data: getVetPara} = useGetVetParaById(true, id);
+	const { data: getVetPara } = useGetVetParaById(true, id);
+	const [activeImage, setActiveImage] = useState<number | null>(null);
 
-
-
-	const media = (role == "Veterinarian") ? (getVetDotors as any)?.veterinary_doctor.user.media : (getVetPara as any)?.veterinary_paraprofessional.user.media
+	const media =
+		role == "Veterinarian"
+			? (getVetDotors as any)?.veterinary_doctor.user.media
+			: (getVetPara as any)?.veterinary_paraprofessional.user.media;
 
 	const ratingMutation = useRating();
 
@@ -91,7 +93,6 @@ const VetAccount = ({
 
 			{selectedAction === "media" && (
 				<div className="w-full px-4">
-
 					{/* If no media */}
 					{(!media || media.length === 0) && (
 						<div className="flex flex-col items-center text-center text-gray-400 mt-6">
@@ -106,23 +107,72 @@ const VetAccount = ({
 						</div>
 					)}
 
-					{/* MEDIA GRID */}
+					{/* IMAGE PREVIEW MODAL STATE */}
 					{media && media.length > 0 && (
-						<div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4">
-							{media.map((item: any, index: number) => (
-								<div
-									key={index}
-									className="relative w-full h-24 sm:h-28 bg-gray-100 rounded-lg overflow-hidden border"
-								>
-									<Image
-										src={item.file_url}
-										alt={`media-${index}`}
-										fill
-										className="object-cover"
-									/>
+						<>
+							{/* CLICKABLE MEDIA GRID */}
+							<div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-4">
+								{media.map((item: any, index: number) => (
+									<div
+										key={index}
+										className="relative w-full h-24 sm:h-28 bg-gray-100 rounded-lg overflow-hidden border cursor-pointer"
+										onClick={() => setActiveImage(index)}
+									>
+										<Image
+											src={item.file_url}
+											alt={`media-${index}`}
+											fill
+											className="object-cover"
+										/>
+									</div>
+								))}
+							</div>
+
+							{/* MODAL OVERLAY */}
+							{activeImage !== null && (
+								<div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]">
+									<div className="relative w-[90%] max-w-2xl">
+										{/* IMAGE */}
+										<div className="relative w-full h-[60vh] sm:h-[70vh]">
+											<Image
+												src={media[activeImage].file_url}
+												alt="Preview"
+												fill
+												className="object-contain rounded-lg"
+											/>
+										</div>
+
+										{/* CLOSE BUTTON */}
+										<button
+											onClick={() => setActiveImage(null)}
+											className="absolute top-2 right-2 bg-white rounded-full p-2 shadow"
+										>
+											<X size={16} />
+										</button>
+
+										{/* LEFT ARROW */}
+										{activeImage > 0 && (
+											<button
+												onClick={() => setActiveImage((prev) => prev! - 1)}
+												className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow"
+											>
+												<ArrowLeftIcon size={16}/>
+											</button>
+										)}
+
+										{/* RIGHT ARROW */}
+										{activeImage < media.length - 1 && (
+											<button
+												onClick={() => setActiveImage((prev) => prev! + 1)}
+												className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow"
+											>
+												<ArrowRightIcon size={16}/>
+											</button>
+										)}
+									</div>
 								</div>
-							))}
-						</div>
+							)}
+						</>
 					)}
 				</div>
 			)}

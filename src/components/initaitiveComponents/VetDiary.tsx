@@ -6,13 +6,13 @@ const VetDiary = () => {
 	return (
 		<div>
 			<section className="text-center h-auto py-5 bg-[#FAFFF4] relative">
-				<div className="flex justify-between items-center w-4/5 m-auto py-5 mb-6">
+				<div className="flex justify-between items-center md:w-4/5 w-11/12  m-auto py-5 mb-6">
 					<h2 className="text-xl md:text-3xl font-bold">
 						Vet konect Dairy Show
 					</h2>
 				</div>
 
-				<div className="w-4/5 m-auto grid md:grid-cols-2 gap-6">
+				<div className="md:w-4/5 w-11/12 m-auto grid md:grid-cols-2 gap-6">
 					<div className="col-span-1">
 						<div className="rounded-xl overflow-hidden shadow-md md:h-auto">
 							<Image
@@ -25,13 +25,13 @@ const VetDiary = () => {
 						</div>
 					</div>
 
-					<div className="w-4/5 m-auto col-span-1">
-						<p className=" text-gray-700 md:text-left pb-6 text-base md:text-xl leading-relaxed ">
+					<div className="md:w-4/5 w-full m-auto col-span-1">
+						<p className=" text-gray-700 text-left pb-6 text-base md:text-xl leading-relaxed ">
 							This showcases the full dairy value chain showing how healthy
 							animals, good farm management, and proper processing lead to
 							better milk.{" "}
 						</p>
-						<p className=" text-gray-700 md:text-left pb-6 text-base md:text-xl leading-relaxed ">
+						<p className=" text-gray-700 text-left pb-6 text-base md:text-xl leading-relaxed ">
 							Built to unlock Africa’s dairy potential, the show promotes better
 							practices, smarter investments, and stronger partnerships to drive
 							improved nutrition, jobs, and economic growth.

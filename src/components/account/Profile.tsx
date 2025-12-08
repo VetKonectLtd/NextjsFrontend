@@ -24,6 +24,7 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
   // Map backend roles to grouped profiles using active role id when available
   const apiUser: any = (user as any)?.profile?.user;
   const activeRoleId: number | undefined = apiUser?.active_role_id;
+
   const activeRoleName: string | undefined = (apiUser?.roles || [])?.find(
     (r: any) => r?.pivot?.role_id === activeRoleId
   )?.name;
@@ -46,6 +47,7 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
       pet_owner: "pet_owner",
       livestock_farmer: "livestock_farmer",
       farmer: "livestock_farmer",
+      basic_user: "basic_user"
     };
     return map[r] || r;
   };
@@ -58,6 +60,7 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
       "vendor",
       "livestock_farmer",
       "pet_owner",
+      "basic_user"
     ]);
     const vetGroup = new Set([
       "vertinary_doctor",

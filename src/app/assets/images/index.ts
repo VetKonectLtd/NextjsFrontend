@@ -88,3 +88,7 @@ export { default as Wipi3 } from './wipi3.jpeg';
 export { default as Wipi4 } from './wipi4.jpeg';
 export { default as Wipi5 } from './wipi5.jpeg';
 
+
+export { default as DATSU } from './DATSU.jpeg';
+export { default as Atohunse } from './Atohunse.jpeg';
+

@@ -1,39 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { Atohunse, DATSU, Jacob } from '@/app/assets/images';
 
 interface Testimonial {
   id: number;
   name: string;
   location: string;
   testimonial: string;
-  avatar: string;
+  avatar: string | StaticImageData;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Dr. Amechi Anayor",
-    location: "Lagos, Nigeria",
-    testimonial: "On the Windows talking painted pasture yet its express parties use. Sure last upon he same as know next. Of believed or diverted no.",
-    avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&h=80&fit=crop&crop=face&auto=format"
+    name: "Dr Undo Jacob Fater",
+    location: "Benue, Nigeria",
+    testimonial: "Vet Konect platform has made it so much easier for me to connect with farmers and pet owners. It’s rewarding to be part of a platform that truly brings animal health professionals and animal owners together.",
+    avatar: Jacob
   },
   {
     id: 2,
-    name: "Dr. Sarah Johnson",
-    location: "Abuja, Nigeria",
-    testimonial: "Vet Konect has revolutionized how I connect with pet owners. The platform is intuitive and makes scheduling appointments seamless.",
-    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&h=80&fit=crop&crop=face&auto=format"
+    name: "Gideon Datsu",
+    location: "Benue, Nigeria",
+    testimonial: "Vet Konect has brought Veterinarians and VPPs together , easing access to animal health in close and distance settleme.",
+    avatar: DATSU
   },
   {
     id: 3,
-    name: "Dr. Michael Okafor",
-    location: "Port Harcourt, Nigeria",
-    testimonial: "As a veterinarian, I appreciate how Vet Konect helps me reach more clients and provide better care through digital consultations.",
-    avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=80&h=80&fit=crop&crop=face&auto=format"
+    name: "Atohunse Khaosarat Omoshalewa",
+    location: "Oyo, Nigeria",
+    testimonial: "Vet Konect is an excellent source of poultry knowledge, offering educational content with visuals and live sessions. Their responsive app provides fast, reliable answers to all my poultry questions, making it my go-to resource.",
+    avatar: Atohunse
   }
 ];
 
