@@ -1,253 +1,243 @@
+
 "use client";
 
-import { useState } from "react";
-import { 
-  Plus, 
-  Download, 
-  Edit, 
-  Eye, 
-  Trash2, 
-  Share2, 
-  MoreHorizontal,
-  PlusIcon
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Search,
+  Trash2,
+  Share2,
+  ExternalLink,
+  ChevronDown
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-
-interface CaseData {
-  id: string;
-  title: string;
-  caseNumber: string;
-  timeAgo: string;
-  clientName: string;
-  clientPhone: string;
-  petOrFarm: "Pet" | "Farm";
-  petName: string;
-  species: string;
-  breed: string;
-  age: number;
-  sex: "Male" | "Female";
-  petNumber: string;
-  confirmatoryDiagnosis: string;
-  clinicalSigns: string;
-  dateOccurred: string;
-  dateReported: string;
-  request: string;
-  chiefComplaint: string;
-  history: string;
-  physicalExamination: string;
-  differentialDiagnosis: string;
-  tentativeDiagnosis: string;
-  confirmatoryDiagnosisDetails: string;
-  mortality: string;
-  treatmentRegimen: string;
-  clinicAddress: string;
-  clinicName: string;
-  veterinarianName: string;
-  imageTaken?: string;
-}
+import { CasesDownload, CasesAdd, CasesLoadMore } from "@/app/assets/icons";
+import { casesService, Case } from "@/services/casesService";
+import { toast } from "sonner"; // Assuming sonner is used, or alert
+import { DateSelectionModal } from "@/components/modals/DateSelectionModal";
 
 const CasesPage = () => {
-  const [cases, setCases] = useState<CaseData[]>([
-    {
-      id: "1",
-      title: "Kora's Treatment",
-      caseNumber: "CS092201a",
-      timeAgo: "15 mins ago",
-      clientName: "Dolapo Adaba",
-      clientPhone: "+2348100000000",
-      petOrFarm: "Pet",
-      petName: "Kora",
-      species: "Dog",
-      breed: "Rottweiler",
-      age: 2,
-      sex: "Male",
-      petNumber: "PT092201a",
-      confirmatoryDiagnosis: "Parasitic Infection",
-      clinicalSigns: "Loss of Appetite, Weight Loss, Diarrhea, Inflammation",
-      dateOccurred: "03/12/2023",
-      dateReported: "03/20/2023",
-      request: "Routine",
-      chiefComplaint: "Hemorrhage",
-      history: "None",
-      physicalExamination: "None",
-      differentialDiagnosis: "None",
-      tentativeDiagnosis: "None",
-      confirmatoryDiagnosisDetails: "Yes",
-      mortality: "None",
-      treatmentRegimen: "Text here",
-      clinicAddress: "220, Awe College Road, Ikeja, Lagos, Nigeria",
-      clinicName: "VTH, University of Ibadan",
-      veterinarianName: "Dr Waywealth",
-      imageTaken: "View image"
-    },
-    {
-      id: "2",
-      title: "Adibala Poultry Treatment",
-      caseNumber: "CS092201b",
-      timeAgo: "15 mins ago",
-      clientName: "Adibala Farms",
-      clientPhone: "+2348100000001",
-      petOrFarm: "Farm",
-      petName: "Poultry Flock",
-      species: "Chicken",
-      breed: "Broiler",
-      age: 1,
-      sex: "Male",
-      petNumber: "PT092201b",
-      confirmatoryDiagnosis: "Viral Infection",
-      clinicalSigns: "Respiratory distress, Decreased egg production",
-      dateOccurred: "03/10/2023",
-      dateReported: "03/18/2023",
-      request: "Emergency",
-      chiefComplaint: "Sudden death",
-      history: "Recent introduction of new birds",
-      physicalExamination: "Respiratory congestion",
-      differentialDiagnosis: "Newcastle Disease",
-      tentativeDiagnosis: "Avian Influenza",
-      confirmatoryDiagnosisDetails: "Yes",
-      mortality: "5%",
-      treatmentRegimen: "Antiviral treatment",
-      clinicAddress: "15, Farm Road, Ogun State, Nigeria",
-      clinicName: "Agricultural Development Center",
-      veterinarianName: "Dr Adebayo",
-      imageTaken: "View image"
+  const [cases, setCases] = useState<Case[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  
+  // Download Modal State
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const fetchCases = async (page: number) => {
+    try {
+      if (page === 1) setLoading(true);
+      else setLoadingMore(true);
+
+      const response = await casesService.getUserCases(page);
+      
+      // Handle different response structures (with or without success wrapper)
+      const success = response.success || (response as any).cases || (response.data && response.data.cases);
+      
+      if (success) {
+        // Determine where 'cases' object is located
+        let casesData;
+        if (response.data && response.data.cases) {
+            casesData = response.data.cases;
+        } else if ((response as any).cases) {
+            casesData = (response as any).cases;
+        }
+
+        if (casesData) {
+            if (page === 1) {
+                setCases(casesData.data);
+            } else {
+                setCases(prev => [...prev, ...casesData.data]);
+            }
+            setTotalPages(casesData.last_page);
+            setCurrentPage(casesData.current_page);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch cases", error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
-  ]);
-
-
-  const handleAddNewCase = () => {
-    // Navigate to add new case page
-    console.log("Add new case");
   };
+
+  useEffect(() => {
+    fetchCases(1);
+  }, []);
+
+  const handleLoadMore = () => {
+    if (currentPage < totalPages) {
+        fetchCases(currentPage + 1);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if(!confirm("Are you sure you want to delete this case?")) return;
+    try {
+        const res = await casesService.deleteCase(id);
+        if(res.success) {
+            setCases(prev => prev.filter(c => c.id !== id));
+            // toast.success("Case deleted successfully");
+        }
+    } catch (error) {
+        console.error("Failed to delete case", error);
+    }
+  }
 
   const handleDownloadReport = () => {
-    // Download report functionality
-    console.log("Download report");
+      setIsDownloadModalOpen(true);
   };
 
-  const CaseActions = ({ caseItem }: { caseItem: CaseData }) => (
-    <div className="flex items-center gap-2">
-      <button className="p-1 hover:bg-gray-100 rounded">
-        <Edit className="w-4 h-4 text-gray-600" />
-      </button>
-      <button className="p-1 hover:bg-gray-100 rounded">
-        <Eye className="w-4 h-4 text-gray-600" />
-      </button>
-      <button className="p-1 hover:bg-gray-100 rounded">
-        <Download className="w-4 h-4 text-gray-600" />
-      </button>
-      <button className="p-1 hover:bg-gray-100 rounded">
-        <Trash2 className="w-4 h-4 text-gray-600" />
-      </button>
-      <button className="p-1 hover:bg-gray-100 rounded">
-        <Share2 className="w-4 h-4 text-gray-600" />
-      </button>
-      <button className="p-1 hover:bg-gray-100 rounded">
-        <MoreHorizontal className="w-4 h-4 text-gray-600" />
-      </button>
-    </div>
-  );
+  const performDownload = async (from: string, to: string) => {
+      setIsDownloading(true);
+      try {
+          const blob = await casesService.downloadReport(from, to);
+          
+          // Create object URL and trigger download
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'vetkonnect-datedownloaded-cases.xlsx'; // Or .csv if applicable
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          
+          setIsDownloadModalOpen(false);
+          toast.success("Report downloaded successfully");
+      } catch (error) {
+          console.error("Download failed", error);
+          toast.error("Failed to download report");
+      } finally {
+          setIsDownloading(false);
+      }
+  };
 
-  const CaseDetailRow = ({ label, value }: { label: string; value: string | number }) => (
-    <div className="flex flex-col sm:flex-row justify-between py-2 border-b border-gray-100 gap-1">
-      <span className="text-sm font-medium text-gray-700 break-words">{label}</span>
-      <span className="text-sm text-gray-600 text-left sm:text-right max-w-full sm:max-w-xs break-words">{value}</span>
-    </div>
+  // Client-side filtering for search on the *fetched* data 
+  const filteredCases = cases.filter((c) =>
+    c.case_title.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
 
   return (
-    <div className="w-11/12 mt-3 m-auto bg-white min-h-screen">
-      {/* Header */}
+    <div className="w-11/12 mt-3 m-auto bg-white min-h-screen pb-20">
+      <DateSelectionModal 
+        isOpen={isDownloadModalOpen} 
+        onClose={() => setIsDownloadModalOpen(false)} 
+        onDownload={performDownload}
+        isLoading={isDownloading}
+      />
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-xl text-gray-55 font-bold">Cases</h1>
-        <Button 
+        <h1 className="text-2xl text-gray-900 font-bold">Cases</h1>
+        <button 
           onClick={handleDownloadReport}
-          variant="outline"
-          className="flex items-center gap-2 text-sm"
+          className="flex items-center gap-2 text-sm font-medium text-gray-900 hover:opacity-80 transition"
         >
-          <Download className="w-4 h-4" />
-          Download Report
-        </Button>
+          <span>Download Report</span>
+          <div className="w-10 h-10 flex items-center justify-center">
+            <Image src={CasesDownload} alt="Download" width={40} height={40} />
+          </div>
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6 flex shadow-md rounded-[16px] overflow-hidden border border-gray-100 items-center">
+        <div className="flex-1 relative h-[56px]">
+          <input
+            type="text"
+            placeholder="Search for a case"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-6 bg-white focus:outline-none text-gray-700 placeholder:text-gray-400 h-full"
+          />
+        </div>
+        <button className="w-[140px] h-[56px] bg-[#0B6614] hover:bg-green-800 text-white flex items-center justify-center gap-2 font-medium transition">
+          <Search className="w-5 h-5" />
+          Search
+        </button>
       </div>
 
       {/* Add New Case Button */}
-      <div className="mb-6">
-        <Link
-          href="/dashboard/cases/add"
-          className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition"
-        >
-          <span className="text-gray-55 text-sm font-semibold">Add New Case</span>
-          <div className="w-8 h-8 flex items-center justify-center bg-green-50 text-white rounded-xl text-xl">
-            <PlusIcon className="w-5 h-5 font-bold text-white" />
-          </div>
-        </Link>
-      </div>
+      <Link
+        href="/dashboard/cases/add"
+        className="flex items-center justify-between w-full bg-white border-2 border-[#52CE06] rounded-2xl p-4 mb-6 shadow-md hover:shadow-lg transition group"
+      >
+        <span className="text-gray-900 text-base font-bold ml-2">Add New Case</span>
+        <div className="w-10 h-10 flex items-center justify-center rounded-xl transition">
+           <Image src={CasesAdd} alt="Add Case" width={40} height={40} />
+        </div>
+      </Link>
 
       {/* Cases List */}
-      <Accordion type="multiple" className="space-y-4">
-        {cases.map((caseItem) => (
-          <AccordionItem 
-            key={caseItem.id} 
-            value={caseItem.id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200"
+      {loading ? (
+          <div className="text-center py-10">Loading cases...</div>
+      ) : (
+      <div className="space-y-4">
+        {filteredCases.map((caseItem) => (
+          <div
+            key={caseItem.id}
+            className="bg-white border-[0.5px] border-gray-100 rounded-xl p-5 shadow-[0px_11.38px_35.02px_0px_#1B19560F] hover:shadow-lg transition"
           >
-            <AccordionTrigger className="p-3 sm:p-4 hover:no-underline">
-              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 w-full">
-                <div className="flex-1 text-left">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{caseItem.title}</h3>
-                  <p className="text-sm text-gray-500">{caseItem.caseNumber}</p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                  <span className="text-sm text-gray-500">{caseItem.timeAgo}</span>
-                  <div className="flex items-center gap-1 overflow-x-auto" onClick={(e) => e.stopPropagation()}>
-                    <CaseActions caseItem={caseItem} />
-                  </div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="flex-1">
+                <h3 className="text-base font-medium text-[#1A1A1A] mb-1">{caseItem.case_title}</h3>
+                {/* Displaying public Case ID string */}
+                <p className="text-xs text-gray-500 font-medium">{caseItem.case_id || `#${caseItem.id}`}</p> 
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 w-full sm:w-auto">
+                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-[10px] font-medium rounded-full whitespace-nowrap">
+                  {new Date(caseItem.date_occurred).toLocaleDateString()}
+                </span>
+
+                {/* Action Icons */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleDelete(caseItem.id)}
+                    className="w-[40px] h-[40px] rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:text-red-600 hover:border-red-200 hover:shadow-sm transition group"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <Link
+                    href={`/dashboard/cases/${caseItem.id}`}
+                    className="w-[40px] h-[40px] rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:text-green-600 hover:border-green-200 hover:shadow-sm transition group"
+                    title="View Details"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </Link>
+                  <button
+                    className="w-[40px] h-[40px] rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:text-green-600 hover:border-green-200 hover:shadow-sm transition group"
+                    title="Share"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-            </AccordionTrigger>
-            
-            <AccordionContent className="p-3 sm:p-4 pt-0">
-              <div className="grid grid-cols-1 gap-2 sm:gap-4">
-                <CaseDetailRow label="Client Name" value={caseItem.clientName} />
-                <CaseDetailRow label="Client Phone Number" value={caseItem.clientPhone} />
-                <CaseDetailRow label="Pet or Farm" value={caseItem.petOrFarm} />
-                <CaseDetailRow label="Pet Name" value={caseItem.petName} />
-                <CaseDetailRow label="Specie" value={caseItem.species} />
-                <CaseDetailRow label="Breed" value={caseItem.breed} />
-                <CaseDetailRow label="Age (Years)" value={caseItem.age} />
-                <CaseDetailRow label="Sex" value={caseItem.sex} />
-                <CaseDetailRow label="Pet Number" value={caseItem.petNumber} />
-                <CaseDetailRow label="Confirmatory Diagnosis" value={caseItem.confirmatoryDiagnosis} />
-                <CaseDetailRow label="Clinical Signs" value={caseItem.clinicalSigns} />
-                <CaseDetailRow label="Date Occured" value={caseItem.dateOccurred} />
-                <CaseDetailRow label="Date Reported" value={caseItem.dateReported} />
-                <CaseDetailRow label="Request (Routine, Prophylaxis, Therapeutic)" value={caseItem.request} />
-                <CaseDetailRow label="Chief Complaint" value={caseItem.chiefComplaint} />
-                <CaseDetailRow label="History" value={caseItem.history} />
-                <CaseDetailRow label="Physical Examination[ Temperature, Pulse, etc]" value={caseItem.physicalExamination} />
-                <CaseDetailRow label="Differential Diagnosis" value={caseItem.differentialDiagnosis} />
-                <CaseDetailRow label="Tentative Diagnosis" value={caseItem.tentativeDiagnosis} />
-                <CaseDetailRow label="Confirmatory Diagnosis" value={caseItem.confirmatoryDiagnosisDetails} />
-                <CaseDetailRow label="Mortality" value={caseItem.mortality} />
-                <CaseDetailRow label="Treatment Regimen" value={caseItem.treatmentRegimen} />
-                <CaseDetailRow label="Clinic Physical Address" value={caseItem.clinicAddress} />
-                <CaseDetailRow label="Name of Clinic/Hospital" value={caseItem.clinicName} />
-                <CaseDetailRow label="Name of Veterinarian" value={caseItem.veterinarianName} />
-                {caseItem.imageTaken && (
-                  <CaseDetailRow label="Image taken" value={caseItem.imageTaken} />
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+            </div>
+          </div>
         ))}
-      </Accordion>
+        {filteredCases.length === 0 && <div className="text-center py-4 text-gray-500">No cases found</div>}
+      </div>
+      )}
+
+      {/* Load More Button */}
+      {currentPage < totalPages && (
+      <div className="flex justify-center mt-8">
+        <button
+          onClick={handleLoadMore}
+          disabled={loadingMore}
+          className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl px-8 py-3 shadow-sm hover:shadow-md transition disabled:opacity-50"
+        >
+          <span className="text-[#101828] font-semibold text-lg">{loadingMore ? "Loading..." : "Load more..."}</span>
+          <Image src={CasesLoadMore} alt="Load More" width={24} height={24} />
+        </button>
+      </div>
+      )}
     </div>
   );
 };

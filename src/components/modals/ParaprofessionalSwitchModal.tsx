@@ -126,6 +126,9 @@ const ParaprofessionalSwitchModal = ({
 		if (Array.isArray(data.specialty)) {
 			data.specialty = data.specialty.join(", ");
 		}
+		if (Array.isArray(data.list_them)) {
+			data.list_them = data.list_them.join(", ");
+		}
 		if (typeof (data as any).latitude === "string") {
 			(data as any).latitude = parseFloat((data as any).latitude);
 		}
