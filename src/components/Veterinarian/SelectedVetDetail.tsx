@@ -47,7 +47,6 @@ const SelectedVet = ({
 	refetchData,
 }: VeterinarianProps) => {
 
-
 	const renderStars = (rating: number) => {
 		const hasRating = rating > 0;
 

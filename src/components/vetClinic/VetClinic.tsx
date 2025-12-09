@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ClinicProfile, { ClinicProfileProps } from "../shared/ClinicProfile";
 import VetProfileSkeleton from "@/components/shared/VetProfileSkeleton";
 import EmptyState from "@/components/shared/EmptyState";
 import SelectedClinic from "./SelectedClinic";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
 import { VetClinicData, GetAllVetClinicResponse } from "@/types";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -21,6 +22,8 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
     const [allClinics, setAllClinics] = useState<VetClinicData[]>([]);
     const [selectedClinic, setSelectedClinic] = useState<ClinicProfileProps | null>(null);
     const [selectedAction, setSelectedAction] = useState<string>("default");
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     const { useGetAllVetClinic } = useVeterinaryClinicService();
     const { data: apiData, isLoading, error , refetch: refetchData} = useGetAllVetClinic(currentPage);
@@ -148,10 +151,20 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
 				? vetsInNearbyStates
 				: transformedClinics;
 
+    useEffect(() => {
+            const vetId = searchParams.get("clinic");
+            if (vetId) {
+                const clinic = transformedClinics.find((v) => v.id === vetId);
+                if (clinic) {
+                    setSelectedClinic(clinic);
+                }
+            }
+        }, [searchParams, transformedClinics]);
 
     const handleViewProfile = (id: string) => {
         const clinic = transformedClinics.find((v) => v.id === id) || null;
         setSelectedClinic(clinic);
+        router.push(`?clinic=${id}`);
     };
 
     const handleContact = (

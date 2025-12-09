@@ -238,12 +238,12 @@ const ClinicAccount = ({
 				<>
 					<p className="text-gray-55 font-bold">Share Link</p>
 					<p className="text-gray-800">
-						https://vetkonect.com/{selectedClinic?.name}
+						https://vetkonect.com/vet-vendor?clinic={selectedClinic?.id}&category=Vet+Clinic
 					</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
 							onClick={() =>
-								handleCopy(`https://vetkonect.com/${selectedClinic?.name}`)
+								handleCopy(`https://vetkonect.com/vet-vendor?clinic=${selectedClinic?.id}&category=Vet+Clinic`)
 							}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
@@ -251,7 +251,7 @@ const ClinicAccount = ({
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied?.startsWith("https://vetkonect.com")
+							{copied?.startsWith(`https://vetkonect.com/vet-vendor?clinic=${selectedClinic?.id}&category=Vet+Clinic`)
 								? "Copied!"
 								: "Click to copy"}
 						</span>

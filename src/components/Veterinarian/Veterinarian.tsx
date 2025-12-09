@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import VetProfile, { VetProfileProps } from "@/components/shared/VetProfile";
 import VetProfileSkeleton from "@/components/shared/VetProfileSkeleton";
 import EmptyState from "@/components/shared/EmptyState";
 import SelectedVet from "./SelectedVetDetail";
 import { useVeterinaryService } from "@/services/veterinaryService";
 import { VetDoctorData, GetAllVetDoctorResponse } from "@/types";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE =
@@ -26,6 +27,9 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 	const [allVets, setAllVets] = useState<VetDoctorData[]>([]);
 	const [selectedVet, setSelectedVet] = useState<VetProfileProps | null>(null);
 	const [selectedAction, setSelectedAction] = useState<string>("default");
+	const router = useRouter();
+	const searchParams = useSearchParams();
+
 
 	const { useGetAllVetDoctor } = useVeterinaryService();
 	const {
@@ -37,7 +41,6 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 
 	// Cast to actual response type since API returns data directly
 	const data = apiData as unknown as GetAllVetDoctorResponse | undefined;
-
 
 	// Transform API data to VetProfile props
 	const transformedVets: VetProfileProps[] = useMemo(() => {
@@ -164,9 +167,20 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 				? vetsInNearbyStates
 				: transformedVets;
 
+	useEffect(() => {
+		const vetId = searchParams.get("vet");
+		if (vetId) {
+			const vet = transformedVets.find((v) => v.id === vetId);
+			if (vet) {
+				setSelectedVet(vet);
+			}
+		}
+	}, [searchParams, transformedVets]);
+
 	const handleViewProfile = (id: string) => {
 		const vet = transformedVets.find((v) => v.id === id) || null;
 		setSelectedVet(vet);
+		router.push(`?vet=${id}`);
 	};
 
 	const handleContact = (
