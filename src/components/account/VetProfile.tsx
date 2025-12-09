@@ -56,6 +56,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		(user as any)?.role || "",
 	);
 
+
 	const [formData, setFormData] = useState({
 		email: (currentUser?.user?.email as string) || "",
 		specialty: (currentUser?.specialty as string) || "",
@@ -67,9 +68,9 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 			: "",
 		bio: (currentUser?.user?.profile?.bio as string) || "",
 		isAvailable: Boolean(currentUser?.availability),
+		practice_license_num: currentUser?.practice_license_num || "awaiting",
 	});
 
-	console.log(currentUser, "availability");
 
 	const [profileImage, setProfileImage] = useState<any>(
 		(currentUser?.user?.profile?.profile_image_url as string) ||
@@ -118,7 +119,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		if (formData.bio) payload.append("bio", formData.bio);
 		payload.append("availability", formData.isAvailable ? "1" : "0");
 
-
 		// Try to split location into state, country if the UI provides a single string
 		if (formData.location) {
 			const parts = formData.location.split(",").map((s) => s.trim());
@@ -132,6 +132,13 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		}
 		if (coverImage && (coverImage as any) instanceof File) {
 			payload.append("cover_page_image", coverImage as any);
+		}
+
+		if (backendRole === ROLE.VETERINARIAN) {
+			payload.append(
+				"practice_license_num",
+				formData.practice_license_num || "awaiting",
+			);
 		}
 
 		updateProfileMutation.mutate(payload, {
@@ -258,6 +265,26 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 								className="data-[state=checked]:bg-green-500"
 							/>
 						</div>
+
+						{backendRole === ROLE.VETERINARIAN && (
+							<div className="mb-6">
+								<label className="text-sm text-gray-600">
+									Practice License Number
+								</label>
+								<input
+									type="text"
+									value={formData.practice_license_num}
+									onChange={(e) =>
+										setFormData((prev) => ({
+											...prev,
+											practice_license_num: e.target.value,
+										}))
+									}
+									className="mt-1 w-full p-2 border rounded-lg"
+									placeholder="Enter license number"
+								/>
+							</div>
+						)}
 
 						{/* Bio */}
 						<div>
@@ -499,10 +526,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 							<p className="text-sm text-gray-600 mb-2">Availability</p>
 							<div className="flex items-center justify-center gap-3">
 								<Switch
-									checked={currentUser?.availability}
-									// onCheckedChange={(checked) =>
-									// 	setFormData((prev) => ({ ...prev, isAvailable: checked }))
-									// }
+									checked={currentUser?.availability == 1}
 									className="data-[state=checked]:bg-green-500"
 								/>
 							</div>
