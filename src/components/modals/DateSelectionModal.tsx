@@ -20,12 +20,8 @@ export const DateSelectionModal: React.FC<DateSelectionModalProps> = ({ isOpen, 
         alert("Please select both dates");
         return;
     }
-    // Convert YYYY-MM-DD to DD/MM/YYYY
-    const formatDate = (dateStr: string) => {
-        const [y, m, d] = dateStr.split('-');
-        return `${m}/${d}/${y}`; // Returning MM/DD/YYYY as per example 10/20/2025
-    };
-    onDownload(formatDate(fromDate), formatDate(toDate));
+    // Pass dates as YYYY-MM-DD (default input value format)
+    onDownload(fromDate, toDate);
   };
 
   return (
@@ -39,6 +35,9 @@ export const DateSelectionModal: React.FC<DateSelectionModalProps> = ({ isOpen, 
         </div>
         
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <p className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+            Note: This report includes cases based on their <strong>Date Occurred</strong>.
+          </p>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
             <input 

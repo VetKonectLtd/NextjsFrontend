@@ -34,15 +34,28 @@ const CasesPage = () => {
       else setLoadingMore(true);
 
       const response = await casesService.getUserCases(page);
-      if (response.success && response.data && response.data.cases) {
-        const casesData = response.data.cases;
-        if (page === 1) {
-            setCases(casesData.data);
-        } else {
-            setCases(prev => [...prev, ...casesData.data]);
+      
+      // Handle different response structures (with or without success wrapper)
+      const success = response.success || (response as any).cases || (response.data && response.data.cases);
+      
+      if (success) {
+        // Determine where 'cases' object is located
+        let casesData;
+        if (response.data && response.data.cases) {
+            casesData = response.data.cases;
+        } else if ((response as any).cases) {
+            casesData = (response as any).cases;
         }
-        setTotalPages(casesData.last_page);
-        setCurrentPage(casesData.current_page);
+
+        if (casesData) {
+            if (page === 1) {
+                setCases(casesData.data);
+            } else {
+                setCases(prev => [...prev, ...casesData.data]);
+            }
+            setTotalPages(casesData.last_page);
+            setCurrentPage(casesData.current_page);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch cases", error);
@@ -172,8 +185,8 @@ const CasesPage = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex-1">
                 <h3 className="text-base font-medium text-[#1A1A1A] mb-1">{caseItem.case_title}</h3>
-                {/* API doesn't return case number explicitly in snippet, defaulting to ID or omission */}
-                <p className="text-xs text-gray-500 font-medium">#{caseItem.id}</p> 
+                {/* Displaying public Case ID string */}
+                <p className="text-xs text-gray-500 font-medium">{caseItem.case_id || `#${caseItem.id}`}</p> 
               </div>
 
               <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 w-full sm:w-auto">

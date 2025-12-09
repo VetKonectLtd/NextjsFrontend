@@ -33,24 +33,28 @@ export interface CasePayload {
 
 export interface Case {
   id: number;
+  user_id: string; // Changed from number to string based on response "4707"
+  case_id: string; // Added
   case_title: string;
+  client_name: string; // Added (was missing in previous interface)
   client_phone_number: string;
   pet_or_farm: "Pet" | "Farm";
-  pet_name?: string;
-  specie?: string;
-  breed?: string;
-  farm_name?: string;
-  type_of_livestock?: string;
-  number_of_livestock?: number;
-  number_of_workers?: number;
-  age: number;
+  pet_name: string | null;
+  specie: string | null;
+  breed: string | null;
+  pet_number: string | null; // Added
+  farm_name: string | null;
+  type_of_livestock: string | null;
+  number_of_livestock: string | number | null; // Response shows null, form sends number/string
+  number_of_workers: string | number | null; // Response shows null
+  age: string | number; // Response shows string "2", form sends number
   sex: string;
   location: string;
-  other_details: string;
+  other_details: string | null;
   date_occurred: string;
   date_presented: string;
   history: string;
-  clinical_signs: string[] | string; // API might return stringified array or array
+  clinical_signs: string[]; // Response is array of strings
   temperature: string;
   heart_rate: string;
   weight: string;
@@ -58,11 +62,29 @@ export interface Case {
   differential_diagnosis: string;
   lab_confirm: string;
   mortality: string;
-  treatment_regimen: string[] | string;
+  treatment_regimen: string[]; // Response is array of strings
   picture: string;
-  created_at?: string;
-  updated_at?: string;
-  // Mapped fields for UI convenience if needed, but keeping raw for now
+  picture_url: string; // Added, full URL
+  disabled: string; // Added, "0"
+  created_at: string;
+  updated_at: string;
+  
+  // User relationship
+  user?: {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    activeRoleName: string | null;
+    active_role: any | null;
+    profile: {
+        id: number;
+        user_id: string;
+        profile_image: string;
+        profile_image_url: string;
+        cover_page_image_url: string | null;
+    } | null;
+  };
 }
 
 export interface CasesResponse {
@@ -96,17 +118,29 @@ export interface CommentPayload {
 
 export interface Comment {
   id: number;
-  case_id: number;
-  user_id: number;
+  case_id: string; // Changed to string
+  user_id: string; // Changed to string
   comment: string;
-  parent_id: number | null;
+  parent_id: string | null; // Changed to string | null (could be "nullable" text in request but likely null or id string)
   created_at: string;
   updated_at: string;
   user?: {
-      id: number;
-      name: string;
-      avatar?: string;
-  }
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone_num?: string;
+    activeRoleName: string | null;
+    active_role: any | null;
+    // Profile missing in comment user response, keeping optional for safety
+    profile?: {
+        id: number;
+        user_id: string;
+        profile_image: string;
+        profile_image_url: string;
+        cover_page_image_url: string | null;
+    } | null;
+  };
   replies?: Comment[];
 }
 
@@ -148,9 +182,9 @@ export const casesService = {
     return apiClient.delete(`/v3/delete-case/${id}/delete`);
   },
 
-  // POST {{baseURL}}/api/v3/promote-ad (Used for Adding Comments)
+  // POST {{baseURL}}/api/v3/add-comment (Used for Adding Comments)
   addComment: async (payload: CommentPayload): Promise<ApiResponse<any>> => {
-    return apiClient.post("/v3/promote-ad", payload);
+    return apiClient.post("/v3/add-comment", payload);
   },
 
   // GET {{baseURL}}/api/v3/get-comments/{caseId}/case

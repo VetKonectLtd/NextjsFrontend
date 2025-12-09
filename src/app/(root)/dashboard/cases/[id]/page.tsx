@@ -9,6 +9,9 @@ import { CasesDownload, CasesLoadMore } from "@/app/assets/icons";
 import { casesService, Case, Comment } from "@/services/casesService";
 import { toast } from "sonner"; // Assuming sonner
 
+import { DateSelectionModal } from "@/components/modals/DateSelectionModal";
+import { User } from "lucide-react"; // Fallback avatar
+
 const CaseDetailsPage = () => {
   const params = useParams();
   const router = useRouter();
@@ -17,7 +20,15 @@ const CaseDetailsPage = () => {
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<Comment[]>([]);
-  // const [loadingComments, setLoadingComments] = useState(false); // Can implement if needed
+  
+  // Comment Input State
+  const [newComment, setNewComment] = useState("");
+  const [isAddingComment, setIsAddingComment] = useState(false);
+  const [showAllComments, setShowAllComments] = useState(false); // Quick client-side pagination simulation
+
+  // Download Report State
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -26,20 +37,29 @@ const CaseDetailsPage = () => {
       try {
         const [caseRes, commentsRes] = await Promise.all([
              casesService.getCaseById(id),
-             casesService.getComments(id) // Assuming this exists based on your request, though implementation plan had it.
+             casesService.getComments(id)
         ]);
 
-        if (caseRes.success && caseRes.data?.case) {
-          setCaseData(caseRes.data.case);
+        // Robust check for case data
+        const caseDataRaw = (caseRes as any).case || (caseRes.data && caseRes.data.case);
+        if (caseDataRaw) {
+          setCaseData(caseDataRaw);
         }
         
-        // Handle comments response structure
-        // The service returns ApiResponse<{ comments: Comment[] }>
-        if (commentsRes.success && commentsRes.data?.comments) {
-            setComments(commentsRes.data.comments);
+        // Robust check for comments
+        let commentsData: Comment[] = [];
+        if ((commentsRes as any).comments) {
+            commentsData = (commentsRes as any).comments;
+        } else if (commentsRes.data && commentsRes.data.comments) {
+            commentsData = commentsRes.data.comments;
         } else if (Array.isArray(commentsRes.data)) {
-            // Fallback if API returns array directly
-            setComments(commentsRes.data);
+            commentsData = commentsRes.data;
+        } else if (Array.isArray(commentsRes)) {
+            commentsData = commentsRes as any;
+        }
+        
+        if (commentsData.length > 0) {
+            setComments(commentsData);
         }
 
       } catch (error) {
@@ -54,8 +74,69 @@ const CaseDetailsPage = () => {
   }, [id]);
 
   const handleDownload = () => {
-      console.log("Download report for", id);
-      // Implementation depends on backend PDF generation endpoint
+      setIsDownloadModalOpen(true);
+  };
+
+  const performDownload = async (from: string, to: string) => {
+      setIsDownloading(true);
+      try {
+          const blob = await casesService.downloadReport(from, to);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'vetkonnect-case-report.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          
+          setIsDownloadModalOpen(false);
+          toast.success("Report downloaded successfully");
+      } catch (error) {
+          console.error("Download failed", error);
+          toast.error("Failed to download report");
+      } finally {
+          setIsDownloading(false);
+      }
+  };
+
+  const handleAddComment = async () => {
+      if (!newComment.trim()) return;
+      setIsAddingComment(true);
+      try {
+          // Payload for API: case_id, comment, parent_id?
+          const res = await casesService.addComment({
+              case_id: Number(id), // Ensure ID is number if API expects number
+              comment: newComment,
+              parent_id: null 
+          });
+
+          // API response check (robust)
+          // Usually API returns success message or the new comment. 
+          // For now, simple standard check or optimistic update.
+          if (res.success || res.message === "Comment added successfully" || (res as any).comment) {
+              toast.success("Comment added");
+              setNewComment("");
+              // Re-fetch comments or update locally. Re-fetching is safer.
+              const commentsRes = await casesService.getComments(id);
+              let commentsData: Comment[] = [];
+              // Reuse robust logic or valid shortcut since we just did it
+              if ((commentsRes as any).comments) commentsData = (commentsRes as any).comments;
+              else if (commentsRes.data && commentsRes.data.comments) commentsData = commentsRes.data.comments;
+              else if (Array.isArray(commentsRes.data)) commentsData = commentsRes.data;
+              else if (Array.isArray(commentsRes)) commentsData = commentsRes as any;
+
+              if (commentsData.length > 0) setComments(commentsData);
+          } else {
+               toast.error("Failed to add comment");
+          }
+
+      } catch (error) {
+          console.error("Failed to add comment", error);
+          toast.error("Failed to add comment");
+      } finally {
+          setIsAddingComment(false);
+      }
   };
 
   if (loading) {
@@ -83,9 +164,20 @@ const CaseDetailsPage = () => {
       )}
     </div>
   );
+  
+  // Show only first 5 comments initially, unless 'Load More' is clicked
+  const visibleComments = showAllComments ? comments : comments.slice(0, 5);
 
   return (
     <div className="p-8 bg-[#FDFDFD] min-h-screen font-sans">
+    
+      <DateSelectionModal 
+        isOpen={isDownloadModalOpen} 
+        onClose={() => setIsDownloadModalOpen(false)} 
+        onDownload={performDownload}
+        isLoading={isDownloading}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <button 
@@ -114,13 +206,13 @@ const CaseDetailsPage = () => {
           {/* Column 1 */}
           <div>
             <DetailRow label="Case Title" value={caseData.case_title} />
+            <DetailRow label="Client Name" value={caseData.client_name} />
             <DetailRow label="Client's Phone Number" value={caseData.client_phone_number} />
             <DetailRow label="Pet Name" value={caseData.pet_name} />
             <DetailRow label="Breed" value={caseData.breed} />
             <DetailRow label="Sex" value={caseData.sex} />
-            <DetailRow label="Date Occured" value={caseData.date_occurred} />
+            <DetailRow label="Date Occured" value={new Date(caseData.date_occurred).toLocaleDateString()} />
             
-            {/* Handling Array for Clinical Signs */}
             <DetailRow 
                 label="Clinical signs" 
                 value={Array.isArray(caseData.clinical_signs) ? caseData.clinical_signs.join(", ") : caseData.clinical_signs} 
@@ -133,21 +225,12 @@ const CaseDetailsPage = () => {
 
           {/* Column 2 */}
           <div>
-            {/* Note: Client Name is not in the Payload definition for API, checking if we missed it or it's not there.
-                The provided payload example doesn't have "client_name". 
-                "client_phone_number" is there. I will use the phone as placeholder or check if user object is returned implicitly?
-                Actually, looking at response types, usually specific data is returned. 
-                I will skip Client Name if not available or map it if I find it.
-            */}
-            {/* <DetailRow label="Client Name" value={"--"} />  */} 
-            
             <DetailRow label="Pet/Farm" value={caseData.pet_or_farm} />
             <DetailRow label="Specie" value={caseData.specie} />
             <DetailRow label="Age(Years)" value={caseData.age} />
-            {/* Pet Number also not transparent in 'add-case' payload, might be auto-generated or missing */}
-            <DetailRow label="Pet Number" value={`#${caseData.id}`} /> 
+            <DetailRow label="Pet Number" value={caseData.pet_number || caseData.case_id || `#${caseData.id}`} /> 
             
-            <DetailRow label="Date Presented" value={caseData.date_presented} />
+            <DetailRow label="Date Presented" value={new Date(caseData.date_presented).toLocaleDateString()} />
             <DetailRow label="Temperature" value={caseData.temperature} />
             <DetailRow label="Weight" value={caseData.weight} />
             <DetailRow label="Tentative Diag." value={caseData.tentative_diagnosis} />
@@ -155,7 +238,7 @@ const CaseDetailsPage = () => {
                 label="Treatment" 
                 value={Array.isArray(caseData.treatment_regimen) ? caseData.treatment_regimen.join(", ") : caseData.treatment_regimen} 
             />
-            <DetailRow label="Image" value={typeof caseData.picture === 'string' ? "View Image" : "Uploaded"} isLink />
+            <DetailRow label="Image" value={caseData.picture_url ? "View Image" : (typeof caseData.picture === 'string' ? "View Image" : "Uploaded")} isLink />
           </div>
         </div>
 
@@ -175,22 +258,87 @@ const CaseDetailsPage = () => {
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="flex flex-col items-center gap-8 mt-12">
-            <button className="w-[300px] py-3 rounded-lg border border-[#0B6614] text-[#0B6614] font-bold hover:bg-green-50 transition">
-              Comment ({comments.length})
-            </button>
-
-            {/* If there are comments, maybe show them? For now matching mockup which just shows button */}
+        {/* Comments Section */}
+        <div className="mt-12 border-t pt-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Comments ({comments.length})</h3>
             
-            <button className="flex items-center gap-3 px-6 py-2 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition">
-               <span className="text-[#1A1A1A] font-bold text-sm">Loading more...</span>
-               <Image src={CasesLoadMore} alt="Load More" width={20} height={20} />
-            </button>
+            {/* Add Comment */}
+            <div className="flex gap-4 mb-8">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                    <User className="w-6 h-6 text-gray-500" />
+                </div>
+                <div className="flex-1">
+                    <textarea 
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Add a comment..."
+                        className="w-full border border-gray-200 rounded-xl p-4 min-h-[100px] focus:outline-none focus:border-green-500 transition resize-y"
+                    />
+                    <div className="flex justify-end mt-2">
+                         <button 
+                            onClick={handleAddComment}
+                            disabled={isAddingComment || !newComment.trim()}
+                            className="bg-[#0B6614] text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition disabled:opacity-50"
+                         >
+                            {isAddingComment ? "Posting..." : "Post Comment"}
+                         </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Comments List */}
+            <div className="space-y-6">
+                {visibleComments.map((comment) => (
+                    <div key={comment.id} className="flex gap-4">
+                        <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 overflow-hidden shrink-0">
+                            {comment.user?.profile?.profile_image_url ? (
+                                <Image 
+                                    src={comment.user.profile.profile_image_url} 
+                                    alt={`${comment.user.first_name} ${comment.user.last_name}`} 
+                                    width={40} 
+                                    height={40} 
+                                    className="object-cover w-full h-full"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                                   <User className="w-5 h-5 text-gray-400" />
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-1 bg-gray-50 rounded-xl p-4">
+                            <div className="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 className="font-bold text-gray-900 text-sm">
+                                        {comment.user?.first_name} {comment.user?.last_name}
+                                    </h4>
+                                    <p className="text-xs text-gray-500">{new Date(comment.created_at).toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <p className="text-gray-700 text-sm">{comment.comment}</p>
+                        </div>
+                    </div>
+                ))}
+                
+                {comments.length === 0 && (
+                    <p className="text-gray-500 text-center py-4">No comments yet. Be the first to comment!</p>
+                )}
+            </div>
+
+            {/* Load More Comments Button */}
+            {comments.length > 5 && !showAllComments && (
+                <div className="flex justify-center mt-8">
+                    <button 
+                        onClick={() => setShowAllComments(true)}
+                        className="flex items-center gap-3 px-6 py-2 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition"
+                    >
+                        <span className="text-[#1A1A1A] font-bold text-sm">Load more comments</span>
+                        <Image src={CasesLoadMore} alt="Load More" width={20} height={20} />
+                    </button>
+                </div>
+            )}
         </div>
       </div>
     </div>
   );
 };
-
 export default CaseDetailsPage;

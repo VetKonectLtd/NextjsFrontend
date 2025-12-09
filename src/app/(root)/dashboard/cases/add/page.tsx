@@ -188,7 +188,9 @@ const AddCasePage = () => {
         const res = await casesService.addCase(payload);
         console.log("API Response:", res);
         
-        if (res.success) {
+        // Check for success via boolean flag OR specific success message/data presence
+        // Cast to any to access 'case' property which might not be in the strict ApiResponse type
+        if (res.success || res.message === "Case created successfully" || ((res as any).case && (res as any).case.case_id)) {
             toast.success("Case added successfully");
             router.push("/dashboard/cases");
         } else {
