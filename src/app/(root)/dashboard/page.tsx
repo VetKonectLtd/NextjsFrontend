@@ -29,7 +29,6 @@ const Dashboard = () => {
 	const role = (user as any)?.profile?.role;
 	const approved = (user as any)?.profile?.is_approved;
 
-	console.log(user);
 
 	const getQuickActions = () => {
 		const baseActions = [

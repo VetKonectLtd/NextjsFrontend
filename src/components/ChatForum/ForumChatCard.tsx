@@ -21,7 +21,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
 import FilterDropdownMenu from "./DropdownMenu";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
 import { forumCategories } from "./forumCategories";
 import ShareModal from "./ShareModal";
 
@@ -43,7 +49,6 @@ const ForumChatCard = () => {
 		useLikeForum,
 		useGetAllForumChat,
 		useGetForumByVisibility,
-		useDeleteForum,
 	} = useForumService();
 
 	const router = useRouter();
@@ -237,13 +242,17 @@ const ForumChatCard = () => {
 							{/* Body */}
 							{post?.image_url && (
 								<Dialog>
+									<DialogTitle></DialogTitle>
 									<DialogTrigger asChild>
 										<div
 											className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
 											style={{ backgroundImage: `url(${post.image_url})` }}
 										/>
 									</DialogTrigger>
-									<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
+									<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none relative flex justify-center items-center">
+										<DialogClose className="absolute top-3 right-3 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
+											<X className="w-5 h-5" />
+										</DialogClose>
 										<img
 											src={post.image_url}
 											alt="Full Image"
@@ -339,8 +348,12 @@ const ForumChatCard = () => {
 										{post.shares_count}
 									</span>
 								</div>
-								<ShareModal open={shareOpen} setOpen={setShareOpen} id={post.id} link={shareLink} />
-
+								<ShareModal
+									open={shareOpen}
+									setOpen={setShareOpen}
+									id={post.id}
+									link={shareLink}
+								/>
 
 								<div className="flex items-center">
 									<span

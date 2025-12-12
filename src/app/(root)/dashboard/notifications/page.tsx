@@ -59,12 +59,12 @@ const NotificationsPage = () => {
 
 		const channel = echo.private(`App.Models.User.${currentUserId}`);
 
-		channel.listen("UserNotification", () => {
+		channel.listen(".UserNotification", () => {
 			getNotification.refetch();
 		});
 
 		return () => {
-			channel.stopListening("UserNotification");
+			channel.stopListening(".UserNotification");
 		};
 	}, [currentUserId]);
 

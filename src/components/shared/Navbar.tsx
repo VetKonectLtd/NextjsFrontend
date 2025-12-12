@@ -30,6 +30,7 @@ import {
 	UserRoundCog,
 } from "lucide-react";
 import { useActivitiesService } from "@/services/activitiesService";
+import echo from "@/lib/echo";
 
 const Navbar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -44,7 +45,27 @@ const Navbar = () => {
 	const { useGetNotification } = useActivitiesService();
 	const getNotification = useGetNotification(true);
 
+	const { useCurrentUser } = useAuthService();
+	const user = useCurrentUser(true);
+	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
+
 	const unreadCount = (getNotification?.data as any)?.totalNotification || 0;
+
+
+	useEffect(() => {
+		if (!currentUserId || !echo) return;
+
+		const channel = echo.private(`App.Models.User.${currentUserId}`);
+
+		channel.listen(".UserNotification", () => {
+			getNotification.refetch();
+		});
+
+		return () => {
+			channel.stopListening(".UserNotification");
+		};
+	}, [currentUserId]);
+
 
 	const pathname = usePathname();
 
