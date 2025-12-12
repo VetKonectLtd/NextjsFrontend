@@ -6,7 +6,7 @@ const VetDiary = () => {
 	return (
 		<div>
 			<section className="text-center h-auto py-5 bg-[#FAFFF4] relative">
-				<div className="flex justify-between items-center md:w-4/5 w-11/12  m-auto py-5 mb-6">
+				<div className="flex justify-center items-center md:w-4/5 w-11/12  m-auto py-5 mb-6">
 					<h2 className="text-xl md:text-3xl font-bold">
 						Vet konect Dairy Show
 					</h2>

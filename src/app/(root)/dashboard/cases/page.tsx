@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -6,14 +5,13 @@ import {
   Search,
   Trash2,
   Share2,
-  ExternalLink,
-  ChevronDown
+  ExternalLink
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { CasesDownload, CasesAdd, CasesLoadMore } from "@/app/assets/icons";
 import { casesService, Case } from "@/services/casesService";
-import { toast } from "sonner"; // Assuming sonner is used, or alert
+import { toast } from "sonner";
 import { DateSelectionModal } from "@/components/modals/DateSelectionModal";
 
 import ConfirmModal from "@/components/modals/ConfirmModal";

@@ -232,6 +232,15 @@ const Navbar = () => {
 							</Link>
 						)}
 
+						{!isAuthenticated && (
+							<Link
+								href="/login"
+								className="flex items-center px-4 py-1 rounded-xl text-gray-700 bg-gray-50 border border-gray-200 shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+							>
+								<span className="text-sm font-medium">Login</span>
+							</Link>
+						)}
+
 						{/* Messages */}
 						{isAuthenticated && (
 							<Link
