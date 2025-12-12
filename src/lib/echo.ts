@@ -15,7 +15,7 @@ if (typeof window !== "undefined") {
 	const key = process.env.NEXT_PUBLIC_REVERB_APP_KEY;
 	const host = process.env.NEXT_PUBLIC_REVERB_HOST;
 	const port = Number(process.env.NEXT_PUBLIC_REVERB_PORT || 443);
-	const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME || "http";
+	const scheme = process.env.NEXT_PUBLIC_REVERB_SCHEME;
 	const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 	if (!key || !host || !baseURL) {
@@ -36,8 +36,8 @@ if (typeof window !== "undefined") {
 				wsPort: port,
 				wssPort: port,
 				forceTLS: scheme === "https",
-				enabledTransports: scheme === "https" ? ["wss"] : ["ws"],
-				disableStats: true,
+				enabledTransports: scheme === "https" ? ["ws"] : ["wss"],
+				enableStats: true,
 				authEndpoint: `${baseURL}/broadcasting/auth`,
 				auth: {
 					headers: {
@@ -51,17 +51,6 @@ if (typeof window !== "undefined") {
 		}
 		echo = window.Echo;
     
-		echo.connector.pusher.connection.bind("connected", () => {
-			console.log("REVERB CONNECTED!");
-		});
-
-		echo.connector.pusher.connection.bind("error", (error: any) => {
-			console.error("REVERB CONNECTION ERROR:", error);
-		});
-
-		echo.connector.pusher.connection.bind("state_change", (states: any) => {
-			console.log("Reverb State:", states);
-		});
 	} catch (error) {
 		console.error("Failed to initialize Echo:", error);
 	}

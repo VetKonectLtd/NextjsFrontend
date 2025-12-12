@@ -6,6 +6,8 @@ import { useActivitiesService } from "@/services/activitiesService";
 import { Activity } from "@/types";
 import Image from "next/image";
 import { Down } from "@/app/assets/icons";
+import { useAuthService } from "@/services/authService";
+import echo from "@/lib/echo";
 
 const Activities = () => {
 	const { useGetActivities } = useActivitiesService();
@@ -14,6 +16,25 @@ const Activities = () => {
 	const [allActivities, setAllActivities] = useState<Activity[]>([]);
 
 	const getActivities = useGetActivities(true, page);
+
+	const { useCurrentUser } = useAuthService();
+		const user = useCurrentUser(true);
+		const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
+		
+
+	useEffect(() => {
+		if (!currentUserId || !echo) return;
+
+		const channel = echo.private(`App.Models.User.${currentUserId}`);
+
+		channel.listen(".UserActivity", () => {
+			getActivities.refetch();
+		});
+
+		return () => {
+			channel.stopListening(".UserActivity");
+		};
+	}, [currentUserId]);
 
 	// whenever data changes, merge it with existing ones
 	useEffect(() => {

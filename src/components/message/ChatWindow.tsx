@@ -112,10 +112,7 @@ export default function ChatWindow({
 			const ids = [currentUserId, selectedVet.id].sort((a, b) => a - b);
 			channel = echo.private(`direct-chat.${ids[0]}.${ids[1]}`);
 
-channel.subscribed(() => console.log("SUBSCRIBE SUCCESS"));
-channel.error((err: any) => console.error("SUBSCRIBE ERROR:", err));
-
-			channel.listen("direct-message.sent", (event: any) => {
+			channel.listen(".direct-message.sent", (event: any) => {
 				console.log("New message:", event);
 				messageData.refetch();
 			});
@@ -123,7 +120,7 @@ channel.error((err: any) => console.error("SUBSCRIBE ERROR:", err));
 
 		return () => {
 			if (channel) {
-				channel.stopListening("direct-message.sent");
+				channel.stopListening(".direct-message.sent");
 				console.log("Unsubscribed from channel");
 			}
 		};
@@ -183,7 +180,6 @@ channel.error((err: any) => console.error("SUBSCRIBE ERROR:", err));
 			},
 		});
 	};
-
 
 	return (
 		<div className="bg-white min-h-[85vh] max-h-[85vh] md:col-span-1 col-span-4 rounded-2xl md:shadow-md w-full md:max-w-sm flex flex-col overflow-hidden md:border border-gray-200">

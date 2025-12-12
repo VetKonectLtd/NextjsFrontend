@@ -20,7 +20,13 @@ import { formatRole, timeAgo } from "../shared/TimeFormat";
 import { User } from "@/app/assets/icons";
 import { useRouter } from "next/navigation";
 import { useAuthService } from "@/services/authService";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
 import ShareModal from "./ShareModal";
 import { slugify } from "@/lib/slugify";
 
@@ -203,6 +209,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 				{/* Post Body */}
 				{detail?.image_url ? (
 					<Dialog>
+						<DialogTitle></DialogTitle>
 						<DialogTrigger asChild>
 							<div
 								className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
@@ -210,6 +217,9 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 							/>
 						</DialogTrigger>
 						<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
+							<DialogClose className="absolute top-3 right-3 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
+								<X className="w-5 h-5" />
+							</DialogClose>
 							<img
 								src={detail?.image_url}
 								alt="Full Image"
