@@ -22,8 +22,8 @@ export default function InitiativesPage() {
 			
 			<Vetkonectearning />
 			<VetDiary/>
-			<AfriVetChroniclesSection/>
 			<Wipi />
+			<AfriVetChroniclesSection/>
 			{/* Contact Section */}
 			
 			

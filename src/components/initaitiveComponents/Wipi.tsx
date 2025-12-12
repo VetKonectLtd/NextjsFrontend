@@ -20,12 +20,12 @@ export default function Wipi() {
 	return (
 		<section className="relative bg-[#FFFEF4] py-16 overflow-hidden">
 			<div className="">
-				<div className=" md:w-4/5 w-11/12 mx-auto">
+				<div className=" md:w-4/5 w-11/12 text-center mx-auto">
 					<h2 className="text-lg md:text-3xl font-extrabold text-gray-900 pb-5">
 						Women in Poultry Initiative
 					</h2>
 
-					<p className="text-gray-600 text-left leading-relaxed md:text-xl py-6">
+					<p className="text-gray-600 leading-relaxed md:text-xl py-6">
 						WIPI empowers rural women with training, starter packs, and access
 						to markets, helping them run successful poultry businesses. By
 						fostering a supportive community and sustainable opportunities, the
