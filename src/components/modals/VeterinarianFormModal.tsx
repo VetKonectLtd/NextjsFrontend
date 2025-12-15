@@ -20,6 +20,7 @@ import { Loader2 } from "lucide-react";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { useAuthService } from "@/services/authService";
 import TagInput from "../form/TagInput";
+import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 
 const VeterinarianFormModal = ({
 	progressOpen,
@@ -42,10 +43,15 @@ const VeterinarianFormModal = ({
 		formState: { errors, isValid },
 	} = useForm<VetDoctor>();
 
+	const [selectedLocation, setSelectedLocation] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
 	useEffect(() => {
-		if (coordinates) {
-			setValue("latitude", String(coordinates.latitude));
-			setValue("longitude", String(coordinates.longitude));
+		if (selectedLocation) {
+			setValue("latitude", String(selectedLocation?.latitude as any));
+			setValue("longitude", String(selectedLocation?.longitude as any));
 		}
 		if (user) {
 			setValue(
@@ -53,7 +59,7 @@ const VeterinarianFormModal = ({
 				(user as Record<string, any>)?.data?.profile?.user?.id,
 			);
 		}
-	}, [setValue, coordinates, user]);
+	}, [setValue, selectedLocation, user]);
 
 	const onSubmit = (data: VetDoctor) => {
 		if (Array.isArray(data.specialty)) {
@@ -164,6 +170,16 @@ const VeterinarianFormModal = ({
 							isRequired
 							error={errors.address?.message}
 							{...register("address", { required: "Location is required" })}
+						/>
+
+						<FormGooglePlacesInput
+							name="address"
+							control={control}
+							label="Address"
+							focusLabel="Address (Required):"
+							isRequired
+							error={errors.address?.message}
+							onLocationSelect={(loc: any) => setSelectedLocation(loc)}
 						/>
 
 						<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">

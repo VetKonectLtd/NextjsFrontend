@@ -21,6 +21,7 @@ import { VetParaprofessional } from "@/types";
 import FormSelect from "../form/FormSelect";
 import { State } from "country-state-city";
 import TagInput from "../form/TagInput";
+import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 
 interface ParaprofessionalSwitchModalProps {
 	open: boolean;
@@ -49,6 +50,11 @@ const ParaprofessionalSwitchModal = ({
 		control,
 		formState: { errors },
 	} = useForm<VetParaprofessional>();
+
+	const [selectedLocation, setSelectedLocation] = useState<{
+			latitude: number;
+			longitude: number;
+		} | null>(null);
 
 	const currentYear = new Date().getFullYear();
 
@@ -90,11 +96,11 @@ const ParaprofessionalSwitchModal = ({
 	const [selectedState, setSelectedState] = useState("");
 
 	useEffect(() => {
-		if (coordinates) {
-			setValue("latitude", Number(coordinates.latitude) as any);
-			setValue("longitude", Number(coordinates.longitude) as any);
+		if (selectedLocation) {
+			setValue("latitude", Number(selectedLocation?.latitude) as any);
+			setValue("longitude", Number(selectedLocation?.longitude) as any);
 		}
-	}, [setValue, coordinates, user]);
+	}, [setValue, selectedLocation, user]);
 
 	const handleUseMyLocation = async () => {
 		try {
@@ -254,13 +260,14 @@ const ParaprofessionalSwitchModal = ({
 						})}
 					/>
 
-					<FormInput
+					<FormGooglePlacesInput
+						name="address"
+						control={control}
 						label="Address"
-						type="text"
-						focusLabel="Address (Required) :"
+						focusLabel="Address (Required):"
 						isRequired
 						error={errors.address?.message}
-						{...register("address", { required: "Address is required" })}
+						onLocationSelect={(loc: any) => setSelectedLocation(loc)}
 					/>
 
 					{/* Longitude / Latitude manual fallback */}

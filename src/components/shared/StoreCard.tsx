@@ -6,6 +6,7 @@ import {
 	ArrowRight,
 	Check,
 	Mail,
+	Eye,
 } from "lucide-react";
 import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
 import { GreenButton } from "@/app/assets/icons";
@@ -37,6 +38,15 @@ const StoreCard = ({
 	return (
 		<div className="bg-white rounded-2xl shadow-md flex flex-col relative">
 			<div>
+				
+				<div>
+					<Link href={`/dashboard/stores/${id}`} className="">
+					<span className="absolute top-3 left-3 z-20 px-5 py-1 bg-white rounded-md shadow-md">
+
+					<Eye size={14} className=" bg-white shadow-md cursor-pointer z-10" />
+					</span>
+					</Link>
+				</div>
 				<div className="absolute top-3 right-3 flex items-center gap-2 z-10">
 					{availability ? (
 						<div className="flex items-center bg-white rounded-lg px-5 py-1 shadow text-xs font-medium">
@@ -98,7 +108,7 @@ const StoreCard = ({
 									height={10}
 									className="mr-2"
 								/>
-								<span className="ml-1">{location}</span>
+								<span className="ml-1">{location.length > 18 ? `${location.slice(0, 18)}...` : location}</span>
 							</span>
 						</div>
 					</div>

@@ -93,9 +93,9 @@ export const directMessageService = () => {
 	};
 
 	const useUpdateMessage = (Id: string) => {
-		return usePut<any>(DIRECT_CHAT.EDIT_MESSAGE(Id), {
+		return usePost<any>(DIRECT_CHAT.EDIT_MESSAGE(Id), {
 			onSuccess: (response: any) => {
-				handleSuccess(response.message);
+				handleSuccess(response.message || " Message updated successfully!");
 			},
 			onError: (error) => {
 				handleError(error.message || "failed");

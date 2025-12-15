@@ -48,13 +48,13 @@ class ApiClient {
 			const data = await response.json();
 
 			// Handle 401 Unauthorized - Auto logout and redirect
-			// if (response.status === 401) {
-			// 	console.warn("401 Unauthorized - Logging out user");
-			// 	this.handleUnauthorized();
-			// 	throw new Error(
-			// 		data.error || data.message || "Unauthorized - Please login again",
-			// 	);
-			// }
+			if (response.status === 401) {
+				console.warn("401 Unauthorized - Logging out user");
+				this.handleUnauthorized();
+				throw new Error(
+					data.error || data.message || "Unauthorized - Please login again",
+				);
+			}
 
 			if (!response.ok) {
 				throw new Error(data.error || data.message || "API request failed");
