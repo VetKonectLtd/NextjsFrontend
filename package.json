@@ -41,6 +41,7 @@
     "pusher-js": "^8.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-google-autocomplete": "^2.7.5",
     "react-hook-form": "^7.62.0",
     "react-loading-skeleton": "^3.5.0",
     "react-stars": "^2.2.5",

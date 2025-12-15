@@ -21,6 +21,7 @@ import { useAuthService } from "@/services/authService";
 import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
 import FormSelect from "../form/FormSelect";
 import TagInput from "../form/TagInput";
+import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 
 const VetProfessionalsFormModal = ({
 	progressOpen,
@@ -44,6 +45,11 @@ const VetProfessionalsFormModal = ({
 		formState: { errors, isValid },
 	} = useForm<VetParaprofessional>();
 
+	const [selectedLocation, setSelectedLocation] = useState<{
+				latitude: number;
+				longitude: number;
+			} | null>(null);
+
 	const currentYear = new Date().getFullYear();
 
 	const futureYearOptions = Array.from({ length: 20 }, (_, i) => {
@@ -65,9 +71,9 @@ const VetProfessionalsFormModal = ({
 	}, [watch("graduation_year"), setValue]);
 
 	useEffect(() => {
-		if (coordinates) {
-			setValue("latitude", String(coordinates.latitude));
-			setValue("longitude", String(coordinates.longitude));
+		if (selectedLocation) {
+			setValue("latitude", String(selectedLocation.latitude as any));
+			setValue("longitude", String(selectedLocation.longitude as any));
 		}
 		if (user) {
 			setValue(
@@ -75,7 +81,7 @@ const VetProfessionalsFormModal = ({
 				(user as Record<string, any>)?.data?.profile?.user?.id,
 			);
 		}
-	}, [setValue, coordinates, user]);
+	}, [setValue, selectedLocation, user]);
 
 	const onSubmit = (data: VetParaprofessional) => {
 		if (Array.isArray(data.specialty)) {
@@ -213,13 +219,14 @@ const VetProfessionalsFormModal = ({
 							})}
 						/>
 
-						<FormInput
+						<FormGooglePlacesInput
+							name="address"
+							control={control}
 							label="Address"
-							type="text"
-							focusLabel="Address (Required) :"
+							focusLabel="Address (Required):"
 							isRequired
 							error={errors.address?.message}
-							{...register("address", { required: "Location is required" })}
+							onLocationSelect={(loc: any) => setSelectedLocation(loc)}
 						/>
 
 						<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">

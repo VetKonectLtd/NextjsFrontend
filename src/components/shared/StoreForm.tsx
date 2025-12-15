@@ -12,6 +12,7 @@ import { Store } from "@/types";
 import { useStoreService } from "@/services/storeService";
 import { useAuthService } from "@/services/authService";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
+import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 
 type StoreFormProps = {
 	mode: "create" | "edit";
@@ -42,6 +43,13 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 		formState: { errors },
 	} = useForm<Store>();
 
+	const [selectedLocation, setSelectedLocation] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
+	console.log("Selected Location:", selectedLocation);
+
 	useEffect(() => {
 		if (store) {
 			reset(
@@ -69,13 +77,12 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 	});
 
 	useEffect(() => {
-		setValue("latitude", coordinates?.latitude.toString());
-		setValue("longitude", coordinates?.longitude.toString());
+		setValue("latitude", selectedLocation?.latitude.toString());
+		setValue("longitude", selectedLocation?.longitude.toString());
 
 		setValue("user_id", (user as Record<string, any>).data?.profile?.user_id);
 		setValue("role", (user as Record<string, any>).data?.role);
 	}, [setValue, user]);
-
 
 	const countries = Country.getAllCountries().map((c) => ({
 		value: c.isoCode,
@@ -198,20 +205,15 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 						</p>
 					)}
 
-					<FormInput
+					<FormGooglePlacesInput
+						name="location"
+						control={control}
 						label="Location"
-						type="text"
-						focusLabel="Location (Optional):"
+						focusLabel="Location (Required):"
 						isRequired
-						{...register("location", {
-							required: "Location is required",
-						})}
 						error={errors.location?.message}
-						onChange={() => clearErrors("location")}
+						onLocationSelect={(loc: any) => setSelectedLocation(loc)}
 					/>
-					{errors.location && (
-						<p className="text-red-500 text-xs">{errors.location.message}</p>
-					)}
 
 					<div className="flex w-11/12 m-auto items-center py-5 justify-between">
 						<span className="text-sm font-medium text-gray-700">

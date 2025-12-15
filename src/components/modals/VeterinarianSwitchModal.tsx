@@ -21,6 +21,8 @@ import { VetDoctor } from "@/types";
 import FormSelect from "../form/FormSelect";
 import { State } from "country-state-city";
 import TagInput from "../form/TagInput";
+import GooglePlacesAutocomplete from "../shared/GooglePlacesAutocomplete";
+import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 
 interface VeterinarianSwitchModalProps {
 	open: boolean;
@@ -49,6 +51,11 @@ const VeterinarianSwitchModal = ({
 		formState: { errors },
 	} = useForm<VetDoctor>();
 
+	const [selectedLocation, setSelectedLocation] = useState<{
+			latitude: number;
+			longitude: number;
+		} | null>(null);
+
 	// Watch latitude/longitude to decide error visibility
 	const latitudeValue = useWatch({ control, name: "latitude" });
 	const longitudeValue = useWatch({ control, name: "longitude" });
@@ -69,11 +76,11 @@ const VeterinarianSwitchModal = ({
 	const [selectedState, setSelectedState] = useState("");
 
 	useEffect(() => {
-		if (coordinates) {
-			setValue("latitude", Number(coordinates.latitude) as any);
-			setValue("longitude", Number(coordinates.longitude) as any);
+		if (selectedLocation) {
+			setValue("latitude", Number(selectedLocation?.latitude) as any);
+			setValue("longitude", Number(selectedLocation?.longitude) as any);
 		}
-	}, [setValue, coordinates, user]);
+	}, [setValue, selectedLocation, user]);
 	const handleUseMyLocation = async () => {
 		try {
 			setLocLoading(true);
@@ -198,13 +205,14 @@ const VeterinarianSwitchModal = ({
 							)}
 						/>
 
-					<FormInput
+					<FormGooglePlacesInput
+						name="address"
+						control={control}
 						label="Address"
-						type="text"
-						focusLabel="Address (Required) :"
+						focusLabel="Address (Required):"
 						isRequired
 						error={errors.address?.message}
-						{...register("address", { required: "Location is required" })}
+						onLocationSelect={(loc: any) => setSelectedLocation(loc)}
 					/>
 
 					{/* Longitude / Latitude manual fallback */}

@@ -20,8 +20,13 @@ import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { Controller, useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
 import TagInput from "../form/TagInput";
+import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 
-const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) => {
+const VeterinarianFormModal = ({
+	progressOpen,
+	setOpen,
+	setProgressOpen,
+}: any) => {
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [successOpen, setSuccessOpen] = useState(false);
 
@@ -40,10 +45,15 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 		formState: { errors, isValid },
 	} = useForm<VetClinic>();
 
+	const [selectedLocation, setSelectedLocation] = useState<{
+		latitude: number;
+		longitude: number;
+	} | null>(null);
+
 	useEffect(() => {
-		if (coordinates) {
-			setValue("latitude", String(coordinates.latitude));
-			setValue("longitude", String(coordinates.longitude));
+		if (selectedLocation) {
+			setValue("latitude", String(selectedLocation.latitude as any));
+			setValue("longitude", String(selectedLocation.longitude as any));
 		}
 		if (user) {
 			setValue(
@@ -51,7 +61,7 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 				(user as Record<string, any>)?.data?.profile?.user?.id,
 			);
 		}
-	}, [setValue, coordinates, user]);
+	}, [setValue, selectedLocation, user]);
 
 	const onSubmit = (data: VetClinic) => {
 		if (Array.isArray(data.specialty)) {
@@ -174,13 +184,14 @@ const VeterinarianFormModal = ({ progressOpen, setOpen, setProgressOpen }: any) 
 							})}
 						/>
 
-						<FormInput
+						<FormGooglePlacesInput
+							name="address"
+							control={control}
 							label="Address"
-							type="text"
-							focusLabel="Address (Required) :"
+							focusLabel="Address (Required):"
 							isRequired
 							error={errors.address?.message}
-							{...register("address", { required: "Address is required" })}
+							onLocationSelect={(loc: any) => setSelectedLocation(loc)}
 						/>
 
 						<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">

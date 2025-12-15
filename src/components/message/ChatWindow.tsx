@@ -13,6 +13,7 @@ import { MessageFormData } from "@/types";
 import { toast } from "sonner";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { useRouter } from "next/navigation";
+import MessageActionsDropdown from "./MessageActionsDropdown";
 const DEFAULT_AVATAR = User;
 
 interface ChatWindowProps {
@@ -34,6 +35,8 @@ export default function ChatWindow({
 		useCancelOrder,
 		useSendMessage,
 		useGetMessage,
+		useUpdateMessage,
+		useDeleteMessage,
 	} = directMessageService();
 	const { useCurrentUser } = useAuthService();
 	const router = useRouter();
@@ -53,7 +56,12 @@ export default function ChatWindow({
 		false,
 		cancelAppointmentId,
 	);
+	const [editingMessageId, setEditingMessageId] = useState<string>("");
+	const [deleteMessageId, setDeleteMessageId] = useState<string>("");
+
 	const sendMessage = useSendMessage();
+	const deleteMessage = useDeleteMessage(deleteMessageId);
+	const updateMessage = useUpdateMessage(editingMessageId);
 	const allMessages: any = messageData?.data ?? [];
 
 	const { register, handleSubmit, getValues, setValue } =
@@ -112,8 +120,13 @@ export default function ChatWindow({
 			const ids = [currentUserId, selectedVet.id].sort((a, b) => a - b);
 			channel = echo.private(`direct-chat.${ids[0]}.${ids[1]}`);
 
-			channel.listen(".direct-message.sent", (event: any) => {
-				console.log("New message:", event);
+			channel.listen(".direct-message.sent", () => {
+				messageData.refetch();
+			});
+			channel.listen(".direct-message.edited", () => {
+				messageData.refetch();
+			});
+			channel.listen(".direct-message.deleted", () => {
 				messageData.refetch();
 			});
 		})();
@@ -148,18 +161,33 @@ export default function ChatWindow({
 
 	const handleSendMessage = (data: any) => {
 		if (!data.content && !data.images) return;
-		const formData: any = new FormData();
+
+		if (editingMessageId) {
+			updateMessage.mutate(
+				{ contents: data.content },
+				{
+					onSuccess: () => {
+						setEditingMessageId("");
+						setValue("content", "");
+						messageData.refetch();
+					},
+				},
+			);
+			return;
+		}
+
+		// normal send
+		const formData = new FormData();
 		formData.append("content", data.content);
 		formData.append("receiver_id", selectedVet?.id);
 
 		data.images?.forEach((file: any) => formData.append("images[]", file));
 
 		sendMessage.mutate(formData, {
-			onSuccess: (res) => {
-				messageData.refetch();
+			onSuccess: () => {
 				setValue("content", "");
-				setValue("images", []);
 				setPreviews([]);
+				messageData.refetch();
 			},
 		});
 	};
@@ -179,6 +207,22 @@ export default function ChatWindow({
 				messageData.refetch();
 			},
 		});
+	};
+
+	const handleEditMessage = (msg: any) => {
+		setEditingMessageId(msg.id);
+		setValue("content", msg.content);
+	};
+
+	const handleDeleteMessage = (messageId: string) => {
+		setDeleteMessageId(messageId);
+		if (window.confirm(`Are you sure you want to delete your comment?`)) {
+			deleteMessage.mutate(undefined, {
+				onSuccess: () => {
+					messageData.refetch();
+				},
+			});
+		}
 	};
 
 	return (
@@ -362,11 +406,11 @@ export default function ChatWindow({
 											</div>
 										</div>
 									) : (
-										<div className="space-y-1">
+										<div className="space-y-1 pr-3 relative">
 											{/* If there are images */}
 											{msg.image_urls.length === 1 ? (
 												<div
-													className={`relative ${msg.content.length > 20 ? "w-full" : "w-[110px]"} h-[110px] rounded-lg overflow-hidden`}
+													className={`relative ${msg.content?.length > 20 ? "w-full" : "w-[110px]"} h-[110px] rounded-lg overflow-hidden`}
 												>
 													<Image
 														src={msg.image_urls[0]}
@@ -392,13 +436,29 @@ export default function ChatWindow({
 													))}
 												</div>
 											)}
+
 											{/* If there’s text */}
 											{msg?.content && (
-												<p
-													className={`${isMe ? "text-gray-800" : "text-white"}`}
-												>
-													{msg.content}
-												</p>
+												<div className="flex items-start gap-1">
+													{/* Message bubble */}
+													<div
+														className={`${
+															isMe
+																? "bg-gray-100 text-gray-800"
+																: "bg-gray-800 text-white"
+														} `}
+													>
+														{msg.content}
+													</div>
+
+													{/* Actions (only my messages) */}
+												</div>
+											)}
+											{isMe && (
+												<MessageActionsDropdown
+													onEdit={() => handleEditMessage(msg)}
+													onDelete={() => handleDeleteMessage(msg.id)}
+												/>
 											)}
 										</div>
 									)}
