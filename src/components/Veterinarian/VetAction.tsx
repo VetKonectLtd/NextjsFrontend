@@ -224,17 +224,17 @@ const VetAccount = ({
 			{selectedAction === "location" && (
 				<>
 					<p className="text-gray-55 font-bold">Users’ Location</p>
-					<p className="text-gray-800">{selectedVet?.location}</p>
+					<p className="text-gray-800">{selectedVet?.address}</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
-							onClick={() => handleCopy(selectedVet?.location || "")}
+							onClick={() => handleCopy(selectedVet?.address || "")}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
 						>
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied === selectedVet?.location ? "Copied!" : "Click to copy"}
+							{copied === selectedVet?.address ? "Copied!" : "Click to copy"}
 						</span>
 					</div>
 				</>

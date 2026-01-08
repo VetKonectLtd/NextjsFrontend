@@ -22,6 +22,7 @@ export interface ClinicProfileProps {
     location: string;
     image: StaticImageData | string;
     rating: number;
+    address?:string;
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;

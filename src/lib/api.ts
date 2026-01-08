@@ -92,7 +92,7 @@ class ApiClient {
 			this.removeAuthToken();
 
 			// Clear any user data from localStorage if needed
-			Cookies.remove("auth-token");
+			// Cookies.remove("auth-token");
 
 			// Redirect to login page
 			if (window.location.pathname !== "/login") {

@@ -176,9 +176,9 @@ const MyForumChat = () => {
 
 				<div className="flex items-center gap-7">
 					<FilterDropdownMenu setVisibilityFilter={setVisibilityFilter} />
-					<div className="w-9 h-9 md:flex hidden items-center justify-center bg-green-50 text-white rounded-xl text-xl">
+					{/* <div className="w-9 h-9 md:flex hidden items-center justify-center bg-green-50 text-white rounded-xl text-xl">
 						<PlusIcon className="w-10 h-10 font-bold text-white " />
-					</div>
+					</div> */}
 				</div>
 			</div>
 

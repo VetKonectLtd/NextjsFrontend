@@ -80,6 +80,7 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 				role: vet.role,
 				specialty: vet.specialty,
 				image: vet.user.profile || GENERIC_VET_IMAGE,
+				address: vet.address,
 				rating: averageRating,
 				totalRatings: totalRatings,
 				isAvailable: vet.availability == 1,
@@ -214,6 +215,7 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 			setCurrentPage((prev) => prev + 1);
 		}
 	};
+	console.log("Final Filtered Vets:", selectedVet);
 
 	const hasMorePages = data?.veterinary_doctors?.next_page_url !== null;
 

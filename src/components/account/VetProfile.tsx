@@ -150,6 +150,8 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		});
 	};
 
+	console.log("Current User in VetProfile:", formData);
+
 	if (isEditMode) {
 		return (
 			<div className="w-full">

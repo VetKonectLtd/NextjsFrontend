@@ -29,6 +29,7 @@ export interface VetProfileProps {
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
+    address?:string;
     role?:string;
     latitude?:string;
     longitude?:string;
@@ -82,12 +83,13 @@ const VetProfile: React.FC<VetProfileProps> = ({
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             {/* Image Container with overlays */}
             <div className="relative">
-                <div onClick={handleViewProfile} className="aspect-[4/3] cursor-pointer relative">
+                <div onClick={handleViewProfile} className="aspect-[4/3] cursor-pointer relative overflow-hidden">
                     <Image
                         src={image?.profile_image_url || GENERIC_VET_IMAGE}
                         alt={name}
-                        fill
-                        className="object-cover"
+                        width={900}
+                        height={900}
+                        className="object-cover w-full h-full"
                     />
                     <div className="absolute inset-0">
                         <Image

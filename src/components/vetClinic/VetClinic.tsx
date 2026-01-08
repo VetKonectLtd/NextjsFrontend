@@ -8,6 +8,7 @@ import SelectedClinic from "./SelectedClinic";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
 import { VetClinicData, GetAllVetClinicResponse } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
+import { address } from "framer-motion/client";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -66,6 +67,7 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
                 image: (clinic.user.profile as any).profile_image_url || GENERIC_VET_IMAGE,
                 rating: averageRating,
                 totalRatings: totalRatings,
+                address : clinic.address,
                 isAvailable: clinic.availability == 1,
                 isVerified: clinic.is_approved == 1,
                 email: clinic.user.email,

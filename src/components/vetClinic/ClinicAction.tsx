@@ -216,17 +216,17 @@ const ClinicAccount = ({
 			{selectedAction === "location" && (
 				<>
 					<p className="text-gray-55 font-bold">Users’ Location</p>
-					<p className="text-gray-800">{selectedClinic?.location}</p>
+					<p className="text-gray-800">{selectedClinic?.address}</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
-							onClick={() => handleCopy(selectedClinic?.location || "")}
+							onClick={() => handleCopy(selectedClinic?.address || "")}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
 						>
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied === selectedClinic?.location
+							{copied === selectedClinic?.address
 								? "Copied!"
 								: "Click to copy"}
 						</span>
