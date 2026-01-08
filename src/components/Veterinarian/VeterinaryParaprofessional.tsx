@@ -7,6 +7,7 @@ import EmptyState from "@/components/shared/EmptyState";
 import SelectedVet from "./SelectedVetDetail";
 import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
 import { VetParaprofessionalData, GetAllVetParaprofessionalResponse } from "@/types";
+import { address } from "framer-motion/client";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -62,6 +63,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ({
 				rating: averageRating,
 				role:vpp.role,
 				totalRatings: totalRatings,
+				address	: vpp.address,
 				isAvailable: vpp.availability == 1,
 				isVerified: vpp.is_approved == 1,
 				email: vpp.user.email,

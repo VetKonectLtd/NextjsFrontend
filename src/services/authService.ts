@@ -104,8 +104,11 @@ export const useAuthService = () => {
 
 	// Get current user query
 	const useCurrentUser = (enabled: boolean = true) => {
+		const token = Cookies.get("auth-token");
+
+		const isEnabled = Boolean(token) && Boolean(enabled);
 		return useGet<User>(["currentUser"], AUTH_ENDPOINTS.GET_PROFILE, {
-			enabled,
+			enabled: isEnabled,
 			staleTime: 5 * 60 * 1000, // 5 minutes
 		});
 	};

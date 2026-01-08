@@ -183,7 +183,7 @@ const Navbar = () => {
 					<div className="hidden md:flex items-center space-x-8">
 						<Link
 							href="/about"
-							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+							className={getLinkClasses("/about")}
 						>
 							About Us
 						</Link>
@@ -201,19 +201,19 @@ const Navbar = () => {
 						</Link>
 						<Link
 							href="/dashboard/blog"
-							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+							className={getLinkClasses("/dashboard/blog")}
 						>
 							Blog
 						</Link>
 						<Link
 							href="/dashboard/chat-forum"
-							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+							className={getLinkClasses("/dashboard/chat-forum")}
 						>
 							Chat Forum
 						</Link>
 						<Link
 							href="/initiatives"
-							className="px-3 py-2 text-sm font-medium text-gray-800 transition-colors hover:text-green-600"
+							className={getLinkClasses("/initiatives")}
 						>
 							Initiatives
 						</Link>

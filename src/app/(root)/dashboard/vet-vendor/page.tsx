@@ -122,7 +122,7 @@ export default function VetVendorPage() {
 					setSelectedCountry={setSelectedCountry}
 				/>
 
-				{activeCategory == "Vendor" && (
+				{/* {activeCategory == "Vendor" && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
 						<Link href="#">
 							<Image src={Cart} alt="Cart" width={36} height={36} />
@@ -137,9 +137,9 @@ export default function VetVendorPage() {
 							</button>
 						</div>
 					</div>
-				)}
+				)} */}
 
-				{(activeCategory === "Veterinarian" ||
+				{/* {(activeCategory === "Veterinarian" ||
 					activeCategory === "VPP" ||
 					activeCategory === "Vet Clinic") && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
@@ -155,7 +155,7 @@ export default function VetVendorPage() {
 							</Link>
 						</div>
 					</div>
-				)}
+				)} */}
 			</div>
 
 			{activeCategory == "Vendor" && (
