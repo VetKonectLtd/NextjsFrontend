@@ -14,6 +14,7 @@ import {
 } from '@/app/assets/icons';
 import { RecOverlay } from '@/app/assets/images';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
+import { address } from 'framer-motion/client';
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -46,7 +47,7 @@ export interface VetProfileProps {
 const VetProfile: React.FC<VetProfileProps> = ({
     id,
     name,
-    location,
+    address,
     image,
     rating,
     isAvailable,
@@ -159,7 +160,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                         {location && location.length > 15 ? `${location.slice(0, 15)}...` : location || 'Untitled'}
+                         {address && address.length > 15 ? `${address.slice(0, 15)}...` : address || 'Untitled'}
                     </span>
                 </div>
 

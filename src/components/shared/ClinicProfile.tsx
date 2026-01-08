@@ -43,7 +43,7 @@ export interface ClinicProfileProps {
 const ClinicProfile: React.FC<ClinicProfileProps> = ({
     id,
     name,
-    location,
+    address,
     image,
     rating,
     totalRatings,
@@ -155,7 +155,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                        {location}
+                        {address && address.length > 15 ? `${address.slice(0, 15)}...` : address || 'Untitled'}
                     </span>
                 </div>
 

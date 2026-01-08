@@ -31,6 +31,7 @@ import VeterinarianSwitchModal from "../modals/VeterinarianSwitchModal";
 import ParaprofessionalSwitchModal from "../modals/ParaprofessionalSwitchModal";
 import VetClinicSwitchModal from "../modals/VetClinicSwitchModal";
 import { ALL_ROLES, ROLE, normalizeRole, RoleKey } from "@/lib/roles";
+import GooglePlacesInput from "../form/GooglePlacesInput";
 // Media is handled inside AccountAction's built-in view
 
 const DEFAULT_AVATAR = User;
@@ -56,13 +57,15 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		(user as any)?.role || "",
 	);
 
-
 	const [formData, setFormData] = useState({
 		email: (currentUser?.user?.email as string) || "",
 		specialty: (currentUser?.specialty as string) || "",
 		firstName: (currentUser?.user?.first_name as string) || "",
 		lastName: (currentUser?.user?.last_name as string) || "",
 		phoneNo: (currentUser?.user?.phone_num as string) || "",
+		address: (currentUser?.address as string) || "",
+		latitude: (currentUser?.latitude as string) || "",
+		longitude: (currentUser?.longitude as string) || "",
 		location: currentUser?.user?.state
 			? `${currentUser?.user?.state}${currentUser?.user?.country ? ", " + currentUser?.user?.country : ""}`
 			: "",
@@ -70,7 +73,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		isAvailable: Boolean(currentUser?.availability),
 		practice_license_num: currentUser?.practice_license_num || "awaiting",
 	});
-
 
 	const [profileImage, setProfileImage] = useState<any>(
 		(currentUser?.user?.profile?.profile_image_url as string) ||
@@ -116,6 +118,9 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		if (formData.firstName) payload.append("first_name", formData.firstName);
 		if (formData.lastName) payload.append("last_name", formData.lastName);
 		if (formData.phoneNo) payload.append("phone_num", formData.phoneNo);
+		if (formData.latitude) payload.append("latitude", formData.latitude);
+		if (formData.longitude) payload.append("longitude", formData.longitude);
+		if (formData.address) payload.append("address", formData.address);
 		if (formData.bio) payload.append("bio", formData.bio);
 		payload.append("availability", formData.isAvailable ? "1" : "0");
 
@@ -252,6 +257,58 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 								placeholder="Location / Address"
 								className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
 							/>
+						</div>
+						<div>
+							<GooglePlacesInput
+								label="Location / Address"
+								focusLabel="Address (Required)"
+								value={formData.address}
+								onChange={(value: any) =>
+									setFormData((prev) => ({ ...prev, address: value }))
+								}
+								onLocationSelect={({ address, latitude, longitude }) => {
+									setFormData((prev) => ({
+										...prev,
+										address: address || "",
+										latitude: latitude?.toString() || "",
+										longitude: longitude?.toString() || "",
+									}));
+								}}
+							/>
+						</div>
+
+						<div className="grid grid-cols-2 gap-3">
+							<div className="flex flex-col items-left py-3">
+								<label className="text-sm font-medium text-gray-700">
+									Latitude
+								</label>
+								<input
+									type="number"
+									name="latitude"
+									value={formData.latitude}
+									onChange={(e) =>
+										handleInputChange("latitude", e.target.value)
+									}
+									placeholder="Latitude"
+									className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+								/>
+							</div>
+
+							<div className="flex flex-col items-left py-3">
+								<label className="text-sm font-medium text-gray-700">
+									Longitude
+								</label>
+								<input
+									type="number"
+									name="longitude"
+									value={formData.longitude}
+									onChange={(e) =>
+										handleInputChange("longitude", e.target.value)
+									}
+									placeholder="Longitude"
+									className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+								/>
+							</div>
 						</div>
 
 						{/* Availability Toggle */}

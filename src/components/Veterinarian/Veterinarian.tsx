@@ -215,7 +215,6 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 			setCurrentPage((prev) => prev + 1);
 		}
 	};
-	console.log("Final Filtered Vets:", selectedVet);
 
 	const hasMorePages = data?.veterinary_doctors?.next_page_url !== null;
 
