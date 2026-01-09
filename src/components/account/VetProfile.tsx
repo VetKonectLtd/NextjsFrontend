@@ -57,6 +57,8 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		(user as any)?.role || "",
 	);
 
+	console.log("Current User Role in VetProfile:", ROLE.VETERINARIAN);
+
 	const [formData, setFormData] = useState({
 		email: (currentUser?.user?.email as string) || "",
 		specialty: (currentUser?.specialty as string) || "",
@@ -121,7 +123,8 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		if (formData.latitude) payload.append("latitude", formData.latitude);
 		if (formData.longitude) payload.append("longitude", formData.longitude);
 		if (formData.address) payload.append("address", formData.address);
-		if (formData.bio) payload.append("bio", formData.bio);
+		if (formData.bio) payload.append("bio", formData.bio)
+
 		payload.append("availability", formData.isAvailable ? "1" : "0");
 
 		// Try to split location into state, country if the UI provides a single string
@@ -146,6 +149,14 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 			);
 		}
 
+		if (backendRole === ROLE.VETERINARIAN) {
+			payload.append("status", "vet");
+		}else if (backendRole === ROLE.PARAPROFESSIONAL) {
+			payload.append("status", "vet_paraprofessional");
+		}else if (backendRole === ROLE.CLINIC) {
+			payload.append("status", "vet_clinic");
+		}
+
 		updateProfileMutation.mutate(payload, {
 			onSuccess: () => {
 				// close edit mode and rely on invalidateQueries to refresh currentUser
@@ -155,7 +166,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		});
 	};
 
-	console.log("Current User in VetProfile:", formData);
 
 	if (isEditMode) {
 		return (
