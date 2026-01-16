@@ -10,11 +10,7 @@ import {
 	Mail,
 	MapPin,
 	Share2,
-	UserPlus,
-	Camera,
 	ChevronDown,
-	MessagesSquareIcon,
-	Star,
 	Info,
 	ImageIcon,
 } from "lucide-react";
@@ -57,7 +53,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		(user as any)?.role || "",
 	);
 
-	console.log("Current User Role in VetProfile:", ROLE.VETERINARIAN);
 
 	const [formData, setFormData] = useState({
 		email: (currentUser?.user?.email as string) || "",
