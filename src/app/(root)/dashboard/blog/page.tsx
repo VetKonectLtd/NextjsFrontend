@@ -213,9 +213,9 @@ const Blog = () => {
 												<Image
 													src={activePost?.picture_url}
 													alt={activePost?.title}
-													width={400}
-													height={400}
-													className="rounded-lg w-full h-52 object-cover mb-4"
+													width={900}
+													height={900}
+													className="rounded-lg w-full h-[28rem] object-cover mb-4"
 												/>
 											</DialogContent>
 										</Dialog>
@@ -236,29 +236,35 @@ const Blog = () => {
 										</p>
 									</div>
 
-									<p className="text-gray-55 font-normal text-sm cursor-pointer hover:text-gray-600 mb-4">
+									<div className="text-gray-55 font-normal text-sm cursor-pointer hover:text-gray-600 mb-2">
 										{showFull ? (
-											<span>
-												{activePost?.content.slice(0, 150)}
+											<div>
+												<div
+													className="prose prose-sm max-w-none whitespace-pre-wrap"
+													dangerouslySetInnerHTML={{ __html: activePost?.content.slice(0, 150) }}
+												/>
 												<span
-													className="ml-1"
+													className="ml-1 text-primary-400"
 													onClick={() => setShowFull(!showFull)}
 												>
 													...see more
 												</span>{" "}
-											</span>
+											</div>
 										) : (
-											<span>
-												{activePost?.content}{" "}
+											<div>
+												<div
+													className="max-w-full space-y-2 blog-content"
+													dangerouslySetInnerHTML={{ __html: activePost?.content }}
+												/>
 												<span
-													className="ml-1"
+													className="ml-1 text-primary-400"
 													onClick={() => setShowFull(!showFull)}
 												>
 													...see less
 												</span>
-											</span>
+											</div>
 										)}
-									</p>
+									</div>
 
 									{/* Actions */}
 									<div className="flex md:justify-end justify-start gap-4 items-center text-sm">
