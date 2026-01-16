@@ -12,12 +12,14 @@ import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { XIcon } from "@/app/assets/icons";
+import { useBlogService } from "@/services/blogServie";
 
 interface ShareModalProps {
 	open: boolean;
 	setOpen: (v: boolean) => void;
 	link: string;
 	id: string;
+	mode?: "chat-forum" | "blog";
 }
 
 export default function ShareModal({
@@ -25,15 +27,24 @@ export default function ShareModal({
 	setOpen,
 	link,
 	id,
+	mode
 }: ShareModalProps) {
 	const [copied, setCopied] = useState(false);
 	const { useGetShareForum } = useForumService();
+	const {
+			useGetShareBlog,
+		} = useBlogService();
 
-	const {refetch: increaseShare} = useGetShareForum(false, id);
+	const {refetch: increaseShareforChat} = useGetShareForum(false, id);
+	const {refetch: increaseShareforBlog} = useGetShareBlog(false, id);
 
 	const handleCopy = async () => {
 		await navigator.clipboard.writeText(link);
-		increaseShare();
+		if (mode === "chat-forum") {
+			increaseShareforChat();
+		}else{
+			increaseShareforBlog();
+		}
 		setCopied(true);
 		setTimeout(() => setCopied(false), 2000);
 	};
@@ -62,7 +73,7 @@ export default function ShareModal({
 						<Link
 							href={`https://wa.me/?text=${encodeURIComponent(link)}`}
 							target="_blank"
-							onClick={() => increaseShare()}
+							onClick={() => { if (mode === "chat-forum") increaseShareforChat(); else increaseShareforBlog(); }}
 							className="flex flex-col items-center gap-1"
 						>
 							<div className="bg-green-500 text-white p-3 rounded-full">
@@ -76,7 +87,7 @@ export default function ShareModal({
 								link,
 							)}`}
 							target="_blank"
-							onClick={() => increaseShare()}
+							onClick={() => { if (mode === "chat-forum") increaseShareforChat(); else increaseShareforBlog(); }}
 							className="flex flex-col items-center gap-1"
 						>
 							<div className="bg-blue-600 text-white p-3 rounded-full">
@@ -90,7 +101,7 @@ export default function ShareModal({
 								link,
 							)}`}
 							target="_blank"
-							onClick={() => increaseShare()}
+							onClick={() => { if (mode === "chat-forum") increaseShareforChat(); else increaseShareforBlog(); }}
 							className="flex flex-col items-center gap-1"
 						>
 							<div className="border border-black text-white p-3 rounded-full">

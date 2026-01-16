@@ -353,6 +353,7 @@ const ForumChatCard = () => {
 									setOpen={setShareOpen}
 									id={post.id}
 									link={shareLink}
+									mode="chat-forum"
 								/>
 
 								<div className="flex items-center">

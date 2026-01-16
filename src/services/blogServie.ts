@@ -104,10 +104,10 @@ export const useBlogService = () => {
 		});
 	};
 
-	const useGetShareBlog = (enabled: boolean = false) => {
+	const useGetShareBlog = (enabled: boolean = false, id: string) => {
 		return useGet<{ blog: any; token: string }>(
 			["shareBlog"],
-			`${BLOG.SHARE_BLOG}`,
+			`${BLOG.SHARE_BLOG(id)}`,
 			{
 				enabled,
 				staleTime: 0,

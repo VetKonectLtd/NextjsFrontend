@@ -21,6 +21,9 @@ import { useBlogService } from "@/services/blogServie";
 import { BlogChat } from "@/types";
 import { timeAgo } from "@/components/shared/TimeFormat";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ShareModal from "@/components/ChatForum/ShareModal";
+import { useSearchParams, useRouter } from "next/navigation";
+
 
 const Blog = () => {
 	const [showFull, setShowFull] = useState(true);
@@ -28,11 +31,16 @@ const Blog = () => {
 	const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 	const [likedBlog, setLikedBlog] = useState<{ [key: string]: boolean }>({});
 	const [likeTarget, setLikeTarget] = useState<string | " ">("");
+	const [shareOpen, setShareOpen] = useState(false);
+	const [shareLink, setShareLink] = useState("");
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+
 	const {
 		useGetAllBlog,
 		useGetTrendingBlog,
 		useToggleBlogLike,
-		useGetShareBlog,
 	} = useBlogService();
 
 	const getTrendingBlog = useGetTrendingBlog();
@@ -71,6 +79,28 @@ const Blog = () => {
 		setLikedBlog(initialLikes);
 	}, [activePost]);
 
+
+	useEffect(() => {
+		if (!blogPosts.length) return;
+
+		const indexParam = searchParams.get("index");
+
+		if (indexParam !== null) {
+			const index = Number(indexParam);
+
+			if (!isNaN(index) && index >= 0 && index < blogPosts.length) {
+				setActiveIndex(index);
+				setActivePost(blogPosts[index]);
+				return;
+			}
+		}
+
+		// fallback
+		setActiveIndex(0);
+		setActivePost(blogPosts[0]);
+	}, [blogPosts, searchParams]);
+
+
 	const toggleDropdown = (id: string) => {
 		setOpenDropdownId((prev) => (prev === id ? null : id));
 	};
@@ -91,17 +121,28 @@ const Blog = () => {
 		const nextIndex = (activeIndex + 1) % blogPosts.length;
 		setActiveIndex(nextIndex);
 		setActivePost(blogPosts[nextIndex]);
+
+		router.replace(`?index=${nextIndex}`, { scroll: false });
+
 		setShowFull(true);
 		setShowComments(false);
 	};
 
+
+
 	const handlePrev = () => {
-		const prevIndex = (activeIndex - 1 + blogPosts.length) % blogPosts.length;
+		const prevIndex =
+			(activeIndex - 1 + blogPosts.length) % blogPosts.length;
+
 		setActiveIndex(prevIndex);
 		setActivePost(blogPosts[prevIndex]);
+
+		router.replace(`?index=${prevIndex}`, { scroll: false });
+
 		setShowFull(true);
 		setShowComments(false);
 	};
+
 
 	return (
 		<div className="w-11/12 mt-3 m-auto">
@@ -262,7 +303,12 @@ const Blog = () => {
 										</div>
 
 										<div className="flex items-center">
-											<span className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
+											<span onClick={() => {
+												const link = `https://nextjs-frontend-beta-drab.vercel.app/dashboard/blog?index=${activeIndex}`;;
+												setShareLink(link);
+												setShareOpen(true);
+											}}
+												className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
 												<Share2 size={14} color="#1D2432" />
 											</span>
 											<span className="ml-1 flex gap-2 text-sm text-gray-55 font-medium">
@@ -270,6 +316,13 @@ const Blog = () => {
 												<span className="hidden md:block">Shares</span>
 											</span>
 										</div>
+										<ShareModal
+											open={shareOpen}
+											setOpen={setShareOpen}
+											id={activePost?.id}
+											link={shareLink}
+											mode="blog"
+										/>
 									</div>
 								</motion.div>
 							</AnimatePresence>
