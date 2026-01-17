@@ -48,6 +48,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 
 	const currentUser = (user as any)?.profile;
 
+
 	// Get the normalized backend role
 	const backendRole: RoleKey | string = normalizeRole(
 		(user as any)?.role || "",
@@ -492,6 +493,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 					<ChevronLeft className="w-5 h-5 mr-1" />
 					Back
 				</button>
+				
 				<button
 					onClick={onToggleEdit}
 					className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"

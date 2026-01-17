@@ -17,7 +17,6 @@ export default function DashboardLayout({
 		<div className="flex w-full mt-20 pt-2 min-h-screen">
 			<Sidebar />
 			<CategoryModal />
-			{/* Mobile Floating Navbar */}
 			<FloatingNavButton />
 			<div className="flex-grow md:ml-16">{children}</div>
 		</div>
