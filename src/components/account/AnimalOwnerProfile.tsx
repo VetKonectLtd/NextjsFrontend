@@ -566,7 +566,7 @@ const AnimalOwnerProfile = ({
 					<ChevronLeft className="w-5 h-5 mr-1" />
 					Back
 				</button>
-				{apiUser?.role == "basic_user" &&
+				{apiUser?.role !== "basic_user" &&
 				<button
 					onClick={onToggleEdit}
 					className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
