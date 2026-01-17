@@ -27,10 +27,6 @@ export function SidebarMobile({ isOpen, onClose }: { isOpen: boolean; onClose: (
 		allowedIds.includes(item.id)
 	);
 
-	useEffect(() => {
-		if (isOpen) onClose();
-	}, [pathname]);
-
 	return (
 		<AnimatePresence>
 			{isOpen && (
@@ -94,13 +90,19 @@ export function SidebarMobile({ isOpen, onClose }: { isOpen: boolean; onClose: (
 								width={32} height={32}
 								className="rounded-full h-10 w-10 object-cover"
 							/>
-							<div className="flex flex-col">
-
-								<span className="text-sm font-semibold">{currentUser?.user?.first_name} {currentUser?.user?.last_name}</span>
+							{currentUser.role == "basic_user" && (
 								<span className="text-xs text-gray-500 capitalize">
 									{userRole || "basic_user"}
 								</span>
-							</div>
+							)}
+							{currentUser.role != "basic_user" && (
+								<div className="flex flex-col">
+
+									<span className="text-sm font-semibold">{currentUser?.user?.first_name} {currentUser?.user?.last_name}</span>
+									<span className="text-xs text-gray-500 capitalize">
+										{userRole || "basic_user"}
+									</span>
+								</div>)}
 						</div>
 					</motion.aside>
 				</>
