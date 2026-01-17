@@ -80,13 +80,13 @@ export function SidebarMobile({ isOpen, onClose }: { isOpen: boolean; onClose: (
 						</nav>
 						{/* User Profile */}
 						<div className="flex items-center gap-2 px-5 py-4 border-t">
-
+							
 							<Image
 								src={
 									currentUser?.user?.profile?.profile_image_url ||
 									DEFAULT_AVATAR
 								}
-								alt={currentUser?.user.first_name}
+								alt={"User"}
 								width={32} height={32}
 								className="rounded-full h-10 w-10 object-cover"
 							/>
