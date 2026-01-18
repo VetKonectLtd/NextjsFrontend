@@ -45,6 +45,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 	const { data: user, refetch: refetchUser, isLoading } = useCurrentUser(true);
 
 	const updateProfileMutation = useUpdateProfile();
+	const router = useRouter();
 
 	const currentUser = (user as any)?.profile;
 
@@ -489,7 +490,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 		<div className="w-full mx-auto">
 			{/* Back Button - Mobile */}
 			<div className="flex items-center justify-between pb-6">
-				<button className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors">
+				<button  onClick={router.back} className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors">
 					<ChevronLeft className="w-5 h-5 mr-1" />
 					Back
 				</button>

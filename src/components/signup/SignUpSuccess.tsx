@@ -29,7 +29,7 @@ const SignUpSuccess = () => {
 					type="button"
 					className="w-full py-3 rounded-md text-white text-base font-semibold bg-primary-400 hover:bg-primary-400 transition"
 					onClick={() => 
-						router.replace("/dashboard")
+						router.replace("/dashboard/vet-vendor")
 					}
 				>
 					Go to Dashboard

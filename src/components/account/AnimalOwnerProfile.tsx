@@ -111,7 +111,6 @@ const AnimalOwnerProfile = ({
 	);
 	const allRoles = ALL_ROLES;
 
-	console.log(user);
 
 	const switchableRolesMap: Record<string, RoleKey[]> = {
 		[ROLE.VETERINARIAN]: allRoles
@@ -562,7 +561,7 @@ const AnimalOwnerProfile = ({
 		<div className="w-full mx-auto">
 			{/* Back Button - Mobile */}
 			<div className="flex items-center justify-between p-4 md:p-6">
-				<button className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors">
+				<button onClick={router.back} className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors">
 					<ChevronLeft className="w-5 h-5 mr-1" />
 					Back
 				</button>
