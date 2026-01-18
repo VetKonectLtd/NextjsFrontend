@@ -8,7 +8,7 @@ const LoginSuccess = () => {
 	const handleGoToDashboard = () => {
 		let token = Cookies.get("auth-token");
 		if (token) {
-			router.replace("/dashboard");
+			router.replace("/dashboard/vet-vendor");
 		} else {
 			router.replace("/login");
 
