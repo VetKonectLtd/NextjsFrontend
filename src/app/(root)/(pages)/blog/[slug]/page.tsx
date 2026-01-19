@@ -3,17 +3,19 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Eye, MessagesSquare, Share2, ThumbsUp } from "lucide-react";
+import { ArrowLeft, Eye, MessagesSquare, Share2, ThumbsUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBlogService } from "@/services/blogServie";
 import { timeAgo } from "@/components/shared/TimeFormat";
 import ShareModal from "@/components/ChatForum/ShareModal";
 import ReaderCommentSection from "@/components/blog/ReaderCommentSection";
+import BlogReaderSkeleton from "@/components/blog/BlogReaderSkeleton";
 
 export default function BlogReaderPage() {
   const { slug } = useParams();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareLink, setShareLink] = useState("");
+  const router = useRouter();
 
   const { useGetBlogSlug, useToggleBlogLike } = useBlogService();
   const getSlugData = useGetBlogSlug(true, slug as string);
@@ -28,21 +30,19 @@ export default function BlogReaderPage() {
   ----------------------------------------------*/
 
   const handleLike = (Id: any) => {
-		likeBlogMutation.mutate(Id, {
-			onSuccess: () => {
-				getSlugData.refetch();
-			},
-		});
-	};
+    likeBlogMutation.mutate(Id, {
+      onSuccess: () => {
+        getSlugData.refetch();
+      },
+    });
+  };
 
   /* ---------------------------------------------
      States
   ----------------------------------------------*/
   if (getSlugData.isLoading) {
     return (
-      <div className="text-center py-32 text-gray-500">
-        Loading article...
-      </div>
+      <BlogReaderSkeleton />
     );
   }
 
@@ -51,6 +51,15 @@ export default function BlogReaderPage() {
   ----------------------------------------------*/
   return (
     <div className="max-w-4xl mx-auto px-5 pt-28 pb-24">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 bg-white/90 backdrop-blur border shadow-md rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary transition"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back
+      </button>
+
       {/* Article Header */}
       <div className="mb-10">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
@@ -58,7 +67,7 @@ export default function BlogReaderPage() {
         </h1>
 
         <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
-          <div> 
+          <div>
             By {activePost.blog.author.name} •{" "}
             {timeAgo(activePost.blog.created_at)}
           </div>
@@ -150,7 +159,7 @@ export default function BlogReaderPage() {
             />
           </span>
           <span className="ml-1 flex gap-2 text-sm text-gray-55 font-medium">
-            {activePost?.blog.likes_count} 
+            {activePost?.blog.likes_count}
             <span className="hidden md:block">Likes</span>
           </span>
         </div>
