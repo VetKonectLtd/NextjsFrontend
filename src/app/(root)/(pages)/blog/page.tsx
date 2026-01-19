@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useBlogService } from "@/services/blogServie";
 import { BlogChat } from "@/types";
 import { timeAgo } from "@/components/shared/TimeFormat";
+import BlogIndexSkeleton from "@/components/blog/BlogIndexSkeleton";
 
 export default function BlogIndexPage() {
     const router = useRouter();
@@ -48,9 +49,7 @@ export default function BlogIndexPage() {
 
             {/* Loading */}
             {isLoading && (
-                <div className="text-center py-20 text-gray-500">
-                    Loading articles...
-                </div>
+               <BlogIndexSkeleton />
             )}
 
             {/* Empty */}
