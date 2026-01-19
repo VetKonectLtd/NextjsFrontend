@@ -115,10 +115,10 @@ export const useBlogService = () => {
 		);
 	};
 
-	const useGetBlogSlug = (enabled: boolean = false) => {
+	const useGetBlogSlug = (enabled: boolean = false, slug: string) => {
 		return useGet<{ blog: any; token: string }>(
 			["blogSlug"],
-			`${BLOG.BLOGS_SLUG}`,
+			`${BLOG.BLOGS_SLUG(slug)}`,
 			{
 				enabled,
 				staleTime: 0,

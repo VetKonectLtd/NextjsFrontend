@@ -459,6 +459,7 @@ export interface BlogChat {
 	visibility: string;
 	image: File | null;
 	image_url: string;
+	picture_url?: string;
 	views_count: string;
 	created_at: string;
 	deleted_at: string;
