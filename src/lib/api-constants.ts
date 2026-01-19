@@ -74,7 +74,7 @@ export const BLOG = {
 	TOGGLE_BLOG_LIKE: (Id: string) => `/v3/blogs/${Id}/like`,
 	GET_ALL_BLOGS: "/v3/gets-all-blog",
 	TRENDING_BLOGS: "/v3/blogs/trending",
-	BLOGS_SLUG: (Id: string) => `/v3/blogs/slug/${Id}/slug`,
+	BLOGS_SLUG: (slug: string) => `/v3/blogs/slug/${slug}/slug`,
 	SHARE_BLOG: (Id: string) => `/v3/blogs/${Id}/share`,
 	BLOG: (Id: string) => `/v3/blogs/${Id}/blog`,
 };

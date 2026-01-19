@@ -200,8 +200,8 @@ const Navbar = () => {
 							Disease Predictor
 						</Link>
 						<Link
-							href="/dashboard/blog"
-							className={getLinkClasses("/dashboard/blog")}
+							href="/blog"
+							className={getLinkClasses("/blog")}
 						>
 							Blog
 						</Link>
@@ -536,7 +536,7 @@ const Navbar = () => {
 
 							{/* Blog */}
 							<Link
-								href="/dashboard/blog"
+								href="/blog"
 								onClick={closeMobileMenu}
 								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
 							>
