@@ -5,6 +5,7 @@ import Navbar from '@/components/shared/Navbar';
 import { fontVariables } from '@/lib/fonts';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleMapsScript from '@/components/shared/GoogleMapsScript';
+import {NextIntlClientProvider} from 'next-intl';
 
 export const metadata: Metadata = {
   title: 'VetKonect - Veterinary Practice Management',

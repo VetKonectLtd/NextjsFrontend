@@ -155,13 +155,22 @@ const Navbar = () => {
 		});
 	};
 
+
+	const [locale, setLocale] = useState('en');
+
+	const languages = [
+		{ code: 'en', label: 'English' },
+		{ code: 'fr', label: 'Français' },
+		{ code: 'es', label: 'Español' },
+		{ code: 'de', label: 'Deutsch' }
+	];
+
 	return (
 		<nav
-			className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
-				isScrolled
+			className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${isScrolled
 					? "shadow-md bg-gradient-to-r from-[#B2F6B9] via-[#FFE1A6] to-[#E9F6B2]"
 					: "bg-transparent"
-			}`}
+				}`}
 		>
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between h-20 items-center w-full max-w-full overflow-hidden">
@@ -296,6 +305,7 @@ const Navbar = () => {
 									d="M19 9l-7 7-7-7"
 								/>
 							</svg>
+							
 						</div>
 
 						{/* Menu Button (visible on mobile) */}
