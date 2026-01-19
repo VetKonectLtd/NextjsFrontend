@@ -12,7 +12,7 @@ export default function FloatingNavButton() {
 			{/* Floating Button */}
 			<button
 				onClick={() => setOpen(true)}
-				className="md:hidden fixed font-extrabold bottom-0 right-0 z-40 bg-white border-l border-t border-gray-400 text-primary-400 py-4 px-5 shadow-xl shadow-gray-300 active:scale-95 transition"
+				className="md:hidden fixed font-extrabold bottom-0 right-0 z-40 bg-white border border-gray-400 text-primary-400 py-4 px-5 shadow-xl shadow-gray-300 active:scale-95 transition"
 			>
 				<ArrowUp size={23} />
 			</button>

@@ -100,7 +100,7 @@ export function SidebarMobile({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
 									<span className="text-sm font-semibold">{currentUser?.user?.first_name} {currentUser?.user?.last_name}</span>
 									<span className="text-xs text-gray-500 capitalize">
-										{userRole || "basic_user"}
+										{userRole}
 									</span>
 								</div>)}
 						</div>
