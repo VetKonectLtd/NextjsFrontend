@@ -210,3 +210,17 @@ input[type="number"] {
 .blog-content li {
   margin-bottom: 0.25rem;
 }
+
+
+
+/* PDF PRINT FIXES */
+
+.pdf-content p,
+.pdf-content h1,
+.pdf-content h2,
+.pdf-content h3,
+.pdf-content ul,
+.pdf-content ol {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
