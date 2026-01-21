@@ -77,50 +77,48 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Routes that require authentication
+// Protected dashboard routes
 const protectedRoutes = ["/dashboard"];
-
-// Routes that are public even under /dashboard
+// Public routes inside dashboard (for forum preview)
 const publicDashboardRoutes = ["/dashboard/chat-forum"];
-
-// Auth pages that should redirect logged-in users
+// Auth pages
 const authPages = ["/login", "/signup", "/reset-password"];
 
 export function middleware(request: NextRequest) {
-  const token =
-    request.cookies.get("auth-token")?.value ||
-    request.headers.get("Authorization") ||
-    null;
+  try {
+    const pathname = request.nextUrl?.pathname ?? "";
 
-  const { pathname } = request.nextUrl;
+    // Get token safely
+    const authCookie = request.cookies.get("auth-token");
+    const token = authCookie?.value ?? request.headers.get("Authorization") ?? null;
 
-  // 1️⃣ Protect dashboard routes except whitelisted public routes
-  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
-    const isPublicRoute = publicDashboardRoutes.some((route) =>
-      pathname.startsWith(route)
-    );
-
-    if (!isPublicRoute && !token) {
-      const loginUrl = new URL("/login", request.url);
-      // optionally preserve redirect after login
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+    // 1️⃣ Protect dashboard routes except public routes
+    if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+      const isPublicRoute = publicDashboardRoutes.some((route) =>
+        pathname.startsWith(route)
+      );
+      if (!isPublicRoute && !token) {
+        const loginUrl = new URL("/login", request.url);
+        loginUrl.searchParams.set("redirect", pathname);
+        return NextResponse.redirect(loginUrl);
+      }
     }
-  }
 
-  // 2️⃣ Redirect logged-in users away from auth pages
-  if (authPages.some((route) => pathname.startsWith(route))) {
-    if (token) {
-      const dashboardUrl = new URL("/dashboard", request.url);
-      return NextResponse.redirect(dashboardUrl);
+    // 2️⃣ Redirect logged-in users from auth pages
+    if (authPages.some((route) => pathname.startsWith(route))) {
+      if (token) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
     }
-  }
 
-  // ✅ Everything else is allowed
-  return NextResponse.next();
+    return NextResponse.next();
+  } catch (err) {
+    console.error("⚠️ Middleware error:", err);
+    // Fallback: allow request through if something fails
+    return NextResponse.next();
+  }
 }
 
-// Specify which routes this middleware applies to
 export const config = {
   matcher: [
     "/dashboard/:path*",
