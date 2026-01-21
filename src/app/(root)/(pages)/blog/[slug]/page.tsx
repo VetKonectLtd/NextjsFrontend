@@ -176,7 +176,7 @@ const handleDownloadPDF = async () => {
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 bg-white/90 backdrop-blur border shadow-md rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary transition"
+          className="flex items-center gap-2 mb-2 bg-white/90 backdrop-blur border shadow-md rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary transition"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -189,9 +189,9 @@ const handleDownloadPDF = async () => {
           </h1>
 
           <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
-            <div>
-              By {activePost.blog.author.name} •{" "}
-              {timeAgo(activePost.blog.created_at)}
+            <div className="flex md:flex-row flex-col">
+              By {activePost.blog.author.name} 
+             <span>• {timeAgo(activePost.blog.created_at)}</span>
             </div>
 
             <div className="flex items-center gap-4">
@@ -212,12 +212,12 @@ const handleDownloadPDF = async () => {
               <button
                 onClick={handleDownloadPDF}
                 disabled={isDownloading}
-                className="flex justify-center items-center gap-1 hover:text-primary disabled:opacity-50"
+                className="flex cursor-pointer justify-center items-center gap-1 hover:text-primary disabled:opacity-50"
               >
-                <span className="mr-2 flex gap-2 text-sm text-gray-55 font-medium">
+                <span className="mr-2   hidden md:flex gap-2 text-sm text-gray-55 font-medium">
                   {isDownloading ? "Downloading..." : "Download"}
                 </span>
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4 cursor-pointer" />
               </button>
             </div>
 
