@@ -25,7 +25,7 @@ export const useForumService = () => {
 
 	const useAddForumComment = (id: string) => {
 		return usePost<{ forum: any }>(FORUM_CHAT.ADD_FORUM_COMMENT(id), {
-			onSuccess: () => {},
+			onSuccess: () => { },
 			onError: (error) => {
 				handleError(error.message || "failed");
 			},
@@ -34,7 +34,7 @@ export const useForumService = () => {
 
 	const useLikeForum = (id: string) => {
 		return usePost<{ forum: ForumChat }, ForumChat>(FORUM_CHAT.LIKE_FORUM(id), {
-			onSuccess: (response: any) => {},
+			onSuccess: (response: any) => { },
 			onError: (error) => {
 				handleError(error.message || "failed");
 			},
@@ -178,6 +178,33 @@ export const useForumService = () => {
 		});
 	};
 
+	const getForumPreviewBySlug = async (slug: string) => {
+		const res = await fetch(
+			`${process.env.API_URL}${FORUM_CHAT.FORUM_SLUG(slug)}`,
+			{
+				cache: "no-store",
+				headers: {
+					Accept: "application/json",
+				},
+			}
+		);
+
+		if (!res.ok) return null;
+
+		const data = await res.json();
+
+		const forum = data?.forum ?? data;
+
+		return {
+			title: forum.title,
+			excerpt: forum.content
+				? forum.content.slice(0, 140) + "..."
+				: "Join the discussion",
+			image_url: forum.image_url || null,
+		};
+	}
+
+
 	return {
 		useDeleteForum,
 		useUpdateForum,
@@ -193,5 +220,6 @@ export const useForumService = () => {
 		useGetAllForumChat,
 		useDeleteForumComment,
 		useUpdateForumComment,
+		getForumPreviewBySlug,
 	};
 };
