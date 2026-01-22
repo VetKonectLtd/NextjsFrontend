@@ -5,6 +5,8 @@ import Navbar from '@/components/shared/Navbar';
 import { fontVariables } from '@/lib/fonts';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleMapsScript from '@/components/shared/GoogleMapsScript';
+import Script from 'next/script';
+import "@/app/assets/translation"
 
 export const metadata: Metadata = {
   title: {
@@ -88,10 +90,48 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
+      <Script id="google-translate-init"
+        dangerouslySetInnerHTML={{
+          __html: `
+      window.__GOOGLE_TRANSLATION_CONFIG__ = {
+        languages: [
+          { title: 'English', name: 'en' },
+          { title: 'French', name: 'fr' },
+          { title: 'Spanish', name: 'es' },
+          { title: 'Italian', name: 'it' },
+          { title: 'Portuguese', name: 'pt' },
+          { title: 'Swahili', name: 'sw' },
+          { title: 'Afrikaans', name: 'af' },
+          { title: 'Amharic', name: 'am' },
+          { title: 'Hausa', name: 'ha' },
+          { title: 'Yoruba', name: 'yo' },
+          { title: 'Igbo', name: 'ig' },
+          { title: 'Zulu', name: 'zu' },
+          { title: 'Somali', name: 'so' },
+          { title: 'Shona', name: 'sn' },
+          { title: 'Malagasy', name: 'mg' }
+        ],
+        defaultLanguage: 'en',
+      };
+
+      window.TranslateInit = function() {
+              if (!window.__GOOGLE_TRANSLATION_CONFIG__) return;
+              new google.translate.TranslateElement({
+                pageLanguage: window.__GOOGLE_TRANSLATION_CONFIG__.defaultLanguage,
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+              }, 'google_translate_element');
+            }
+    `,
+        }} strategy="beforeInteractive" />
+
+      <Script src="@/app/assets/translation" strategy="beforeInteractive" />
+      <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit" strategy="afterInteractive" />
+
       <body className={`${fontVariables} font-nunito min-h-screen bg-white`}>
-       
+        <div id="google_translate_element" className="hidden"></div>
         <GoogleMapsScript />
         <ReactQueryProvider>
+
           <div className="flex flex-col min-h-full">
             <Navbar />
             <main className="flex-grow">

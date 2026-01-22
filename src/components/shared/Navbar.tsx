@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { useActivitiesService } from "@/services/activitiesService";
 import echo from "@/lib/echo";
+import { LanguageSwitcher } from "./language-switcher";
 
 const Navbar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -155,19 +156,9 @@ const Navbar = () => {
 		});
 	};
 
-
-	const [locale, setLocale] = useState('en');
-
-	const languages = [
-		{ code: 'en', label: 'English' },
-		{ code: 'fr', label: 'Français' },
-		{ code: 'es', label: 'Español' },
-		{ code: 'de', label: 'Deutsch' }
-	];
-
 	return (
 		<nav
-			className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${isScrolled
+			className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 overflow-hidden ${isScrolled
 					? "shadow-md bg-gradient-to-r from-[#B2F6B9] via-[#FFE1A6] to-[#E9F6B2]"
 					: "bg-transparent"
 				}`}
@@ -289,24 +280,7 @@ const Navbar = () => {
 						)}
 
 						{/* Language Selector */}
-						<div className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600">
-							<span className="text-sm font-medium">EN</span>
-							<svg
-								className="w-4 h-4 ml-1"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M19 9l-7 7-7-7"
-								/>
-							</svg>
-							
-						</div>
+						<LanguageSwitcher />
 
 						{/* Menu Button (visible on mobile) */}
 						<button
