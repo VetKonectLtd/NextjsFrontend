@@ -6,7 +6,6 @@ import { fontVariables } from '@/lib/fonts';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleMapsScript from '@/components/shared/GoogleMapsScript';
 import Script from 'next/script';
-import "@/app/assets/translation"
 
 export const metadata: Metadata = {
   title: {
@@ -124,11 +123,11 @@ export default async function RootLayout({
     `,
         }} strategy="beforeInteractive" />
 
-      <Script src="@/app/assets/translation" strategy="beforeInteractive" />
-      <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit" strategy="afterInteractive" />
+      {/* <Script src="@/app/assets/translation" strategy="beforeInteractive" /> */}
+      <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit"  strategy="afterInteractive" />
 
       <body className={`${fontVariables} font-nunito min-h-screen bg-white`}>
-        <div id="google_translate_element" className="hidden"></div>
+       <div id="google_translate_element" className="hidden" />
         <GoogleMapsScript />
         <ReactQueryProvider>
 
