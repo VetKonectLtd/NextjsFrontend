@@ -159,8 +159,8 @@ const Navbar = () => {
 	return (
 		<nav
 			className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 overflow-hidden ${isScrolled
-					? "shadow-md bg-gradient-to-r from-[#B2F6B9] via-[#FFE1A6] to-[#E9F6B2]"
-					: "bg-transparent"
+				? "shadow-md bg-gradient-to-r from-[#B2F6B9] via-[#FFE1A6] to-[#E9F6B2]"
+				: "bg-transparent"
 				}`}
 		>
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -280,7 +280,11 @@ const Navbar = () => {
 						)}
 
 						{/* Language Selector */}
-						<LanguageSwitcher />
+						{!isAuthenticated && (
+							<div className=" ">
+								<LanguageSwitcher />
+
+							</div>)}
 
 						{/* Menu Button (visible on mobile) */}
 						<button
@@ -376,12 +380,11 @@ const Navbar = () => {
 															</span>
 														</Link>
 
-														<button className="flex items-center w-full px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200">
-															<MessageSquare className="w-5 h-5 mr-3" />
-															<span className="text-sm font-medium">
-																Language Option
-															</span>
-														</button>
+														<div className="flex items-center px-4 py-3 rounded-xl hover:bg-gray-50 transition-all duration-200">
+															<LanguageIcon className="w-5 h-5 mr-3 text-gray-700" />
+															<LanguageSwitcher />
+														</div>
+
 
 														{/* Logout */}
 														<button
@@ -548,10 +551,11 @@ const Navbar = () => {
 							</Link>
 
 							{/* Language Option */}
-							<div className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors cursor-pointer">
+							<div className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors">
 								<LanguageIcon className="w-6 h-6 mr-4" />
-								<span className="text-base font-medium">Language Option</span>
+								<LanguageSwitcher />
 							</div>
+
 
 							{/* Customer Support */}
 							<Link

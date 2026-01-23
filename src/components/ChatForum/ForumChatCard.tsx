@@ -133,6 +133,8 @@ const ForumChatCard = () => {
 		);
 	});
 
+	console.log("postsToRender", postsToRender);
+
 	// Handle like
 	const handleLike = (postId: any) => {
 		setActivePost(postId);

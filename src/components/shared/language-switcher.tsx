@@ -24,23 +24,23 @@ const LanguageSwitcher = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const cookies = parseCookies();
-    const existing = cookies[COOKIE_NAME];
+    const interval = setInterval(() => {
+      if (window.__GOOGLE_TRANSLATION_CONFIG__) {
+        setLanguageConfig(window.__GOOGLE_TRANSLATION_CONFIG__);
 
-    let lang;
-    if (existing) {
-      const sp = existing.split('/');
-      if (sp.length > 2) lang = sp[2];
-    }
+        const cookies = parseCookies();
+        const existing = cookies[COOKIE_NAME];
 
-    if (global.__GOOGLE_TRANSLATION_CONFIG__ && !lang) {
-      lang = global.__GOOGLE_TRANSLATION_CONFIG__.defaultLanguage;
-    }
+        let lang =
+          existing?.split('/')?.[2] ??
+          window.__GOOGLE_TRANSLATION_CONFIG__.defaultLanguage;
 
-    if (lang) setCurrentLanguage(lang);
-    if (global.__GOOGLE_TRANSLATION_CONFIG__) {
-      setLanguageConfig(global.__GOOGLE_TRANSLATION_CONFIG__);
-    }
+        setCurrentLanguage(lang);
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (!currentLanguage || !languageConfig) return null;
@@ -48,6 +48,8 @@ const LanguageSwitcher = () => {
   const switchLanguage = (lang: string) => {
     setCookie(null, COOKIE_NAME, `/auto/${lang}`);
     window.location.reload();
+    // document.cookie = `googtrans=/auto/${lang}; path=/`;
+    // window.location.href = window.location.pathname;
   };
 
   const currentLangTitle =
@@ -81,14 +83,13 @@ const LanguageSwitcher = () => {
 
       {/* Dropdown */}
       {open && (
-        <div  style={{ position: "fixed" }} className="absolute right-5 mt-2 w-28 bg-white border rounded-md shadow-md z-[9999]">
+        <div style={{ position: "fixed" }} className="absolute right-5 mt-2 w-28 bg-white border rounded-md shadow-md z-[9999]">
           {languageConfig.languages.map((ld: LanguageDescriptor) => (
             <div
               key={ld.name}
               onClick={() => switchLanguage(ld.name)}
-              className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
-                currentLanguage === ld.name ? 'text-green-600 font-medium' : 'text-gray-700'
-              }`}
+              className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${currentLanguage === ld.name ? 'text-green-600 font-medium' : 'text-gray-700'
+                }`}
             >
               {ld.title}
             </div>

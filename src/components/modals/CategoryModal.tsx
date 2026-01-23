@@ -125,13 +125,15 @@ const CategoryModal = () => {
 
 		const userRole = (user as any)?.role || (user as any)?.profile?.role;
 
-		console.log("DEBUG MODAL CHECK:", { userRole, justLoggedIn });
+		const shouldOpenModal =
+			justLoggedIn === "true" &&
+			(!userRole || userRole === "basic_user");
 
-		if (userRole === "basic_user" && justLoggedIn === "true") {
+		if (shouldOpenModal) {
 			setOpen(true);
 			sessionStorage.removeItem("justLoggedIn");
-		} 
-		
+		}
+
 	}, [user, isLoading]);
 
 	return (
