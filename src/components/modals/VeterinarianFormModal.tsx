@@ -65,6 +65,9 @@ const VeterinarianFormModal = ({
 		if (Array.isArray(data.specialty)) {
 			data.specialty = data.specialty.join(", ");
 		}
+		if (Array.isArray(data.list_them)) {
+			data.list_them = data.list_them.join(", ");
+		}
 		addVetDoctorMutation.mutate(data, {
 			onSuccess: (res) => {
 				setProgressOpen(false);
@@ -161,15 +164,6 @@ const VeterinarianFormModal = ({
 									onChange={(tags) => field.onChange(tags)}
 								/>
 							)}
-						/>
-
-						<FormInput
-							label="Address"
-							type="text"
-							focusLabel="Address (Required) :"
-							isRequired
-							error={errors.address?.message}
-							{...register("address", { required: "Location is required" })}
 						/>
 
 						<FormGooglePlacesInput
