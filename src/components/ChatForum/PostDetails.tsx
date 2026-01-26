@@ -13,6 +13,7 @@ import {
 	Eye,
 	X,
 	Loader2,
+	ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import ShareModal from "./ShareModal";
 import { slugify } from "@/lib/slugify";
+import { Arrow } from "@radix-ui/react-popover";
 
 const DEFAULT_AVATAR = User;
 
@@ -172,6 +174,9 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 
 	return (
 		<div className="">
+			<div>
+				<ArrowLeft className="h-9 w-10 cursor-pointer border border-gray-200 rounded-full p-2 mb-2" onClick={handleBack} />
+			</div>
 			<div className="flex gap-3 text-sm text-gray-55 mb-5">
 				<button onClick={handleBack} className="font-bold">
 					Forum Chat{" "}

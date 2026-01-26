@@ -47,7 +47,7 @@ export interface VetProfileProps {
 const VetProfile: React.FC<VetProfileProps> = ({
     id,
     name,
-    address,
+    location,
     image,
     rating,
     isAvailable,
@@ -160,7 +160,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                         {address && address.length > 15 ? `${address.slice(0, 15)}...` : address || 'Untitled'}
+                         {location && location.length > 15 ? `${location.slice(0, 15)}...` : location || 'Untitled'}
                     </span>
                 </div>
 

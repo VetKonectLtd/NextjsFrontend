@@ -244,12 +244,12 @@ const VetAccount = ({
 				<>
 					<p className="text-gray-55 font-bold">Share Link</p>
 					<p className="text-gray-800">
-						https://vetkonect.com/vet-vendor?vet={selectedVet?.id}&category={category}
+						https://vetkonect.com/dashboard/vet-vendor?vet={selectedVet?.id}&category={category}
 					</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
 							onClick={() =>
-								handleCopy(`https://vetkonect.com/vet-vendor?vet=${selectedVet?.id}&category=${category}`)
+								handleCopy(`https://vetkonect.com/dashboard/vet-vendor?vet=${selectedVet?.id}&category=${category}`)
 							}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
@@ -257,7 +257,7 @@ const VetAccount = ({
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied?.startsWith(`https://vetkonect.com/vet-vendor?vet=${selectedVet?.id}&category=${category}`)
+							{copied?.startsWith(`https://vetkonect.com/dashboard/vet-vendor?vet=${selectedVet?.id}&category=${category}`)
 								? "Copied!"
 								: "Click to copy"}
 						</span>
