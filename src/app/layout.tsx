@@ -89,7 +89,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
-      <Script id="google-translate-init"
+      {/* <Script id="google-translate-init"
         dangerouslySetInnerHTML={{
           __html: `
       window.__GOOGLE_TRANSLATION_CONFIG__ = {
@@ -121,13 +121,12 @@ export default async function RootLayout({
               }, 'google_translate_element');
             }
     `,
-        }} strategy="beforeInteractive" />
+        }} strategy="beforeInteractive" /> */}
 
-      {/* <Script src="@/app/assets/translation" strategy="beforeInteractive" /> */}
-      <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit"  strategy="afterInteractive" />
+      {/* <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit"  strategy="afterInteractive" /> */}
 
       <body className={`${fontVariables} font-nunito min-h-screen bg-white`}>
-       <div id="google_translate_element" className="hidden" />
+       {/* <div id="google_translate_element" className="hidden" /> */}
         <GoogleMapsScript />
         <ReactQueryProvider>
 

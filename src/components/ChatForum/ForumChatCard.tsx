@@ -1,6 +1,8 @@
 "use client";
 
 import {
+	ChevronsLeft,
+	ChevronsRight,
 	Eye,
 	MessagesSquare,
 	PlusIcon,
@@ -13,7 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { useForumService } from "@/services/forumService";
 import { ForumChat } from "@/types";
-import { formatRole, timeAgo } from "../shared/TimeFormat";
+// import { formatRole, timeAgo } from "../shared/TimeFormat";
 import ForumPostSkeleton from "./ForumPostSkeleton";
 import EmptyState from "../shared/EmptyState";
 import { Hand, User, Down } from "@/app/assets/icons";
@@ -21,29 +23,29 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
 import FilterDropdownMenu from "./DropdownMenu";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogTitle,
-	DialogTrigger,
-} from "../ui/dialog";
+// import {
+// 	Dialog,
+// 	DialogClose,
+// 	DialogContent,
+// 	DialogTitle,
+// 	DialogTrigger,
+// } from "../ui/dialog";
 import { forumCategories } from "./forumCategories";
-import ShareModal from "./ShareModal";
+// import ShareModal from "./ShareModal";
 
 const DEFAULT_AVATAR = User;
 
 const ForumChatCard = () => {
-	const [activePost, setActivePost] = useState<string | null>(null);
+	// const [activePost, setActivePost] = useState<string | null>(null);
 	const [selectedPost, setSelectedPost] = useState<any | null>(null);
 	const [page, setPage] = useState(1);
 	const [allPosts, setAllPosts] = useState<ForumChat[]>([]);
-	const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
+	// const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
 	const [visibilityFilter, setVisibilityFilter] = useState<string>("");
 	const [searchHistory, setSearchHistory] = useState<string[]>([]);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [shareOpen, setShareOpen] = useState(false);
-	const [shareLink, setShareLink] = useState("");
+	// const [shareOpen, setShareOpen] = useState(false);
+	// const [shareLink, setShareLink] = useState("");
 
 	const {
 		useLikeForum,
@@ -60,7 +62,7 @@ const ForumChatCard = () => {
 		visibilityFilter,
 	);
 
-	const likeMutation = useLikeForum(activePost || "");
+	// const likeMutation = useLikeForum(activePost || "");
 
 	// When visibility changes, reset pagination and posts
 	useEffect(() => {
@@ -88,15 +90,15 @@ const ForumChatCard = () => {
 		}
 	}, [getAllForum.data, getForumByVisibility.data]);
 
-	useEffect(() => {
-		if (allPosts.length > 0) {
-			const initialLikes: { [key: string]: boolean } = {};
-			allPosts.forEach((post) => {
-				initialLikes[post.id] = post.has_liked ?? false;
-			});
-			setLikedPosts(initialLikes);
-		}
-	}, [allPosts]);
+	// useEffect(() => {
+	// 	if (allPosts.length > 0) {
+	// 		const initialLikes: { [key: string]: boolean } = {};
+	// 		allPosts.forEach((post) => {
+	// 			initialLikes[post.id] = post.has_liked ?? false;
+	// 		});
+	// 		setLikedPosts(initialLikes);
+	// 	}
+	// }, [allPosts]);
 
 	// Handle open post
 	const handleOpenPost = (post: ForumChat) => {
@@ -133,18 +135,17 @@ const ForumChatCard = () => {
 		);
 	});
 
-	console.log("postsToRender", postsToRender);
 
 	// Handle like
-	const handleLike = (postId: any) => {
-		setActivePost(postId);
-		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
-		likeMutation.mutate(postId, {
-			onSuccess: () => {
-				getAllForum.refetch();
-			},
-		});
-	};
+	// const handleLike = (postId: any) => {
+	// 	setActivePost(postId);
+	// 	setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+	// 	likeMutation.mutate(postId, {
+	// 		onSuccess: () => {
+	// 			getAllForum.refetch();
+	// 		},
+	// 	});
+	// };
 
 	return (
 		<div>
@@ -205,16 +206,18 @@ const ForumChatCard = () => {
 
 			{/* Posts */}
 			{isLoading ? (
-				Array.from({ length: 2 }).map((_, i) => <ForumPostSkeleton key={i} />)
+				<div className="bg-white shadow-sm border border-gray-200 rounded-xl">
+					{Array.from({ length: 2 }).map((_, i) => <ForumPostSkeleton key={i} />)}
+				</div>
 			) : postsToRender.length > 0 ? (
-				<>
+				<div className="bg-white border border-gray-225 rounded-lg shadow-sm hover:shadow-md transition">
 					{postsToRender.map((post) => (
 						<div
 							key={post.id}
-							className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm"
+							className="flex flex-col p-4 mb-1  cursor-pointer"
 						>
 							{/* Header */}
-							<div className="flex justify-between items-center mb-3">
+							{/* <div className="flex justify-between items-center mb-3">
 								<div className="items-center flex">
 									<div className="w-10 h-10 rounded-full border overflow-hidden border-gray-225 bg-gray-300 mr-3">
 										<Image
@@ -239,10 +242,10 @@ const ForumChatCard = () => {
 										{timeAgo(post.created_at)}
 									</div>
 								</div>
-							</div>
+							</div> */}
 
 							{/* Body */}
-							{post?.image_url && (
+							{/* {post?.image_url && (
 								<Dialog>
 									<DialogTitle></DialogTitle>
 									<DialogTrigger asChild>
@@ -262,12 +265,17 @@ const ForumChatCard = () => {
 										/>
 									</DialogContent>
 								</Dialog>
-							)}
-							<h4 className="font-semibold capitalize text-gray-55 text-lg">
-								{post.title}
-							</h4>
+							)} */}
 
-							<p className="text-gray-55 text-sm mb-3">
+							<div className="flex items-center justify-center gap-2">
+								<ChevronsRight className="w-3 h-3" />
+								<h4 onClick={() => handleOpenPost(post)} className="font-semibold cursor-pointer hover:underline text-gray-55 flex items-center justify-center text-base">
+									{post.title}
+								</h4>
+								<ChevronsLeft className="w-3 h-3" />
+							</div>
+
+							{/* <p className="text-gray-55 text-sm mb-3">
 								{post.content.length <= 200 ? (
 									post.content
 								) : (
@@ -281,10 +289,10 @@ const ForumChatCard = () => {
 										</span>
 									</>
 								)}
-							</p>
+							</p> */}
 
 							{/* Actions */}
-							<div className="flex md:justify-end justify-start gap-4 items-end text-sm">
+							{/* <div className="flex md:justify-end justify-start gap-4 items-end text-sm">
 								<div className="flex items-center">
 									<span className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
 										<Eye size={14} color="#1D2432" />
@@ -366,9 +374,10 @@ const ForumChatCard = () => {
 										<Send size={14} className="text-white" />
 									</span>
 								</div>
-							</div>
+							</div> */}
 						</div>
 					))}
+
 
 					{/* Load More */}
 					{(getAllForum.data as any)?.chats?.next_page_url && (
@@ -389,7 +398,7 @@ const ForumChatCard = () => {
 							</button>
 						</div>
 					)}
-				</>
+				</div>
 			) : (
 				<EmptyState
 					title="Hey! User"
