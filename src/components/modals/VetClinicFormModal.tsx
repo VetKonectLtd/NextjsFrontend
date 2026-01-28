@@ -20,7 +20,6 @@ import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { Controller, useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
 import TagInput from "../form/TagInput";
-import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 const VeterinarianFormModal = ({

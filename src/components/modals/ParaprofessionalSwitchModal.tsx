@@ -21,7 +21,6 @@ import { VetParaprofessional } from "@/types";
 import FormSelect from "../form/FormSelect";
 import { State } from "country-state-city";
 import TagInput from "../form/TagInput";
-import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 interface ParaprofessionalSwitchModalProps {

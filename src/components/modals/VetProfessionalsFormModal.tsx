@@ -21,7 +21,6 @@ import { useAuthService } from "@/services/authService";
 import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
 import FormSelect from "../form/FormSelect";
 import TagInput from "../form/TagInput";
-import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
 import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 const VetProfessionalsFormModal = ({
