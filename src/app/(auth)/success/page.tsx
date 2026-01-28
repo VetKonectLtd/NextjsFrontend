@@ -20,7 +20,7 @@ const SuccessPage = () => {
 			const domain = window.location.hostname;
 			Cookies.set("auth-token", token, {
 				secure: isSecure,
-				sameSite: "strict",
+				sameSite: "lax",
 				domain,
 				path: "/"
 			});
