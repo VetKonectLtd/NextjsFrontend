@@ -12,7 +12,7 @@ import { Store } from "@/types";
 import { useStoreService } from "@/services/storeService";
 import { useAuthService } from "@/services/authService";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
-import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
+import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 type StoreFormProps = {
 	mode: "create" | "edit";
@@ -205,7 +205,7 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 						</p>
 					)}
 
-					<FormGooglePlacesInput
+					<FormGooglePlacesCustom
 						name="location"
 						control={control}
 						label="Location"
