@@ -15,8 +15,9 @@ const SuccessPage = () => {
 	const token = searchParams.get("token");
 
 	useEffect(() => {
-		if (token) {
-			Cookies.set("auth-token", token, { secure: true, sameSite: "strict" });
+		if (token) { 
+			const isSecure = window.location.protocol === 'https:';
+			Cookies.set("auth-token", token, { secure: isSecure, sameSite: "strict" });
 
 			const cleanUrl = `/success?form=${formType || "Login"}`;
 

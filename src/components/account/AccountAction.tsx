@@ -1,13 +1,11 @@
 "use client";
-import { Copy, Link, Send, Smile, ImageIcon, X } from "lucide-react";
+import { Copy, Link, Send, Smile, ImageIcon, X, Mail, Users } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
 import { useState, useRef } from "react";
 import { useMediaService, buildImagesFormData } from "@/services/mediaService";
 import ReactStars from "react-stars";
-import { ChatBox } from "@/components/shared";
-import { User } from "@/types";
 
 interface AccountUser {
 	id: string;
@@ -25,7 +23,6 @@ interface AccountActionProps {
 	accountType: "animal_owner" | "veterinarian";
 }
 
-
 const AccountAction = ({
 	selectedUser,
 	selectedAction,
@@ -34,6 +31,9 @@ const AccountAction = ({
 	const [copied, setCopied] = useState<string | null>(null);
 	const [uploadedMedia, setUploadedMedia] = useState<string[]>([]);
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+	const [inviteEmails, setInviteEmails] = useState<string[]>([]);
+	const [emailInput, setEmailInput] = useState("");
+	const [inviteSending, setInviteSending] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { useUploadMedia, useDeleteMedia } = useMediaService();
 	const uploadMutation = useUploadMedia();
@@ -42,8 +42,6 @@ const AccountAction = ({
 	const ratingChanged = (newRating: any) => {
 		// console.log(newRating);
 	};
- 
-	
 
 	const handleCopy = async (text: string) => {
 		try {
@@ -71,7 +69,53 @@ const AccountAction = ({
 		}
 	};
 
+	const handleAddEmail = () => {
+		if (emailInput.trim() && !inviteEmails.includes(emailInput.trim())) {
+			setInviteEmails([...inviteEmails, emailInput.trim()]);
+			setEmailInput("");
+		}
+	};
+
+	const handleRemoveEmail = (email: string) => {
+		setInviteEmails(inviteEmails.filter((e) => e !== email));
+	};
+
+	const handleSendInvites = async () => {
+		if (inviteEmails.length === 0) return;
+
+		setInviteSending(true);
+		try {
+			// Replace with your actual API call
+			const response = await fetch("/api/invites/send", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					emails: inviteEmails,
+					userId: selectedUser?.id,
+					accountType,
+				}),
+			});
+
+			if (response.ok) {
+				setInviteEmails([]);
+				setEmailInput("");
+				// Show success message
+				alert("Invites sent successfully!");
+			} else {
+				alert("Failed to send invites");
+			}
+		} catch (error) {
+			console.error("Error sending invites:", error);
+			alert("Error sending invites");
+		} finally {
+			setInviteSending(false);
+		}
+	};
+
 	const welcomeMessage = getWelcomeMessage();
+	const uniqueInviteLink = `https://vetkonect.com/invite/${selectedUser?.id || selectedUser?.name}`;
 
 	return (
 		<div className="mt-12 pb-3 text-center w-full m-auto text-gray-500 text-sm">
@@ -395,6 +439,115 @@ const AccountAction = ({
 						</span>
 					</div>
 				</>
+			)}
+
+			{selectedAction === "invite" && (
+				<div className="w-full max-w-md mx-auto">
+					{/* Title */}
+					<div className="text-center mb-6">
+						<Users className="w-12 h-12 mx-auto mb-2 text-primary-400" />
+						<h2 className="text-xl font-bold text-gray-900 mb-1">
+							Invite People
+						</h2>
+						<p className="text-sm text-gray-600">
+							Invite friends or colleagues to join VetKonect
+						</p>
+					</div>
+
+					{/* Unique Invite Link Section */}
+					<div className="mb-6 p-4 bg-gray-50 rounded-lg border border-blue-200">
+						<p className="text-sm font-medium text-gray-700 mb-2">
+							Your Unique Invite Link
+						</p>
+						<div className="flex items-center gap-2">
+							<input
+								type="text"
+								value={uniqueInviteLink}
+								readOnly
+								className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs"
+							/>
+							<button
+								onClick={() => handleCopy(uniqueInviteLink)}
+								className="p-2 rounded-full border hover:bg-gray-100 transition"
+								title="Copy invite link"
+							>
+								<Copy className="w-4 h-4" />
+							</button>
+						</div>
+						<span className="text-xs text-gray-55 mt-1 block">
+							{copied === uniqueInviteLink ? "Link copied!" : ""}
+						</span>
+					</div>
+
+					{/* Email Invitation Section */}
+					<div className="mb-6">
+						<p className="text-sm font-medium text-gray-700 mb-2">
+							Or invite via email
+						</p>
+						<div className="flex gap-2 mb-3">
+							<input
+								type="email"
+								value={emailInput}
+								onChange={(e) => setEmailInput(e.target.value)}
+								onKeyPress={(e) =>
+									e.key === "Enter" && handleAddEmail()
+								}
+								placeholder="Enter email address"
+								className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+							/>
+							<button
+								onClick={handleAddEmail}
+								className="px-4 py-2 bg-primary-400 text-white rounded-md text-sm hover:bg-primary-500 transition"
+							>
+								Add
+							</button>
+						</div>
+
+						{/* Email List */}
+						{inviteEmails.length > 0 && (
+							<div className="mb-3">
+								<p className="text-xs text-gray-600 mb-2">
+									Emails to invite ({inviteEmails.length}):
+								</p>
+								<div className="space-y-2">
+									{inviteEmails.map((email) => (
+										<div
+											key={email}
+											className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-full"
+										>
+											<span className="text-sm text-gray-700">{email}</span>
+											<button
+												onClick={() => handleRemoveEmail(email)}
+												className="text-red-500 hover:text-red-700"
+											>
+												<X className="w-4 h-4" />
+											</button>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+					</div>
+
+					{/* Send Invites Button */}
+					<button
+						onClick={handleSendInvites}
+						disabled={inviteEmails.length === 0 || inviteSending}
+						className="w-full py-3 px-4 bg-primary-400 text-white rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+					>
+						{inviteSending ? (
+							<>
+								<Loader2 className="h-4 w-4 animate-spin" />
+								Sending...
+							</>
+						) : (
+							<>
+								<Send className="w-4 h-4" />
+								Send Invites
+							</>
+						)}
+					</button>
+				</div>
 			)}
 
 			{selectedAction === "rate" && (

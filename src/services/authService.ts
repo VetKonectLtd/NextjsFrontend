@@ -21,8 +21,14 @@ export const useAuthService = () => {
 			{
 				onSuccess: (response: any) => {
 					if (response?.token) {
-						// Store token in localStorage
-						Cookies.set("auth-token", response.token);
+						// Conditionally set secure based on protocol
+						const isSecure =
+							typeof window !== "undefined" &&
+							window.location.protocol === "https:";
+						Cookies.set("auth-token", response.token, {
+							secure: isSecure,
+							sameSite: "strict",
+						});
 						handleSuccess(response.message || "Login successfully!");
 					}
 				},
@@ -160,7 +166,9 @@ export const useAuthService = () => {
 					handleSuccess(response.message || "Password reset successfully!");
 				},
 				onError: (error: any) => {
-					handleError(error.error || error.message || "Failed to reset password.");
+					handleError(
+						error.error || error.message || "Failed to reset password.",
+					);
 				},
 			},
 		);

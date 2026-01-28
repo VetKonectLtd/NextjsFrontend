@@ -16,6 +16,7 @@ import {
 	Star,
 	Router,
 	ImageIcon,
+	Users,
 } from "lucide-react";
 import { AuthBg } from "@/app/assets/images";
 import { AccountAction } from "./";
@@ -738,6 +739,18 @@ const AnimalOwnerProfile = ({
 							</span>
 							<span className="text-[10px] sm:text-xs text-center">Share</span>
 						</button>
+
+						{/* <button
+							onClick={() => handleContact("1", "invite")}
+							className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
+						>
+							<span
+								className={`bg-white border ${selectedAction == "invite" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+							>
+								<Users size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
+							</span>
+							<span className="text-[10px] sm:text-xs text-center">Invite</span>
+						</button> */}
 
 						<button
 							onClick={() => handleContact("1", "switch-profile")}
