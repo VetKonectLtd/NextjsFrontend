@@ -25,9 +25,12 @@ export const useAuthService = () => {
 						const isSecure =
 							typeof window !== "undefined" &&
 							window.location.protocol === "https:";
+						const domain = window.location.hostname;
 						Cookies.set("auth-token", response.token, {
 							secure: isSecure,
 							sameSite: "strict",
+							domain,
+							path: "/",
 						});
 						handleSuccess(response.message || "Login successfully!");
 					}
@@ -124,7 +127,10 @@ export const useAuthService = () => {
 		return usePost<void, void>(AUTH_ENDPOINTS.LOGOUT, {
 			onSuccess: (res: any) => {
 				// Remove token from localStorage
-				Cookies.remove("auth-token");
+				Cookies.remove("auth-token", {
+					domain: window.location.hostname,
+					path: "/",
+				});
 				handleSuccess(res.message || "Logout successfully!");
 			},
 			invalidateQueries: [["currentUser"]],

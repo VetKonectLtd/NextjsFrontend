@@ -15,14 +15,20 @@ const SuccessPage = () => {
 	const token = searchParams.get("token");
 
 	useEffect(() => {
-		if (token) { 
+		if (token) {
 			const isSecure = window.location.protocol === 'https:';
-			Cookies.set("auth-token", token, { secure: isSecure, sameSite: "strict" });
+			const domain = window.location.hostname;
+			Cookies.set("auth-token", token, {
+				secure: isSecure,
+				sameSite: "strict",
+				domain,
+				path: "/"
+			});
 
 			const cleanUrl = `/success?form=${formType || "Login"}`;
 
-			 sessionStorage.setItem("justLoggedIn", "true");
-			 
+			sessionStorage.setItem("justLoggedIn", "true");
+
 			router.replace(cleanUrl, { scroll: false });
 		}
 	}, [token, formType, router]);
