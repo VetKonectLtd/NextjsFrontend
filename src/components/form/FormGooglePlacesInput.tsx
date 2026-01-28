@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import Autocomplete from "react-google-autocomplete";
 
@@ -27,7 +27,9 @@ const FormGooglePlacesInput = <T extends FieldValues>({
   onLocationSelect,
 }: FormGooglePlacesInputProps<T>) => {
   const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const autocompleteRef = useRef<any>(null);
+
+ 
 
   return (
     <Controller
@@ -37,7 +39,7 @@ const FormGooglePlacesInput = <T extends FieldValues>({
       render={({ field }) => (
         <div className="relative w-full font-sans">
           <Autocomplete
-            apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}
+            apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
             options={{
               types: ["geocode"],
               fields: ["formatted_address", "geometry"],
@@ -47,13 +49,8 @@ const FormGooglePlacesInput = <T extends FieldValues>({
               const lat = place.geometry?.location?.lat() ?? null;
               const lng = place.geometry?.location?.lng() ?? null;
 
-              // Update RHF ONLY here
+              // Update RHF
               field.onChange(address);
-
-              // Also update the actual input value manually
-              if (inputRef.current) {
-                inputRef.current.value = address;
-              }
 
               onLocationSelect?.({
                 latitude: lat,
@@ -61,12 +58,24 @@ const FormGooglePlacesInput = <T extends FieldValues>({
               });
             }}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onBlur={() => {
+              setIsFocused(false);
+              
+            }}
+            defaultValue={field.value || ""}
             placeholder={label}
             className={`peer block w-full px-4 pt-4 py-2 border bg-white border-[#1D2432] rounded-md text-base placeholder-transparent focus:outline-none
               ${error ? "border-red-500" : ""}
             `}
-            ref={inputRef}
+            ref={(ref) => {
+              autocompleteRef.current = ref;
+              // Connect the ref to RHF if needed
+              if (ref) {
+                field.ref({
+                  focus: () => ref.focus(),
+                });
+              }
+            }}
           />
 
           <label
