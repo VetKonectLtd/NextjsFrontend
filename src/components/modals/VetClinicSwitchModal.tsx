@@ -22,6 +22,7 @@ import FormSelect from "../form/FormSelect";
 import { State } from "country-state-city";
 import TagInput from "../form/TagInput";
 import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
+import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 interface VetClinicSwitchModalProps {
 	open: boolean;
@@ -228,7 +229,7 @@ const VetClinicSwitchModal = ({
 						})}
 					/>
 
-					<FormGooglePlacesInput
+					<FormGooglePlacesCustom
 						name="address"
 						control={control}
 						label="Address"

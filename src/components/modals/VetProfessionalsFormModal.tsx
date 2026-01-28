@@ -22,6 +22,7 @@ import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParap
 import FormSelect from "../form/FormSelect";
 import TagInput from "../form/TagInput";
 import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
+import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 const VetProfessionalsFormModal = ({
 	progressOpen,
@@ -219,7 +220,7 @@ const VetProfessionalsFormModal = ({
 							})}
 						/>
 
-						<FormGooglePlacesInput
+						<FormGooglePlacesCustom
 							name="address"
 							control={control}
 							label="Address"
