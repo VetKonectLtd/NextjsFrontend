@@ -22,16 +22,8 @@ export const useAuthService = () => {
 				onSuccess: (response: any) => {
 					if (response?.token) {
 						// Conditionally set secure based on protocol
-						const isSecure =
-							typeof window !== "undefined" &&
-							window.location.protocol === "https:";
-						const domain = window.location.hostname;
-						Cookies.set("auth-token", response.token, {
-							secure: isSecure,
-							sameSite: "lax",
-							domain,
-							path: "/",
-						});
+					
+						Cookies.set("auth-token", response.token);
 						handleSuccess(response.message || "Login successfully!");
 					}
 				},
@@ -127,10 +119,7 @@ export const useAuthService = () => {
 		return usePost<void, void>(AUTH_ENDPOINTS.LOGOUT, {
 			onSuccess: (res: any) => {
 				// Remove token from localStorage
-				Cookies.remove("auth-token", {
-					domain: window.location.hostname,
-					path: "/",
-				});
+				Cookies.remove("auth-token");
 				handleSuccess(res.message || "Logout successfully!");
 			},
 			invalidateQueries: [["currentUser"]],
