@@ -20,7 +20,7 @@ import { Loader2 } from "lucide-react";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { useAuthService } from "@/services/authService";
 import TagInput from "../form/TagInput";
-import FormGooglePlacesInput from "../form/FormGooglePlacesInput";
+import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 const VeterinarianFormModal = ({
 	progressOpen,
@@ -166,7 +166,7 @@ const VeterinarianFormModal = ({
 							)}
 						/>
 
-						<FormGooglePlacesInput
+						<FormGooglePlacesCustom
 							name="address"
 							control={control}
 							label="Address"
