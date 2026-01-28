@@ -28,7 +28,7 @@ export const useAuthService = () => {
 						const domain = window.location.hostname;
 						Cookies.set("auth-token", response.token, {
 							secure: isSecure,
-							sameSite: "strict",
+							sameSite: "lax",
 							domain,
 							path: "/",
 						});
