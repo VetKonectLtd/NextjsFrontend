@@ -27,7 +27,6 @@ const VetAccount = ({
 	const id = selectedVet?.id as any;
 	const role = selectedVet?.role as any;
 	
-	console.log("Selected Action:", selectedVet);
 
 	const { useGetVetDoctorById } = useVeterinaryService();
 	const { useGetVetParaById } = useVeterinaryParaprofessionalService();

@@ -206,8 +206,8 @@ const Navbar = () => {
 							Blog
 						</Link>
 						<Link
-							href="/dashboard/chat-forum"
-							className={getLinkClasses("/dashboard/chat-forum")}
+							href="/chat-forum"
+							className={getLinkClasses("/chat-forum")}
 						>
 							Chat Forum
 						</Link>
@@ -533,7 +533,7 @@ const Navbar = () => {
 
 							{/* Chat Forum */}
 							<Link
-								href="/dashboard/chat-forum"
+								href="/chat-forum"
 								onClick={closeMobileMenu}
 								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
 							>

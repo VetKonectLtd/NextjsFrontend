@@ -24,7 +24,7 @@ export const navItems = [
 	{ id: 6, label: "Cases", icon: Cases, href: "/dashboard/cases" },
 	{ id: 7, label: "Clients", icon: Client, href: "/dashboard/client" },
 	{ id: 8, label: "My Stores", icon: Store, href: "/dashboard/stores" },
-	{ id: 9, label: "Chat Forum", icon: Chat, href: "/dashboard/chat-forum" },
+	{ id: 9, label: "Chat Forum", icon: Chat, href: "/chat-forum" },
 	{
 		id:10,
 		label: "Feed Calculator",

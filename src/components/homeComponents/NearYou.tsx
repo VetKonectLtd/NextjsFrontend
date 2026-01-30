@@ -61,18 +61,17 @@ const NearYou: React.FC<NearYouProps> = ({
 
       if (responseData?.veterinary_doctors?.data && Array.isArray(responseData.veterinary_doctors.data)) {
         const vetData = responseData.veterinary_doctors.data;
-        console.log('API Response data:', vetData); // Debug log
+        // console.log('API Response data:', vetData); // Debug log
         const transformedVets = transformVetDataToProps(vetData, defaultImages);
-        console.log('Transformed vets:', transformedVets); // Debug log
+        // console.log('Transformed vets:', transformedVets); // Debug log
         setVets(transformedVets);
         setError(null);
       } else if (apiError) {
-        console.error('API Error:', apiError); // Debug log
         setError(typeof apiError === 'string' ? apiError : 'Failed to load veterinary doctors');
         setVets([]); // Clear vets on error, don't show sample data
       } else if (apiResponse && !responseData?.veterinary_doctors?.data) {
         // Response exists but no data
-        console.warn('API Response received but no veterinary_doctors.data:', responseData);
+        // console.warn('API Response received but no veterinary_doctors.data:', responseData);
         setVets([]);
         setError(null);
       }
@@ -233,6 +232,7 @@ const NearYou: React.FC<NearYouProps> = ({
                             <VetProfile
                               key={vet.id}
                               {...vet}
+                              isAvailable={vet.isAvailable}
                               onViewProfile={handleViewProfile}
                               onContact={handleContact}
                             />
@@ -267,6 +267,7 @@ const NearYou: React.FC<NearYouProps> = ({
                               <div key={vet.id} className="flex-shrink-0 w-[calc(66.666%-8px)]" style={{ scrollSnapAlign: 'start' }}>
                                 <VetProfile
                                   {...vet}
+                                  isAvailable={vet.isAvailable}
                                   onViewProfile={handleViewProfile}
                                   onContact={handleContact}
                                 />

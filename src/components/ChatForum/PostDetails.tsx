@@ -72,6 +72,8 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 
 	const detail: any = getForumBySlug?.data;
 
+	console.log(detail)
+
 	const comments = Array.isArray(getComment?.data) ? getComment?.data : [];
 
 	useEffect(() => {
@@ -280,7 +282,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						<span
 							onClick={() => {
 								const slug = slugify(detail.slug);
-								const link = `https://nextjs-frontend-beta-drab.vercel.app/dashboard/chat-forum/${detail.id}/${slug}`;
+								const link = `https://nextjs-frontend-beta-drab.vercel.app/chat-forum/${detail.id}/${slug}`;
 								setShareLink(link);
 								setShareOpen(true);
 							}}
@@ -295,7 +297,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 					<ShareModal
 						open={shareOpen}
 						setOpen={setShareOpen}
-						id={detail.id}
+						id={detail?.id}
 						link={shareLink}
 					/>
 				</div>

@@ -2,7 +2,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const ForumPostSkeleton = () => (
-  <div className=" items-center text-center w-full p-4 mb-6">
+  <div className="bg-white shadow-sm border border-gray-200 rounded-xl items-center text-center w-full p-4 mb-6">
     {/* Header */}
     {/* <div className="flex items-center mb-3">
       <Skeleton circle width={40} height={40} className="mr-3" />
@@ -16,7 +16,7 @@ const ForumPostSkeleton = () => (
     </div> */}
 
     {/* Post Image */}
-    {/* <Skeleton height={150} className="mb-3 rounded" /> */}
+    <Skeleton height={35} className="mb-3 rounded" />
 
     {/* Title */}
     <Skeleton height={16} width="70%" className="mb-2 text-center" />
