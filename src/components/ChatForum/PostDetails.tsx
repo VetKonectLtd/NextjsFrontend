@@ -186,7 +186,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 				/ <span>Comments</span>
 			</div>
 
-			<div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm">
+			<div className="bg-white border border-gray-200 rounded-xl p-3 mb-6 shadow-sm">
 				{/* Header */}
 				<div className="flex items-center mb-4">
 					<div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mr-3">
@@ -214,12 +214,12 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 				</div>
 
 				{/* Post Body */}
-				{detail?.image_url ? (
+				{detail?.image_url && (
 					<Dialog>
 						<DialogTitle></DialogTitle>
 						<DialogTrigger asChild>
 							<div
-								className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
+								className="bg-center bg-no-repeat bg-cover h-60 mb-3 cursor-pointer rounded-md"
 								style={{ backgroundImage: `url(${detail?.image_url})` }}
 							/>
 						</DialogTrigger>
@@ -234,9 +234,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 							/>
 						</DialogContent>
 					</Dialog>
-				) : (
-					<div className="bg-primary-400 h-40 mb-3 rounded-md" />
-				)}
+				) }
 
 				<h4 className="font-semibold text-gray-800 text-lg">{detail?.title}</h4>
 				<p className="text-gray-600 text-sm mb-4">{detail?.content}</p>

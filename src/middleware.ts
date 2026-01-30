@@ -27,7 +27,7 @@ export function middleware(request: NextRequest) {
 	// 2. Block logged-in users from accessing login/signup
 	if (authPages.some((route) => pathname.startsWith(route))) {
 		if (token) {
-			const dashboardUrl = new URL("/dashboard", request.url);
+			const dashboardUrl = new URL("/dashboard/vet-vendor", request.url);
 			return NextResponse.redirect(dashboardUrl);
 		}
 	}

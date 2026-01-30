@@ -87,11 +87,11 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 
 		if (mode === "create") {
 			addForumMutation.mutate(formData, {
-				onSuccess: () => router.push(`/dashboard/chat-forum`),
+				onSuccess: () => router.push(`/chat-forum`),
 			});
 		} else {
 			updateForumMutation.mutate(formData, {
-				onSuccess: () => router.push(`/dashboard/chat-forum`),
+				onSuccess: () => router.push(`/chat-forum`),
 			});
 		}
 	};

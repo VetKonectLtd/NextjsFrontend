@@ -111,21 +111,20 @@ const Navbar = () => {
 		setIsAccountDropdownOpen(false);
 	};
 
+
+
 	useEffect(() => {
+		// Primary auth source = current user
+		const isLoggedIn = !!(user as any)?.data;
+		setIsAuthenticated(isLoggedIn);
+	}, [user]);
+
+	useEffect(() => {
+		// Backup sync on navigation
 		const currentToken = Cookies.get("auth-token");
-		setIsAuthenticated(!!currentToken);
-		setToken(currentToken);
+		if (currentToken) setIsAuthenticated(true);
+	}, [pathname]);
 
-		const interval = setInterval(() => {
-			const newToken = Cookies.get("auth-token");
-			if (newToken !== token) {
-				setToken(newToken);
-				setIsAuthenticated(!!newToken);
-			}
-		}, 1000);
-
-		return () => clearInterval(interval);
-	}, [token]);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -155,6 +154,9 @@ const Navbar = () => {
 			},
 		});
 	};
+
+
+
 
 	return (
 		<nav
