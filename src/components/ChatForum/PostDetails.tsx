@@ -224,6 +224,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 							/>
 						</DialogTrigger>
 						<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
+							<div className="relative">
 							<DialogClose className="absolute top-3 right-3 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
 								<X className="w-5 h-5" />
 							</DialogClose>
@@ -232,6 +233,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 								alt="Full Image"
 								className="w-full h-auto max-h-[90vh] object-contain rounded-md"
 							/>
+							</div>
 						</DialogContent>
 					</Dialog>
 				) }
