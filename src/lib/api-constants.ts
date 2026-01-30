@@ -123,7 +123,7 @@ export const FORUM_CHAT = {
 
 	SHARE_FORUM: (Id: string) => `/v3/forums/${Id}/share`,
 	UPDATE_FORUM: (Id: string) => `/v3/forums/${Id}/update`,
-	FORUM_SLUG: (slug: string) => `/v3/forums/${slug}`,
+	FORUM_SLUG: (slug: string) => `/v3/forums/${slug}/slug`,
 	DELETE_FORUM: (Id: string) => `/v3/forums/${Id}/delete`,
 };
 

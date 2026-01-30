@@ -3,7 +3,6 @@
 import {
 	Eye,
 	MessagesSquare,
-	PlusIcon,
 	Search,
 	Send,
 	Share2,
