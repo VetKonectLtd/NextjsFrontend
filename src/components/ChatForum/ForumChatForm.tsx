@@ -97,7 +97,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 	};
 
 	return (
-		<div className="w-11/12 mt-3 m-auto">
+		<div className="max-w-7xl mx-auto px-5 pt-28 pb-20">
 			<h2 className="text-sm pb-4">
 				<span onClick={handleBack} className="font-bold cursor-pointer">
 					Forum Chat

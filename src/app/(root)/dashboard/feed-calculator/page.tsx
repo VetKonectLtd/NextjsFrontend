@@ -37,13 +37,15 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function FeedCalculatorPage() {
   const [selectedLivestock, setSelectedLivestock] = useState<string>("");
   const [selectedBirdsType, setSelectedBirdsType] = useState<string>("");
   const [showResults, setShowResults] = useState<boolean>(false);
   const [calculationResult, setCalculationResult] = useState<any>(null);
-
+  const router = useRouter();
+  
   // Feed calculator API hook
   const feedCalculatorMutation = useFeedCalculator();
 
@@ -75,9 +77,9 @@ export default function FeedCalculatorPage() {
   // Check if form is valid for submit button
   const isFormValid = () => {
     const values = form.getValues();
-    
+
     if (!selectedLivestock) return false;
-    
+
     switch (selectedLivestock) {
       case "Poultry":
         return !!(
@@ -110,19 +112,19 @@ export default function FeedCalculatorPage() {
 
   const onSubmit = (data: any) => {
     // console.log("Form submitted:", data);
-    
+
     try {
       // Transform form data to API request format
       const apiRequest = transformFormDataToApiRequest(data);
-      
+
       // Call the API
       feedCalculatorMutation.mutate(apiRequest, {
         onSuccess: (response) => {
           // console.log('API Response:', response);
-          
+
           // Since API returns data directly (not wrapped), extract the actual response
           const responseData = response?.data || response;
-          
+
           if (responseData) {
             try {
               // Format API response for display
@@ -132,7 +134,7 @@ export default function FeedCalculatorPage() {
             } catch (formatError) {
               console.error('Error formatting response:', formatError);
               // console.log('Response data:', responseData);
-              
+
               // Fallback: show raw response data
               const fallbackData = responseData as any;
               setCalculationResult({
@@ -158,7 +160,7 @@ export default function FeedCalculatorPage() {
   const handleLivestockChange = (value: string) => {
     setSelectedLivestock(value);
     setSelectedBirdsType("");
-    
+
     // Reset form with new schema
     form.reset({
       livestockCategory: value,
@@ -169,6 +171,8 @@ export default function FeedCalculatorPage() {
     setSelectedBirdsType(value);
     form.setValue("birdsType", value);
   };
+
+
 
   const handleRestart = () => {
     setShowResults(false);
@@ -255,12 +259,12 @@ export default function FeedCalculatorPage() {
         {/* Action Buttons */}
         <div className="space-y-3">
           <Button
-            onClick={() => alert("Contact Vendor functionality will be implemented")}
+            onClick={() => router.push("http://localhost:3000/dashboard/vet-vendor?category=Vendor")}
             className="w-full bg-orange-200 hover:bg-orange-300 text-gray-800 py-3 rounded-lg font-medium transition-colors"
           >
             Contact a Vendor
           </Button>
-          
+
           <Button
             onClick={handleRestart}
             className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors"

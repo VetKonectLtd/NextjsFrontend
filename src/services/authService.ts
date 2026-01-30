@@ -22,10 +22,10 @@ export const useAuthService = () => {
 				onSuccess: (response: any) => {
 					if (response?.token) {
 						// Conditionally set secure based on protocol
-						const isSecure = window.location.protocol === "https:";
 						Cookies.set("auth-token", response.token, {
-							secure: isSecure,
-							sameSite: "strict",
+							secure: process.env.NODE_ENV === "production",
+							sameSite: "lax",
+							path: "/",
 						});
 						handleSuccess(response.message || "Login successfully!");
 					}
@@ -94,17 +94,6 @@ export const useAuthService = () => {
 		);
 	};
 
-	// LinkedIn login
-	// const useLinkedInLogin = (enabled: boolean = false) => {
-	// 	return useGet<{ user: User; token: string }>(
-	// 		["linkedinLogin"],
-	// 		`${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`,
-	// 		{
-	// 			enabled,
-	// 			staleTime: 0,
-	// 		},
-	// 	);
-	// };
 
 	// Get current user query
 	const useCurrentUser = (enabled: boolean = true) => {

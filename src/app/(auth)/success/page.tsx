@@ -16,8 +16,11 @@ const SuccessPage = () => {
 
 	useEffect(() => {
 		if (token) {
-			const isSecure = window.location.protocol === "https:";
-			Cookies.set("auth-token", token, { secure: isSecure, sameSite: "strict" });
+			Cookies.set("auth-token", token, {
+				secure: process.env.NODE_ENV === "production",
+				sameSite: "lax",
+				path: "/",
+			});
 
 			const cleanUrl = `/success?form=${formType || "Login"}`;
 

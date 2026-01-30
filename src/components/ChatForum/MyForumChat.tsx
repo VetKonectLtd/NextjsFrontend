@@ -100,7 +100,7 @@ const MyForumChat = () => {
 	const handleOpenPost = (post: ForumChat) => {
 		setSelectedPost(post);
 		const slug = slugify(post.slug);
-		router.push(`/dashboard/chat-forum/${post.id}/${slug}`);
+		router.push(`/chat-forum/${post.id}/${slug}`);
 	};
 
 	// Handle search
@@ -127,7 +127,7 @@ const MyForumChat = () => {
 
 	const handleEdit = (post: any) => {
 		const slug = slugify(post.slug);
-		router.push(`/dashboard/chat-forum/edit/${slug}`);
+		router.push(`/chat-forum/edit/${slug}`);
 	};
 
 	const handleDelete = (postId: any) => {
@@ -250,19 +250,6 @@ const MyForumChat = () => {
 								<h4 className="font-semibold capitalize text-gray-55 text-lg">
 									{post.title}
 								</h4>
-								<div
-									className={`
-										flex justify-end items-end text-xs rounded-full px-3 py-1
-										${post.status === "published" ? "bg-green-500 text-white" : ""}
-										${post.status === "archived" ? "bg-[#E49542] text-white" : ""}
-									`}
-								>
-									{post.status === "archived"
-										? "Under Review"
-										: post.status === "published"
-											? "Approved"
-											: post.status}
-								</div>
 							</div>
 							<p className="text-gray-55 text-sm mb-3">
 								{post.content.length <= 200 ? (

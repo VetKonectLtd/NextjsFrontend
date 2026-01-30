@@ -2,6 +2,10 @@
 export const forumCategories = [
   "Pet Health & Wellness",
   "Dog Care & Medicine",
+  "Jobs",
+  "Scholarships",
+  "Funding Opportunities",
+  "Patnerships & Collaborations",
   "Cat Care & Medicine",
   "Small Animal Cases",
   "Livestock Health",

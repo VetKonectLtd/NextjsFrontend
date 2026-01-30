@@ -104,7 +104,7 @@ const ForumChatCard = () => {
 	const handleOpenPost = (post: ForumChat) => {
 		setSelectedPost(post);
 		const slug = slugify(post.slug);
-		router.push(`/dashboard/chat-forum/${post.id}/${slug}`);
+		router.push(`/chat-forum/${post.id}/${slug}`);
 	};
 
 	// Handle search
@@ -154,11 +154,10 @@ const ForumChatCard = () => {
 				<div className="flex items-center w-full shadow-sm rounded-xl border border-gray-200 overflow-hidden bg-white">
 					<input
 						type="text"
-						placeholder="Type in your keyword here"
+						placeholder="Search posts, categories..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-						className="flex-1 px-4 py-2 text-gray-55 focus:outline-none"
+						className="flex-1 px-4 py-3 text-sm bg-transparent outline-none"
 					/>
 					<button
 						onClick={handleSearch}
@@ -206,175 +205,51 @@ const ForumChatCard = () => {
 
 			{/* Posts */}
 			{isLoading ? (
-				<div className="bg-white shadow-sm border border-gray-200 rounded-xl">
+				<div>
 					{Array.from({ length: 2 }).map((_, i) => <ForumPostSkeleton key={i} />)}
 				</div>
 			) : postsToRender.length > 0 ? (
 				<div className="bg-white border border-gray-225 rounded-lg shadow-sm hover:shadow-md transition">
-					{postsToRender.map((post) => (
+					{postsToRender.map((post, index) => (
 						<div
 							key={post.id}
-							className="flex flex-col p-4 mb-1  cursor-pointer"
+							onClick={() => handleOpenPost(post)}
+							className={`
+          px-4 py-3 cursor-pointer transition
+          hover:bg-[#ececdf]
+          ${index % 2 === 0 ? "bg-[#f6f6ef]" : "bg-[#f0f0e6]"}
+        `}
 						>
-							{/* Header */}
-							{/* <div className="flex justify-between items-center mb-3">
-								<div className="items-center flex">
-									<div className="w-10 h-10 rounded-full border overflow-hidden border-gray-225 bg-gray-300 mr-3">
-										<Image
-											src={post.author.image || DEFAULT_AVATAR}
-											alt={"Vet"}
-											width={40}
-											height={40}
-											className="object-cover w-full h-full"
-										/>
-									</div>
-									<div>
-										<h3 className="font-semibold text-gray-800">
-											{post.author.name}
-										</h3>
-										<p className="text-sm text-gray-500">
-											{formatRole(post.author.active_role)}
-										</p>
-									</div>
-								</div>
-								<div className="flex justify-between items-center">
-									<div className="ml-auto mr-3 text-nowrap md:text-xs text-[10px] px-2 py-1 border border-gray-225 rounded-full bg-gray-100 text-gray-55">
-										{timeAgo(post.created_at)}
-									</div>
-								</div>
-							</div> */}
+							{/* TITLE ROW */}
+							<div className="flex flex-wrap items-center gap-1 text-sm">
+								<span className="font-semibold text-blue-700">
+									{post.category}
+								</span>
 
-							{/* Body */}
-							{/* {post?.image_url && (
-								<Dialog>
-									<DialogTitle></DialogTitle>
-									<DialogTrigger asChild>
-										<div
-											className="bg-center bg-no-repeat bg-cover h-40 mb-3 cursor-pointer rounded-md"
-											style={{ backgroundImage: `url(${post.image_url})` }}
-										/>
-									</DialogTrigger>
-									<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none relative flex justify-center items-center">
-										<DialogClose className="absolute top-3 right-3 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
-											<X className="w-5 h-5" />
-										</DialogClose>
-										<img
-											src={post.image_url}
-											alt="Full Image"
-											className="w-full h-auto max-h-[90vh] object-contain rounded-md"
-										/>
-									</DialogContent>
-								</Dialog>
-							)} */}
+								<span className="text-gray-500">&gt;</span>
 
-							<div className="flex items-center justify-center gap-2">
-								<ChevronsRight className="w-3 h-3" />
-								<h4 onClick={() => handleOpenPost(post)} className="font-semibold cursor-pointer hover:underline text-gray-55 flex items-center justify-center text-base">
+								<span className="font-semibold text-gray-900 hover:underline">
 									{post.title}
-								</h4>
-								<ChevronsLeft className="w-3 h-3" />
+								</span>
 							</div>
 
-							{/* <p className="text-gray-55 text-sm mb-3">
-								{post.content.length <= 200 ? (
-									post.content
-								) : (
-									<>
-										{post.content.slice(0, 200)}...
-										<span
-											onClick={() => handleOpenPost(post)}
-											className="text-green-50 cursor-pointer"
-										>
-											see more
-										</span>
-									</>
-								)}
-							</p> */}
+							{/* META LINE */}
+							<div className="text-xs text-gray-600 mt-1 flex flex-wrap gap-2">
+								<span>
+									by <span className="font-semibold text-amber-700">
+										{post.author?.name || "Admin"}
+									</span>
+								</span>
 
-							{/* Actions */}
-							{/* <div className="flex md:justify-end justify-start gap-4 items-end text-sm">
-								<div className="flex items-center">
-									<span className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center">
-										<Eye size={14} color="#1D2432" />
-									</span>
-									<span className="ml-1 flex gap-2 md:text-sm text-xs text-gray-55 font-medium">
-										{post.views_count}
-										<span className="hidden md:block">Views</span>
-									</span>
-								</div>
-
-								<div
-									className="flex items-center cursor-pointer"
-									onClick={() =>
-										setActivePost(activePost === post.id ? null : post.id)
-									}
-								>
-									<span
-										onClick={() => handleOpenPost(post)}
-										className="bg-white border hover:border-gray-55 border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
-									>
-										<MessagesSquare size={14} color="#1D2432" />
-									</span>
-									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-										{post.comments_count}
-										<span className="hidden md:block">Comments</span>
-									</span>
-								</div>
-
-								<div className="flex items-center">
-									<span
-										onClick={() => handleLike(post.id)}
-										className={`bg-white border cursor-pointer shadow-md rounded-full p-2 flex items-center justify-center transition-transform ${
-											likedPosts[post.id]
-												? "border-primary-400"
-												: "border-gray-225"
-										}`}
-									>
-										<ThumbsUp
-											size={14}
-											color={likedPosts[post.id] ? "#0BA02C" : "#1D2432"}
-											fill={likedPosts[post.id] ? "#0BA02C" : "none"}
-										/>
-									</span>
-									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-										{post.likes_count}
-										<span className="hidden md:block">Likes</span>
-									</span>
-								</div>
-
-								<div className="flex items-center">
-									<span
-										onClick={() => {
-											const slug = slugify(post.slug);
-											const link = `https://nextjs-frontend-beta-drab.vercel.app/dashboard/chat-forum/${post.id}/${slug}`;
-											setShareLink(link);
-											setShareOpen(true);
-										}}
-										className="bg-white border hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-2 flex items-center justify-center"
-									>
-										<Share2 size={14} color="#1D2432" />
-									</span>
-									<span className="ml-1 md:text-sm flex gap-2 text-xs text-gray-55 font-medium">
-										{post.shares_count}
-									</span>
-								</div>
-								<ShareModal
-									open={shareOpen}
-									setOpen={setShareOpen}
-									id={post.id}
-									link={shareLink}
-									mode="chat-forum"
-								/>
-
-								<div className="flex items-center">
-									<span
-										onClick={() => handleOpenPost(post)}
-										className="ml-3 bg-primary-400 border cursor-pointer border-white rounded-xl p-2 font-semibold"
-									>
-										<Send size={14} className="text-white" />
-									</span>
-								</div>
-							</div> */}
+								<span>• {post.comments_count || 0} comment</span>
+								<span>• {post.views_count || 0} views</span>
+								<span>
+									• {new Date(post.created_at).toLocaleTimeString([], {
+										hour: "2-digit",
+										minute: "2-digit",
+									})}
+								</span>
+							</div>
 						</div>
 					))}
 

@@ -14,7 +14,6 @@ import {
 } from '@/app/assets/icons';
 import { RecOverlay } from '@/app/assets/images';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
-import { address } from 'framer-motion/client';
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -79,6 +78,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             onContact(id, type);
         }
     };
+    console.log("VetProfile - isAvailable:", isAvailable);
 
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -114,6 +114,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         <span className="font-nunito">
                             {isAvailable ? 'Available' : 'Unavailable'}
                         </span>
+
                     </div>
                 </div>
 
