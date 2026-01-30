@@ -244,11 +244,32 @@ const ForumChatCard = () => {
 								<span>• {post.comments_count || 0} comment</span>
 								<span>• {post.views_count || 0} views</span>
 								<span>
-									• {new Date(post.created_at).toLocaleTimeString([], {
-										hour: "2-digit",
-										minute: "2-digit",
-									})}
+									• {(() => {
+										const createdDate = new Date(post.created_at);
+										const now = new Date();
+
+										const isToday =
+											createdDate.toDateString() === now.toDateString();
+
+										const isCurrentYear =
+											createdDate.getFullYear() === now.getFullYear();
+
+										if (isToday) {
+											return createdDate.toLocaleTimeString([], {
+												hour: "2-digit",
+												minute: "2-digit",
+											});
+										}
+
+										return createdDate.toLocaleDateString([], {
+											day: "numeric",
+											month: "long",
+											...(isCurrentYear ? {} : { year: "numeric" }),
+										});
+									})()}
 								</span>
+
+
 							</div>
 						</div>
 					))}
