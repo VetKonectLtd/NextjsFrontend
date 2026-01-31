@@ -33,7 +33,7 @@ const CustomerSupportPage = () => {
 	return (
 		<div className="min-h-screen w-11/12 m-auto pt-20 bg-white">
 			{/* Main Content */}
-			<div className="w-full mx-auto p-4 md:p-8">
+			<div className="w-full mx-auto p-2 md:p-8">
 				{/* Desktop Layout */}
 				<h1 className="text-2xl font-bold text-gray-900 mb-6">
 					Customer Support

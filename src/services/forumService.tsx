@@ -19,6 +19,7 @@ export const useForumService = () => {
 				onError: (error) => {
 					handleError(error.message || "failed");
 				},
+				disableAuthRedirect: true,
 			},
 		);
 	};
@@ -39,6 +40,7 @@ export const useForumService = () => {
 				handleError(error.message || "failed");
 			},
 			invalidateQueries: [["forum", page.toString()]],
+			disableAuthRedirect: true,
 		});
 	};
 
@@ -137,6 +139,7 @@ export const useForumService = () => {
 				onError: (error) => {
 					handleError(error.message || "failed");
 				},
+				disableAuthRedirect: true,
 			},
 		);
 	};
@@ -151,6 +154,7 @@ export const useForumService = () => {
 			onError: (error) => {
 				handleError(error.message || "failed");
 			},
+			disableAuthRedirect: true,
 		});
 	};
 

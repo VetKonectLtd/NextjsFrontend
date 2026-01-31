@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import ShareModal from "./ShareModal";
 import { slugify } from "@/lib/slugify";
+import Cookies from "js-cookie";
 import { Arrow } from "@radix-ui/react-popover";
 
 const DEFAULT_AVATAR = User;
@@ -72,9 +73,29 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 
 	const detail: any = getForumBySlug?.data;
 
-	console.log(detail)
-
 	const comments = Array.isArray(getComment?.data) ? getComment?.data : [];
+
+	// Check authentication
+	const isAuthenticated = !!user || !!Cookies.get("auth-token");
+
+	// Helper function to redirect to login with proper context
+	const redirectToLogin = (action: string) => {
+		const currentUrl = window.location.href;
+		sessionStorage.setItem("redirect-after-login", currentUrl);
+
+		// Store action-specific data
+		if (action === "comment" && commentText.trim()) {
+			sessionStorage.setItem("pending-comment", commentText);
+		}
+		if (action === "comment" && replyToId) {
+			sessionStorage.setItem("pending-reply-to", replyToId);
+		}
+		if (action === "comment" && editingCommentId) {
+			sessionStorage.setItem("pending-edit-comment", editingCommentId);
+		}
+
+		router.push(`/login?redirect=${encodeURIComponent(currentUrl)}&action=${action}`);
+	};
 
 	useEffect(() => {
 		const initialLikes: { [key: string]: boolean } = {};
@@ -89,6 +110,11 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	};
 
 	const handleSubmit = () => {
+		if (!isAuthenticated) {
+			redirectToLogin("comment");
+			return;
+		}
+
 		if (replyToId) {
 			commentMutation.mutate(
 				{ comment: commentText, parent_id: replyToId }, // send reply info
@@ -128,6 +154,10 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	};
 
 	const handleDelete = (commentId: any) => {
+		if (!isAuthenticated) {
+			redirectToLogin("delete");
+			return;
+		}
 		setCommentId(commentId);
 		if (window.confirm(`Are you sure you want to delete your comment?`)) {
 			deleteCommentMutation.mutate(commentId, {
@@ -140,6 +170,10 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 	};
 
 	const handleLike = (postId: any) => {
+		if (!isAuthenticated) {
+			redirectToLogin("like");
+			return;
+		}
 		setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
 
 		likeMutation.mutate(postId, {
@@ -225,18 +259,18 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						</DialogTrigger>
 						<DialogContent className="max-w-3xl p-0 bg-transparent border-none shadow-none flex justify-center items-center">
 							<div className="relative">
-							<DialogClose className="absolute top-3 right-3 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
-								<X className="w-5 h-5" />
-							</DialogClose>
-							<img
-								src={detail?.image_url}
-								alt="Full Image"
-								className="w-full h-auto max-h-[90vh] object-contain rounded-md"
-							/>
+								<DialogClose className="absolute top-3 right-3 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
+									<X className="w-5 h-5" />
+								</DialogClose>
+								<img
+									src={detail?.image_url}
+									alt="Full Image"
+									className="w-full h-auto max-h-[90vh] object-contain rounded-md"
+								/>
 							</div>
 						</DialogContent>
 					</Dialog>
-				) }
+				)}
 
 				<h4 className="font-semibold text-gray-800 text-lg">{detail?.title}</h4>
 				<p className="text-gray-600 text-sm mb-4">{detail?.content}</p>
@@ -506,29 +540,34 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 				<div className="flex flex-col relative items-center gap-3 mt-4">
 					<textarea
 						ref={commentInputRef}
-						className="border relative outline-none shadow-md w-full p-4 text-sm font-normal py-3 rounded-md resize-none border-gray-225"
+						className={`border relative outline-none shadow-md w-full p-4 text-sm font-normal py-3 rounded-md resize-none ${!isAuthenticated
+								? "border-gray-300 bg-gray-50 cursor-pointer"
+								: "border-gray-225"
+							}`}
 						name="comment"
-						placeholder="comment"
+						placeholder={!isAuthenticated ? "Login to comment..." : "Write a comment..."}
 						id="comment"
 						rows={7}
 						value={commentText}
 						onChange={(e) => setCommentText(e.target.value)}
+						onClick={() => {
+							if (!isAuthenticated) {
+								redirectToLogin("comment");
+							}
+						}}
+						readOnly={!isAuthenticated}
 					></textarea>
-					{(editingCommentId || replyToId) && (
-						<button
-							onClick={handleCancel}
-							className="ml-2 absolute right-3 top-10 p-2 rounded-full hover:bg-gray-100"
-							title="Cancel"
-						>
-							<X className="w-5 h-5 text-gray-500" />
-						</button>
-					)}
+
 					<button
 						onClick={handleSubmit}
-						className="bg-primary-400 w-full text-center text-sm text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2"
+						className={`w-full text-center text-sm text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2 ${!isAuthenticated
+								? "bg-gray-400 cursor-not-allowed"
+								: "bg-primary-400"
+							}`}
+						disabled={!isAuthenticated || (!commentText.trim() && isAuthenticated)}
 					>
-						<span>{editingCommentId ? "Update Comment" : "Comment"}</span>
-						<Send size={14} />
+						<span>{!isAuthenticated ? "Login to Comment" : "Comment"}</span>
+						{isAuthenticated && <Send size={14} />}
 					</button>
 				</div>
 			</div>

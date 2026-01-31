@@ -14,6 +14,42 @@ export const useAuthService = () => {
 	const handleSuccess = useHandleSuccess();
 	const handleError = useHandleError();
 
+	// Helper function to set cookie properly
+	const setAuthCookie = (token: string) => {
+		try {
+			// Get the secure flag - make sure it's a boolean
+			const isSecure = window.location.protocol === "https:";
+
+			// Set cookie with proper values
+			Cookies.set("auth-token", token, {
+				secure: isSecure,
+				sameSite: "lax",
+				path: "/",
+			});
+
+			// Also store in localStorage for immediate access
+			localStorage.setItem("auth-token", token);
+		} catch (error) {
+			console.error("Failed to set auth cookie:", error);
+			// Fallback: set cookie without options
+			Cookies.set("auth-token", token);
+			localStorage.setItem("auth-token", token);
+		}
+	};
+
+	// Helper function to remove auth tokens
+	const removeAuthTokens = () => {
+		try {
+			Cookies.remove("auth-token");
+			localStorage.removeItem("auth-token");
+			sessionStorage.removeItem("pending-comment");
+			sessionStorage.removeItem("pending-reply-to");
+			sessionStorage.removeItem("pending-edit-comment");
+		} catch (error) {
+			console.error("Failed to remove auth tokens:", error);
+		}
+	};
+
 	// Login mutation
 	const useLogin = () => {
 		return usePost<{ user: LoginCredentials; token: string }, LoginCredentials>(
@@ -21,13 +57,17 @@ export const useAuthService = () => {
 			{
 				onSuccess: (response: any) => {
 					if (response?.token) {
-						// Conditionally set secure based on protocol
-						Cookies.set("auth-token", response.token, {
-							secure: process.env.NODE_ENV === "production",
-							sameSite: "lax",
-							path: "/",
-						});
+						// Use the helper function
+						setAuthCookie(response.token);
 						handleSuccess(response.message || "Login successfully!");
+					} else if (response?.data?.token) {
+						// Handle different response format
+						setAuthCookie(response.data.token);
+						handleSuccess(
+							response.message ||
+								response.data.message ||
+								"Login successfully!",
+						);
 					}
 				},
 				onError: (error) => {
@@ -43,6 +83,11 @@ export const useAuthService = () => {
 			AUTH_ENDPOINTS.SIGNUP,
 			{
 				onSuccess: (response: any) => {
+					if (response?.token) {
+						setAuthCookie(response.token);
+					} else if (response?.data?.token) {
+						setAuthCookie(response.data.token);
+					}
 					handleSuccess(response.message || "Signup successfully!");
 				},
 				onError: (error) => {
@@ -58,6 +103,11 @@ export const useAuthService = () => {
 			USER_ENDPOINTS.COMPLETE_PROFILE,
 			{
 				onSuccess: (response: any) => {
+					if (response?.token) {
+						setAuthCookie(response.token);
+					} else if (response?.data?.token) {
+						setAuthCookie(response.data.token);
+					}
 					handleSuccess(response.message || "Profile completed successfully!");
 				},
 				onError: (error) => {
@@ -94,7 +144,6 @@ export const useAuthService = () => {
 		);
 	};
 
-
 	// Get current user query
 	const useCurrentUser = (enabled: boolean = true) => {
 		const token = Cookies.get("auth-token");
@@ -110,8 +159,11 @@ export const useAuthService = () => {
 	const useLogout = () => {
 		return usePost<void, void>(AUTH_ENDPOINTS.LOGOUT, {
 			onSuccess: (res: any) => {
-				Cookies.remove("auth-token");
+				removeAuthTokens();
 				handleSuccess(res.message || "Logout successfully!");
+			},
+			onError:()=>{
+				 removeAuthTokens();
 			},
 			invalidateQueries: [["currentUser"]],
 		});
@@ -174,7 +226,7 @@ export const useAuthService = () => {
 		useUpdateProfile,
 		useResendVerification,
 		useGoogleLogin,
-		// useLinkedInLogin,
+		setAuthCookie,
 		useCurrentUser,
 		useLogout,
 		useRefreshToken,
