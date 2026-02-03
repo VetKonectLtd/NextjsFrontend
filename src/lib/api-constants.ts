@@ -203,3 +203,8 @@ export const ORDER = {
 export const RATING ={
 	RATING:"/v3/rate-entity"
 }
+
+export const SUBSCRIPTION ={
+	GET_USER_SUBSCRIPTION: "/v3/get-all-subscription-for-user",
+
+}

@@ -24,7 +24,6 @@ const SuccessPage = () => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 7,
       });
 
       localStorage.setItem("auth-token", token);
