@@ -19,6 +19,7 @@ import { Loader2 } from "lucide-react";
 import { useAuthService } from "@/services/authService";
 import { formatRole } from "@/components/shared/TimeFormat";
 import { forumCategories } from "./forumCategories";
+import Cookies from "js-cookie";
 
 type ForumChatFormProps = {
 	mode: "create" | "edit";
@@ -37,6 +38,21 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 	const { data: user } = useCurrentUser(true);
 	const [isCustom, setIsCustom] = useState(false);
 	const currentUserRole = (user as any)?.role;
+
+	// Check authentication
+	const isAuthenticated = !!user || !!Cookies.get("auth-token");
+
+	useEffect(() => {
+		if (!isAuthenticated) {
+			const currentUrl = window.location.href;
+			sessionStorage.setItem("redirect-after-login", currentUrl);
+
+			router.push(
+				`/login?redirect=${encodeURIComponent(currentUrl)}&action=forum`
+			);
+		}
+	}, [isAuthenticated, router]);
+
 
 	const {
 		register,
