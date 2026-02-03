@@ -689,7 +689,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 							<span className="text-[10px] sm:text-xs text-center">Share</span>
 						</button>
 
-						{/* <button
+						<button
 							onClick={() => handleContact("1", "invite")}
 							className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
 						>
@@ -699,7 +699,7 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 								<Users size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
 							</span>
 							<span className="text-[10px] sm:text-xs text-center">Invite</span>
-						</button> */}
+						</button>
 
 						<button
 							onClick={() => handleContact("1", "switch-profile")}
