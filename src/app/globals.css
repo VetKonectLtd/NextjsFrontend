@@ -230,3 +230,6 @@ input[type="number"] {
 .skiptranslate {
 	display: none !important;
 }
+.ProseMirror-focused {
+  outline: none;
+}
