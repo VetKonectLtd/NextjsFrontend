@@ -273,8 +273,12 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 				)}
 
 				<h4 className="font-semibold text-gray-800 text-lg">{detail?.title}</h4>
-				<p className="text-gray-600 text-sm mb-4">{detail?.content}</p>
+				{/* <p className="text-gray-600 text-sm mb-4 text-justify">{detail?.content}</p> */}
 
+				<div
+					className="prose prose-sm max-w-none text-justify whitespace-pre-wrap"
+					dangerouslySetInnerHTML={{ __html: detail?.content }}
+				/>
 				{/* Actions */}
 				<div className="flex md:justify-end justify-start gap-4 items-center text-sm mb-6">
 					<div className="flex items-center">
@@ -541,8 +545,8 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 					<textarea
 						ref={commentInputRef}
 						className={`border relative outline-none shadow-md w-full p-4 text-sm font-normal py-3 rounded-md resize-none ${!isAuthenticated
-								? "border-gray-300 bg-gray-50 cursor-pointer"
-								: "border-gray-225"
+							? "border-gray-300 bg-gray-50 cursor-pointer"
+							: "border-gray-225"
 							}`}
 						name="comment"
 						placeholder={!isAuthenticated ? "Login to comment..." : "Write a comment..."}
@@ -561,8 +565,8 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 					<button
 						onClick={handleSubmit}
 						className={`w-full text-center text-sm text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2 ${!isAuthenticated
-								? "bg-gray-400 cursor-not-allowed"
-								: "bg-primary-400"
+							? "bg-gray-400 cursor-not-allowed"
+							: "bg-primary-400"
 							}`}
 						disabled={!isAuthenticated || (!commentText.trim() && isAuthenticated)}
 					>

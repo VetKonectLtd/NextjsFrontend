@@ -20,6 +20,7 @@ import { useAuthService } from "@/services/authService";
 import { formatRole } from "@/components/shared/TimeFormat";
 import { forumCategories } from "./forumCategories";
 import Cookies from "js-cookie";
+import ForumTextEditor from "./editor/ForumTextEditor";
 
 type ForumChatFormProps = {
 	mode: "create" | "edit";
@@ -224,12 +225,16 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 						)}
 
 						{/* Content */}
-						<Textarea
-							placeholder="Content"
-							rows={10}
-							defaultValue={chat?.content || ""}
-							{...register("content", { required: "Content is required" })}
-							className="border shadow-sm w-full p-4 rounded-md resize-none border-gray-225"
+						<Controller
+							name="content"
+							control={control}
+							rules={{ required: "Content is required" }}
+							render={({ field }) => (
+								<ForumTextEditor
+									value={field.value || ""}
+									onChange={field.onChange}
+								/>
+							)}
 						/>
 						{errors.content && (
 							<p className="text-red-500 text-xs">{errors.content.message}</p>
