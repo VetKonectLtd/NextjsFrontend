@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useDiseasePredict } from "@/services/diseasePredictService";
 
 export default function DiseasePredictorPage() {
     const [selectedAnimal, setSelectedAnimal] = useState<string>("");
@@ -45,6 +46,13 @@ export default function DiseasePredictorPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const {useGetSymptom, useGetCategory, usePredictDisease} = useDiseasePredict();
+    
+    const symptom = useGetSymptom(true);
+    const category = useGetCategory(true);
+    
+    console.log(symptom.data);
+    
     // Disease predictor API hook
     const diseasePredictorMutation = useDiseasePredictor();
 

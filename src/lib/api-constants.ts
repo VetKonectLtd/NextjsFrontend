@@ -123,7 +123,7 @@ export const FORUM_CHAT = {
 
 	SHARE_FORUM: (Id: string) => `/v3/forums/${Id}/share`,
 	UPDATE_FORUM: (Id: string) => `/v3/forums/${Id}/update`,
-	FORUM_SLUG: (slug: string) => `/v3/forums/${slug}/slug`,
+	FORUM_SLUG: (slug: string) => `/v3/forums/chat/${slug}/slug`,
 	DELETE_FORUM: (Id: string) => `/v3/forums/${Id}/delete`,
 };
 
@@ -177,6 +177,10 @@ export const GENERAL = {
 	DISEASE_PREDICTOR: "/v3/disease-predictor"
 }
 
+export const DISEASE_PREDICTOR ={
+	PREDICT : "/Predict"
+}
+
 export const CONTACT_US = {
 	ADD_TO_NEWSLETTER: "/v3/add-to-newsletter",
 	CONTACT_US: "/v3/contact-us"
@@ -208,3 +212,4 @@ export const SUBSCRIPTION ={
 	GET_USER_SUBSCRIPTION: "/v3/get-all-subscription-for-user",
 
 }
+

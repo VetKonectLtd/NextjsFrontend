@@ -42,7 +42,8 @@ export default function ShareModal({
 		await navigator.clipboard.writeText(link);
 		if (mode === "chat-forum") {
 			increaseShareforChat();
-		}else{
+			
+		}else if (mode === "blog") {
 			increaseShareforBlog();
 		}
 		setCopied(true);

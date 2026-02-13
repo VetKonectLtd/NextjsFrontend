@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {useDiseasePredict}  from "@/services/diseasePredictService"
 
 // Base schema for disease predictor
 export const diseasePredictorSchema = z.object({
@@ -8,6 +9,8 @@ export const diseasePredictorSchema = z.object({
 });
 
 export type DiseasePredictorFormData = z.infer<typeof diseasePredictorSchema>;
+
+
 
 // Animal species options
 export const animalSpeciesOptions = [
