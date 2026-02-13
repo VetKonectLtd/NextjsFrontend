@@ -50,6 +50,7 @@ const AnimalOwnerProfile = ({
 	const { data: user, refetch: refetchUser } = useCurrentUser(true);
 	const { useAddPaymentDetails } = usePaymentService();
 	const paymentDetailsMutation = useAddPaymentDetails();
+	
 
 	const updateProfileMutation = useUpdateProfile();
 	const apiProfile = (user as any)?.profile;
