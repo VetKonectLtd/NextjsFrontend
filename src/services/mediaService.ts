@@ -2,7 +2,7 @@ import { usePost } from "@/lib/hooks";
 import { MEDIA } from "@/lib/api-constants";
 import { useHandleError, useHandleSuccess } from "@/lib/hooks/useToastHandlers";
 import { useMutation } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/lib/api/apiClient";
 
 // Media upload service using hooks
 // Expects FormData with one or more files under the key `file[]`

@@ -145,6 +145,7 @@ export interface SignupCredentials {
 	email: string;
 	password: string;
 	password_confirmation: string;
+	invite?: string;
 }
 
 export interface PersonalInfoForm {

@@ -213,3 +213,11 @@ export const SUBSCRIPTION ={
 
 }
 
+export const  Leaderboard = {
+	GET_LEADERBOARD: "/v3/leaderboards/overall"
+}
+
+export const INVITATIONS = {
+	GET_USER_POINTS: "/v3/invites/point",
+	SEND_INVITE: "/v3/send-invite",
+}

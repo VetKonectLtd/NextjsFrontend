@@ -21,6 +21,8 @@ export default function LoginPage() {
   const fromParam = searchParams.get("from");
   const redirectUrl = redirectParam || "/dashboard";
 
+	const inviteCode = searchParams.get("invite");
+
   const {
     register,
     handleSubmit,
@@ -89,7 +91,12 @@ export default function LoginPage() {
     const fullRedirectUrl = redirectUrl + (params.toString() ? `?${params.toString()}` : '');
     sessionStorage.setItem("redirect-after-google-login", fullRedirectUrl);
     
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
+		if (inviteCode) {
+			url += `?invite=${inviteCode}`;
+		}
+
+		window.location.href = url;
   };
 
   return (
