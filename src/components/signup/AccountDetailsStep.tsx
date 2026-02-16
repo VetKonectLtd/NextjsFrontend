@@ -4,23 +4,38 @@ import {
 	UseFormClearErrors,
 	UseFormGetValues,
 	UseFormRegister,
+	UseFormSetValue,
 } from "react-hook-form";
 import FormInput from "../form/FormInput";
 import { SignupCredentials } from "@/types";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 interface AccountDetailsProps {
 	register: UseFormRegister<SignupCredentials>;
 	getValues: UseFormGetValues<SignupCredentials>;
 	clearErrors: UseFormClearErrors<SignupCredentials>;
 	errors: any;
+	setValue: UseFormSetValue<SignupCredentials>;
 }
 
 const AccountDetailsStep = ({
 	register,
 	getValues,
 	clearErrors,
+	setValue,
 	errors,
 }: AccountDetailsProps) => {
+	const searchParams = useSearchParams();
+
+    
+    useEffect(() => {
+        const inviteCodeFromUrl = searchParams.get("invite_code") || searchParams.get("invite");
+        if (inviteCodeFromUrl) {
+            setValue("invite", inviteCodeFromUrl);
+        }
+    }, [searchParams, setValue]);
+
 	return (
 		<div className="flex flex-col items-center w-full">
 			<div className="w-full max-w-sm flex flex-col gap-1">
@@ -86,6 +101,19 @@ const AccountDetailsStep = ({
 					<p className="text-red-500 text-xs">
 						{errors.password_confirmation.message}
 					</p>
+				)}
+
+				<FormInput
+					label="Invite Code"
+					{...register("invite")}
+					onChange={(e) => {
+						clearErrors("invite");
+					}}
+					focusLabel="Invite Code (Optional)"
+					isRequired={false}
+				/>
+				{errors.invite_code && (
+					<p className="text-red-500 text-xs">{errors.invite_code.message}</p>
 				)}
 			</div>
 		</div>

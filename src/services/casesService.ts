@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/lib/api/apiClient";
 import { ApiResponse } from "@/types";
 
 export interface CasePayload {

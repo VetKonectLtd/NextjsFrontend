@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { SignupCredentials } from "@/types";
 import { useAuthService } from "@/services/authService";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AccountDetailsStep from "@/components/signup/AccountDetailsStep";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -13,13 +13,16 @@ export default function AccountPage() {
 	const router = useRouter();
 	const { useSignup, useGoogleLogin } = useAuthService();
 	const signupMutation = useSignup();
-	const googleLogin = useGoogleLogin(false);
+	const searchParams = useSearchParams();
+
+	const inviteCode = searchParams.get("invite");
 
 	const {
 		register,
 		handleSubmit,
 		getValues,
 		clearErrors,
+		setValue,
 		formState: { errors },
 	} = useForm<SignupCredentials>({
 		defaultValues: { email: "", password: "", password_confirmation: "" },
@@ -35,12 +38,16 @@ export default function AccountPage() {
 	};
 
 	const handleGoogleLogin = () => {
-		window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
+
+		let url = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.GOOGLE_LOGIN}`;
+		if (inviteCode) {
+			url += `?invite=${inviteCode}`;
+		}
+
+		window.location.href = url;
+
 	};
 
-	// const handleLinkedInLogin = () => {
-	// 	window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LINKEDIN_LOGIN}`;
-	// };
 
 	return (
 		<div className="w-full max-w-sm mx-auto">
@@ -50,6 +57,7 @@ export default function AccountPage() {
 					getValues={getValues}
 					clearErrors={clearErrors}
 					errors={errors}
+					setValue={setValue}
 				/>
 
 				<button

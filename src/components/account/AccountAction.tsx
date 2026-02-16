@@ -6,6 +6,7 @@ import { Hand, StarFill } from "@/app/assets/icons";
 import { useState, useRef } from "react";
 import { useMediaService, buildImagesFormData } from "@/services/mediaService";
 import ReactStars from "react-stars";
+import { useInviteService } from "@/services/inviteService";
 
 interface AccountUser {
 	id: string;
@@ -38,6 +39,8 @@ const AccountAction = ({
 	const { useUploadMedia, useDeleteMedia } = useMediaService();
 	const uploadMutation = useUploadMedia();
 	const deleteMediaMutation = useDeleteMedia();
+	const { useSendInvite } = useInviteService();
+	const sendInviteMutation = useSendInvite();
 
 	const ratingChanged = (newRating: any) => {
 		// console.log(newRating);
@@ -84,38 +87,25 @@ const AccountAction = ({
 		if (inviteEmails.length === 0) return;
 
 		setInviteSending(true);
-		try {
-			// Replace with your actual API call
-			const response = await fetch("/api/invites/send", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					emails: inviteEmails,
-					userId: selectedUser?.id,
-					accountType,
-				}),
-			});
 
-			if (response.ok) {
-				setInviteEmails([]);
-				setEmailInput("");
-				// Show success message
-				alert("Invites sent successfully!");
-			} else {
-				alert("Failed to send invites");
-			}
-		} catch (error) {
-			console.error("Error sending invites:", error);
-			alert("Error sending invites");
-		} finally {
-			setInviteSending(false);
-		}
+		sendInviteMutation.mutate(
+			{ email: inviteEmails },
+			{
+				onSuccess: () => {
+					setInviteEmails([]);
+					setInviteSending(false);
+				},
+				onError: () => {
+					setInviteSending(false);
+				},
+			},
+		);
+		
 	};
 
 	const welcomeMessage = getWelcomeMessage();
-	const uniqueInviteLink = `https://vetkonect.com/invite/${selectedUser?.id || selectedUser?.name}`;
+
+	const uniqueInviteLink = `https://nextjs-frontend-beta-drab.vercel.app/signup?invite_code=${selectedUser?.user.invite_code}`;
 
 	return (
 		<div className="mt-12 pb-3 text-center w-full m-auto text-gray-500 text-sm">
