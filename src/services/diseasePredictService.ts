@@ -16,9 +16,14 @@ export const useDiseasePredict = () => {
 	const useGetCategory = (enabled = false) =>
 		useGet<any>(["diseaseCategory"], "/category", { api: "ai", enabled });
 
-	const useGetSymptom = (enabled = false) =>
-		useGet<any>(["diseaseSymptom"], "/symptom", { api: "ai", enabled });
-
+	const useGetSymptom = () =>
+		usePost<{ predict: any }>("/symptom", {
+			api: "ai",
+			onSuccess: (res: any) => {
+				return res.data;
+			},
+			onError: (err) => handleError(err.message || "Symptom retrieval failed"),
+		});
 	return {
 		usePredictDisease,
 		useGetCategory,

@@ -10,13 +10,6 @@ import TagInput from "@/components/form/TagInput";
 import { useRouter } from "next/navigation";
 import { useProductService } from "@/services/productService";
 import { Product } from "@/types";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@radix-ui/react-select";
 import FormSelect from "../form/FormSelect";
 
 type ProductFormProps = {

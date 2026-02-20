@@ -13,8 +13,9 @@ import { useSubscriptionService } from "@/services/subsciptionService";
 
 const plans = [
   {
-    name: "Basic Farm Care Plan",
+    subscription_title: "Basic Farm Care Plan",
     price: "₦3,000",
+    date_option: "Monthly",
     period: "Monthly",
     features: [
       "4 professional vet tele-medicine consultations per month",
@@ -40,11 +41,12 @@ const plans = [
 export default function PricingCarousel() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const {useGetUserSubscription}= useSubscriptionService();
+  const {useGetUserSubscription, useInitiateSubscription}= useSubscriptionService();
 
   const {data:subscriptionPlan }  = useGetUserSubscription( true);
+  const subscriptionMutation = useInitiateSubscription();
 
-  console.log((subscriptionPlan as any)?.subscriptions.data);
+ const plans = (subscriptionPlan as any)?.subscriptions.data || [];
 
   const next = () => {
     setDirection(1);
@@ -56,8 +58,22 @@ export default function PricingCarousel() {
     setIndex((prev) => (prev - 1 + plans.length) % plans.length);
   };
 
+  const handleSelectPlan = () => {
+    subscriptionMutation.mutate(
+      {subscription_beta_id: plans[index].id},
+      {
+					onSuccess: (data: any) => {
+						if (data?.authorization_url) {
+							window.location.href = data.authorization_url;
+						}
+					},
+				},
+    );
+  }
+  
+
   return (
-    <div className="max-w-7xl pt-28 mx-auto min-h-screen flex flex-col items-center justify-between py-6">
+    <div className="max-w-7xl pt-2 mx-auto min-h-screen flex flex-col items-center justify-between py-6">
       
       {/* TOP PLUS / MINUS */}
       <div className="flex items-center gap-4 bg-white shadow-sm rounded-full px-4 py-2">
@@ -88,8 +104,8 @@ export default function PricingCarousel() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-          >
-            <PlanCard plan={plans[index]} />
+          > 
+            <PlanCard plan={plans[index]} handleSelectPlan={handleSelectPlan} />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -114,16 +130,16 @@ export default function PricingCarousel() {
   );
 }
 
-function PlanCard({ plan }: any) {
+function PlanCard({ plan, handleSelectPlan }: any) {
   return (
     <div className="border-2 border-primary-400 rounded-2xl p-6 bg-white">
-      <h3 className="text-lg font-semibold">{plan.name}</h3>
-      <p className="text-sm text-gray-500">{plan.period} Price</p>
+      <h3 className="text-lg font-semibold">{plan?.subscription_title}</h3>
+      <p className="text-sm text-gray-500">{plan?.date_option == "Months" ? "Monthly" : plan?.date_option} Price</p>
 
-      <p className="text-3xl font-bold my-4">{plan.price}</p>
+      <p className="text-3xl font-bold my-4">  ₦ {plan?.price?.toLocaleString()}</p>
 
       <ul className="space-y-2">
-        {plan.features.map((feature: string) => (
+        {plan?.features.map((feature: string) => (
           <li key={feature} className="flex items-center gap-2 text-sm">
             <div className="bg-gray-200 rounded-full p-2">
 
@@ -134,7 +150,7 @@ function PlanCard({ plan }: any) {
         ))}
       </ul>
 
-      <button className="mt-6 w-full bg-primary-400 text-white py-2 rounded-lg">
+      <button onClick={handleSelectPlan} className="mt-6 w-full bg-primary-400 text-white py-2 rounded-lg">
         SELECT PLAN
       </button>
     </div>

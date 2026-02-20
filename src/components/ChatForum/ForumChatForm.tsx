@@ -66,15 +66,17 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 	} = useForm<ForumChat>();
 
 	useEffect(() => {
-		if (mode === "edit" && chat) {
+		if (mode === "edit" && chat?.id) {
 			reset({
 				title: chat.title,
 				visibility: chat.visibility,
+				category: chat.category,
 				content: chat.content,
 			});
+
 			setPreview(chat.image_url || null);
 		}
-	}, [mode, chat, reset]);
+	}, [mode, chat?.id, reset]);
 
 	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -137,7 +139,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 							render={({ field }) => (
 								<Select
 									onValueChange={field.onChange}
-									defaultValue={chat?.visibility || ""}
+									value={field.value}
 								>
 									<SelectTrigger className="border shadow-sm w-full rounded-md border-gray-225 p-4">
 										<SelectValue placeholder="Visibility of the post" />
@@ -166,6 +168,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 							render={({ field }) => (
 								<>
 									<Select
+										value={field.value}
 										onValueChange={(value) => {
 											field.onChange(value);
 
@@ -176,7 +179,6 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 												setIsCustom(false);
 											}
 										}}
-										defaultValue={chat?.category || ""}
 									>
 										<SelectTrigger className="border shadow-sm w-full rounded-md border-gray-225 p-4">
 											<SelectValue placeholder="Select Category" />
@@ -246,7 +248,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 								<>
 									<div className="w-full h-[100px] border-2 border-gray-225 rounded-md overflow-hidden mb-2 flex items-center justify-center">
 										<Image
-											src={preview}
+											src={preview || ""}
 											alt="Preview"
 											width={200}
 											height={150}

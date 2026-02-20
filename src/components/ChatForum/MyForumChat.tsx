@@ -251,7 +251,7 @@ const MyForumChat = () => {
 								</h4>
 							</div>
 							<p className="text-gray-55 text-sm mb-3">
-								{post.content.length <= 200 ? (
+								{/* {post.content.length <= 200 ? (
 									post.content
 								) : (
 									<>
@@ -263,7 +263,12 @@ const MyForumChat = () => {
 											see more
 										</span>
 									</>
-								)}
+								)} */}
+								
+				<div
+					className="prose prose-sm max-w-none text-justify whitespace-pre-wrap"
+					dangerouslySetInnerHTML={{ __html: post.content.slice(0, 200) + (post.content.length > 200 ? '...' : '') }}
+				/>
 							</p>
 
 							{/* Actions */}

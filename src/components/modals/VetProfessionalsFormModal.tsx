@@ -87,6 +87,9 @@ const VetProfessionalsFormModal = ({
 		if (Array.isArray(data.specialty)) {
 			data.specialty = data.specialty.join(", ");
 		}
+		if (Array.isArray(data.list_them)) {
+			data.list_them = data.list_them.join(", ");
+		}
 		addVetProfessionalMutation.mutate(data, {
 			onSuccess: (res) => {
 				setProgressOpen(false);
