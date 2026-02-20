@@ -2,6 +2,7 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { useEffect } from "react";
 
 type Props = {
   value: string;
@@ -26,6 +27,12 @@ export default function ForumTextEditor({ value, onChange }: Props) {
       onChange(editor.getHTML());
     },
   });
+
+   useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value || "");
+    }
+  }, [value, editor]);
 
   if (!editor) return null;
 

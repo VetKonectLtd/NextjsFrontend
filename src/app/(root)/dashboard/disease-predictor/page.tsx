@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
     diseasePredictorSchema,
-    animalSpeciesOptions,
     availableSymptoms,
     diseasePredictions,
     type DiseasePredictorFormData,
@@ -35,6 +34,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useDiseasePredict } from "@/services/diseasePredictService";
 
+
 export default function DiseasePredictorPage() {
     const [selectedAnimal, setSelectedAnimal] = useState<string>("");
     const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
@@ -45,14 +45,67 @@ export default function DiseasePredictorPage() {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [symptomOptions, setSymptomOptions] = useState<string[]>([]);
 
-    const {useGetSymptom, useGetCategory, usePredictDisease} = useDiseasePredict();
-    
-    const symptom = useGetSymptom(true);
+
+    const { useGetSymptom, useGetCategory, usePredictDisease } = useDiseasePredict();
+
+    const symptomMutation = useGetSymptom();
+    // const diseasePredictorMutation = usePredictDisease();
     const category = useGetCategory(true);
-    
-    console.log(symptom.data);
-    
+
+
+    const animalSpeciesOptions =
+        (category.data as any)?.categories?.map((item: string) => ({
+            value: item,
+            label: item.charAt(0).toUpperCase() + item.slice(1),
+        })) || [];
+
+    useEffect(() => {
+        if (selectedAnimal) {
+            // clear previous options & selected symptoms
+            setSymptomOptions([]);
+            setSelectedSymptoms([]);
+            form.setValue("symptoms", []);
+            symptomMutation.mutate({ category: selectedAnimal });
+        } else {
+            setSymptomOptions([]);
+        }
+    }, [selectedAnimal]);
+
+
+   useEffect(() => {
+    const data = symptomMutation.data;
+    if (!data) return;
+
+    let list: string[] = [];
+
+    // Log the entire response to debug
+    console.log("Symptom API Response:", data);
+
+    // Fix: Check for symptom (singular) first since that's what your API returns
+    if ((data as any)?.symptom && Array.isArray((data as any).symptom)) {
+        list = (data as any).symptom;  // Changed from data.symptoms to data.symptom
+    } else if (Array.isArray(data)) {
+        list = data as string[];
+    } else if ((data as any)?.symptoms && Array.isArray((data as any).symptoms)) {
+        list = (data as any).symptoms;
+    } else if (data?.data && Array.isArray(data.data)) {
+        list = data.data;
+    } else if ((data as any)?.items && Array.isArray((data as any).items)) {
+        list = (data as any).items;
+    } else if ((data as any)?.result && Array.isArray((data as any).result)) {
+        list = (data as any).result;
+    }
+
+    console.log("Extracted symptoms list:", list);
+    setSymptomOptions(list);
+}, [symptomMutation.data]);
+
+    const filteredSymptoms = (symptomOptions.length > 0 ? symptomOptions : availableSymptoms).filter(symptom =>
+        symptom.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     // Disease predictor API hook
     const diseasePredictorMutation = useDiseasePredictor();
 
@@ -82,9 +135,6 @@ export default function DiseasePredictorPage() {
         };
     }, []);
 
-    const filteredSymptoms = availableSymptoms.filter(symptom =>
-        symptom.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     // Check if form is valid for submit button
     const isFormValid = () => {
@@ -109,15 +159,15 @@ export default function DiseasePredictorPage() {
             diseasePredictorMutation.mutate(apiRequest, {
                 onSuccess: (response) => {
                     // console.log('Disease Predictor API Response:', response);
-                    
+
                     // Since API returns data directly (not wrapped), extract the actual response
                     const responseData = response?.data || response;
-                    
+
                     if (responseData) {
                         try {
                             // Format API response for display
                             const formattedResult = formatDiseasePredictorResponse(responseData as DiseasePredictorResponse);
-                            
+
                             setPredictionResult({
                                 predictedDisease: formattedResult.prediction,
                                 animalSpecies: data.animalSpecies,
@@ -128,7 +178,7 @@ export default function DiseasePredictorPage() {
                         } catch (formatError) {
                             console.error('Error formatting response:', formatError);
                             // console.log('Response data:', responseData);
-                            
+
                             // Fallback: show raw response data
                             const fallbackData = responseData as any;
                             setPredictionResult({
@@ -201,7 +251,7 @@ export default function DiseasePredictorPage() {
         const { predictedDisease, animalSpecies, symptoms } = predictionResult;
 
         return (
-            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8"> 
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
                 {/* Results Header */}
                 <div className="text-center mb-8">
                     <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -306,7 +356,7 @@ export default function DiseasePredictorPage() {
                                 <div className="relative">
                                     <Input
                                         type="text"
-                                        placeholder="Likely Symptoms (Required)"
+                                        placeholder="Search symptoms..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         className="w-full pl-10"
@@ -322,7 +372,9 @@ export default function DiseasePredictorPage() {
 
                             {/* Symptoms List */}
                             <div className="max-h-48 overflow-y-auto">
-                                {filteredSymptoms.length === 0 ? (
+                                {symptomMutation.isPending ? (
+                                    <div className="p-3 text-sm text-gray-500">Loading symptoms...</div>
+                                ) : filteredSymptoms.length === 0 ? (
                                     <div className="p-3 text-sm text-gray-500">No symptoms found</div>
                                 ) : (
                                     filteredSymptoms.map((symptom) => (
@@ -408,7 +460,7 @@ export default function DiseasePredictorPage() {
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {animalSpeciesOptions.map((option) => (
+                                                    {animalSpeciesOptions.map((option: any) => (
                                                         <SelectItem key={option.value} value={option.value}>
                                                             {option.label}
                                                         </SelectItem>

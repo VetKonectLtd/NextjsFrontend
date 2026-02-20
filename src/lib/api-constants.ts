@@ -210,6 +210,7 @@ export const RATING ={
 
 export const SUBSCRIPTION ={
 	GET_USER_SUBSCRIPTION: "/v3/get-all-subscription-for-user",
+	INITIATE_SUBSCRIPTION: "/v3/subscriptions/initialize",
 
 }
 

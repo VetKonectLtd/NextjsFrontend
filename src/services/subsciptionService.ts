@@ -19,9 +19,23 @@ export const useSubscriptionService = () => {
         );
     };
 
+    const useInitiateSubscription = () => {
+        return usePost<{token: string }>(
+            SUBSCRIPTION.INITIATE_SUBSCRIPTION,
+            {
+                onSuccess: (data) => {
+                    handleSuccess("Subscription initiated successfully");
+                },
+                onError: (error) => {
+                    handleError("Failed to initiate subscription");
+                },
+            },
+        );
+    };
+
    
     return {
         useGetUserSubscription,
-       
+       useInitiateSubscription,
     };
 };
