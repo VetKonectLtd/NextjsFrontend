@@ -80,13 +80,13 @@ const ForumChatCard = () => {
 			: (getAllForum.data as any)?.chats?.data;
 
 		if (Array.isArray(newData)) {
-			// setAllPosts((prev) => {
-			// 	const newUnique = newData.filter(
-			// 		(p: ForumChat) => !prev.some((old) => old.id === p.id),
-			// 	);
-			// 	return [...prev, ...newUnique];
-			// });
-			setAllPosts(newData);
+			setAllPosts((prev) => {
+				const newUnique = newData.filter(
+					(p: ForumChat) => !prev.some((old) => old.id === p.id),
+				);
+				return [...prev, ...newUnique];
+			});
+			// setAllPosts(newData);
 		}
 	}, [getAllForum.data, getForumByVisibility.data]);
 
