@@ -6,15 +6,19 @@ export const useDiseasePredict = () => {
 	const handleError = useHandleError();
 
 	const usePredictDisease = () =>
-		usePost<{ predict: any }>("/Predict", {
+		usePost<{ predict: any }>("/prediction", {
 			api: "ai",
-			onSuccess: (res: any) =>
-				handleSuccess(res.message || "Disease prediction successful"),
+			onSuccess: (res: any) => {
+				handleSuccess(res.message || "Disease prediction successful");
+			},
 			onError: (err) => handleError(err.message || "Prediction failed"),
 		});
 
+
 	const useGetCategory = (enabled = false) =>
 		useGet<any>(["diseaseCategory"], "/category", { api: "ai", enabled });
+
+
 
 	const useGetSymptom = () =>
 		usePost<{ predict: any }>("/symptom", {

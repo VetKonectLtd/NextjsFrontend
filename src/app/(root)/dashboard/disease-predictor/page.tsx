@@ -10,12 +10,6 @@ import {
     type DiseasePredictorFormData,
 } from "@/lib/validations/disease-predictor";
 import {
-    useDiseasePredictor,
-    transformDiseasePredictorFormData,
-    formatDiseasePredictorResponse,
-} from "@/services/diseasePredictorService";
-import { DiseasePredictorResponse } from "@/types";
-import {
     Form,
     FormControl,
     FormField,
@@ -33,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useDiseasePredict } from "@/services/diseasePredictService";
+import { useRouter } from "next/navigation";
 
 
 export default function DiseasePredictorPage() {
@@ -47,11 +42,12 @@ export default function DiseasePredictorPage() {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [symptomOptions, setSymptomOptions] = useState<string[]>([]);
 
-
+    const route = useRouter();
     const { useGetSymptom, useGetCategory, usePredictDisease } = useDiseasePredict();
 
     const symptomMutation = useGetSymptom();
-    // const diseasePredictorMutation = usePredictDisease();
+    // Disease predictor API hook
+    const diseasePredictorMutation = usePredictDisease();
     const category = useGetCategory(true);
 
 
@@ -74,40 +70,38 @@ export default function DiseasePredictorPage() {
     }, [selectedAnimal]);
 
 
-   useEffect(() => {
-    const data = symptomMutation.data;
-    if (!data) return;
+    useEffect(() => {
+        const data = symptomMutation.data;
+        if (!data) return;
 
-    let list: string[] = [];
+        let list: string[] = [];
 
-    // Log the entire response to debug
-    console.log("Symptom API Response:", data);
+        // Fix: Check for symptom (singular) first since that's what your API returns
+        if ((data as any)?.symptom && Array.isArray((data as any).symptom)) {
+            list = (data as any).symptom;  // Changed from data.symptoms to data.symptom
+        } else if (Array.isArray(data)) {
+            list = data as string[];
+        } else if ((data as any)?.symptoms && Array.isArray((data as any).symptoms)) {
+            list = (data as any).symptoms;
+        } else if (data?.data && Array.isArray(data.data)) {
+            list = data.data;
+        } else if ((data as any)?.items && Array.isArray((data as any).items)) {
+            list = (data as any).items;
+        } else if ((data as any)?.result && Array.isArray((data as any).result)) {
+            list = (data as any).result;
+        }
 
-    // Fix: Check for symptom (singular) first since that's what your API returns
-    if ((data as any)?.symptom && Array.isArray((data as any).symptom)) {
-        list = (data as any).symptom;  // Changed from data.symptoms to data.symptom
-    } else if (Array.isArray(data)) {
-        list = data as string[];
-    } else if ((data as any)?.symptoms && Array.isArray((data as any).symptoms)) {
-        list = (data as any).symptoms;
-    } else if (data?.data && Array.isArray(data.data)) {
-        list = data.data;
-    } else if ((data as any)?.items && Array.isArray((data as any).items)) {
-        list = (data as any).items;
-    } else if ((data as any)?.result && Array.isArray((data as any).result)) {
-        list = (data as any).result;
-    }
-
-    console.log("Extracted symptoms list:", list);
-    setSymptomOptions(list);
-}, [symptomMutation.data]);
+        const unique = Array.from(
+            new Set(list.map((s) => s.trim().toLowerCase()))
+        );
+        setSymptomOptions(unique);
+    }, [symptomMutation.data]);
 
     const filteredSymptoms = (symptomOptions.length > 0 ? symptomOptions : availableSymptoms).filter(symptom =>
         symptom.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Disease predictor API hook
-    const diseasePredictorMutation = useDiseasePredictor();
+
 
     const form = useForm<DiseasePredictorFormData>({
         resolver: zodResolver(diseasePredictorSchema),
@@ -146,60 +140,49 @@ export default function DiseasePredictorPage() {
         );
     };
 
-    const onSubmit = (data: DiseasePredictorFormData) => {
-
+    const onSubmit = (data: any) => {
         try {
-            // Transform form data to API request format
-            const apiRequest = transformDiseasePredictorFormData({
-                livestockCategory: data.animalSpecies,
-                diseases: data.symptoms,
-            });
+            // Prepare the request payload for the API
+            const apiRequest = {
+                category: data.animalSpecies,
+                symptom: data.symptoms,
+                // Optional: add image if uploaded
+                ...(uploadedImage && { image: uploadedImage })
+            };
 
-            // Call the API
+
+            // Call the disease predictor mutation
             diseasePredictorMutation.mutate(apiRequest, {
                 onSuccess: (response) => {
-                    // console.log('Disease Predictor API Response:', response);
 
-                    // Since API returns data directly (not wrapped), extract the actual response
-                    const responseData = response?.data || response;
+                    // Extract the prediction data from response
+                    // API might return: { prediction: "disease_name" } or { disease: "name" } or { result: "name" }
+                    let predictedDisease = "";
 
-                    if (responseData) {
-                        try {
-                            // Format API response for display
-                            const formattedResult = formatDiseasePredictorResponse(responseData as DiseasePredictorResponse);
 
-                            setPredictionResult({
-                                predictedDisease: formattedResult.prediction,
-                                animalSpecies: data.animalSpecies,
-                                symptoms: data.symptoms,
-                                hasImage: !!uploadedImage,
-                            });
-                            setShowResults(true);
-                        } catch (formatError) {
-                            console.error('Error formatting response:', formatError);
-                            // console.log('Response data:', responseData);
-
-                            // Fallback: show raw response data
-                            const fallbackData = responseData as any;
-                            setPredictionResult({
-                                predictedDisease: typeof fallbackData === 'string' ? fallbackData : 'Unable to determine disease',
-                                animalSpecies: data.animalSpecies,
-                                symptoms: data.symptoms,
-                                hasImage: !!uploadedImage,
-                            });
-                            setShowResults(true);
-                        }
-                    } else {
-                        console.error('No response data received');
+                    if ((response as any)?.response) {
+                        predictedDisease = (response as any)?.response;
                     }
+
+                    // Set the prediction result and show results view
+                    setPredictionResult({
+                        predictedDisease: predictedDisease || "Unable to determine disease",
+                        animalSpecies: data.animalSpecies,
+                        symptoms: data.symptoms,
+                        hasImage: !!uploadedImage
+                    });
+
+                    setShowResults(true);
                 },
-                onError: (error) => {
-                    console.error('Disease prediction failed:', error);
-                    // Optionally show fallback or keep form open
+                onError: (error: any) => {
+                    console.error("Disease prediction failed:", error);
+                    // Optional: keep form open for retry
+                    setShowResults(false);
                 }
             });
         } catch (error) {
-            console.error('Error transforming form data:', error);
+            console.error("Error preparing disease prediction request:", error);
+            alert("An error occurred while preparing your request. Please try again.");
         }
     };
 
@@ -260,7 +243,7 @@ export default function DiseasePredictorPage() {
                     <p className="text-gray-600 mb-4">
                         Based on the signs and symptoms you have selected, the suspected condition is
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-red-600 mb-6">
+                    <p className="text-xl sm:text-2xl capitalize font-bold text-red-600 mb-6">
                         {predictedDisease}
                     </p>
                 </div>
@@ -283,7 +266,7 @@ export default function DiseasePredictorPage() {
                 {/* Action Buttons */}
                 <div className="space-y-3">
                     <Button
-                        onClick={() => alert("Consult a Vet functionality will be implemented")}
+                        onClick={() => route.push("/dashboard/vet-vendor?category=Veterinarian")}
                         className="w-full bg-orange-200 hover:bg-orange-300 text-gray-800 py-3 rounded-lg font-medium transition-colors"
                     >
                         Consult a Vet
@@ -315,9 +298,9 @@ export default function DiseasePredictorPage() {
                             <span className="text-gray-500">Select symptoms...</span>
                         ) : (
                             <div className="flex flex-wrap gap-1">
-                                {selectedSymptoms.map((symptom) => (
+                                {selectedSymptoms.map((symptom, idx) => (
                                     <span
-                                        key={symptom}
+                                        key={`${symptom}-${idx}`}
                                         className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800"
                                     >
                                         {symptom}
