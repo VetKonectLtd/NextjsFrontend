@@ -246,7 +246,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 						<div className="flex flex-col">
 							{preview ? (
 								<>
-									<div className="w-full h-[100px] border-2 border-gray-225 rounded-md overflow-hidden mb-2 flex items-center justify-center">
+									<div className="w-1/3 h-[300px] border-2 border-gray-225 rounded-md overflow-hidden mb-2 flex items-center justify-center">
 										<Image
 											src={preview || ""}
 											alt="Preview"
@@ -267,7 +267,7 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
 								<>
 									<label
 										htmlFor="chat-image-upload"
-										className="w-full h-[100px] flex flex-col items-center bg-[#F1F1F1] justify-center border border-gray-55 rounded-md cursor-pointer mb-2"
+										className="w-1/3 h-[300px] flex flex-col items-center bg-[#F1F1F1] justify-center border border-gray-55 rounded-md cursor-pointer mb-2"
 									>
 										<span className="text-gray-600 font-semibold text-sm">
 											Add Image

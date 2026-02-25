@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useProductService } from "@/services/productService";
 import { Product } from "@/types";
 import FormSelect from "../form/FormSelect";
+import ForumTextEditor from "../ChatForum/editor/ForumTextEditor";
 
 type ProductFormProps = {
 	mode: "create" | "edit";
@@ -58,7 +59,7 @@ export default function ProductForm({
 				product_name: product?.product_name,
 				category: product?.category,
 				description: product?.description,
-				tags: product?.tags,
+				tags: product?.tags?.map((t: string) => (t as any)?.name) || [],
 				location: product?.location,
 				price: product?.price,
 				available_unit: product?.available_unit,
@@ -145,7 +146,7 @@ export default function ProductForm({
 				</span>{" "}
 				Back
 			</div>
-			<div className="max-w-xs mt-5 mx-auto">
+			<div className="max-w-lg px-3 mt-5 mx-auto">
 				<div>
 					<h1 className="text-3xl font-bold text-gray-55 text-center">
 						Product Details
@@ -189,19 +190,18 @@ export default function ProductForm({
 							</p>
 						)}
 
-						<FormInput
-							label="Product Description"
-							type="text"
-							focusLabel="Product Description:"
-							isRequired
-							{...register("description", {
-								required: "Description is required",
-								minLength: {
-									value: 10,
-									message: "Description should be at least 10 characters",
-								},
-							})}
-							error={errors.description?.message}
+						<Controller
+							name="description"
+							control={control}
+							rules={{ required: "Description is required" }}
+							render={({ field }) => (
+								<ForumTextEditor
+									value={field.value || ""}
+									onChange={field.onChange}
+									placeholder="Product Description"
+									border="border-[#1D2432] border rounded-md focus:ring-2 focus:ring-primary-400 focus:border-transparent"
+								/>
+							)}
 						/>
 
 						<Controller
@@ -231,9 +231,9 @@ export default function ProductForm({
 						/>
 
 						<FormInput
-							label="Price in US Dollars"
+							label="Price in Naira"
 							type="number"
-							focusLabel="Price in US Dollars:"
+							focusLabel="Price in Naira:"
 							isRequired
 							{...register("price", {
 								required: "Price is required",
@@ -254,9 +254,8 @@ export default function ProductForm({
 								className="w-9 h-4 p-1 flex items-center border border-primary-400 rounded-full transition"
 							>
 								<span
-									className={`w-3 h-3 bg-primary-400 rounded-full shadow transform transition ${
-										available ? "translate-x-4" : "translate-x-0"
-									}`}
+									className={`w-3 h-3 bg-primary-400 rounded-full shadow transform transition ${available ? "translate-x-4" : "translate-x-0"
+										}`}
 								/>
 							</button>
 						</div>

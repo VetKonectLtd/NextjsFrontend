@@ -155,7 +155,7 @@ export default function SoreForm({ mode, store }: StoreFormProps) {
 				Back
 			</div>
 
-			<div className="max-w-xs mt-5 mx-auto">
+			<div className="max-w-lg px-3 mt-5 mx-auto">
 				<h1 className="text-3xl font-bold text-gray-55 text-center">
 					Store Details
 				</h1>
