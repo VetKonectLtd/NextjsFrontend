@@ -10,14 +10,14 @@ import { useProductService } from "@/services/productService";
 import Link from "next/link";
 
 
-const ProductDetailsPage = ({ params }: { params: { productId: string, id:string } }) => {
+const ProductDetailsPage = ({ params }: { params: { productId: string, id: string } }) => {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const router = useRouter();
-	const {useGetProductById}= useProductService();
+	const { useGetProductById } = useProductService();
 
 	const productDat: any = useGetProductById(true, params.productId);
 	const product = productDat.data?.product;
-	
+
 	const handleBack = () => {
 		router.back();
 	};
@@ -37,7 +37,7 @@ const ProductDetailsPage = ({ params }: { params: { productId: string, id:string
 			prev === 0 ? product.images_url.length - 1 : prev - 1,
 		);
 	};
-	
+
 
 	return (
 		<div className="w-11/12 m-auto mt-3">
@@ -101,17 +101,16 @@ const ProductDetailsPage = ({ params }: { params: { productId: string, id:string
 
 							{/* Carousel Indicators */}
 							<div className="flex items-center space-x-2">
-								{product?.images_url.map((_:any, index:any) => (
+								{product?.images_url.map((_: any, index: any) => (
 									<motion.button
 										key={index}
 										onClick={() => setCurrentImageIndex(index)}
 										whileHover={{ scale: 1.2 }}
 										whileTap={{ scale: 0.9 }}
-										className={`w-2 h-2 rounded-full transition-all duration-200 ${
-											index === currentImageIndex
+										className={`w-2 h-2 rounded-full transition-all duration-200 ${index === currentImageIndex
 												? "bg-white scale-125"
 												: "bg-white/50 hover:bg-white/75"
-										}`}
+											}`}
 									/>
 								))}
 							</div>
@@ -135,10 +134,13 @@ const ProductDetailsPage = ({ params }: { params: { productId: string, id:string
 							/>
 							<span className="ml-1"> {product?.location}</span>
 						</div>
-						<p className="text-gray-500 text-sm mb-4">{product?.description}</p>
+						<div
+							className="prose prose-sm text-gray-500 text-sm my-4 max-w-none text-justify whitespace-pre-wrap"
+							dangerouslySetInnerHTML={{ __html: product?.description }}
+						/>
 						<div className="flex flex-wrap gap-2 mb-4">
 							<div className="flex flex-wrap gap-2">
-								{product?.tags.map((tag:any) => (
+								{product?.tags.map((tag: any) => (
 									<span
 										key={tag.id}
 										className="bg-white border text-gray-500 cursor-pointer px-3 py-1 text-xs border-gray-225 shadow-md rounded-full"

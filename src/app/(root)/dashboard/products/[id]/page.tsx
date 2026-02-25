@@ -189,11 +189,10 @@ export default function ProductDetailsPage({
 									onClick={() => setCurrentImageIndex(index)}
 									whileHover={{ scale: 1.2 }}
 									whileTap={{ scale: 0.9 }}
-									className={`w-2 h-2 rounded-full transition-all duration-200 ${
-										index === currentImageIndex
+									className={`w-2 h-2 rounded-full transition-all duration-200 ${index === currentImageIndex
 											? "bg-white scale-125"
 											: "bg-white/50 hover:bg-white/75"
-									}`}
+										}`}
 								/>
 							))}
 						</div>
@@ -225,10 +224,12 @@ export default function ProductDetailsPage({
 
 				{/* About */}
 				<div className="mb-6">
-					<h3 className="text-base font-semibold text-gray-900 mb-2">About</h3>
-					<p className="text-sm text-gray-600 leading-relaxed">
-						{product?.description}
-					</p>
+					<h3 className="text-base capitalize font-semibold text-gray-900 mb-2">Description</h3>
+
+					<div
+						className="prose prose-sm leading-relaxed text-gray-500 text-sm my-4 max-w-none text-justify whitespace-pre-wrap"
+						dangerouslySetInnerHTML={{ __html: product?.description }}
+					/>
 				</div>
 
 				{/* Disclaimer */}

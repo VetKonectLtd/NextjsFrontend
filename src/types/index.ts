@@ -57,7 +57,7 @@ export interface Product {
 	product_name: string;
 	description: string;
 	price: number;
-	tags: [];
+	tags: string[];
 	id: string;
 	location: string;
 	image1: string;
