@@ -12,6 +12,7 @@ import { useProductService } from "@/services/productService";
 import { Product } from "@/types";
 import FormSelect from "../form/FormSelect";
 import ForumTextEditor from "../ChatForum/editor/ForumTextEditor";
+import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 type ProductFormProps = {
 	mode: "create" | "edit";
@@ -27,7 +28,7 @@ export default function ProductForm({
 	const router = useRouter();
 	const [available, setAvailable] = useState(product?.availability ?? false);
 	const [previews, setPreviews] = useState<string[]>(product?.images_url || []);
-	
+
 	const categoryOptions = [
 		{ value: "Pet", label: "Pet" },
 		{ value: "Feeds", label: "Feeds" },
@@ -219,14 +220,13 @@ export default function ProductForm({
 							)}
 						/>
 
-						<FormInput
+
+						<FormGooglePlacesCustom
+							name="location"
+							control={control}
 							label="Location"
-							type="text"
-							focusLabel="Location:"
+							focusLabel="Location (Required):"
 							isRequired
-							{...register("location", {
-								required: "Location is required",
-							})}
 							error={errors.location?.message}
 						/>
 
