@@ -107,9 +107,9 @@ export const useProductService = () => {
 	};
 
 	const useDeleteProduct = (Id: string) => {
-		return useDelete<Product>(PRODUCTS.DELETE_PRODUCT(Id), {
+		return useDelete<any>(PRODUCTS.DELETE_PRODUCT(Id), {
 			onSuccess: (response: any) => {
-				handleSuccess(response.message || " Product deleted successfully!");
+				handleSuccess(response.message || "Product deleted successfully!");
 			},
 			onError: (error) => {
 				handleError(error.message || "failed");

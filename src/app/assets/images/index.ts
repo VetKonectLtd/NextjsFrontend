@@ -91,4 +91,5 @@ export { default as Wipi5 } from './wipi5.jpeg';
 
 export { default as DATSU } from './DATSU.jpeg';
 export { default as Atohunse } from './Atohunse.jpeg';
+export { default as ClinicCart } from './clinicCart.jpg';
 

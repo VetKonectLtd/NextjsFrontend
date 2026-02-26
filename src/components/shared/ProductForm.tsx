@@ -211,7 +211,8 @@ export default function ProductForm({
 							rules={{ required: "At least one tag is required" }}
 							render={({ field }) => (
 								<TagInput
-									{...field}
+									value={field.value || []}
+									onChange={field.onChange}
 									label="Product Tags"
 									focusLabel="Product Tags:"
 									isRequired
