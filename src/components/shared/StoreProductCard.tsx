@@ -79,7 +79,7 @@ const StoreProductCard = ({
 
 				{/* Price */}
 				<div className="absolute bottom-2 right-2 text-white font-bold rounded-md">
-					₦ {Number(price).toFixed(2)}
+					₦ {Number(price)?.toLocaleString() || '0.00'}
 				</div>
 
 				{/* Indicator dots */}
