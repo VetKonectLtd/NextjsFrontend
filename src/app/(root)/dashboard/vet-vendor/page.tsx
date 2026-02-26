@@ -158,7 +158,7 @@ export default function VetVendorPage() {
 				)} */}
 			</div>
 
-			{activeCategory == "Vendor" && (
+			{activeCategory == "Market Place" && (
 				<CategoryTabs
 					tabs={tabs}
 					activeTab={activeTab}
@@ -166,7 +166,7 @@ export default function VetVendorPage() {
 				/>
 			)}
 
-			{activeCategory === "Vendor" && (
+			{activeCategory === "Market Place" && (
 				<>
 					<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
 						{filteredProducts.map((product: any) => (

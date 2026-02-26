@@ -67,7 +67,7 @@ export const PRODUCTS = {
 	GET_PRODUCT_BY_USER_ID: (Id: string) =>
 		`/v3/get-products-by-user-id/${Id}/product`,
 	UPDATE_PRODUCT: (Id: string) => `/v3/update-product/${Id}/product`,
-	DELETE_PRODUCT: (Id: string) => `/v3/delete-products/${Id}/product`,
+	DELETE_PRODUCT: (Id: string) => `/v3/delete-product/${Id}/product`,
 };
 
 export const BLOG = {
