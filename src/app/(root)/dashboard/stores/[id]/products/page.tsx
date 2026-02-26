@@ -29,7 +29,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
 			</h1>
 
 			<Link
-				href="/dashboard/stores/1/add"
+				href={`/dashboard/stores/${params.id}/add`}
 				className="flex items-center justify-between w-full border-2 pl-2 bg-white border-green-50 rounded-xl p-2 mb-6 transition"
 			>
 				<span className="text-gray-55 text-sm font-semibold">

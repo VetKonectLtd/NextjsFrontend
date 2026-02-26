@@ -27,7 +27,7 @@ export default function ProductForm({
 	const router = useRouter();
 	const [available, setAvailable] = useState(product?.availability ?? false);
 	const [previews, setPreviews] = useState<string[]>(product?.images_url || []);
-
+	
 	const categoryOptions = [
 		{ value: "Pet", label: "Pet" },
 		{ value: "Feeds", label: "Feeds" },
