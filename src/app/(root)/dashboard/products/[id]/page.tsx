@@ -284,7 +284,7 @@ export default function ProductDetailsPage({
 						{/* RIGHT — Status */}
 						<div
 							className={`px-2.5 py-1 rounded-full text-xs font-medium ${product.store.availability
-									? "bg-green-50 text-green-700"
+									? "bg-primary-400 text-white"
 									: "bg-red-50 text-red-600"
 								}`}
 						>

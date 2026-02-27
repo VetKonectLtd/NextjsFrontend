@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { useAuthService } from "@/services/authService";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
-import { VetClinic } from "@/types";
+import { VetClinic, VetClinicListing } from "@/types";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ export default function VetClinicForm() {
             setValue,
             control,
             formState: { errors, isValid },
-        } = useForm<VetClinic>();
+        } = useForm<VetClinicListing>();
     
         const [selectedLocation, setSelectedLocation] = useState<{
             latitude: number;
@@ -49,18 +49,16 @@ export default function VetClinicForm() {
             }
         }, [setValue, selectedLocation, user]);
     
-        const onSubmit = (data: VetClinic) => {
-            if (Array.isArray(data.specialty)) {
-                data.specialty = data.specialty.join(", ");
-            }
-            addVetClinicMutation.mutate(data, {
-                onSuccess: () => {
-                },
-            });
+        const onSubmit = (data: VetClinicListing) => {
+           
+            // addVetClinicMutation.mutate(data, {
+            //     onSuccess: () => {
+            //     },
+            // });
         };
 
     return (
-        <div className="min-h-screen w-11/12 mt-3 m-auto flex items-center justify-center">
+        <div className="min-h-screen w-11/12 mt-3 m-auto py-10 flex items-center justify-center">
             <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden max-w-6xl w-full">
                 {/* Left side: image with overlay */}
                 <div className="relative md:w-1/2 w-full h-96 md:h-screen">
@@ -85,24 +83,11 @@ export default function VetClinicForm() {
                         Veterinary Hospital / <br /> Clinic Listing
                     </h2>
                     <form className="space-y-1">
+                        
                         <FormInput
-                            label="Practicing License Number"
+                            label="Name of Clinic/ AgroVet Sore"
                             type="text"
-                            focusLabel="Practicing License Number (Required) :"
-                            isRequired
-                            error={errors.practice_license_num?.message}
-                            {...register("practice_license_num", {
-                                required: "Practicing License number is required",
-                            })}
-                        />
-                        <p className="text-sm font-normal">
-                            Type <span className="font-medium">Awaiting</span> if License
-                            number is not available
-                        </p>
-                        <FormInput
-                            label="Name of Clinic/Animal Hospital"
-                            type="text"
-                            focusLabel="Name of Clinic/Animal Hospital:"
+                            focusLabel="Name of Clinic/ AgroVet Sore: "
                             isRequired
                             error={errors.clinic_name?.message}
                             {...register("clinic_name", {
@@ -110,44 +95,28 @@ export default function VetClinicForm() {
                             })}
                         />
 
-                        <Controller
-                            name="specialty"
+                         <FormGooglePlacesCustom
+                            name="address"
                             control={control}
-                            rules={{ required: "At least one tag is required" }}
-                            render={({ field }) => (
-                                <TagSelect
-                                    label="Specialty"
-                                    focusLabel="Specialty Required :"
-                                    isRequired
-                                    options={[
-                                        "Small Animal",
-                                        "Large Animal",
-                                        "Exotic",
-                                        "Wildlife",
-                                        "Others",
-                                    ]}
-                                    error={errors.specialty?.message}
-                                    onChange={(tags) => field.onChange(tags)}
-                                />
-                            )}
+                            label="Address"
+                            focusLabel="Address (Required):"
+                            isRequired
+                            error={errors.address?.message}
+                            onLocationSelect={(loc: any) => setSelectedLocation(loc)}
                         />
 
-                        <Controller
-                            name="list_them"
-                            control={control}
-                            rules={{ required: "List them is required" }}
-                            render={({ field }) => (
-                                <TagInput
-                                    label="List them"
-                                    focusLabel="List them (Required) :"
-                                    isRequired
-                                    error={errors.list_them?.message}
-                                    onChange={(tags) => field.onChange(tags)}
-                                />
-                            )}
+                         <FormInput
+                            label="Owner"
+                            type="text"
+                            focusLabel="Owner: "
+                            isRequired
+                            error={errors.owner_name?.message}
+                            {...register("owner_name", {
+                                required: "Owner is required",
+                            })}
                         />
 
-                        <FormInput
+                         <FormInput
                             label="Phone"
                             type="tel"
                             focusLabel="Phone (Required) :"
@@ -156,16 +125,6 @@ export default function VetClinicForm() {
                             {...register("contact_num", {
                                 required: "Phone number is required",
                             })}
-                        />
-
-                        <FormGooglePlacesCustom
-                            name="address"
-                            control={control}
-                            label="Address"
-                            focusLabel="Address (Required):"
-                            isRequired
-                            error={errors.address?.message}
-                            onLocationSelect={(loc: any) => setSelectedLocation(loc)}
                         />
 
                         <div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
@@ -182,9 +141,8 @@ export default function VetClinicForm() {
                                 htmlFor="agree-terms"
                                 className="ml-4 text-sm font-normal cursor-pointer text-gray-55"
                             >
-                                {" "}
-                                Confirm that you agree to our terms and conditions at Vet
-                                Konect{" "}
+                                
+                                Confirm that you agree to our terms and conditions at Vet Konect
                             </label>{" "}
                         </div>
 

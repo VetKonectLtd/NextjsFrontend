@@ -38,16 +38,21 @@ export const useStoreService = () => {
     };
 
     
-    const useGetStores = (enabled: boolean = false) => {
+    const useGetStores = (enabled: boolean = false, page: number = 1) => {
+        const queryParams = new URLSearchParams();
+        queryParams.append("page", page.toString());
+        const url = `${STORE.GET_STORES}?${queryParams.toString()}`;
         return useGet<{ store: Store; token: string }>(
             ["store"],
-            `${STORE.GET_STORES}`,
+            url,
             {
                 enabled,
                 staleTime: 0,
             },
         );
     };
+
+
 
     const useGetStoreById = (enabled: boolean = false, Id: string) => {
         return useGet<{ store: Store; token: string }>(
@@ -60,10 +65,13 @@ export const useStoreService = () => {
         );
     };
 
-    const useGetStoreByUserId = (enabled: boolean = false, user_id: string) => {
+    const useGetStoreByUserId = (enabled: boolean = false, user_id: string, page: number = 1) => {
+        const queryParams = new URLSearchParams();
+        queryParams.append("page", page.toString());
+        const url = `${STORE.GET_STORE_BY_USER_ID(user_id)}?${queryParams.toString()}`;
         return useGet<{ store: Store; token: string }>(
-            ["getStoreByUserId"],
-            `${STORE.GET_STORE_BY_USER_ID(user_id)}`,
+            ["getStoreByUserId", page.toString()],
+            url,
             {
                 enabled,
                 staleTime: 0,

@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import CategorySelector from "@/components/vet-vendor/CategorySelector";
 import SearchBar from "@/components/vet-vendor/SearchBar";
 import CategoryTabs from "@/components/vet-vendor/CategoryTabs";
 import ProductCard from "@/components/vet-vendor/ProductCard";
 
-import { Cart, Message } from "@/app/assets/icons/vet-vendor";
 import {
 	Paws,
 	Cow,
@@ -23,6 +21,7 @@ import VeterinaryParaprofessional from "@/components/Veterinarian/VeterinaryPara
 import VetClinic from "@/components/vetClinic/VetClinic";
 // import Vendor from "@/components/Vendor/Vendor";
 import { useProductService } from "@/services/productService";
+import { Down } from "@/app/assets/icons";
 
 export default function VetVendorPage() {
 	const [activeTab, setActiveTab] = useState("All");
@@ -55,7 +54,6 @@ export default function VetVendorPage() {
 		if (productsReq.data?.products?.data) {
 			setAllProducts((prev) => {
 				const incoming = productsReq.data.products.data;
-
 				// Prevent duplicates by ID
 				const newOnes = incoming.filter(
 					(p: any) => !prev.some((x) => x.id === p.id),
@@ -65,6 +63,7 @@ export default function VetVendorPage() {
 			});
 		}
 	}, [productsReq.data]);
+
 
 	const handleLoadMore = () => {
 		if (productsReq.data?.products?.next_page_url) {
@@ -184,9 +183,16 @@ export default function VetVendorPage() {
 							<button
 								onClick={handleLoadMore}
 								disabled={productsReq.isFetching}
-								className="px-4 py-2 bg-gray-200 rounded-md text-gray-700 font-medium disabled:bg-gray-400"
+								className="mt-9 text-xs md:text-md flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
 							>
 								{productsReq.isFetching ? "Loading more..." : "Load More"}
+								<Image
+									src={Down}
+									alt="down"
+									width={120}
+									height={120}
+									className="h-5 w-5 ml-3 animate-bounce object-cover"
+								/>
 							</button>
 						</div>
 					) : (
@@ -211,8 +217,8 @@ export default function VetVendorPage() {
 					selectedCountry={selectedCountry}
 				/>
 			)}
-			{activeCategory == "VPP" && <VeterinaryParaprofessional selectedLocation={selectedLocation}/>}
-			{activeCategory == "Vet Clinic" && <VetClinic selectedLocation={selectedLocation}/>}
+			{activeCategory == "VPP" && <VeterinaryParaprofessional selectedLocation={selectedLocation} />}
+			{activeCategory == "Vet Clinic" && <VetClinic selectedLocation={selectedLocation} />}
 		</div>
 	);
 }

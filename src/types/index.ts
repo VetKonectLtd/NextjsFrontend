@@ -207,6 +207,17 @@ export interface VetClinic {
 	latitude?: number | string;
 }
 
+export interface VetClinicListing {
+	user_id: string;
+	clinic_name: string;
+	owner_name: string;
+	contact_num: string;
+	address: string;
+	agreeTerms: boolean;
+	longitude?: number | string;
+	latitude?: number | string;
+}
+
 export interface VetParaprofessional {
 	user_id: string;
 	name_of_institution: string;
