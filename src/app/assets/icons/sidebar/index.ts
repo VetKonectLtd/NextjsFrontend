@@ -14,3 +14,4 @@ export { default as Store } from './stores.svg';
 export { default as Search } from './search.svg';
 export { default as Pet } from './pet.png';
 export { default as Message } from './message.png';
+export { default as Subscription } from './Subscription.png';

@@ -13,6 +13,7 @@ import {
 	Pet,
 	Message,
 	ClinicImage,
+	Subscription,
 } from "@/app/assets/icons/sidebar";
 import { Cow } from "@/app/assets/icons/vet-vendor";
 
@@ -56,18 +57,25 @@ export const navItems = [
 		label: "Clinic Listing",
 		icon: ClinicImage,
 		href: "/dashboard/clinic-listing",
+	},
+	{
+		id: 16,
+		label: "Subscription",
+		icon: Subscription,
+		href: "/dashboard/subscription",
 	}
+
 ];
 
 
 export const ROLE_NAV_ACCESS: Record<string, number[]> = {
-	"veterinary_paraprofessional": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13, 14,15],
-	"veterinary_clinic": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14,15],
-	"veterinary_doctor": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14, 15],
-	"livestock_farmer": [1, 2,3, 5, 8, 9, 10, 11, 12, 13,14,15],
-	"pet_owner": [1, 2, 3,4, 8, 9, 10, 11, 12, 13,14,15], 
-	"vendor": [1, 2,3, 8,9, 10, 11, 12, 13, 14,15],       
-	"others": [1, 2,3,8, 9, 10, 11, 12, 13, 14,15],   
+	"veterinary_paraprofessional": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13, 14,15,16],
+	"veterinary_clinic": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14,15,16],
+	"veterinary_doctor": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14, 15,16],
+	"livestock_farmer": [1, 2,3, 5, 8, 9, 10, 11, 12, 13,14,15, 16],
+	"pet_owner": [1, 2, 3,4, 8, 9, 10, 11, 12, 13,14,15,16], 
+	"vendor": [1, 2,3, 8,9, 10, 11, 12, 13, 14,15,16],       
+	"others": [1, 2,3,8, 9, 10, 11, 12, 13, 14,15,16],   
 	
-	"basic_user": [1, 2, 3, 8, 9, 10, 11, 12, 13, 14,15],
+	"basic_user": [1, 2, 3, 8, 9, 10, 11, 12, 13, 14,15,16],
 };

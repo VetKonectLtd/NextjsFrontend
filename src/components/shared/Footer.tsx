@@ -40,8 +40,8 @@ const quickLinks: QuickLink[] = [
   { name: 'About Us', href: '/about' },
   { name: 'Feed Calculator', href: '/dashboard/feed-calculator' },
   { name: 'Disease Predictor', href: '/dashboard/disease-predictor' },
-  { name: 'Blog', href: '/dashboard/blog' },
-  { name: 'Chat Forum', href: '/dashboard/chat-forum' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Chat Forum', href: '/chat-forum' },
 ];
 
 export default function Footer() {
@@ -182,13 +182,13 @@ export default function Footer() {
             
             <div className="space-y-2 text-xs">
               <Link 
-                href="#" 
+                href="/privacy" 
                 className="text-gray-500 hover:text-primary-600 transition-colors duration-200 block"
               >
                 Privacy Policy
               </Link>
               <Link 
-                href="#" 
+                href="/terms-condition" 
                 className="text-gray-500 hover:text-primary-600 transition-colors duration-200 block"
               >
                 Terms & Conditions

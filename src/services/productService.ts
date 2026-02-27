@@ -22,10 +22,13 @@ export const useProductService = () => {
 		);
 	};
 
-	const useGetProductByStore = (enabled: boolean = false, Id: string) => {
-		return useGet<{ product: Product; token: string }>(
-			["productByStore"],
-			`${PRODUCTS.GET_PRODUCT_BY_STORE(Id)}`,
+	const useGetProductByStore = (enabled: boolean = false, Id: string, page: number = 1) => {
+		const queryParams = new URLSearchParams();
+		queryParams.append("page", page.toString());
+		const url = `${PRODUCTS.GET_PRODUCT_BY_STORE(Id)}?${queryParams.toString()}`;
+		return useGet<Product>(
+			["productByStore", page.toString()],
+			url,
 			{
 				enabled,
 				staleTime: 0,
@@ -37,7 +40,7 @@ export const useProductService = () => {
 		const queryParams = new URLSearchParams();
 		queryParams.append("page", page.toString());
 		const url = `${PRODUCTS.GET_ALL_PRODUCTS}?${queryParams.toString()}`;
-		return useGet<{ product: Product; token: string }>(
+		return useGet<{ product: Product }>(
 			["Allproducts", page.toString()],
 			url,
 			{
@@ -47,7 +50,7 @@ export const useProductService = () => {
 			},
 		);
 	};
-
+	
 	const useGetProductByUserId = (enabled: boolean = false, Id: string) => {
 		return useGet<{ product: Product; token: string }>(
 			["productByUserId"],
