@@ -11,7 +11,6 @@ import VetkonectChampionProgram from "@/components/initaitiveComponents/Vetkonec
 import Vetkonectearning from "@/components/initaitiveComponents/Vetkonectearning";
 import Wipi from "@/components/initaitiveComponents/Wipi";
 import { Footer } from "@/components/shared";
-import React from "react";
 
 export default function InitiativesPage() {
 	return (

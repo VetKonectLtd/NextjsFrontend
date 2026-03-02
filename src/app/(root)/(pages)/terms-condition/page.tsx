@@ -1,4 +1,10 @@
 import Footer from "@/components/shared/Footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Terms and Conditions",
+	description: "Read our terms and conditions to understand your rights and responsibilities.",
+};
 
 export default function TermsAndConditions() {
   return (
