@@ -1,4 +1,10 @@
 import Footer from "@/components/shared/Footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Privacy Policy",
+	description: "Learn more about our privacy practices and how we protect your information.",
+};
 
 export default function PrivacyPolicy() {
   return (

@@ -1,6 +1,12 @@
-"use client";
+
 import ForumChatForm from "@/components/ChatForum/ForumChatForm";
 import { useForumService } from "@/services/forumService";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Edit Forum Post",
+	description: "Edit your forum post and update its content.",
+};
 
 const EditForum=({ params }: { params: { slug: string }})=> {
         const { useGetForumSlug } = useForumService();

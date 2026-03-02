@@ -1,5 +1,3 @@
-"use client";
-
 import {
 	AboutSection,
 	OurValuesSection,
@@ -11,7 +9,13 @@ import AdvisoryAndActivities from "@/components/aboutComponents/AdvisoryAndActiv
 import PartnershipSection from "@/components/aboutComponents/PartnershipSection";
 import SupportsSection from "@/components/aboutComponents/SupportsSection";
 import { Footer } from "@/components/shared";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+	title: "About Us",
+	description: "Learn more about our organization and our mission.",
+};
 
 export default function AboutPage() {
 	return (

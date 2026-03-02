@@ -1,21 +1,11 @@
 "use client";
 
 import {
-	ChevronsLeft,
-	ChevronsRight,
-	Eye,
-	MessagesSquare,
-	PlusIcon,
 	Search,
-	Send,
-	Share2,
-	ThumbsUp,
-	X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForumService } from "@/services/forumService";
 import { ForumChat } from "@/types";
-// import { formatRole, timeAgo } from "../shared/TimeFormat";
 import ForumPostSkeleton from "./ForumPostSkeleton";
 import EmptyState from "../shared/EmptyState";
 import { Hand, User, Down } from "@/app/assets/icons";
@@ -23,15 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
 import FilterDropdownMenu from "./DropdownMenu";
-// import {
-// 	Dialog,
-// 	DialogClose,
-// 	DialogContent,
-// 	DialogTitle,
-// 	DialogTrigger,
-// } from "../ui/dialog";
 import { forumCategories } from "./forumCategories";
-// import ShareModal from "./ShareModal";
 
 const DEFAULT_AVATAR = User;
 
@@ -61,7 +43,6 @@ const ForumChatCard = () => {
 		!!visibilityFilter,
 		visibilityFilter,
 	);
-
 	// const likeMutation = useLikeForum(activePost || "");
 
 	// When visibility changes, reset pagination and posts
