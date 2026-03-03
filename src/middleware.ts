@@ -2,47 +2,51 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedRoutes = ["/dashboard"];
-const authPages = ["/login", "/success", "/signup", "/reset-password"];
+const authPages = ["/login", "/signup", "/reset-password", "/success"];
 
 export function middleware(request: NextRequest) {
-	
-	const token =
-		request.cookies.get("auth-token")?.value ||
-		request.headers.get("Authorization") ||
-		null;
+  const { pathname } = request.nextUrl;
 
-	const { pathname } = request.nextUrl;
+  // ✅ get token from cookies only
+  const token = request.cookies.get("auth-token")?.value;
 
-	// if path starts with /dashboard
-	if (
-		protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
-	) {
-		if (!token) {
-			// redirect to login page if no token
-			const loginUrl = new URL("/login", request.url);
-			return NextResponse.redirect(loginUrl);
-		}
-	}
+  // -------------------------
+  // Protect dashboard routes
+  // -------------------------
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
-	// 2. Block logged-in users from accessing login/signup
-	if (authPages.some((route) => pathname.startsWith(route))) {
-		if (token) {
-			const dashboardUrl = new URL("/dashboard/vet-vendor", request.url);
-			return NextResponse.redirect(dashboardUrl);
-		}
-	}
+  if (isProtectedRoute && !token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
+  // -------------------------
+  // Prevent logged-in users
+  // from visiting auth pages
+  // -------------------------
+  const isAuthPage = authPages.some((route) =>
+    pathname.startsWith(route)
+  );
 
+  if (isAuthPage && token) {
+    return NextResponse.redirect(
+      new URL("/dashboard/vet-vendor", request.url)
+    );
+  }
 
-	return NextResponse.next();
+  return NextResponse.next();
 }
 
-// tell Next.js which routes should be checked
 export const config = {
-	matcher: [
-		"/dashboard/:path*",
-		"/login/:path",
-		"/signup/:path*",
-		"/reset-password/:path*",
-	],
+  matcher: [
+    /*
+      Run middleware on everything EXCEPT:
+      - api routes
+      - next static files
+      - images
+      - favicon
+    */
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 };

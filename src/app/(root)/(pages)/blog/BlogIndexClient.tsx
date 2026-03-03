@@ -129,12 +129,6 @@ export default function BlogIndexClient() {
                                         <div className="h-full w-full bg-gradient-to-br from-primary-400 to-primary-600 group-hover:opacity-90 transition" />
                                     )}
                                     
-                                    {/* Category tag (if you have categories) */}
-                                    {/* {post.category && (
-                                        <span className="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-medium text-gray-700">
-                                            {post.category}
-                                        </span>
-                                    )} */}
                                 </div>
 
                                 {/* Content */}

@@ -39,8 +39,11 @@ const AccountAction = ({
 	const { useUploadMedia, useDeleteMedia } = useMediaService();
 	const uploadMutation = useUploadMedia();
 	const deleteMediaMutation = useDeleteMedia();
-	const { useSendInvite } = useInviteService();
+	const { useSendInvite, useGetUserPoints } = useInviteService();
 	const sendInviteMutation = useSendInvite();
+	const getUserPointsQuery = useGetUserPoints(true);
+
+	console.log("Selected user in AccountAction:", getUserPointsQuery.data);
 
 	const ratingChanged = (newRating: any) => {
 		// console.log(newRating);

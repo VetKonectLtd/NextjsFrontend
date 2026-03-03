@@ -9,12 +9,7 @@ import {
 	Mail,
 	MapPin,
 	Share2,
-	UserPlus,
-	Camera,
-	ChevronDown,
 	MessagesSquareIcon,
-	Star,
-	Router,
 	ImageIcon,
 	Users,
 } from "lucide-react";

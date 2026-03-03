@@ -51,8 +51,6 @@ const VetProfile = ({ isEditMode, onToggleEdit }: VetProfileProps) => {
 	const currentUser = (user as any)?.profile;
 
 
-console.log("Current user profile data:", user);
-
 	// Get the normalized backend role
 	const backendRole: RoleKey | string = normalizeRole(
 		(user as any)?.role || "",

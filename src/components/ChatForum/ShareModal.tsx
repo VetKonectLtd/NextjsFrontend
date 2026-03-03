@@ -98,7 +98,7 @@ export default function ShareModal({
 						</Link>
 
 						<Link
-							href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+							href={`https://x.com/intent/tweet?url=${encodeURIComponent(
 								link,
 							)}`}
 							target="_blank"

@@ -4,6 +4,19 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
 	title: "Terms and Conditions",
 	description: "Read our terms and conditions to understand your rights and responsibilities.",
+  openGraph: {
+    title: "Terms and Conditions | Vet Konect",
+    description: "Read our terms and conditions to understand your rights and responsibilities.",
+    url: "https://vetkonect.com/terms",
+    images: [{ url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png" }],
+    type: "website",
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Terms and Conditions | Vet Konect",
+    description: "Read our terms and conditions to understand your rights and responsibilities.",
+    images: [`https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png`],
+  },
 };
 
 export default function TermsAndConditions() {
