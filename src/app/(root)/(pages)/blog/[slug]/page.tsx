@@ -1,4 +1,3 @@
-
 import { Metadata } from "next";
 import BlogReaderClient from "./BlogReaderClient";
 
@@ -10,14 +9,14 @@ interface PageProps {
 // Server-side metadata generation
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  
+
   try {
     // Fetch blog data on the server
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/v3/blogs/slug/${slug}/slug`,
       { next: { revalidate: 3600 } }
     );
-    
+
     if (!response.ok) {
       return {
         title: "Blog Post Not Found",
@@ -39,8 +38,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           ? activePost.blog.content.replace(/<[^>]*>/g, '').substring(0, 160) + "..."
           : undefined,
         url: `https://nextjs-frontend-beta-drab.vercel.app/blog/${slug}`,
-        images: activePost?.blog?.picture_url ? [activePost.blog.picture_url] : [],
-        type: 'article',
+        images: [
+          {
+            url: activePost?.blog?.picture_url || "",
+          }
+        ],
         publishedTime: activePost?.blog?.created_at,
         authors: [activePost?.blog?.author?.name],
       },
@@ -50,7 +52,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: activePost?.blog?.content
           ? activePost.blog.content.replace(/<[^>]*>/g, '').substring(0, 160) + "..."
           : undefined,
-        images: activePost?.blog?.picture_url ? [activePost.blog.picture_url] : [],
+        images: [
+          {
+            url: activePost?.blog?.picture_url || "",
+          }
+        ],
       },
     };
   } catch (error) {

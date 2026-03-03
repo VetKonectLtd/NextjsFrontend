@@ -4,6 +4,19 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
 	title: "Privacy Policy",
 	description: "Learn more about our privacy practices and how we protect your information.",
+  openGraph: {
+    title: "Privacy Policy | Vet Konect",
+    description: "Learn more about our privacy practices and how we protect your information.",
+    url: "https://vetkonect.com/privacy",
+    images: [{ url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png" }],
+    type: "website",
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Privacy Policy | Vet Konect",
+    description: "Learn more about our privacy practices and how we protect your information.",
+    images: [`https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png`],
+  },
 };
 
 export default function PrivacyPolicy() {

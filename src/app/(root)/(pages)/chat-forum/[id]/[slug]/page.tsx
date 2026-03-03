@@ -57,7 +57,11 @@ export async function generateMetadata({ params }: { params: { id: string, slug:
 			title: post.title,
 			description: description,
 			type: 'article',
-			images: post.image_url ? [{ url: post.image_url }] : [],
+			images:[
+				{
+					url: post.image_url || "",
+				}
+			],
 			url: `https://nextjs-frontend-beta-drab.vercel.app/forum/${id}/${slug}`,
 		},
 		twitter: {

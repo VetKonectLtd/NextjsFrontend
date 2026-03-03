@@ -49,33 +49,32 @@ export const metadata: Metadata = {
       "Connecting animal owners across Africa to veterinarians, clinics, feeds, drugs, secure payments, AI disease prediction, and real-time animal health alerts — all in one trusted platform.",
     images: [
       {
-        url: "/og-image.png", // place in /public
-        width: 1200,
-        height: 630,
-        alt: "Vet Konect Digital Animal Care Platform",
+        url: `/images/og-logo.png`,
       },
     ],
   },
-
   twitter: {
     card: "summary_large_image",
     title: "Vet Konect | Digital Animal Care Platform",
     description:
       "Quality animal care at your fingertips. Find vets, clinics, feeds, drugs, and disease alerts across Africa with Vet Konect.",
-    images: ["/og-image.png"],
+    images: [
+      "/images/og-logo.png",
+
+    ],
   },
 
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  //   googleBot: {
+  //     index: true,
+  //     follow: true,
+  //     "max-image-preview": "large",
+  //     "max-snippet": -1,
+  //     "max-video-preview": -1,
+  //   },
+  // },
 };
 
 
@@ -126,7 +125,7 @@ export default async function RootLayout({
       {/* <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit"  strategy="afterInteractive" /> */}
 
       <body className={`${fontVariables} font-nunito min-h-screen bg-white`}>
-       {/* <div id="google_translate_element" className="hidden" /> */}
+        {/* <div id="google_translate_element" className="hidden" /> */}
         <GoogleMapsScript />
         <ReactQueryProvider>
 

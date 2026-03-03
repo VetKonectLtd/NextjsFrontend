@@ -15,6 +15,19 @@ import React from "react";
 export const metadata: Metadata = {
 	title: "About Us",
 	description: "Learn more about our organization and our mission.",
+	openGraph: {
+		title: "About Us | Vet Konect",
+		description: "Learn more about our organization and our mission.",
+		url: "https://vetkonect.com/about",
+		images: [{ url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png" }],
+		type: "website",
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: "About Us | Vet Konect",
+		description: "Learn more about our organization and our mission.",
+		images: [`https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png`],
+	},
 };
 
 export default function AboutPage() {
