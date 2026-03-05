@@ -157,6 +157,13 @@ export const VETERINARY_CLINIC = {
 	GET_ALL_VET_CLINIC: "/v3/get-all-veterinary-clinics",
 	GET_VET_CLINIC_BY_ID: (Id: string) => `/v3/get-veterinary-clinic/${Id}/clinic`,
 }
+
+export const CLINIC ={
+	GET_NEAREST_CLINICS: '/v3/search-clinic',
+	ADD_CLINIC: "/v3/add-clinic",
+	GET_ALL_CLINIC: "/v3/get-user-clinics",
+	GET_CLINIC_BY_ID:(Id: string) => `/v3/get-clinic-by-id/${Id}/clinic`
+}
 export const VETERINARY_PARAPROFESSIONAL = {
 	ADD_VET_PROFESSIONAL: "/v3/add-veterinary-paraprofessional",
 	GET_ALL_VET_PARAPROFESSIONAL: "/v3/get-all-veterinary-paraprofessionals",

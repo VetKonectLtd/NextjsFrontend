@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { Atohunse, DATSU, Jacob } from '@/app/assets/images';
+import { Atohunse, DATSU, Jacob, Test2 } from '@/app/assets/images';
 
 interface Testimonial {
   id: number;
@@ -35,6 +35,12 @@ const testimonials: Testimonial[] = [
     location: "Oyo, Nigeria",
     testimonial: "Vet Konect is an excellent source of poultry knowledge, offering educational content with visuals and live sessions. Their responsive app provides fast, reliable answers to all my poultry questions, making it my go-to resource.",
     avatar: Atohunse
+  },{
+    id: 4,
+    name: "Dr. Atohunse Khaosarat Omoshalewa",
+    location: "Oyo, Nigeria",
+    testimonial: "I honestly lack words to express my appreciation and gratitude to the Vetkonect Group for the wonderful Financial Support Project they have brought to us here. You're actually God sent to come uplift me and my Farm from the pit of total confusion. You make me to have a story and testimony to give tomorrow. God will bless you and this project, and you will grow and prosper. Amen",
+    avatar: Test2
   }
 ];
 

@@ -207,12 +207,14 @@ export interface VetClinic {
 	latitude?: number | string;
 }
 
-export interface VetClinicListing {
-	user_id: string;
+export interface ClinicListing {
 	clinic_name: string;
+	email: string;
+	clinic_speciality: string;
 	owner_name: string;
-	contact_num: string;
-	address: string;
+	phone_number: string;
+	picture: FileList | null;
+	location: string;
 	agreeTerms: boolean;
 	longitude?: number | string;
 	latitude?: number | string;
