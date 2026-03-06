@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { Atohunse, DATSU, Jacob, Test2, Test3 } from '@/app/assets/images';
+import { Atohunse, DATSU, Jacob, Test2, Test3, Test4 } from '@/app/assets/images';
 
 interface Testimonial {
   id: number;
@@ -48,6 +48,12 @@ const testimonials: Testimonial[] = [
     location: "Benue, Nigeria",
     testimonial: "Good evening all,  I truly appreciate vet konect team for  all the opportunities given to me firstly the WIPI program and now this loan, I'm grateful. Special thanks to Dr Ray, you are truly one in a million. God bless.",
     avatar: Test3
+  },{
+    id: 6,
+    name: "Mr. ANTHONY CHIBUISI NLEWEDUM",
+    location: "Benue, Nigeria",
+    testimonial: "I want to sincerely thank the VetKonect team for their support in securing the inputs and also paying the balance which will serve as running capital. Thank you VetKonect",
+    avatar: Test4
   }
 ];
 
