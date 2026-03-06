@@ -9,7 +9,7 @@ export const useBlogService = () => {
 	const handleError = useHandleError();
 
 	const useToggleBlogLike = (Id: string) => {
-		return usePost<{ blog:any; token: string }, any>(
+		return usePost<{ blog: any; token: string }, any>(
 			BLOG.TOGGLE_BLOG_LIKE(Id),
 			{
 				onSuccess: (response: any) => {
@@ -68,28 +68,29 @@ export const useBlogService = () => {
 			},
 			onError: (error) => {
 				handleError(error.message || "failed");
-			}
+			},
 		});
 	};
 
 	const useReportComment = (Id: string) => {
-		return usePut<{ flag: ReportComment;}>(
-			BLOG_COMMENTS.REPORT_COMMENT(Id),
-			{
-				onSuccess: (response: any) => {
-					handleSuccess(response.message);
-				},
-				onError: (error) => {
-					handleError(error.message || "failed");
-				},
+		return usePut<{ flag: ReportComment }>(BLOG_COMMENTS.REPORT_COMMENT(Id), {
+			onSuccess: (response: any) => {
+				handleSuccess(response.message);
 			},
-		);
+			onError: (error) => {
+				handleError(error.message || "failed");
+			},
+		});
 	};
 
-	const useGetAllBlog = (enabled: boolean = false) => {
+	const useGetAllBlog = (enabled: boolean = false, page: number = 1) => {
+		const queryParams = new URLSearchParams();
+		queryParams.append("page", page.toString());
+		const url = `${BLOG.GET_ALL_BLOGS}?${queryParams.toString()}`;
+		
 		return useGet<{ blog: any; token: string }>(
-			["allBlog"],
-			`${BLOG.GET_ALL_BLOGS}`,
+			["allBlog", page.toString()],
+			url,
 			{
 				enabled,
 				staleTime: 0,
@@ -97,8 +98,8 @@ export const useBlogService = () => {
 		);
 	};
 
-	const useGetBlog = (enabled: boolean = false, id:string) => {
-		return useGet<{ blog: any; }>(["blog"], `${BLOG.BLOG(id)}`, {
+	const useGetBlog = (enabled: boolean = false, id: string) => {
+		return useGet<{ blog: any }>(["blog"], `${BLOG.BLOG(id)}`, {
 			enabled,
 			staleTime: 0,
 		});

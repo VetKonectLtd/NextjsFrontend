@@ -104,7 +104,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                 </div>
 
                 {/* Availability Tag - Top Right */}
-                <div className="absolute top-2 right-2">
+                {/* <div className="absolute top-2 right-2">
                     <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-white`}>
                         <Image
                             src={isAvailable ? Green : Red}
@@ -116,7 +116,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         </span>
 
                     </div>
-                </div>
+                </div> */}
 
                 {/* Verified Badge - Bottom Right */}
                 {isVerified && (
