@@ -12,36 +12,56 @@ import Footer from "@/components/shared/Footer";
 
 // Helper function to strip HTML tags for preview text
 const stripHtmlTags = (html: string) => {
-	return html.replace(/<[^>]*>?/gm, '');
+    return html.replace(/<[^>]*>?/gm, '');
 };
 
 export default function BlogIndexClient() {
     const router = useRouter();
+    const [page, setPage] = useState(1);
+    const [allBlog, setAllBlog] = useState<BlogChat[]>([]);
     const { useGetAllBlog } = useBlogService();
-    const { data, isLoading } = useGetAllBlog(true);
+    const { data, isLoading } = useGetAllBlog(true, page);
 
-    const blogPosts: BlogChat[] = Array.isArray(data?.data) ? data.data : [];
+    const blogPosts = data?.data ?? [];
     const [search, setSearch] = useState("");
-    const [filteredBlogs, setFilteredBlogs] = useState<BlogChat[]>(blogPosts);
+    const [filteredBlogs, setFilteredBlogs] = useState<BlogChat[]>([]);
+
+    // Combine posts as pages load
+    useEffect(() => {
+        if ((data as any)?.data) {
+            setAllBlog((prev) => {
+                const newBlogPosts = (data as any)?.data.filter(
+                    (p: BlogChat) => !prev.some((old) => old.id === p.id),
+                );
+                return [...prev, ...newBlogPosts];
+            });
+        }
+    }, [data]);
 
     // Update filtered blogs when blogPosts or search changes
     useEffect(() => {
-        const filtered = blogPosts.filter((post) =>
+        const filtered = allBlog.filter((post) =>
             post.title.toLowerCase().includes(search.toLowerCase())
         );
+
         setFilteredBlogs(filtered);
-    }, [blogPosts, search]);
+    }, [allBlog, search]);
 
     // Optional: Update document title when data loads
     useEffect(() => {
-        if (blogPosts.length > 0) {
-            document.title = `Blog (${blogPosts.length} articles) | Vet Konect`;
+        if (allBlog.length > 0) {
+            document.title = `Blog (${allBlog.length} articles) | Vet Konect`;
         }
     }, [blogPosts]);
 
     // Handle search with debounce for better performance
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
+    };
+
+    const handleLoadMore = () => {
+        const nextPage = (data as any)?.next_page_url;
+        if (nextPage) setPage((prev) => prev + 1);
     };
 
     return (
@@ -69,9 +89,9 @@ export default function BlogIndexClient() {
                             <Search className="w-5 h-5 text-gray-500" />
                         </div>
                     </div>
-                    
+
                     {/* Search results count */}
-                    {!isLoading && blogPosts.length > 0 && (
+                    {!isLoading && allBlog.length > 0 && (
                         <p className="text-sm text-gray-500 mt-2 text-center">
                             Found {filteredBlogs.length} {filteredBlogs.length === 1 ? 'article' : 'articles'}
                             {search && ` matching "${search}"`}
@@ -88,7 +108,7 @@ export default function BlogIndexClient() {
                         {search ? (
                             <>
                                 <p className="text-lg">No articles found for "{search}"</p>
-                                <button 
+                                <button
                                     onClick={() => setSearch("")}
                                     className="mt-4 text-primary-400 hover:text-primary-600 underline"
                                 >
@@ -107,7 +127,7 @@ export default function BlogIndexClient() {
                         // Create clean preview text without HTML
                         const plainText = stripHtmlTags(post.content);
                         const previewText = plainText.slice(0, 120) + (plainText.length > 120 ? '...' : '');
-                        
+
                         return (
                             <article
                                 key={post.id}
@@ -128,7 +148,7 @@ export default function BlogIndexClient() {
                                     ) : (
                                         <div className="h-full w-full bg-gradient-to-br from-primary-400 to-primary-600 group-hover:opacity-90 transition" />
                                     )}
-                                    
+
                                 </div>
 
                                 {/* Content */}
@@ -155,7 +175,7 @@ export default function BlogIndexClient() {
                                                 {post.views_count}
                                             </span>
                                         </div>
-                                        
+
                                         <div className="flex items-center" title={`${post.comments_count} comments`}>
                                             <span className="bg-white border border-gray-200 shadow-sm rounded-full p-1.5 flex items-center justify-center">
                                                 <MessagesSquare size={14} color="#1D2432" />
@@ -164,7 +184,7 @@ export default function BlogIndexClient() {
                                                 {post?.comments_count}
                                             </span>
                                         </div>
-                                        
+
                                         <div className="flex items-center" title={`${post.likes_count} likes`}>
                                             <span className="bg-white border border-gray-200 shadow-sm rounded-full p-1.5 flex items-center justify-center">
                                                 <ThumbsUp
@@ -185,9 +205,9 @@ export default function BlogIndexClient() {
                 </div>
 
                 {/* Load more button (optional - if you implement pagination) */}
-                {!isLoading && blogPosts.length > 0 && (
+                {!isLoading && (data as any)?.next_page_url && (
                     <div className="text-center mt-12">
-                        <button className="px-6 py-3 bg-primary-400 text-white rounded-lg hover:bg-primary-600 transition">
+                        <button onClick={handleLoadMore} className="px-6 py-3 bg-primary-400 text-white rounded-lg hover:bg-primary-600 transition">
                             Load More Articles
                         </button>
                     </div>

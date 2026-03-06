@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { Atohunse, DATSU, Jacob, Test2 } from '@/app/assets/images';
+import { Atohunse, DATSU, Jacob, Test2, Test3 } from '@/app/assets/images';
 
 interface Testimonial {
   id: number;
@@ -37,10 +37,17 @@ const testimonials: Testimonial[] = [
     avatar: Atohunse
   },{
     id: 4,
-    name: "Dr. Atohunse Khaosarat Omoshalewa",
-    location: "Oyo, Nigeria",
+    name: "Mr. Paul Tilekaa Agu ",
+    location: "Benue, Nigeria",
     testimonial: "I honestly lack words to express my appreciation and gratitude to the Vetkonect Group for the wonderful Financial Support Project they have brought to us here. You're actually God sent to come uplift me and my Farm from the pit of total confusion. You make me to have a story and testimony to give tomorrow. God will bless you and this project, and you will grow and prosper. Amen",
     avatar: Test2
+  },
+  {
+    id: 5,
+    name: "Mrs. Ruth Semaka Mne",
+    location: "Benue, Nigeria",
+    testimonial: "Good evening all,  I truly appreciate vet konect team for  all the opportunities given to me firstly the WIPI program and now this loan, I'm grateful. Special thanks to Dr Ray, you are truly one in a million. God bless.",
+    avatar: Test3
   }
 ];
 
@@ -94,7 +101,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Subtitle */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <p className="text-lg md:text-xl text-gray-600 max-w-md mx-auto">
             What are people saying about vet konect
           </p>
