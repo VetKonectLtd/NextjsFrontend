@@ -3,11 +3,8 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import {
-    Message,
     StarFill,
     StarEmpty,
-    Green,
-    Red,
     Verified,
     Marker,
     GreenButton
@@ -46,9 +43,9 @@ export interface VetProfileProps {
 const VetProfile: React.FC<VetProfileProps> = ({
     id,
     name,
-    location,
     image,
     rating,
+    address,
     isAvailable,
     role,
     isVerified,
@@ -78,7 +75,6 @@ const VetProfile: React.FC<VetProfileProps> = ({
             onContact(id, type);
         }
     };
-    console.log("VetProfile - isAvailable:", isAvailable);
 
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -161,7 +157,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                         {location && location.length > 15 ? `${location.slice(0, 15)}...` : location || 'Untitled'}
+                        {address && address.length > 15 ? `${address.slice(0, 15)}...` : address || 'Location not provided'}
                     </span>
                 </div>
 

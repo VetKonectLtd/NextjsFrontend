@@ -168,17 +168,17 @@ const ClinicAccount = ({
 			{selectedAction === "phone" && (
 				<>
 					<p className="text-gray-55 font-bold">User’s Phone Number</p>
-					<p className="text-sm mt-2">+234 5678 910</p>
+					<p className="text-sm mt-2">{selectedClinic?.phone}</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
-							onClick={() => handleCopy("+234 5678 910")}
+							onClick={() => handleCopy(selectedClinic?.phone || "")}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
 							title="Copy to clipboard"
 						>
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied === "+234 5678 910" ? "Copied!" : "Click to copy"}
+							{copied === selectedClinic?.phone ? "Copied!" : "Click to copy"}
 						</span>
 					</div>
 				</>
@@ -192,13 +192,13 @@ const ClinicAccount = ({
 				<>
 					<p className="text-gray-55 font-bold">User’s Email Address</p>
 					<p className="text-sm mt-2">
-						{selectedClinic?.name.split(" ")[0].toLowerCase()}@gmail.com
+						{selectedClinic?.email}
 					</p>
 					<div className="flex items-center py-3 justify-center flex-col">
 						<button
 							onClick={() =>
 								handleCopy(
-									`${selectedClinic?.name.split(" ")[0].toLowerCase()}@gmail.com`,
+									selectedClinic?.email || "",
 								)
 							}
 							className="p-2 rounded-full border hover:bg-gray-100 transition"
@@ -207,7 +207,7 @@ const ClinicAccount = ({
 							<Copy className="w-7 h-7" />
 						</button>
 						<span className="text-xs text-gray-55">
-							{copied?.includes("@gmail.com") ? "Copied!" : "Click to copy"}
+							{copied === selectedClinic?.email ? "Copied!" : "Click to copy"}
 						</span>
 					</div>
 				</>

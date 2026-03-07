@@ -1,5 +1,5 @@
 import { usePost, useGet, useDelete, usePut } from "@/lib/hooks";
-import { VETERINARY_CLINIC } from "@/lib/api-constants";
+import { CLINIC, VETERINARY_CLINIC } from "@/lib/api-constants";
 import {  VetClinic, GetAllVetClinicResponse } from "@/types";
 import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 
@@ -47,9 +47,25 @@ export const useVeterinaryClinicService = () => {
         );
     };
 
+    const useGetClinicAndVetClinic = (
+		enabled: boolean = false,
+		page: number = 1,
+	) => {
+		const queryParams = new URLSearchParams();
+		queryParams.append("page", page.toString());
+
+		const url = `${CLINIC.GET_CLINIC_AND_VET_CLINIC}?${queryParams.toString()}`;
+		return useGet<any>(["getClinicAndVetClinic", page.toString()], url, {
+			enabled,
+			keepPreviousData: true,
+			staleTime: 0,
+		});
+	};
+
     return {
       useAddVetClinic,
       useGetAllVetClinic,
-      useGetVetClinicById
+      useGetVetClinicById,
+      useGetClinicAndVetClinic
     };
 };

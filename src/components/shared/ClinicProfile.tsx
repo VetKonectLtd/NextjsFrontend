@@ -18,11 +18,11 @@ import { MessageCircle, Phone, Mail } from 'lucide-react';
 export interface ClinicProfileProps {
     id: string;
     name: string;
-    name_of_clinic?:string;
+    name_of_clinic?: string;
     location: string;
     image: StaticImageData | string;
     rating: number;
-    address?:string;
+    address?: string;
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
@@ -31,8 +31,8 @@ export interface ClinicProfileProps {
     state?: string;
     country?: string;
     email?: string;
-    specialty:string;
-    role?:string;
+    specialty: string;
+    role?: string;
     phone?: string;
     userId?: string;
     onViewProfile?: (id: string) => void;
@@ -47,6 +47,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
     image,
     rating,
     totalRatings,
+    role,
     isAvailable,
     isVerified = false,
     onViewProfile,
@@ -77,7 +78,9 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        // <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300
+    ${role === 'Veterinary Clinic' ? 'border-l-4 border-green-500' : 'border-l-4 border-blue-500'}`}>
             {/* Image Container with overlays */}
             <div onClick={handleViewProfile} className=" cursor-pointer relative">
                 <div className="aspect-[4/3] relative">
@@ -99,7 +102,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
                 </div>
 
                 {/* Availability Tag - Top Right */}
-                <div className="absolute top-2 right-2">
+                {/* <div className="absolute top-2 right-2">
                     <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-white`}>
                         <Image
                             src={isAvailable ? Green : Red}
@@ -110,7 +113,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
                             {isAvailable ? 'Available' : 'Unavailable'}
                         </span>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Verified Badge - Bottom Right */}
                 {isVerified && (
@@ -140,6 +143,18 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
 
             {/* Info Area */}
             <div className="p-4">
+
+                {/* Clinic Type Badge */}
+                <div className="mb-1">
+                    <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${role === 'Veterinary Clinic'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-blue-100 text-blue-700'
+                            }`}
+                    >
+                        {role === 'Veterinary Clinic' ? 'Vet Clinic' : 'Clinic'}
+                    </span>
+                </div>
                 {/* Name */}
                 <h3 className="font-nunito font-semibold text-lg text-gray-900 mb-1">
                     {name && name.length > 15 ? `${name.slice(0, 15)}...` : name || 'Untitled'}
