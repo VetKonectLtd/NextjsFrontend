@@ -1,5 +1,5 @@
 "use client";
-import { AuthBg } from "@/app/assets/images";
+
 import Image from "next/image";
 import {
 	Phone,
@@ -15,6 +15,7 @@ import {
 import { VetProfileProps } from "../shared/VetProfile";
 import VetAccount from "./VetAction";
 import { Bg22, StarEmpty, StarFill } from "@/app/assets/icons";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE =
@@ -47,6 +48,18 @@ const SelectedVet = ({
 	refetchData,
 }: VeterinarianProps) => {
 
+	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	const handleBack = () => {
+		const params = new URLSearchParams(searchParams.toString());
+		params.delete("vet");
+
+		const query = params.toString();
+		router.push(query ? `?${query}` : window.location.pathname);
+
+		setSelectedVet(null);
+	}
 	const renderStars = (rating: number) => {
 		const hasRating = rating > 0;
 
@@ -64,7 +77,7 @@ const SelectedVet = ({
 			{selectedVet && (
 				<>
 					<div
-						onClick={() => setSelectedVet(null)}
+						onClick={handleBack}
 						className="flex items-center md:hidden text-sm mb-4 text-gray-55 hover:text-green-50"
 					>
 						<span className="bg-white border cursor-pointer text-gray-500 border-gray-225 shadow-md rounded-full p-1 mr-2">
@@ -76,17 +89,16 @@ const SelectedVet = ({
 					<div className="lg:col-span-2 mb-4 shadow-md border rounded-2xl border-gray-225 bg-white">
 						<div
 							style={{
-								backgroundImage: `url(${
-									selectedVet?.image?.cover_page_image_url
+								backgroundImage: `url(${selectedVet?.image?.cover_page_image_url
 										? selectedVet.image.cover_page_image_url
 										: Bg22.src
-								})`,
+									})`,
 							}}
 							className="flex  bg-gray-100 h-24 relative rounded-t-2xl bg-no-repeat bg-top bg-cover justify-between items-start p-4"
 						>
 							<div className="absolute bottom-6 top-6 right-6">
 								<button
-									onClick={() => setSelectedVet(null)}
+									onClick={handleBack}
 									className="bg-white font-extrabold  border text-green-50 cursor-pointer border-gray-225 shadow-md rounded-full p-2 hover:bg-gray-50 transition-colors"
 									aria-label="Close profile"
 								>

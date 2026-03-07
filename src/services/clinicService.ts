@@ -27,6 +27,7 @@ export const useClinicService = () => {
 			staleTime: 0,
 		});
 	};
+	
 
 	return {
 		useAddClinic,

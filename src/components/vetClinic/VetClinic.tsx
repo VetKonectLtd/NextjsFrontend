@@ -8,7 +8,7 @@ import SelectedClinic from "./SelectedClinic";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
 import { VetClinicData, GetAllVetClinicResponse } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { address } from "framer-motion/client";
+import { address, tr } from "framer-motion/client";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
@@ -26,61 +26,134 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const { useGetAllVetClinic } = useVeterinaryClinicService();
-    const { data: apiData, isLoading, error , refetch: refetchData} = useGetAllVetClinic(currentPage);
+    const { useGetAllVetClinic, useGetClinicAndVetClinic } = useVeterinaryClinicService();
+
+    const { data: apiData, isLoading, error , refetch: refetchData} = useGetClinicAndVetClinic(true, currentPage);
+    console.log("clinicAndVetReq", apiData);
+    // const { data: apiData, isLoading, error , refetch: refetchData} = useGetAllVetClinic(currentPage);
     
     // Cast to actual response type since API returns data directly
     const data:any = apiData as unknown as GetAllVetClinicResponse | undefined;
 
-    // Transform API data to ClinicProfile props
-    const transformedClinics: ClinicProfileProps[] = useMemo(() => {
-        if (!data?.clinics?.data) return [];
 
-        // Combine all loaded clinics
-        const combinedClinics = currentPage === 1 
-            ? data.clinics.data 
-            : [...allClinics, ...data.veterinary_clinics.data];
+    /*
+  ---------------------------------------------------
+  MERGE CLINICS + VETCLINICS
+  ---------------------------------------------------
+  */
 
-        // Update allClinics state
-        if (data.clinics.data.length > 0 && currentPage > 1) {
-            setAllClinics(combinedClinics);
-        } else if (currentPage === 1) {
-            setAllClinics(data.clinics.data);
-        }
+  const mergedClinics = useMemo(() => {
+    if (!data) return [];
 
-        return combinedClinics.map((clinic: VetClinicData) => {
-            const fullName = (clinic as any).name_of_clinic;
-            const location = `${clinic.user.state}, ${clinic.user.country}`;
-            
-            // Calculate average rating from ratings array
-            const totalRatings = clinic.ratings.length;
-            const averageRating = totalRatings > 0 
-                ? clinic.ratings.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / totalRatings 
-                : clinic.average_rating;
+    const clinics = data?.clinic?.data || [];
+    const vetClinics = data?.vetClinic?.data || [];
 
-            return {
-                id: clinic.id.toString(),
-                name: fullName,
-                location: location,
-                role:clinic.role,
-                specialty:clinic.specialty,
-                image: (clinic.user.profile as any).profile_image_url || GENERIC_VET_IMAGE,
-                rating: averageRating,
-                totalRatings: totalRatings,
-                address : clinic.address,
-                isAvailable: clinic.availability == 1,
-                isVerified: clinic.is_approved == 1,
-                email: clinic.user.email,
-                phone: clinic.user.phone_num,
-                userId: clinic.user_id.toString(),
+    return [...clinics, ...vetClinics];
+  }, [data]);
 
-                latitude: clinic.latitude,
-                longitude: clinic.longitude,
-                state: clinic.user.state,
-                country: clinic.user.country
-            };
-        });
-    }, [data, currentPage, allClinics]);
+  /*
+  ---------------------------------------------------
+  PAGINATION MERGE
+  ---------------------------------------------------
+  */
+
+  useEffect(() => {
+    if (!mergedClinics.length) return;
+
+    setAllClinics((prev) => {
+      const newClinics = mergedClinics.filter(
+        (c) => !prev.some((p) => p.id === c.id)
+      );
+
+      return currentPage === 1 ? mergedClinics : [...prev, ...newClinics];
+    });
+  }, [mergedClinics, currentPage]);
+
+  
+
+   /*
+  ---------------------------------------------------
+  TRANSFORM DATA
+  ---------------------------------------------------
+  */
+
+ const transformedClinics: ClinicProfileProps[] = useMemo(() => {
+  if (!data) return [];
+
+  const clinics = data?.clinic?.data || [];
+  const vetClinics = data?.vetClinic?.data || [];
+
+  const formattedClinics: ClinicProfileProps[] = clinics.map((clinic: any) => ({
+    id: `clinic-${clinic.id}`,
+    name: clinic.clinic_name,
+    location: clinic.location,
+    role: "Clinic",
+    specialty: clinic.clinic_speciality,
+    image: clinic.picture_url || GENERIC_VET_IMAGE,
+
+    rating: 0,
+    totalRatings: 0,
+
+    address: clinic.location,
+    isAvailable: clinic.availability == 1,
+    isVerified: clinic.status === "confirm_pending" ? false : true,
+
+    email: clinic.email,
+    phone: clinic.phone_number,
+    userId: clinic.user_id,
+
+    latitude: clinic.latitude,
+    longitude: clinic.longitude,
+
+    state: "",
+    country: "",
+  }));
+
+  const formattedVetClinics: ClinicProfileProps[] = vetClinics.map(
+    (clinic: any) => {
+      const totalRatings = clinic.ratings?.length || 0;
+
+      const avgRating =
+        totalRatings > 0
+          ? clinic.ratings.reduce(
+              (sum: number, r: any) => sum + (r.rating || 0),
+              0
+            ) / totalRatings
+          : clinic.average_rating;
+
+      return {
+        id: `vet-${clinic.id}`,
+        name: clinic.name_of_clinic,
+        location: clinic.address,
+        role: clinic.role,
+        specialty: clinic.specialty,
+
+        image:
+          clinic?.user?.profile?.profile_image_url ||
+          GENERIC_VET_IMAGE,
+
+        rating: avgRating,
+        totalRatings,
+
+        address: clinic.address,
+        isAvailable: clinic.availability == 1,
+        isVerified: clinic.is_approved == 1,
+
+        email: clinic?.user?.email,
+        phone: clinic.contact_num,
+        userId: clinic.user_id,
+
+        latitude: clinic.latitude,
+        longitude: clinic.longitude,
+
+        state: clinic?.user?.state,
+        country: clinic?.user?.country,
+      };
+    }
+  );
+
+  return [...formattedClinics, ...formattedVetClinics];
+}, [data]);
 
 
     // ---------------------------------------------------
@@ -188,13 +261,15 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
         }
     };
 
+    
     const handleLoadMore = () => {
-        if (data?.veterinary_clinics?.next_page_url) {
-            setCurrentPage((prev) => prev + 1);
-        }
-    };
+    if (data?.clinic?.next_page_url || data?.vetClinic?.next_page_url) {
+        setCurrentPage((prev) => prev + 1);
+    }
+};
 
-    const hasMorePages = data?.veterinary_clinics?.next_page_url !== null;
+    const hasMorePages =
+    data?.clinic?.next_page_url || data?.vetClinic?.next_page_url;
 
     return (
         <section

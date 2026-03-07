@@ -114,17 +114,18 @@ const ProductCard = ({
 				</div>
 
 				<div className="flex items-center justify-between px-2 mt-3">
-					<div className="flex items-center md:gap-3 gap-2 mr-1">
+					{/* <div className="flex items-center md:gap-3 gap-2 mr-1">
 						<button className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
 							<Phone className="md:h-4 md:w-4 h-[10px] w-[10px]" color="#1D2432" />
 						</button>
 						<button className="bg-white border border-gray-225 shadow-md rounded-full p-2">
 							<MessageCircle className="md:h-4 md:w-4 h-[10px] w-[10px]" color="#1D2432" />
 						</button>
-						<button className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
+						<button  className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-2">
 							<Mail className="md:h-4 md:w-4 h-[10px] w-[10px]" color="#1D2432" />
 						</button>
-					</div>
+					</div> */}
+					<div></div>
 					{/* View Full Profile Button */}
 					<button
 						onClick={handleViewProduct}

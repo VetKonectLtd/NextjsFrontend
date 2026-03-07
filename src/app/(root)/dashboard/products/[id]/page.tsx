@@ -39,7 +39,7 @@ export default function ProductDetailsPage({
 
 	const productData: any = useGetProductById(true, params.id);
 	const product = productData.data?.product;
-	console.log("Product Data:", product);
+	
 	const relatedProductsData = useGetRelatedProduct(true, params.id);
 	const relatedProducts =
 		(relatedProductsData.data as Record<string, any>)?.products?.data || [];
