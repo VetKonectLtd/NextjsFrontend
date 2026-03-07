@@ -73,26 +73,7 @@ export default function PricingCarousel() {
   
 
   return (
-    <div className="max-w-7xl pt-2 mx-auto min-h-screen flex flex-col items-center justify-between py-6">
-      
-      {/* TOP PLUS / MINUS */}
-      <div className="flex items-center gap-4 bg-white shadow-sm rounded-full px-4 py-2">
-        <button
-          onClick={prev}
-          className="p-1 rounded-full bg-gray-100"
-        >
-          <Minus size={16} />
-        </button>
-
-        <span className="text-sm font-medium">Monthly (1)</span>
-
-        <button
-          onClick={next}
-          className="p-1 rounded-full bg-gray-100"
-        >
-          <Plus size={16} />
-        </button>
-      </div>
+    <div className="md:max-w-7xl w-11/12 pt-2 mx-auto  flex flex-col items-center justify-between py-6">
 
       {/* CARD */}
       <div className="relative w-full max-w-sm overflow-hidden mt-6">
@@ -111,7 +92,7 @@ export default function PricingCarousel() {
       </div>
 
       {/* BOTTOM ARROWS */}
-      <div className="flex items-center gap-6 mt-6">
+      <div className="flex items-center gap-6 mt-8">
         <button
           onClick={prev}
           className="w-10 h-10 flex items-center justify-center rounded-full border"
