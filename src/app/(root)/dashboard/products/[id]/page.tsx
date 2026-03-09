@@ -69,7 +69,7 @@ export default function ProductDetailsPage({
 	};
 
 	const handlePayment = () => {
-		if (product.product_type === 1) {
+		if (product.product_type == 1) {
 			orderPayment.mutate(
 				{
 					merchant_user_id: product?.user_id,
