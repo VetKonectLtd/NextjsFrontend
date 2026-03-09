@@ -52,11 +52,11 @@ export default function ClinicListingClient() {
         formData.append("latitude", data.latitude || "");
         formData.append("longitude", data.longitude || "");
 
-        (data.clinic_speciality as any).forEach((tag:string) =>
+        (data.clinic_speciality as any).forEach((tag: string) =>
             formData.append("clinic_speciality", tag)
         );
 
-        if (data.picture?.[0] ) {
+        if (data.picture?.[0]) {
             formData.append("picture", data.picture[0]);
         }
 
@@ -64,7 +64,7 @@ export default function ClinicListingClient() {
             onSuccess: () => {
                 setImagePreview(null);
                 reset();
-                
+
             }
         });
     };
@@ -92,7 +92,7 @@ export default function ClinicListingClient() {
                 {/* Right side: form */}
                 <div className="md:max-w-md mx-auto w-full p-6 flex flex-col justify-center">
                     <h2 className="text-3xl font-bold text-black mb-4">
-                        Register Your Veterinary Clinic or Agro Store  
+                        Register Your Veterinary Clinic or Agro Store
                     </h2>
                     <form className="space-y-1">
 
@@ -172,11 +172,33 @@ export default function ClinicListingClient() {
                                     focusLabel="Specialty Required :"
                                     isRequired
                                     options={[
-                                        "Small Animal",
-                                        "Large Animal",
-                                        "Exotic",
-                                        "Wildlife",
-                                        "Others",
+                                        "Small Animal Practice",
+                                        "Large Animal Practice",
+                                        "Mixed Animal Practice",
+                                        "Poultry Medicine",
+                                        "Exotic Animal Medicine",
+                                        "Wildlife Medicine",
+                                        "Equine Medicine",
+                                        "Farm Animal Medicine",
+                                        "Aquatic / Fish Medicine",
+                                        "Zoo Animal Medicine",
+                                        "Veterinary Surgery",
+                                        "Veterinary Dentistry",
+                                        "Veterinary Dermatology",
+                                        "Veterinary Cardiology",
+                                        "Veterinary Ophthalmology",
+                                        "Veterinary Neurology",
+                                        "Veterinary Oncology",
+                                        "Veterinary Orthopedics",
+                                        "Veterinary Radiology / Imaging",
+                                        "Veterinary Laboratory / Diagnostics",
+                                        "Animal Reproduction / Theriogenology",
+                                        "Preventive Medicine & Vaccination",
+                                        "Animal Nutrition",
+                                        "Emergency & Critical Care",
+                                        "Animal Rehabilitation / Physiotherapy",
+                                        "Veterinary Public Health",
+                                        "Others"
                                     ]}
                                     error={errors.clinic_speciality?.message}
                                     onChange={(tags) => field.onChange(tags)}
