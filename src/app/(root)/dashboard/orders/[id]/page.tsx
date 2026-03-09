@@ -1,8 +1,8 @@
 "use client";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Warning } from "@/app/assets/icons";
 import { useOrderService } from "@/services/orderService";
@@ -10,32 +10,21 @@ import { useAuthService } from "@/services/authService";
 import Link from "next/link";
 import ReactStars from "react-stars";
 import { useRatingService } from "@/services/ratingService";
-import { Rating } from "@/types";
 
-export default function OrderDetailsPage({
-	params,
-}: {
-	params: { id: string };
-}) {
+export default function OrderDetailsPage({ params }: { params: { id: string } }) {
 	const router = useRouter();
 	const { useCurrentUser } = useAuthService();
-	const { useGetOrderById, useTrackOrder, useCancelOrder, useConfirmOrder } =
-		useOrderService();
-	const {
-		data: ordersData,
-		refetch,
-		isLoading,
-	} = useGetOrderById(true, params?.id);
+	const { useGetOrderById } = useOrderService();
+
+	const { data: ordersData, refetch } = useGetOrderById(true, params?.id);
 	const user = useCurrentUser(true);
-	const currentUserId = (user as Record<string, any>).data?.profile?.user_id;
 
+	const currentUserId = (user as any)?.data?.profile?.user_id;
 	const order = (ordersData as any)?.order;
-
-	
 
 	const product = {
 		tracking_number: order?.tracking_number,
-		id:order?.id,
+		id: order?.id,
 		product_name: order?.items?.product_name,
 		price: Number(order?.items?.price),
 		location: order?.buyer?.address ?? "Unknown",
@@ -43,38 +32,10 @@ export default function OrderDetailsPage({
 		status: order?.status,
 		description: order?.items?.product_snapshot?.description,
 		images_url: order?.items?.product_snapshot?.images_url ?? [],
-		current_step: order?.timeline?.events?.length ?? 0,
 	};
 
 	const isBuyer = order?.buyer_user_id === currentUserId;
-	const isMerchant = order?.merchant_user_id === currentUserId;
 
-	const [canCancel, setCanCancel] = useState(false);
-	const isCanceled =
-		product.status?.toLowerCase() === "canceled" ||
-		product.status?.toLowerCase() === "cancelled";
-
-	useEffect(() => {
-		if (!order?.created_at) return;
-
-		const orderTime = new Date(order.created_at).getTime();
-		const now = new Date().getTime();
-		const hoursSinceOrder = (now - orderTime) / 1000 / 60 / 60;
-
-		setCanCancel(hoursSinceOrder <= 24);
-	}, [order?.created_at]);
-
-	const [currentImageIndex, setCurrentImageIndex] = useState(0);
-	const nextImage = () =>
-		setCurrentImageIndex((prev) =>
-			prev === product.images_url.length - 1 ? 0 : prev + 1,
-		);
-	const prevImage = () =>
-		setCurrentImageIndex((prev) =>
-			prev === 0 ? product.images_url.length - 1 : prev - 1,
-		);
-
-	// Tracking steps in correct chronological order
 	const progressSteps = [
 		"Payment_Initiated",
 		"Pending_Confirmation",
@@ -83,25 +44,20 @@ export default function OrderDetailsPage({
 		"Delivered",
 	];
 
-	// Map tracking_status → index
 	const trackingStatus = order?.tracking_status;
 	const currentStep = progressSteps.indexOf(trackingStatus);
 
-	// ---- API Mutation Hooks ---- //
-	const cancelOrderMutation = useCancelOrder(true, params?.id);
-	const confirmOrderMutation = useConfirmOrder(true, params?.id);
-	const trackingMutation = useTrackOrder(true, params?.id);
+	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-	// ---- API Mutation Hooks for Rating---- //
 	const { useRating } = useRatingService();
 	const rateMerchantMutation = useRating();
 
 	const [rating, setRating] = useState(0);
 	const [review, setReview] = useState("");
 
-	const ratingChanged = (newRating: any) => {
+	const ratingChanged = (newRating: number) => {
 		setRating(newRating);
-	}
+	};
 
 	const handleRating = () => {
 		rateMerchantMutation.mutate(
@@ -109,7 +65,7 @@ export default function OrderDetailsPage({
 				rateable_id: product.id,
 				rateable_type: "App\\Models\\Products",
 				rating: rating,
-				comment:review
+				comment: review,
 			},
 			{
 				onSuccess: () => {
@@ -120,317 +76,192 @@ export default function OrderDetailsPage({
 			},
 		);
 	};
-	
-
-	const handleCancelOrder = async () => {
-		if (window.confirm(`Are you sure you want to cancel the order?`)) {
-			cancelOrderMutation.mutate({
-				onSuccess: () => {
-					refetch();
-				},
-			});
-		}
-	};
-
-	const handleConfirmOrder = async () => {
-		if (window.confirm(`Are you sure you want to confirm delivery?`)) {
-			confirmOrderMutation.mutate({
-				onSuccess: () => {
-					refetch();
-				},
-			});
-		}
-	};
-
-	const handleAdvanceStep = () => {
-		if (currentStep >= progressSteps.length - 1) return;
-
-		const nextStatus = progressSteps[currentStep + 1];
-
-		trackingMutation.mutate(
-			{ tracking_status: nextStatus },
-			{
-				onSuccess: () => {
-					refetch();
-				},
-			},
-		);
-	};
-
-	const isCompleted = product.status?.toLowerCase() === "completed";
 
 	return (
-		<main className="w-11/12 m-auto min-h-screen">
+		<main className="w-11/12 mx-auto px-4 py-6">
+			{/* Back */}
 			<div
-				className="flex cursor-pointer items-center py-3"
+				className="flex cursor-pointer items-center mb-6"
 				onClick={() => router.back()}
 			>
-				<button className="bg-white p-1 mr-3 rounded-full shadow-md border border-gray-225">
-					<ChevronLeft size={20} className="text-gray-600" />
-				</button>
-				<span>Order Details</span>
+				<div className="bg-white p-1 mr-3 rounded-full shadow border">
+					<ChevronLeft size={20} />
+				</div>
+				<h1 className="text-lg font-semibold">Order Details</h1>
 			</div>
 
-			<div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-				{/* Header Image */}
-				<div className="relative h-64 bg-gray-900 rounded-t-2xl overflow-hidden">
-					<AnimatePresence mode="wait">
-						<motion.div
-							key={currentImageIndex}
-							initial={{ opacity: 0, x: 300 }}
-							animate={{ opacity: 1, x: 0 }}
-							exit={{ opacity: 0, x: -300 }}
-							transition={{ duration: 0.3 }}
-							className="absolute inset-0"
-						>
+			<div className="bg-white rounded-2xl border shadow-sm">
+				<div className="grid lg:grid-cols-2 gap-8 p-6">
+					{/* ---------------- IMAGE GALLERY ---------------- */}
+					<div>
+						<div className="relative h-[420px] bg-gray-100 rounded-xl overflow-hidden">
 							<Image
 								src={product.images_url[currentImageIndex]}
 								alt={product.product_name}
 								fill
-								className="object-cover"
+								className="object-contain"
 								priority
 							/>
-						</motion.div>
-					</AnimatePresence>
+						</div>
 
-					{/* Carousel Controls */}
-					<motion.button
-						onClick={prevImage}
-						whileHover={{ scale: 1.1 }}
-						whileTap={{ scale: 0.95 }}
-						className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg"
-					>
-						<ChevronLeft size={20} className="text-gray-600" />
-					</motion.button>
-
-					<motion.button
-						onClick={nextImage}
-						whileHover={{ scale: 1.1 }}
-						whileTap={{ scale: 0.95 }}
-						className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg"
-					>
-						<ChevronRight size={20} className="text-gray-600" />
-					</motion.button>
-
-					{/* Indicators + Price */}
-					<div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4">
-						<div className="flex items-center space-x-2">
-							{product.images_url.map((_: any, i: any) => (
-								<motion.button
+						{/* Thumbnails */}
+						<div className="flex gap-3 mt-4 overflow-x-auto">
+							{product.images_url.map((img: string, i: number) => (
+								<button
 									key={i}
 									onClick={() => setCurrentImageIndex(i)}
-									className={`w-2 h-2 rounded-full ${
-										i === currentImageIndex
-											? "bg-white scale-125"
-											: "bg-white/50"
-									}`}
-								/>
+									className={`relative w-20 h-20 rounded-lg overflow-hidden border ${i === currentImageIndex
+											? "border-green-500"
+											: "border-gray-200"
+										}`}
+								>
+									<Image src={img} alt="thumbnail" fill className="object-cover" />
+								</button>
 							))}
 						</div>
-						<div className="text-white text-xl font-bold">
-							₦ {product.price.toLocaleString()}
+					</div>
+
+					{/* ---------------- PRODUCT DETAILS ---------------- */}
+					<div className="space-y-6">
+						<div>
+							<h1 className="text-2xl font-semibold text-gray-900">
+								{product.product_name}
+							</h1>
+
+							<p className="text-3xl font-bold text-green-600 mt-2">
+								₦{product.price.toLocaleString()}
+							</p>
 						</div>
-					</div>
-				</div>
 
-				{/* Content */}
-				<div className="p-6 space-y-4">
-					<h2 className="text-lg font-semibold text-gray-800">
-						{product.product_name}
-					</h2>
+						{/* Info Card */}
+						<div className="border rounded-lg p-4 bg-gray-50 space-y-2">
+							<p className="text-sm">
+								<span className="text-gray-500">Tracking ID:</span>{" "}
+								<span className="font-medium">{product.tracking_number}</span>
+							</p>
 
-					<p className="text-sm text-gray-500">
-						<strong>Tracking Id: </strong> {product.tracking_number}
-					</p>
+							<p className="text-sm">
+								<span className="text-gray-500">Sold by:</span>{" "}
+								<span className="font-medium">
+									{order?.merchant?.first_name} {order?.merchant?.last_name}
+								</span>
+							</p>
 
-					<p className="text-sm text-gray-500">
-						<strong> Sold by: </strong> {order?.merchant?.first_name}{" "}
-						{order?.merchant?.last_name}
-					</p>
-
-					<div>
-						<h3 className="font-semibold text-gray-800 text-sm mb-1">
-							Product Description:
-						</h3>
-						<p className="text-sm text-gray-600">{product?.description}</p>
-					</div>
-
-					<div>
-						<h3 className="font-semibold text-gray-800 text-sm mb-1">
-							Payment Method:
-						</h3>
-						<p className="text-sm text-gray-600">{product.payment_method}</p>
-					</div>
-
-					{/* Progress Steps */}
-					<div>
-						<h3 className="font-semibold text-gray-800 text-sm mb-2">
-							Order Status: {trackingStatus}
-						</h3>
-
-						<div className="relative w-full">
-							{/* Track Background */}
-							<div className="absolute top-2 left-[5%] right-[5%] h-1 bg-gray-200"></div>
-
-							{/* Active Track */}
-							<div
-								className="absolute top-2 left-[5%] h-1 bg-green-600 transition-all"
-								style={{
-									width: `${(currentStep / (progressSteps.length - 1)) * 90}%`,
-								}}
-							></div>
-
-							{/* Step Indicators */}
-							<div className="flex justify-between relative z-10">
-								{progressSteps.map((step, index) => (
-									<div
-										key={index}
-										className="flex flex-col items-center w-full"
-									>
-										<div
-											className={`w-5 h-5 rounded-full border-2 transition-all ${
-												index <= currentStep
-													? "bg-green-600 border-green-600"
-													: "bg-white border-gray-300"
-											}`}
-										></div>
-										<span
-											className={`text-[10px] mt-2 text-center w-16 leading-tight ${
-												index <= currentStep
-													? "text-green-700"
-													: "text-gray-500"
-											}`}
-										>
-											{step.replace(/_/g, " ")}
-										</span>
-									</div>
-								))}
-							</div>
+							<p className="text-sm">
+								<span className="text-gray-500">Payment Method:</span>{" "}
+								<span className="font-medium">{product.payment_method}</span>
+							</p>
 						</div>
-					</div>
 
-					{/* Warning */}
-					<div className="text-gray-55 flex items-center text-xs py-5 gap-3">
-						<Image src={Warning} alt="warning" width={20} height={20} />
-						Please make sure you click “Delivery confirmed”.
-					</div>
+						{/* Description */}
+						<div>
+							<h3 className="font-semibold text-gray-800 mb-2">
+								Product Description
+							</h3>
+							<p className="text-sm text-gray-600 leading-relaxed">
+								{product.description}
+							</p>
+						</div>
 
-					{/* Rating Section */}
-					{isBuyer && isCompleted && (
-						<div className="mt-8 border rounded-lg p-5 bg-gray-50">
-							<h3 className="font-semibold text-gray-700 mb-3">
-								Rate Your Experience
+
+
+						{/* Tracking */}
+						<div className="border rounded-lg p-5">
+							<h3 className="font-semibold text-gray-800 text-sm mb-4">
+								Order Status: {trackingStatus}
 							</h3>
 
-							{/* Stars */}
-							<div className="flex gap-2 mb-4">
+							<div className="relative w-full">
+
+								{/* Track Background */}
+								<div className="absolute top-2 left-[5%] right-[5%] h-1 bg-gray-200"></div>
+
+								{/* Active Progress Line */}
+								<div
+									className="absolute top-2 left-[5%] h-1 bg-green-600 transition-all duration-500"
+									style={{
+										width: `${(currentStep / (progressSteps.length - 1)) * 90}%`,
+									}}
+								></div>
+
+								{/* Step Indicators */}
+								<div className="flex justify-between relative z-10">
+									{progressSteps.map((step, index) => (
+										<div key={index} className="flex flex-col items-center w-full">
+
+											<div
+												className={`w-5 h-5 rounded-full border-2 transition-all ${index <= currentStep
+														? "bg-green-600 border-green-600"
+														: "bg-white border-gray-300"
+													}`}
+											></div>
+
+											<span
+												className={`text-[10px] mt-2 text-center w-16 leading-tight ${index <= currentStep ? "text-green-700" : "text-gray-500"
+													}`}
+											>
+												{step.replace(/_/g, " ")}
+											</span>
+
+										</div>
+									))}
+								</div>
+
+							</div>
+						</div>
+
+						{/* Warning */}
+						<div className="flex items-center text-xs text-gray-500 gap-3">
+							<Image src={Warning} alt="warning" width={18} height={18} />
+							Please make sure you confirm delivery after receiving the item.
+						</div>
+
+						{/* Rating */}
+						{isBuyer && (
+							<div className="border rounded-lg p-5 bg-gray-50">
+								<h3 className="font-semibold mb-3">
+									Rate Your Experience
+								</h3>
+
 								<ReactStars
 									count={5}
 									onChange={ratingChanged}
 									size={24}
 									color2={"#ffd700"}
-									half={false}
 								/>
-							</div>
 
-							{/* Review Input */}
-							<textarea
-								value={review}
-								onChange={(e) => setReview(e.target.value)}
-								placeholder="Write a short review (optional)"
-								className="w-full border rounded-md p-3 text-sm"
-								rows={3}
-							/>
+								<textarea
+									value={review}
+									onChange={(e) => setReview(e.target.value)}
+									placeholder="Write a review"
+									className="w-full border rounded-md p-3 text-sm mt-4"
+									rows={3}
+								/>
 
-							{/* Submit Button */}
-							<button
-								onClick={handleRating}
-								disabled={rating === 0 || rateMerchantMutation.isPending}
-								className="mt-4 w-full bg-primary-400 text-white py-2 rounded-lg font-semibold
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-							>
-								{rateMerchantMutation.isPending
-									? "Submitting..."
-									: "Submit Rating"}
-							</button>
-						</div>
-					)}
-
-
-					{/* Buttons */}
-					<div className="flex flex-col gap-6 mt-6">
-						{isMerchant && !isCompleted && trackingStatus === "Delivered" && (
-							<button
-								onClick={handleConfirmOrder}
-								disabled={confirmOrderMutation.isPending}
-								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
-							>
-								{confirmOrderMutation.isPending
-									? "Processing..."
-									: "Mark as Delivered"}
-							</button>
-						)}
-
-						{isBuyer && !isCompleted && trackingStatus === "Delivered" && (
-							<button
-								onClick={handleConfirmOrder}
-								disabled={confirmOrderMutation.isPending}
-								className="w-full bg-primary-400 text-white rounded-lg py-2 font-semibold"
-							>
-								{confirmOrderMutation.isPending
-									? "Processing..."
-									: "Delivery confirmed"}
-							</button>
-						)}
-
-						{/* Merchant button */}
-						{isMerchant &&
-							!isCompleted &&
-							currentStep < progressSteps.length - 1 && (
 								<button
-									onClick={handleAdvanceStep}
-									disabled={trackingMutation.isPending}
-									className="w-full mt-4 bg-primary-400 text-white rounded-lg py-2 font-semibold"
+									onClick={handleRating}
+									className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg"
 								>
-									{trackingMutation.isPending
-										? "Updating..."
-										: "Confirm Next Step"}
+									Submit Rating
 								</button>
-							)}
+							</div>
+						)}
 
-						{/* Cancel Order (buyer only) */}
-						{isBuyer && !isCompleted && !isCanceled && canCancel && (
-							<button
-								onClick={handleCancelOrder}
-								disabled={cancelOrderMutation.isPending}
-								className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold"
+						{/* Actions */}
+						<div className="flex flex-col gap-3">
+							<Link
+								href="/dashboard/vet-vendor?category=Vendor"
+								className="w-full bg-green-600 text-white text-center py-3 rounded-lg font-semibold"
 							>
-								{cancelOrderMutation.isPending
-									? "Cancelling..."
-									: "Cancel Order"}
-							</button>
-						)}
+								Buy Again
+							</Link>
+						</div>
 
-						{/* Contact Support */}
-						{isBuyer && !isCompleted && !canCancel && !isCanceled && (
-							<button className="w-full bg-[#F1F1F0] text-gray-55 rounded-lg py-2 font-semibold">
-								Contact Support
-							</button>
-						)}
-
-						{isBuyer &&  !canCancel && !isCanceled && (
-						<Link
-							href="/dashboard/vet-vendor?category=Vendor"
-							className="w-full bg-primary-400 text-white text-center rounded-lg py-2 font-semibold"
-						>
-							Buy Again
-						</Link>)}
+						<p className="text-xs text-gray-500">
+							<strong>Return Policy:</strong> Contact support within 24 hours
+							of delivery for complaints or refund issues.
+						</p>
 					</div>
-
-					<p className="text-xs text-gray-55 mt-6">
-						<strong>Return Policy:</strong> Contact support within 24 hours of
-						delivery for complaints or refund issues.
-					</p>
 				</div>
 			</div>
 		</main>
