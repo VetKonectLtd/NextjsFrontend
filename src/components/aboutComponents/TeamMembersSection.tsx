@@ -48,7 +48,7 @@ const teamMembers: TeamMember[] = [
 	{
 		id: 2,
 		name: "Dr. Abiodun Samuel O.",
-		role: "COO",
+		role: "COO/Co-Founder",
 		linkedin: "https://www.linkedin.com/in/oluwaponmile-abiodun-3a915216a",
 		image: Abiodun,
 		bgColor: "bg-blue-100",
