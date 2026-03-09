@@ -14,7 +14,7 @@ export default function FloatingNavButton() {
 			{/* Floating Button */}
 			<button
 				onClick={() => setOpen(true)}
-				className="md:hidden flex flex-col justify-center items-center fixed font-extrabold bottom-0 right-0 z-40 bg-white border border-gray-400 text-primary-400 py-4 px-4 shadow-xl shadow-gray-300 active:scale-95 transition"
+				className="md:hidden flex flex-col justify-center items-center fixed font-extrabold bottom-0 rounded-md border border-gray-200 right-0 z-40 bg-white text-primary-400 py-4 px-4 shadow-3xl  shadow-gray-400 active:scale-95 transition"
 			>
 				<Image
 					src={Down}
