@@ -80,11 +80,11 @@ export default function ClinicListingClient() {
                         className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-start p-6">
-                        <h1 className="text-white capitalize md:text-3xl font-extrabold mb-2">
-                            Early treatment matters.
+                        <h1 className="text-white md:text-3xl font-extrabold mb-2">
+                            Find Trusted Veterinary Clinics
                         </h1>
-                        <p className="text-white capitalize md:text-3xl font-extrabold">
-                            Every pet deserves care.
+                        <p className="text-white md:text-xl">
+                            Browse and connect with professional veterinary clinics near you.
                         </p>
                     </div>
                 </div>
@@ -169,7 +169,7 @@ export default function ClinicListingClient() {
                             render={({ field }) => (
                                 <TagSelect
                                     label="Speciality"
-                                    focusLabel="Specialty Required :"
+                                    focusLabel="Select one or more specialties your clinic offers:"
                                     isRequired
                                     options={[
                                         "Small Animal Practice",
