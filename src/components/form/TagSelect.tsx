@@ -45,7 +45,7 @@ const TagSelect: React.FC<TagSelectProps> = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onChange={(e) => addTag(e.target.value)}
-          className={`peer block w-full px-4 pt-5 font-normal py-1 border bg-white border-[#1D2432] rounded-md text-sm focus:outline-none
+          className={`peer block w-full px-4 pt-5 font-normal py-4 border bg-white border-[#1D2432] rounded-md text-sm focus:outline-none
             ${error ? "border-red-500" : ""}
           `}
           defaultValue=""
@@ -53,7 +53,7 @@ const TagSelect: React.FC<TagSelectProps> = ({
           <option value="" disabled hidden>
             {""}
           </option>
-          {options.map((opt, i) => (
+          {options.map((opt, i:any) => (
             <option key={i} value={opt}>
               {opt}
             </option>
