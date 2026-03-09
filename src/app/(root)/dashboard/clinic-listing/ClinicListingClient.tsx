@@ -137,7 +137,7 @@ export default function ClinicListingClient() {
                         </div>
 
                         <FormInput
-                            label="Name of Clinic/ AgroVet Sore"
+                            label="Name of Clinic/ AgroVet Store"
                             type="text"
                             focusLabel="Name of Clinic/ AgroVet Sore: "
                             isRequired
