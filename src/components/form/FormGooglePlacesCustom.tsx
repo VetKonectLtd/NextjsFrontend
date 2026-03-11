@@ -362,11 +362,13 @@ const geocodeWithNominatim = async (
   // Try last 3 capitalized words → last 2 → last 1
   for (let i = 0; i < capitalizedWords.length; i++) {
     const slice = capitalizedWords.slice(i).join(" ");
+    if (slice) attempts.push(`${slice}`);
   }
 
   // 4. ✅ Try last N words of address (from 5 words down to 1)
   for (let n = Math.min(5, wordParts.length - 1); n >= 1; n--) {
     const lastNWords = wordParts.slice(-n).join(" ");
+    attempts.push(`${lastNWords}`);
   }
 
   // Remove duplicates
@@ -443,6 +445,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
       }
 
       if (!scriptLoaded) {
+        console.warn("[Google Maps] Script not loaded yet, skipping suggestions");
         return;
       }
 
@@ -475,7 +478,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
               );
               setShowSuggestions(true);
             } else {
-              console.warn("[Google Maps] Autocomplete status:", status);
               setSuggestions([]);
               setShowSuggestions(false);
             }
@@ -483,7 +485,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
           }
         );
       } catch (err) {
-        console.error("[Google Maps] Autocomplete error:", err);
         setIsLoading(false);
       }
     }, 300),
@@ -524,7 +525,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
   const handleSelect = async (suggestion: PlaceSuggestion) => {
     if (!scriptLoaded) {
       // Google never loaded — go straight to Nominatim
-      console.warn("[Google Maps] Not loaded, using Nominatim directly");
       const fallback = await geocodeWithNominatim(suggestion.description);
       finalizeLocation(suggestion.description, fallback.latitude, fallback.longitude);
       return;
@@ -541,7 +541,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
           fields: ["formatted_address", "geometry"],
         },
         async (place, status) => {
-          console.log("[Google Maps] getDetails status:", status);
 
           const address = place?.formatted_address || suggestion.description;
           let lat = place?.geometry?.location?.lat() ?? null;
@@ -551,7 +550,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
 
           // ✅ Google gave no coordinates — try Nominatim
           if (lat === null || lng === null) {
-            console.warn("[Google Maps] No coordinates returned, trying Nominatim...");
             const fallback = await geocodeWithNominatim(address);
             lat = fallback.latitude;
             lng = fallback.longitude;
@@ -562,7 +560,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
       );
     } catch (err) {
       // ✅ Google completely crashed — use Nominatim
-      console.error("[Google Maps] getDetails threw error, using Nominatim:", err);
       const fallback = await geocodeWithNominatim(suggestion.description);
       finalizeLocation(suggestion.description, fallback.latitude, fallback.longitude);
     }
@@ -572,9 +569,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
   const handleBlur = async (value: string, fieldOnChange: (v: string) => void) => {
     setIsFocused(false);
     if (value && !coordsFetched) {
-      console.log("[Blur] No coords yet, geocoding typed address with Nominatim...");
       const fallback = await geocodeWithNominatim(value);
-      console.log("[Blur] Nominatim result:", fallback);
       setCoordsFetched(fallback.latitude !== null);
       onLocationSelect?.({
         latitude: fallback.latitude,
