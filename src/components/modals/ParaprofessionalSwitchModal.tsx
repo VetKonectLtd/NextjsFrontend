@@ -70,6 +70,7 @@ const ParaprofessionalSwitchModal = ({
 		}),
 	];
 
+	
 	useEffect(() => {
 		if (watch("graduation_year")?.toLowerCase() === "awaiting") {
 			setValue("expected_year_of_graduation", "");
@@ -100,7 +101,7 @@ const ParaprofessionalSwitchModal = ({
 			setValue("latitude", Number(selectedLocation?.latitude) as any);
 			setValue("longitude", Number(selectedLocation?.longitude) as any);
 		}
-	}, [setValue, selectedLocation, user]);
+	}, [setValue, selectedLocation]);
 
 	const handleUseMyLocation = async () => {
 		try {
