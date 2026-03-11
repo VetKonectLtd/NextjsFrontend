@@ -79,7 +79,8 @@ const VeterinarianSwitchModal = ({
 			setValue("latitude", Number(selectedLocation?.latitude) as any);
 			setValue("longitude", Number(selectedLocation?.longitude) as any);
 		}
-	}, [setValue, selectedLocation, user]);
+	}, [setValue, selectedLocation]);
+	
 	const handleUseMyLocation = async () => {
 		try {
 			setLocLoading(true);
