@@ -52,9 +52,10 @@ export default function ClinicListingClient() {
         formData.append("latitude", data.latitude || "");
         formData.append("longitude", data.longitude || "");
 
-        (data.clinic_speciality as any).forEach((tag: string) =>
-            formData.append("clinic_speciality[]", tag)
-        );
+        const speciality = Array.isArray(data.clinic_speciality)
+            ? data.clinic_speciality.join(", ")
+            : data.clinic_speciality;
+        formData.append("clinic_speciality", speciality);
 
         if (data.picture?.[0]) {
             formData.append("picture", data.picture[0]);
