@@ -21,16 +21,30 @@ export const useClinicService = () => {
 		);
 	};
 
-	const useGetClinicById = (enabled: boolean = false, id: string) => {
+	const useGetClinicById =  (enabled: boolean = false, id: string) => {
 		return useGet<any>(["getClinicById"], CLINIC.GET_CLINIC_BY_ID(id), {
 			enabled,
 			staleTime: 0,
 		});
 	};
 	
+	const useUpdateClinic =(id:string) => {
+		 return usePost<{ clinic: ClinicListing; token: string }, ClinicListing>(
+			CLINIC.UPDATE_CLINIC(id),
+			{
+				onSuccess: (response: any) => {
+					handleSuccess(response.message || "Clinic updated successfully!");
+				},
+				onError: (error) => {
+					handleError(error.message || "failed");
+				},
+			},
+		);
+	}
 
 	return {
 		useAddClinic,
 		useGetClinicById,
+		useUpdateClinic
 	};
 };

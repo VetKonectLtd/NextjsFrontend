@@ -163,6 +163,7 @@ export const CLINIC ={
 	ADD_CLINIC: "/v3/add-clinic",
 	GET_ALL_CLINIC: "/v3/get-user-clinics",
 	GET_CLINIC_AND_VET_CLINIC: "/v3/get-clinic-and-vet-clinic",
+	UPDATE_CLINIC:(Id: string)=> `/v3/delete-clinic/${Id}/delete`,
 	GET_CLINIC_BY_ID:(Id: string) => `/v3/get-clinic-by-id/${Id}/clinic`
 }
 export const VETERINARY_PARAPROFESSIONAL = {

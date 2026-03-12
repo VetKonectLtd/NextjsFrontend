@@ -53,7 +53,7 @@ export default function ClinicListingClient() {
         formData.append("longitude", data.longitude || "");
 
         (data.clinic_speciality as any).forEach((tag: string) =>
-            formData.append("clinic_speciality", tag)
+            formData.append("clinic_speciality[]", tag)
         );
 
         if (data.picture?.[0]) {
