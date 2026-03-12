@@ -120,7 +120,7 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
               0
             ) / totalRatings
           : clinic.average_rating;
-
+          
       return {
         id: `vet-${clinic.id}`,
         name: clinic.name_of_clinic,
