@@ -17,6 +17,7 @@ export default function ClinicListingClient() {
 
     const { useAddClinic } = useClinicService();
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [tagSelectKey, setTagSelectKey] = useState(0);
 
     const addClinicMutation = useAddClinic();
 
@@ -65,7 +66,7 @@ export default function ClinicListingClient() {
             onSuccess: () => {
                 setImagePreview(null);
                 reset();
-
+                setTagSelectKey((prev) => prev + 1);
             }
         });
     };
@@ -164,6 +165,7 @@ export default function ClinicListingClient() {
                         />
 
                         <Controller
+                            key={tagSelectKey}
                             name="clinic_speciality"
                             control={control}
                             rules={{ required: "At least one tag is required" }}

@@ -8,7 +8,6 @@ import SelectedClinic from "./SelectedClinic";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
 import { VetClinicData, GetAllVetClinicResponse } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { address, tr } from "framer-motion/client";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
