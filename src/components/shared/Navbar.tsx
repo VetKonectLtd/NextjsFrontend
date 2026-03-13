@@ -189,6 +189,9 @@ const Navbar = () => {
 						>
 							About Us
 						</Link>
+						<Link href="/foundation" className={getLinkClasses("/foundation")}>
+							Foundation
+						</Link>
 						<Link
 							href="/dashboard/feed-calculator"
 							className={getLinkClasses("/dashboard/feed-calculator")}
@@ -501,6 +504,16 @@ const Navbar = () => {
 							>
 								<InformationCircleIcon className="w-6 h-6 mr-4" />
 								<span className="text-base font-medium">About Us</span>
+							</Link>
+
+							{/* Foundation */}
+							<Link
+								href="/foundation"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<HeartIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">Foundation</span>
 							</Link>
 
 							{/* Feed Calculator */}
