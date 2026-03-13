@@ -118,7 +118,7 @@ export function FoundationHero() {
                     </div>
                 </div>
 
-                {/* Dots */}
+                {/* Dots */} 
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
                     {slides.map((_, i) => (
                         <button
