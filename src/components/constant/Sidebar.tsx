@@ -18,7 +18,7 @@ const Sidebar = () => {
 
 	return (
 		<>
-			<div className="hidden w-24 overflow-y-scroll scrollbar-hide pb-8 transition-all duration-300 h-vhs  fixed items-center  md:flex flex-col gap-2">
+			<div className="hidden w-24 overflow-y-scroll  pb-8 transition-all duration-300 h-vhs  fixed items-center  md:flex flex-col gap-2">
 				{filteredNav.map((item, index) => {
 					const isActive =
 						pathname === item.href ||
