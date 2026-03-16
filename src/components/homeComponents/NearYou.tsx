@@ -132,6 +132,7 @@ const NearYou: React.FC<NearYouProps> = ({
     }
   };
 
+  
   return (
     <section>
       <div className={`flex gap-6 transition-all duration-300 ${selectedVet ? 'lg:flex-row' : 'flex-col'}`}>
