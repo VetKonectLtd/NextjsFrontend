@@ -22,6 +22,7 @@ import VetClinic from "@/components/vetClinic/VetClinic";
 // import Vendor from "@/components/Vendor/Vendor";
 import { useProductService } from "@/services/productService";
 import { Down } from "@/app/assets/icons";
+import { useInviteService } from "@/services/inviteService";
 
 export default function VetVendorPage() {
 	const [activeTab, setActiveTab] = useState("All");
@@ -49,6 +50,11 @@ export default function VetVendorPage() {
 
 	const { useGetAllProduct } = useProductService();
 	const productsReq: any = useGetAllProduct(true, page);
+	const { useGetUserPoints } = useInviteService();
+	const getUserPointsQuery = useGetUserPoints(true);
+
+	const totalPoints =
+		(getUserPointsQuery.data as any)?.points[0]?.total_points ?? 0;
 
 	useEffect(() => {
 		if (productsReq.data?.products?.data) {
@@ -107,7 +113,7 @@ export default function VetVendorPage() {
 	return (
 		<div className="w-11/12 m-auto bg-white">
 			<div className="font-semibold flex items-end justify-end text-[#0F0F0F]">
-				<span>Currency ₦</span>
+				<span><span className="text-gray-500">Total point:  </span>{totalPoints}</span>
 			</div>
 
 			<CategorySelector

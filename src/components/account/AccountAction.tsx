@@ -43,7 +43,17 @@ const AccountAction = ({
 	const sendInviteMutation = useSendInvite();
 	const getUserPointsQuery = useGetUserPoints(true);
 
-	console.log("Selected user in AccountAction:", getUserPointsQuery.data);
+	const engagementPoints =
+		(getUserPointsQuery.data as any)?.points[0]?.engagement_points ?? 0;
+
+	const referralPoints =
+		(getUserPointsQuery.data as any)?.points[0]?.user_referral_points ?? 0;
+
+	const totalPoints =
+		(getUserPointsQuery.data as any)?.points[0]?.total_points ?? 0;
+
+	const isPointsLoading = getUserPointsQuery.isLoading;
+
 
 	const ratingChanged = (newRating: any) => {
 		// console.log(newRating);
@@ -103,7 +113,7 @@ const AccountAction = ({
 				},
 			},
 		);
-		
+
 	};
 
 	const welcomeMessage = getWelcomeMessage();
@@ -157,9 +167,9 @@ const AccountAction = ({
 
 						<span className="text-xs text-gray-55">
 							{copied ===
-							(selectedUser.active_role?.name === "basic_user"
-								? selectedUser.phone_num
-								: selectedUser?.user?.phone_num)
+								(selectedUser.active_role?.name === "basic_user"
+									? selectedUser.phone_num
+									: selectedUser?.user?.phone_num)
 								? "Copied!"
 								: "Click to copy"}
 						</span>
@@ -376,7 +386,7 @@ const AccountAction = ({
 						{selectedUser.active_role?.name === "basic_user"
 							? `${selectedUser.country || ""} ${selectedUser.state || ""}`.trim()
 							: `${selectedUser?.user?.country || ""} ${selectedUser?.user?.state || ""}`.trim() ||
-								"Location not specified"}
+							"Location not specified"}
 					</p>
 
 					<div className="flex items-center py-3 justify-center flex-col">
@@ -396,9 +406,9 @@ const AccountAction = ({
 
 						<span className="text-xs text-gray-55">
 							{copied ===
-							(selectedUser.active_role?.name === "basic_user"
-								? `${selectedUser.country || ""} ${selectedUser.state || ""}`.trim()
-								: `${selectedUser?.user?.country || ""} ${selectedUser?.user?.state || ""}`.trim())
+								(selectedUser.active_role?.name === "basic_user"
+									? `${selectedUser.country || ""} ${selectedUser.state || ""}`.trim()
+									: `${selectedUser?.user?.country || ""} ${selectedUser?.user?.state || ""}`.trim())
 								? "Copied!"
 								: "Click to copy"}
 						</span>
@@ -597,6 +607,70 @@ const AccountAction = ({
 			)}
 
 			{selectedAction === "switch-profile" && null}
+
+			{/* ===================== USER POINTS SECTION ===================== */}
+			{selectedAction === "point" && (
+				<>
+
+
+					{/* TITLE */}
+					<p className="text-gray-55 text-2xl font-bold">
+						Your Reward Points
+					</p>
+
+					<p className="text-sm mt-2 w-72 m-auto text-gray-55">
+						Earn points through engagement and successful referrals on VetKonect.
+					</p>
+
+					{/* POINTS DISPLAY */}
+					<div className="mt-6 space-y-3 w-full max-w-xs mx-auto">
+
+						{isPointsLoading ? (
+							<div className="flex justify-center py-4">
+								<Loader2 className="w-5 h-5 animate-spin" />
+							</div>
+						) : (
+							<>
+								{/* Engagement Points */}
+								<div className="flex justify-between items-center border rounded-lg px-4 py-3">
+									<span className="text-sm text-gray-600">
+										Engagement Points
+									</span>
+									<span className="font-bold text-primary-500">
+										{engagementPoints} pts
+									</span>
+								</div>
+
+								{/* Referral Points */}
+								<div className="flex justify-between items-center border rounded-lg px-4 py-3">
+									<span className="text-sm text-gray-600">
+										Referral Points
+									</span>
+									<span className="font-bold text-primary-500">
+										{referralPoints} pts
+									</span>
+								</div>
+
+								{/* Total Points */}
+								<div className="flex justify-between items-center border-2 border-primary-400 bg-primary-50 rounded-lg px-4 py-3">
+									<span className="text-sm font-semibold text-gray-700">
+										Total Points
+									</span>
+									<span className="text-lg font-bold text-primary-600">
+										{totalPoints} pts
+									</span>
+								</div>
+							</>
+						)}
+					</div>
+
+					{/* FOOTER NOTE */}
+					<p className="text-xs text-gray-500 mt-5 w-72 m-auto">
+						Invite friends and stay active to earn more rewards and unlock future benefits.
+					</p>
+				</>
+			)}
+			{/* ===================== END POINTS SECTION ===================== */}
 		</div>
 	);
 };

@@ -206,13 +206,19 @@ export default function BlogReaderClient({ slug }: BlogReaderClientProps) {
         </div>
 
         {activePost.blog.picture_url && (
-          <div className="relative w-full h-72 md:h-96 rounded-xl overflow-hidden mb-10">
+          <div className="relative w-full h-64 sm:h-72 md:h-96 lg:h-[420px] xl:h-[500px] rounded-xl overflow-hidden mb-10">
             <Image
               src={activePost.blog.picture_url}
               alt={activePost.blog.title}
               fill
-              className="object-cover"
               priority
+              className="object-cover"
+              sizes="
+        (max-width: 640px) 100vw,
+        (max-width: 768px) 100vw,
+        (max-width: 1024px) 100vw,
+        1200px
+      "
             />
           </div>
         )}
