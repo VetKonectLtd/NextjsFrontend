@@ -22,16 +22,16 @@ export interface VetProfileProps {
     location: string;
     image: StaticImageData | string | any;
     rating: number;
-    specialty?:string;
+    specialty?: string;
     totalRatings: number;
     isAvailable: boolean;
     isVerified?: boolean;
-    address?:string;
-    role?:string;
-    latitude?:string;
-    longitude?:string;
-    state?:string;
-    country?:string;
+    address?: string;
+    role?: string;
+    latitude?: string;
+    longitude?: string;
+    state?: string;
+    country?: string;
     email?: string;
     phone?: string;
     userId?: string;
@@ -48,10 +48,16 @@ const VetProfile: React.FC<VetProfileProps> = ({
     address,
     isAvailable,
     role,
+    location,
     isVerified,
     onViewProfile,
     onContact
 }) => {
+
+    const displayAddress = address || location || 'No address available';
+    const truncatedAddress = displayAddress.length > 15 ? `${displayAddress.slice(0, 15)}...` : displayAddress;
+
+
     const renderStars = (rating: number) => {
         const hasRating = rating > 0;
 
@@ -70,7 +76,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
         }
     };
 
-    const handleContact = (type: 'phone' | 'message' | 'mail') => {
+    const handleContact = (type: 'phone' | 'message' | 'mail' | 'location') => {
         if (onContact) {
             onContact(id, type);
         }
@@ -144,7 +150,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
             <div className="p-4">
                 {/* Name */}
                 <h3 className="font-nunito font-semibold text-lg text-gray-900 mb-1">
-                   {role == "Veterinarian" && "Dr."}  {name && name.length > 10 ? `${name.slice(0, 10)}...` : name || 'Untitled'}
+                    {role == "Veterinarian" && "Dr."}  {name && name.length > 10 ? `${name.slice(0, 10)}...` : name || 'Untitled'}
                 </h3>
 
                 {/* Location */}
@@ -157,7 +163,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
                         className="w-3 h-3 text-gray-500"
                     />
                     <span className="text-sm text-gray-600 font-nunito">
-                        {address && address.length > 15 ? `${address.slice(0, 15)}...` : address || 'Location not provided'}
+                        {truncatedAddress}
                     </span>
                 </div>
 
