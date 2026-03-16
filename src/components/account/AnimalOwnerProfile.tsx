@@ -12,6 +12,7 @@ import {
 	MessagesSquareIcon,
 	ImageIcon,
 	Users,
+	Coins,
 } from "lucide-react";
 import { AuthBg } from "@/app/assets/images";
 import { AccountAction } from "./";
@@ -45,7 +46,7 @@ const AnimalOwnerProfile = ({
 	const { data: user, refetch: refetchUser } = useCurrentUser(true);
 	const { useAddPaymentDetails } = usePaymentService();
 	const paymentDetailsMutation = useAddPaymentDetails();
-	
+
 
 	const updateProfileMutation = useUpdateProfile();
 	const apiProfile = (user as any)?.profile;
@@ -563,13 +564,13 @@ const AnimalOwnerProfile = ({
 					Back
 				</button>
 				{apiUser?.role !== "basic_user" &&
-				<button
-					onClick={onToggleEdit}
-					className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
-				>
-					<Edit className="w-4 h-4 mr-1" />
-					Edit
-				</button>}
+					<button
+						onClick={onToggleEdit}
+						className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
+					>
+						<Edit className="w-4 h-4 mr-1" />
+						Edit
+					</button>}
 			</div>
 
 			{/* Profile Card */}
@@ -679,24 +680,24 @@ const AnimalOwnerProfile = ({
 							backendRole === ROLE.PARAPROFESSIONAL ||
 							backendRole === ROLE.CLINIC ||
 							backendRole === ROLE.VENDOR) && (
-							<button
-								onClick={() => handleContact("1", "media")}
-								className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
-							>
-								<span
-									className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+								<button
+									onClick={() => handleContact("1", "media")}
+									className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
 								>
-									<ImageIcon
-										size={14}
-										color="#1D2432"
-										className="sm:w-4 sm:h-4"
-									/>
-								</span>
-								<span className="text-[10px] sm:text-xs text-center">
-									Media
-								</span>
-							</button>
-						)}
+									<span
+										className={`bg-white border ${selectedAction == "media" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+									>
+										<ImageIcon
+											size={14}
+											color="#1D2432"
+											className="sm:w-4 sm:h-4"
+										/>
+									</span>
+									<span className="text-[10px] sm:text-xs text-center">
+										Media
+									</span>
+								</button>
+							)}
 
 						<button
 							onClick={() => handleContact("1", "mail")}
@@ -746,6 +747,18 @@ const AnimalOwnerProfile = ({
 								<Users size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
 							</span>
 							<span className="text-[10px] sm:text-xs text-center">Invite</span>
+						</button>
+
+						<button
+							onClick={() => handleContact("6", "point")}
+							className="flex flex-col justify-center items-center gap-1.5 sm:gap-2 text-gray-500 min-w-[50px] sm:min-w-[60px]"
+						>
+							<span
+								className={`bg-white border ${selectedAction == "point" && "border-gray-55"} hover:border-gray-55 cursor-pointer border-gray-225 shadow-md rounded-full p-1.5 sm:p-2 flex items-center justify-center`}
+							>
+								<Coins size={14} color="#1D2432" className="sm:w-4 sm:h-4" />
+							</span>
+							<span className="text-[10px] sm:text-xs text-center">Point</span>
 						</button>
 
 						<button

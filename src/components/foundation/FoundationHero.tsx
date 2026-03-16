@@ -34,6 +34,7 @@ export function FoundationHero() {
     const [current, setCurrent] = useState(0);
     const [partnerOpen, setPartnerOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [donateOpen, setDonateOpen] = useState(false);
 
     /* ---------------- React Hook Form ---------------- */
     const {
@@ -100,13 +101,13 @@ export function FoundationHero() {
                 {/* CTA */}
                 <div className="absolute inset-0 pt-32 flex items-center justify-center z-10">
                     <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-                        <Link
-                            href="#"
+                        <button
+                            onClick={() => setDonateOpen(true)}
                             className="inline-flex items-center gap-2 bg-primary-400 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition"
                         >
                             <Heart className="h-4 w-4" />
                             Donate Now
-                        </Link>
+                        </button>
 
                         <button
                             onClick={() => setPartnerOpen(true)}
@@ -118,7 +119,7 @@ export function FoundationHero() {
                     </div>
                 </div>
 
-                {/* Dots */} 
+                {/* Dots */}
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
                     {slides.map((_, i) => (
                         <button
@@ -199,6 +200,80 @@ export function FoundationHero() {
                 </div >
             )
             }
+
+            {donateOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setDonateOpen(false)}
+                    />
+
+                    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10">
+                        {/* Header */}
+                        <div className="bg-primary-400 rounded-t-2xl px-6 py-5 flex justify-between items-start">
+                            <div>
+                                <h2 className="text-white font-bold text-xl">Donate Now</h2>
+                                <p className="text-white/70 text-sm">
+                                    Your support changes lives
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setDonateOpen(false)}
+                                className="text-white/70 hover:text-white"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {/* Bank Details */}
+                        <div className="p-6 space-y-4">
+                            <p className="text-gray-500 text-sm text-center">
+                                Make a transfer to any of the accounts below and help us continue our mission for animal welfare.
+                            </p>
+
+                            {/* Account 1 */}
+                            <div className="p-4 rounded-xl border border-gray-200 space-y-2">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <div className="w-8 h-8 rounded-full bg-primary-400/10 flex items-center justify-center flex-shrink-0">
+                                        <Heart className="h-4 w-4 text-primary-400" />
+                                    </div>
+                                    <p className="font-semibold text-gray-900 text-sm">First Bank</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-1 text-sm">
+                                    <p className="text-gray-400">Account Name</p>
+                                    <p className="text-gray-900 font-medium">Vetkonect Foundation</p>
+                                    <p className="text-gray-400">Account Number</p>
+                                    <p className="text-gray-900 font-medium tracking-wider">1234567890</p>
+                                </div>
+                            </div>
+
+                            {/* Account 2 */}
+                            <div className="p-4 rounded-xl border border-gray-200 space-y-2">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <div className="w-8 h-8 rounded-full bg-primary-400/10 flex items-center justify-center flex-shrink-0">
+                                        <Heart className="h-4 w-4 text-primary-400" />
+                                    </div>
+                                    <p className="font-semibold text-gray-900 text-sm">GTBank</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-1 text-sm">
+                                    <p className="text-gray-400">Account Name</p>
+                                    <p className="text-gray-900 font-medium">Vetkonect Foundation</p>
+                                    <p className="text-gray-400">Account Number</p>
+                                    <p className="text-gray-900 font-medium tracking-wider">0987654321</p>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setDonateOpen(false)}
+                                className="w-full mt-2 py-3 rounded-xl border border-gray-200 text-gray-500 text-sm font-medium hover:bg-gray-50 transition"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* {partnerOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div
