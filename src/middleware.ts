@@ -5,8 +5,8 @@ const protectedRoutes = ["/dashboard"];
 const authPages = ["/login", "/signup", "/reset-password", "/success"];
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
+  const { pathname, search } = request.nextUrl;
+  
   // ✅ get token from cookies only
   const token = request.cookies.get("auth-token")?.value;
 
@@ -18,7 +18,16 @@ export function middleware(request: NextRequest) {
   );
 
   if (isProtectedRoute && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // Build the return URL with the full path including query parameters
+    // DON'T encode it here - let Next.js handle the encoding
+    const returnUrl = pathname + search;
+    
+    // Create login URL with returnUrl parameter
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("returnUrl", returnUrl);
+    
+    
+    return NextResponse.redirect(loginUrl);
   }
 
   // -------------------------
@@ -30,9 +39,17 @@ export function middleware(request: NextRequest) {
   );
 
   if (isAuthPage && token) {
-    return NextResponse.redirect(
-      new URL("/dashboard/vet-vendor", request.url)
-    );
+    // Check if there's a returnUrl on the auth page
+    const returnUrl = request.nextUrl.searchParams.get("returnUrl");
+    
+    if (returnUrl) {
+      // Don't decode - it's already properly encoded by Next.js
+      console.log(`✅ Authenticated user with returnUrl, redirecting to: ${returnUrl}`);
+      return NextResponse.redirect(new URL(returnUrl, request.url));
+    }
+    
+    // Otherwise go to default dashboard
+    return NextResponse.redirect(new URL("/dashboard/vet-vendor", request.url));
   }
 
   return NextResponse.next();
@@ -40,13 +57,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-      Run middleware on everything EXCEPT:
-      - api routes
-      - next static files
-      - images
-      - favicon
-    */
     "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };

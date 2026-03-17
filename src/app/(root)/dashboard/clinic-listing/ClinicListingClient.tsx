@@ -71,6 +71,7 @@ export default function ClinicListingClient() {
         });
     };
 
+   
     return (
         <div className="min-h-screen w-11/12 mt-3 m-auto py-10 flex items-center justify-center">
             <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden max-w-6xl w-full">
