@@ -124,7 +124,6 @@ export default function ReaderCommentSection({ id }: { id: string }) {
                 },
             );
         } else if (editingCommentId) {
-            console.log(editingCommentId);
             updateCommentMutation.mutate(
                 { comment: commentText },
                 {
