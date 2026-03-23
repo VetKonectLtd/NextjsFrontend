@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Clinic Listing | Vet Konect",
         description: "Add your veterinary clinic to Vet Konect and connect with pet owners in your area.",
-        url: "https://vetkonect.com/vet-clinic-form",
+        url: "https://www.vetkonect.com/vet-clinic-form",
         siteName: "Vet Konect",
         images: [
             {

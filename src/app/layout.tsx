@@ -37,12 +37,12 @@ export const metadata: Metadata = {
   creator: "Vet Konect",
   publisher: "Vet Konect",
 
-  metadataBase: new URL("https://vetkonect.com"),
+  metadataBase: new URL("https://www.vetkonect.com"),
 
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://vetkonect.com",
+    url: "https://www.vetkonect.com",
     siteName: "Vet Konect",
     title: "Vet Konect | Re-imagining Animal Care Across Africa",
     description:

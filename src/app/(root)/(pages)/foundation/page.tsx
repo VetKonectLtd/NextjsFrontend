@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         siteName: "Vet Konect",
         images: [
             {
-                url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png",
+                url: "https://www.vetkonect.com/images/og-logo.png",
                 width: 1200,
                 height: 630,
                 alt: "Vet Konect Foundation",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
         description:
             "Supporting veterinary professionals, animal welfare, and community development through impactful initiatives.",
         images: [
-            "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png",
+            "https://www.vetkonect.com/images/og-logo.png",
         ],
     },
 

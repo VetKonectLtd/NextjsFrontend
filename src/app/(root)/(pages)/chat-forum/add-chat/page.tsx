@@ -8,15 +8,15 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "New Forum Post | Vet Konect",
 		description: "Create a new forum post and share your thoughts with the community.",
-		url: "https://vetkonect.com/chat-forum/new",
-		images: [{ url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png" }],
+		url: "https://www.vetkonect.com/chat-forum/new",
+		images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
 		type: "website",
 	},
 	twitter: {
 		card: 'summary_large_image',
 		title: "New Forum Post | Vet Konect",
 		description: "Create a new forum post and share your thoughts with the community.",
-		images: [`https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png`],
+		images: [`https://www.vetkonect.com/images/og-logo.png`],
 	},
 };
 

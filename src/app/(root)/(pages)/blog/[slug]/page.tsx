@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: activePost?.blog?.content
           ? activePost.blog.content.replace(/<[^>]*>/g, '').substring(0, 160) + "..."
           : undefined,
-        url: `https://nextjs-frontend-beta-drab.vercel.app/blog/${slug}`,
+        url: `https://www.vetkonect.com/blog/${slug}`,
         images: [
           {
             url: activePost?.blog?.picture_url || "",

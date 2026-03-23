@@ -8,14 +8,14 @@ export const metadata: Metadata = {
     title: "Privacy Policy | Vet Konect",
     description: "Learn more about our privacy practices and how we protect your information.",
     url: "https://vetkonect.com/privacy",
-    images: [{ url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png" }],
+    images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
     type: "website",
   },
   twitter: {
     card: 'summary_large_image',
     title: "Privacy Policy | Vet Konect",
     description: "Learn more about our privacy practices and how we protect your information.",
-    images: [`https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png`],
+    images: [`https://www.vetkonect.com/images/og-logo.png`],
   },
 };
 
