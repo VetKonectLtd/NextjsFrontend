@@ -259,7 +259,7 @@ export default function FeedCalculatorPage() {
         {/* Action Buttons */}
         <div className="space-y-3">
           <Button
-            onClick={() => router.push("http://localhost:3000/dashboard/vet-vendor?category=Vendor")}
+            onClick={() => router.push("/dashboard/vet-vendor?category=Market+Place")}
             className="w-full bg-orange-200 hover:bg-orange-300 text-gray-800 py-3 rounded-lg font-medium transition-colors"
           >
             Contact a Vendor

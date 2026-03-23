@@ -7,6 +7,7 @@ import {
     diseasePredictorSchema,
     availableSymptoms,
     diseasePredictions,
+    animalSpeciesOptions as dummyAnimalSpeciesOptions,
     type DiseasePredictorFormData,
 } from "@/lib/validations/disease-predictor";
 import {
@@ -46,20 +47,21 @@ export default function DiseasePredictorPage() {
     const { useGetSymptom, useGetCategory, usePredictDisease } = useDiseasePredict();
 
     const symptomMutation = useGetSymptom();
-    // Disease predictor API hook
     const diseasePredictorMutation = usePredictDisease();
     const category = useGetCategory(true);
 
 
     const animalSpeciesOptions =
-        (category.data as any)?.categories?.map((item: string) => ({
-            value: item,
-            label: item.charAt(0).toUpperCase() + item.slice(1),
-        })) || [];
+        (category.data as any)?.categories?.length
+            ? (category.data as any).categories.map((item: string) => ({
+                value: item,
+                label: item.charAt(0).toUpperCase() + item.slice(1),
+            }))
+            : dummyAnimalSpeciesOptions;
 
     useEffect(() => {
         if (selectedAnimal) {
-            // clear previous options & selected symptoms
+            setIsDropdownOpen(false);
             setSymptomOptions([]);
             setSelectedSymptoms([]);
             form.setValue("symptoms", []);
@@ -76,9 +78,8 @@ export default function DiseasePredictorPage() {
 
         let list: string[] = [];
 
-        // Fix: Check for symptom (singular) first since that's what your API returns
         if ((data as any)?.symptom && Array.isArray((data as any).symptom)) {
-            list = (data as any).symptom;  // Changed from data.symptoms to data.symptom
+            list = (data as any).symptom;
         } else if (Array.isArray(data)) {
             list = data as string[];
         } else if ((data as any)?.symptoms && Array.isArray((data as any).symptoms)) {
@@ -101,8 +102,6 @@ export default function DiseasePredictorPage() {
         symptom.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-
-
     const form = useForm<DiseasePredictorFormData>({
         resolver: zodResolver(diseasePredictorSchema),
         defaultValues: {
@@ -112,10 +111,8 @@ export default function DiseasePredictorPage() {
         mode: "onChange",
     });
 
-    // Watch form values to trigger re-renders
     const watchedValues = form.watch();
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -129,8 +126,8 @@ export default function DiseasePredictorPage() {
         };
     }, []);
 
+    const isSymptomDropdownDisabled = !selectedAnimal || symptomMutation.isPending;
 
-    // Check if form is valid for submit button
     const isFormValid = () => {
         const values = form.getValues();
         return !!(
@@ -142,29 +139,20 @@ export default function DiseasePredictorPage() {
 
     const onSubmit = (data: any) => {
         try {
-            // Prepare the request payload for the API
             const apiRequest = {
                 category: data.animalSpecies,
                 symptom: data.symptoms,
-                // Optional: add image if uploaded
                 ...(uploadedImage && { image: uploadedImage })
             };
 
-
-            // Call the disease predictor mutation
             diseasePredictorMutation.mutate(apiRequest, {
                 onSuccess: (response) => {
-
-                    // Extract the prediction data from response
-                    // API might return: { prediction: "disease_name" } or { disease: "name" } or { result: "name" }
                     let predictedDisease = "";
-
 
                     if ((response as any)?.response) {
                         predictedDisease = (response as any)?.response;
                     }
 
-                    // Set the prediction result and show results view
                     setPredictionResult({
                         predictedDisease: predictedDisease || "Unable to determine disease",
                         animalSpecies: data.animalSpecies,
@@ -176,7 +164,6 @@ export default function DiseasePredictorPage() {
                 },
                 onError: (error: any) => {
                     console.error("Disease prediction failed:", error);
-                    // Optional: keep form open for retry
                     setShowResults(false);
                 }
             });
@@ -235,7 +222,6 @@ export default function DiseasePredictorPage() {
 
         return (
             <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
-                {/* Results Header */}
                 <div className="text-center mb-8">
                     <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                         Results
@@ -248,7 +234,6 @@ export default function DiseasePredictorPage() {
                     </p>
                 </div>
 
-                {/* Form Data Summary */}
                 <div className="space-y-6 mb-8">
                     <div className="text-center">
                         <p className="text-gray-500 text-sm mb-1">Select Animal Specie</p>
@@ -263,7 +248,6 @@ export default function DiseasePredictorPage() {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="space-y-3">
                     <Button
                         onClick={() => route.push("/dashboard/vet-vendor?category=Veterinarian")}
@@ -286,16 +270,47 @@ export default function DiseasePredictorPage() {
     const renderSymptomSearch = () => {
         return (
             <div className="space-y-4">
-                <FormLabel>Likely Symptoms (Required)</FormLabel>
+                {/* Label with contextual hints */}
+                <FormLabel>
+                    Likely Symptoms (Required)
+                    {!selectedAnimal && (
+                        <span className="ml-2 text-xs text-gray-400 font-normal">
+                            — select a species first
+                        </span>
+                    )}
+                    {selectedAnimal && symptomMutation.isPending && (
+                        <span className="ml-2 text-xs text-blue-500 font-normal animate-pulse">
+                            — loading symptoms...
+                        </span>
+                    )}
+                    {selectedAnimal && symptomMutation.isError && (
+                        <span className="ml-2 text-xs text-red-500 font-normal">
+                            — failed to load symptoms, please try again
+                        </span>
+                    )}
+                </FormLabel>
 
                 {/* Multi-select Dropdown */}
                 <div className="relative" ref={dropdownRef}>
                     <div
-                        className="min-h-[40px] w-full border border-gray-300 rounded-md px-3 py-2 cursor-pointer bg-white focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className={`min-h-[40px] w-full border rounded-md px-3 py-2 transition-colors
+                            ${isSymptomDropdownDisabled
+                                ? "bg-gray-100 cursor-not-allowed opacity-60 border-gray-200"
+                                : "bg-white cursor-pointer border-gray-300 focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500"
+                            }`}
+                        onClick={() => {
+                            if (isSymptomDropdownDisabled) return;
+                            setIsDropdownOpen(!isDropdownOpen);
+                        }}
                     >
                         {selectedSymptoms.length === 0 ? (
-                            <span className="text-gray-500">Select symptoms...</span>
+                            <span className="text-gray-400">
+                                {!selectedAnimal
+                                    ? "Select a species first..."
+                                    : symptomMutation.isPending
+                                        ? "Loading symptoms..."
+                                        : "Select symptoms..."}
+                            </span>
                         ) : (
                             <div className="flex flex-wrap gap-1">
                                 {selectedSymptoms.map((symptom, idx) => (
@@ -319,20 +334,42 @@ export default function DiseasePredictorPage() {
                             </div>
                         )}
                         <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <svg
-                                className={`h-5 w-5 text-gray-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""
-                                    }`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
+                            {symptomMutation.isPending ? (
+                                /* Spinner shown while symptoms are loading */
+                                <svg
+                                    className="h-5 w-5 text-blue-400 animate-spin"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    />
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                                    />
+                                </svg>
+                            ) : (
+                                <svg
+                                    className={`h-5 w-5 text-gray-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            )}
                         </div>
                     </div>
 
                     {/* Dropdown Content */}
-                    {isDropdownOpen && (
+                    {isDropdownOpen && !isSymptomDropdownDisabled && (
                         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
                             {/* Search Input */}
                             <div className="p-3 border-b border-gray-200">
@@ -355,9 +392,7 @@ export default function DiseasePredictorPage() {
 
                             {/* Symptoms List */}
                             <div className="max-h-48 overflow-y-auto">
-                                {symptomMutation.isPending ? (
-                                    <div className="p-3 text-sm text-gray-500">Loading symptoms...</div>
-                                ) : filteredSymptoms.length === 0 ? (
+                                {filteredSymptoms.length === 0 ? (
                                     <div className="p-3 text-sm text-gray-500">No symptoms found</div>
                                 ) : (
                                     filteredSymptoms.map((symptom) => (
@@ -398,7 +433,7 @@ export default function DiseasePredictorPage() {
                     )}
                 </div>
 
-                {selectedSymptoms.length === 0 && (
+                {selectedSymptoms.length === 0 && selectedAnimal && !symptomMutation.isPending && (
                     <p className="text-sm text-red-600">At least one symptom is required</p>
                 )}
             </div>
@@ -419,7 +454,6 @@ export default function DiseasePredictorPage() {
                     </p>
                 </div>
 
-                {/* Conditional Rendering: Form or Results */}
                 {showResults ? (
                     renderResultsView()
                 ) : (
@@ -432,14 +466,28 @@ export default function DiseasePredictorPage() {
                                     name="animalSpecies"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Select Animal Specie (Required)</FormLabel>
+                                            <FormLabel>
+                                                Select Animal Specie (Required)
+                                                {category.isLoading && (
+                                                    <span className="ml-2 text-xs text-blue-500 font-normal animate-pulse">
+                                                        — loading species...
+                                                    </span>
+                                                )}
+                                            </FormLabel>
                                             <Select
                                                 onValueChange={handleAnimalChange}
                                                 value={field.value}
+                                                disabled={category.isLoading}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Select animal species" />
+                                                        <SelectValue
+                                                            placeholder={
+                                                                category.isLoading
+                                                                    ? "Loading species..."
+                                                                    : "Select animal species"
+                                                            }
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -501,7 +549,7 @@ export default function DiseasePredictorPage() {
                                     className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                                     disabled={!isFormValid() || diseasePredictorMutation.isPending}
                                 >
-                                    {diseasePredictorMutation.isPending ? 'Predicting...' : 'Predict'}
+                                    {diseasePredictorMutation.isPending ? "Predicting..." : "Predict"}
                                 </Button>
                             </form>
                         </Form>
