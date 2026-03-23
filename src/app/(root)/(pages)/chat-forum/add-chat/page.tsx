@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "New Forum Post | Vet Konect",
 		description: "Create a new forum post and share your thoughts with the community.",
-		url: "https://vetkonect.com/chat-forum/new",
+		url: "https://www.vetkonect.com/chat-forum/new",
 		images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
 		type: "website",
 	},

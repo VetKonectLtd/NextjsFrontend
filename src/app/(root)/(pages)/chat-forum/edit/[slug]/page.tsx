@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Edit Forum Post | Vet Konect",
     description: "Edit your forum post and update its content.",
-    url: "https://vetkonect.com/chat-forum/edit",
+    url: "https://www.vetkonect.com/chat-forum/edit",
     images: [{ url: `${baseUrl}/images/og-logo.png` }],
     type: "website",
   },
