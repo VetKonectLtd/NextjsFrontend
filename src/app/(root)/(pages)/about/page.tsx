@@ -19,14 +19,14 @@ export const metadata: Metadata = {
 		title: "About Us | Vet Konect",
 		description: "Learn more about our organization and our mission.",
 		url: "https://vetkonect.com/about",
-		images: [{ url: "https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png" }],
+		images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
 		type: "website",
 	},
 	twitter: {
 		card: 'summary_large_image',
 		title: "About Us | Vet Konect",
 		description: "Learn more about our organization and our mission.",
-		images: [`https://nextjs-frontend-beta-drab.vercel.app/images/og-logo.png`],
+		images: [`https://www.vetkonect.com/images/og-logo.png`],
 	},
 };
 

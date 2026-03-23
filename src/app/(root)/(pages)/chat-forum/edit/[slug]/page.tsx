@@ -3,7 +3,7 @@ import ForumChatForm from "@/components/ChatForum/ForumChatForm";
 import { useForumService } from "@/services/forumService";
 import { Metadata } from "next";
 
-const baseUrl = 'https://nextjs-frontend-beta-drab.vercel.app';
+const baseUrl = 'https://www.vetkonect.com';
 
 export const metadata: Metadata = {
 	title: "Edit Forum Post",

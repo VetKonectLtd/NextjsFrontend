@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 		title: "Recent Activities",
 		description:
 			"Track your latest activities and updates on Vet Konect.",
-		url: "https://nextjs-frontend-beta-drab.vercel.app/activities",
+		url: "https://www.vetkonect.com/activities",
 		type: "website",
 	},
 };

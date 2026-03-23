@@ -118,7 +118,7 @@ const AccountAction = ({
 
 	const welcomeMessage = getWelcomeMessage();
 
-	const uniqueInviteLink = `https://nextjs-frontend-beta-drab.vercel.app/signup?invite_code=${selectedUser?.user.invite_code}`;
+	const uniqueInviteLink = `https://www.vetkonect.com/signup?invite_code=${selectedUser?.user.invite_code}`;
 
 	return (
 		<div className="mt-12 pb-3 text-center w-full m-auto text-gray-500 text-sm">

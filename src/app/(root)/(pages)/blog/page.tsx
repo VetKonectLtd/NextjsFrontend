@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import BlogIndexClient from "./BlogIndexClient";
 
 
-const baseUrl = 'https://nextjs-frontend-beta-drab.vercel.app';
+const baseUrl = 'https://www.vetkonect.com';
 
 export const metadata: Metadata = {
 	title: "Blog",

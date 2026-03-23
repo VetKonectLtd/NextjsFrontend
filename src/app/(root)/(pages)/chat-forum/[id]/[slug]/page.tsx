@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: { params: { id: string, slug:
 					url: post.image_url || "",
 				}
 			],
-			url: `https://nextjs-frontend-beta-drab.vercel.app/forum/${id}/${slug}`,
+			url: `https://www.vetkonect.com/forum/${id}/${slug}`,
 		},
 		twitter: {
 			card: 'summary_large_image',

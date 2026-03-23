@@ -320,7 +320,7 @@ const PostDetail = ({ postId, slug }: PostDetailProps) => {
 						<span
 							onClick={() => {
 								const slug = slugify(detail.slug);
-								const link = `https://nextjs-frontend-beta-drab.vercel.app/chat-forum/${detail.id}/${slug}`;
+								const link = `https://www.vetkonect.com/chat-forum/${detail.id}/${slug}`;
 								setShareLink(link);
 								setShareOpen(true);
 							}}

@@ -171,7 +171,7 @@ export default function BlogReaderClient({ slug }: BlogReaderClientProps) {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => {
-                  const link = `https://nextjs-frontend-beta-drab.vercel.app/blog/${activePost.blog.slug}`;
+                  const link = `https://www.vetkonect.com/blog/${activePost.blog.slug}`;
                   setShareLink(link);
                   setShareOpen(true);
                 }}
