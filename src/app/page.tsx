@@ -30,6 +30,7 @@ import { div } from "framer-motion/client";
 import { Button } from "@/components/ui/button";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import GooglePlacesAutocomplete from "@/components/shared/GooglePlacesAutocomplete";
+import TestimonySection from "@/components/homeComponents/TestimonySection";
 
 export default function Home() {
 	// State for selected location from Google Places
@@ -242,6 +243,8 @@ export default function Home() {
 
 			{/* Testimonials Section */}
 			<TestimonialsSection />
+
+			  <TestimonySection />
 
 			{/* Statistics Section */}
 			<StatisticsSection />
