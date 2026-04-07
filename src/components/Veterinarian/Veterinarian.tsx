@@ -8,6 +8,8 @@ import SelectedVet from "./SelectedVetDetail";
 import { useVeterinaryService } from "@/services/veterinaryService";
 import { VetDoctorData, GetAllVetDoctorResponse } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Down } from "@/app/assets/icons";
+import Image from "next/image";
 
 // Generic veterinarian placeholder image URL from Unsplash
 const GENERIC_VET_IMAGE =
@@ -42,24 +44,26 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 	// Cast to actual response type since API returns data directly
 	const data = apiData as unknown as GetAllVetDoctorResponse | undefined;
 
+	// Accumulate pages into allVets — runs only when API data changes
+	useEffect(() => {
+		if (!data?.veterinary_doctors?.data) return;
+		const incoming = data.veterinary_doctors.data;
+		if (currentPage === 1) {
+			setAllVets(incoming);
+		} else {
+			setAllVets((prev) => {
+				const existingIds = new Set(prev.map((v) => v.id));
+				const newOnes = incoming.filter((v: VetDoctorData) => !existingIds.has(v.id));
+				return newOnes.length > 0 ? [...prev, ...newOnes] : prev;
+			});
+		}
+	}, [data, currentPage]);
+
 	// Transform API data to VetProfile props
 	const transformedVets: VetProfileProps[] = useMemo(() => {
-		if (!data?.veterinary_doctors?.data) return [];
+		if (allVets.length === 0) return [];
 
-		// Combine all loaded vets
-		const combinedVets =
-			currentPage === 1
-				? data.veterinary_doctors.data
-				: [...allVets, ...data.veterinary_doctors.data];
-
-		// Update allVets state
-		if (data.veterinary_doctors.data.length > 0 && currentPage > 1) {
-			setAllVets(combinedVets);
-		} else if (currentPage === 1) {
-			setAllVets(data.veterinary_doctors.data);
-		}
-
-		return combinedVets.map((vet: VetDoctorData) => {
+		return allVets.map((vet: VetDoctorData) => {
 			const fullName = `${vet.user.first_name} ${vet.user.last_name}`;
 			const location = `${vet.user.state}, ${vet.user.country}`;
 
@@ -68,9 +72,9 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 			const averageRating =
 				totalRatings > 0
 					? vet.ratings.reduce(
-							(sum: number, r: any) => sum + (r.rating || 0),
-							0,
-						) / totalRatings
+						(sum: number, r: any) => sum + (r.rating || 0),
+						0,
+					) / totalRatings
 					: vet.average_rating;
 
 			return {
@@ -96,7 +100,7 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 				country: vet.user.country,
 			};
 		});
-	}, [data, currentPage, allVets]);
+	}, [allVets]);
 
 	// ---------------------------------------------------
 	// 1️⃣ FILTER VETS WITHIN 50KM RADIUS
@@ -117,8 +121,8 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 			const a =
 				Math.sin(dLat / 2) ** 2 +
 				Math.cos((lat1 * Math.PI) / 180) *
-					Math.cos((lat2 * Math.PI) / 180) *
-					Math.sin(dLon / 2) ** 2;
+				Math.cos((lat2 * Math.PI) / 180) *
+				Math.sin(dLon / 2) ** 2;
 
 			return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		};
@@ -268,10 +272,18 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 								<button
 									onClick={handleLoadMore}
 									disabled={isLoading}
-									className="px-6 py-3 bg-primary-400 text-white rounded-lg font-medium hover:bg-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+									className="mt-9 text-xs md:text-md flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
 								>
-									{isLoading ? "Loading..." : "Load More"}
+									{isLoading ? "Loading more..." : "Loading more"}{" "}
+									<Image
+										src={Down}
+										alt="down"
+										width={120}
+										height={120}
+										className="h-5 w-5 ml-3 animate-bounce object-cover"
+									/>
 								</button>
+
 							</div>
 						)}
 					</>

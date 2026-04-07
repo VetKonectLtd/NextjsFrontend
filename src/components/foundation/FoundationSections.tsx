@@ -3,19 +3,36 @@
 import Image from "next/image";
 import { Hero11, Mission1, Focus1, Focus2, Focus3, Focus4, Focus5, Impact1, Impact2 } from "@/app/assets/foundation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 /* ─── About Us ──────────────────────────────────────────────────────── */
 export function AboutSection() {
     return (
-        <section className="py-16 px-6 bg-[#FFFAF4]">
+        <motion.section
+            className="py-16 px-6 bg-[#FFFAF4]"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+        >
             <div className="md:w-5/6 mx-auto text-center">
-                <h2
+                <motion.h2
                     className="text-xl md:text-3xl font-bold text-gray-900 mb-6"
+                    initial={{ opacity: 0, x: -40 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
                 >
                     About Us
-                </h2>
+                </motion.h2>
 
-                <p className="text-gray-600 text-base md:text-lg leading-relaxed w-full">
+                <motion.p
+                    className="text-gray-600 text-base md:text-lg leading-relaxed w-full"
+                    initial={{ opacity: 0, x: 40 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.65, ease: "easeOut", delay: 0.1 }}
+                >
                     Vetkonect  Animal Welfare & Sustainability Foundation is a nonprofit organization
                     committed to advancing the health and well-being of animals, humans, and the
                     community through evidence-based veterinary interventions, community
@@ -24,26 +41,44 @@ export function AboutSection() {
                     One Health approach to address critical challenges, including wildlife
                     conservation, climate change, animal welfare, antimicrobial resistance
                     (AMR) and the prevention of zoonotic diseases.
-                </p>
+                </motion.p>
             </div>
-        </section>
+        </motion.section>
     );
 }
 
 /* ─── Our Mission ────────────────────────────────────────────────────── */
 export function MissionSection() {
     return (
-        <section className="py-16 px-6 bg-white">
+        <motion.section
+            className="py-16 px-6 bg-white"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+        >
             <div className="md:max-w-6xl mx-auto">
 
-                <h2 className="text-xl md:text-3xl font-bold text-center text-gray-900 mb-10">
+                <motion.h2
+                    className="text-xl md:text-3xl font-bold text-center text-gray-900 mb-10"
+                    initial={{ opacity: 0, x: -40 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                >
                     Our Mission
-                </h2>
+                </motion.h2>
 
                 <div className="grid md:grid-cols-2 gap-12 md:py-9  pb-20 items-center">
 
                     {/* Text */}
-                    <div className="w-full">
+                    <motion.div
+                        className="w-full"
+                        initial={{ opacity: 0, x: -60 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.25 }}
+                        transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+                    >
                         <p className="text-gray-600 text-base md:text-lg leading-relaxed">
                             Established to bridge the gap between veterinary expertise,
                             public health, and environmental sustainability, Vetkonect
@@ -55,94 +90,105 @@ export function MissionSection() {
                             foundation seeks to create a future where humans, animals,
                             and ecosystems thrive together.
                         </p>
-                    </div>
+                    </motion.div>
 
                     {/* Images */}
-                    <div className="relative h-80 w-full">
+                    <motion.div
+                        className="relative h-80 w-full"
+                        initial={{ opacity: 0, x: 60 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.25 }}
+                        transition={{ duration: 0.75, ease: "easeOut", delay: 0.2 }}
+                    >
 
-                        <div className="absolute top-0 right-10  w-56 h-72 rounded-2xl overflow-hidden shadow-xl z-10">
+                        <motion.div
+                            className="absolute top-0 right-10  w-56 h-72 rounded-2xl overflow-hidden shadow-xl z-10"
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.6, delay: 0.25 }}
+                        >
                             <Image
                                 src={Mission1}
                                 alt="Mission"
                                 className="w-full h-full object-cover"
                             />
-                        </div>
+                        </motion.div>
 
-                        <div className="absolute -bottom-20 md:left-36 w-56 h-72 rounded-2xl overflow-hidden shadow-xl z-20">
+                        <motion.div
+                            className="absolute -bottom-20 md:left-36 w-56 h-72 rounded-2xl overflow-hidden shadow-xl z-20"
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.6, delay: 0.35 }}
+                        >
                             <Image
                                 src={Hero11}
                                 alt="Mission"
                                 className="w-full h-full object-cover"
                             />
-                        </div>
+                        </motion.div>
 
-                    </div>
+                    </motion.div>
 
                 </div>
 
             </div>
-        </section>
+        </motion.section>
     );
 }
 
 /* ─── Key Focus Areas ────────────────────────────────────────────────── */
+const focusItems = [
+  { image: Mission1, title: "Wildlife Conservation",                    className: "lg:translate-y-2" },
+  { image: Focus1,   title: "Climate Change & Environmental Sustainability", className: "lg:translate-y-12" },
+  { image: Focus2,   title: "Animal Welfare",                           className: "lg:translate-y-2" },
+  { image: Focus5,   title: "Antimicrobial Resistance (AMR)",           className: "lg:translate-y-20" },
+  { image: Focus4,   title: "Zoonotic Disease Prevention (OHA)",        className: "lg:translate-y-12" },
+  { image: Focus3,   title: "Environment and Capacity Building",        className: "lg:translate-y-2" },
+];
+
 export function FocusAreasSection() {
   return (
-    <section className="py-16 md:py-20 px-4 md:px-6 bg-[#FFFAF4]">
+    <motion.section
+      className="py-16 md:py-20 px-4 md:px-6 bg-[#FFFAF4]"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.6 }}
+    >
       <div className="max-w-6xl mx-auto md:pb-40 pb-7">
 
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-10">
+        <motion.h2
+          className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-10"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           Key Focus Areas
-        </h2>
+        </motion.h2>
 
         {/* GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
-
-          {/* 1 */}
-          <FocusCard
-            image={Mission1}
-            title="Wildlife Conservation"
-            className="lg:translate-y-2"
-          />
-
-          {/* 2 */}
-          <FocusCard
-            image={Focus1}
-            title="Climate Change & Environmental Sustainability"
-            className="lg:translate-y-12"
-          />
-
-          {/* 3 */}
-          <FocusCard
-            image={Focus2}
-            title="Animal Welfare"
-            className="lg:translate-y-2"
-          />
-
-          {/* 4 */}
-          <FocusCard
-            image={Focus5}
-            title="Antimicrobial Resistance (AMR)"
-            className="lg:translate-y-20"
-          />
-
-          {/* 5 */}
-          <FocusCard
-            image={Focus4}
-            title="Zoonotic Disease Prevention (OHA)"
-            className="lg:translate-y-12"
-          />
-
-          {/* 6 */}
-          <FocusCard
-            image={Focus3}
-            title="Environment and Capacity Building"
-            className="lg:translate-y-2"
-          />
-
+          {focusItems.map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.55, delay: Math.min(i * 0.08, 0.35), ease: "easeOut" }}
+            >
+              <FocusCard
+                image={item.image}
+                title={item.title}
+                className={item.className}
+              />
+            </motion.div>
+          ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
@@ -185,14 +231,26 @@ export function ImpactSection() {
                         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
 
                         {/* "Our Impact" — top right */}
-                        <span className="absolute bg-[#1d243242] py-2 w-full text-center top-4 text-white font-bold text-xl drop-shadow-md">
+                        <motion.span
+                            className="absolute bg-[#1d243242] py-2 w-full text-center top-4 text-white font-bold text-xl drop-shadow-md"
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                        >
                             Our Impact
-                        </span>
+                        </motion.span>
 
                         {/* "Benue Livestock Summit" — bottom right */}
-                        <span className="absolute bottom-20 bg-[#1d243242] py-2 rounded-r-md right-4 text-white font-semibold text-xk drop-shadow-md">
+                        <motion.span
+                            className="absolute bottom-20 bg-[#1d243242] py-2 rounded-r-md right-4 text-white font-semibold text-xk drop-shadow-md"
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+                        >
                             Benue Livestock Summit
-                        </span>
+                        </motion.span>
                     </div>
 
                 </section>
@@ -214,18 +272,31 @@ export function ImpactSection() {
 
                     {/* Content */}
                     <div className="relative z-10 flex flex-col bg-black/40 h-full  items-center justify-center my-auto p-6 py-5 text-center px-6">
-                        
-                            <p className="text-white font-bold text-sm md:text-base mb-7 max-w-2xl">
-                                An Outreach carried out at Maiduguri state to sensitize farmers, butchers on
-                                zoonotic diseases like Brucellosis.
-                            </p>
 
+                        <motion.p
+                            className="text-white font-bold text-sm md:text-base mb-7 max-w-2xl"
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.65, ease: "easeOut" }}
+                        >
+                            An Outreach carried out at Maiduguri state to sensitize farmers, butchers on
+                            zoonotic diseases like Brucellosis.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+                        >
                             <Link
                                 href="#"
                                 className="inline-flex items-center gap-2 bg-white text-[#2d6a4f] font-bold px-8 py-3 rounded-full hover:bg-[#d8f3dc] transition-all shadow-lg"
                             >
                                 Donate Now
                             </Link>
+                        </motion.div>
                     </div>
 
                 </section>

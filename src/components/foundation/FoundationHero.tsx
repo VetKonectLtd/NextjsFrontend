@@ -6,6 +6,7 @@ import { X, Heart, Users, Phone, Mail } from "lucide-react";
 import { Focus3, Hero11, Hero12, Hero13 } from "@/app/assets/foundation";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
     { image: Hero11 },
@@ -135,14 +136,27 @@ export function FoundationHero() {
             </section>
 
             {/* ================= PARTNER MODAL ================= */}
+            <AnimatePresence>
             {partnerOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <motion.div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                >
                     <div
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         onClick={() => setPartnerOpen(false)}
                     />
 
-                    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10">
+                    <motion.div
+                        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10"
+                        initial={{ opacity: 0, x: 60, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: 60, scale: 0.95 }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
+                    >
                         {/* Header */}
                         <div className="bg-primary-400 rounded-t-2xl px-6 py-5 flex justify-between items-start">
                             <div>
@@ -196,19 +210,32 @@ export function FoundationHero() {
                                 Close
                             </button>
                         </div>
-                    </div >
-                </div >
-            )
-            }
+                    </motion.div>
+                </motion.div>
+            )}
+            </AnimatePresence>
 
+            <AnimatePresence>
             {donateOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <motion.div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                >
                     <div
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         onClick={() => setDonateOpen(false)}
                     />
 
-                    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10">
+                    <motion.div
+                        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10"
+                        initial={{ opacity: 0, x: -60, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: -60, scale: 0.95 }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
+                    >
                         {/* Header */}
                         <div className="bg-primary-400 rounded-t-2xl px-6 py-5 flex justify-between items-start">
                             <div>
@@ -270,9 +297,10 @@ export function FoundationHero() {
                                 Close
                             </button>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             )}
+            </AnimatePresence>
 
             {/* {partnerOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

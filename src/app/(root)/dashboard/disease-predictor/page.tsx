@@ -515,7 +515,7 @@ export default function DiseasePredictorPage() {
                                     )}
                                 />
 
-                                {/* Image Upload */}
+                                {/*
                                 <div className="space-y-2">
                                     <FormLabel>Add Image (Optional)</FormLabel>
                                     <div
@@ -542,6 +542,7 @@ export default function DiseasePredictorPage() {
                                         className="hidden"
                                     />
                                 </div>
+                                */}
 
                                 {/* Submit Button */}
                                 <Button
