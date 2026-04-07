@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeftIcon, ArrowRightIcon, Copy, Link, Send, Smile, X} from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon, Copy, Link, Send, Smile, X } from "lucide-react";
 import { VetProfileProps } from "../shared/VetProfile";
 import Image from "next/image";
 import { Hand, StarFill } from "@/app/assets/icons";
@@ -9,6 +9,7 @@ import ReactStars from "react-stars";
 import { useRatingService } from "@/services/ratingService";
 import { useVeterinaryService } from "@/services/veterinaryService";
 import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
+import { useAuthStore } from "@/store/authStore";
 
 interface VeterinarianProps {
 	selectedVet: VetProfileProps | null;
@@ -26,13 +27,18 @@ const VetAccount = ({
 	const { useRating } = useRatingService();
 	const id = selectedVet?.id as any;
 	const role = selectedVet?.role as any;
-	
+
+	const currentUser = useAuthStore((state) => state.user);
+	const currentUserId = currentUser?.id?.toString?.();
+	const isOwnAccount = currentUserId === selectedVet?.userId?.toString();
+
 
 	const { useGetVetDoctorById } = useVeterinaryService();
 	const { useGetVetParaById } = useVeterinaryParaprofessionalService();
 
-	const { data: getVetDotors } = useGetVetDoctorById(true, id);
-	const { data: getVetPara } = useGetVetParaById(true, id);
+	const shouldFetchMedia = selectedAction === "media" && Boolean(id);
+	const { data: getVetDotors } = useGetVetDoctorById(shouldFetchMedia, id);
+	const { data: getVetPara } = useGetVetParaById(shouldFetchMedia, id);
 	const [activeImage, setActiveImage] = useState<number | null>(null);
 
 	const media =
@@ -159,7 +165,7 @@ const VetAccount = ({
 												onClick={() => setActiveImage((prev) => prev! - 1)}
 												className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow"
 											>
-												<ArrowLeftIcon size={16}/>
+												<ArrowLeftIcon size={16} />
 											</button>
 										)}
 
@@ -169,7 +175,7 @@ const VetAccount = ({
 												onClick={() => setActiveImage((prev) => prev! + 1)}
 												className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow"
 											>
-												<ArrowRightIcon size={16}/>
+												<ArrowRightIcon size={16} />
 											</button>
 										)}
 									</div>
@@ -276,20 +282,28 @@ const VetAccount = ({
 						/>{" "}
 					</div>{" "}
 					<p className="text-gray-55 text-2xl font-bold">User Feedback</p>{" "}
-					<p className="text-sm mt-2 w-60 m-auto text-gray-55 font-normal ">
-						{" "}
-						We would like for you to rate this user on a scale of 1 to 5{" "}
-					</p>
-					<div className="flex justify-center items-center mt-3">
-						<ReactStars
-							count={5}
-							value={selectedVet?.rating || 0}
-							onChange={ratingChanged}
-							size={24}
-							color2={"#ffd700"}
-							half={false}
-						/>
-					</div>
+					{isOwnAccount ? (
+						<p className="text-sm mt-2 w-60 m-auto text-red-500 font-medium">
+							You cannot rate your own account.
+						</p>
+					) : (
+						<>
+							<p className="text-sm mt-2 w-60 m-auto text-gray-55 font-normal ">
+								{" "}
+								We would like for you to rate this user on a scale of 1 to 5{" "}
+							</p>
+							<div className="flex justify-center items-center mt-3">
+								<ReactStars
+									count={5}
+									value={selectedVet?.rating || 0}
+									onChange={ratingChanged}
+									size={24}
+									color2={"#ffd700"}
+									half={false}
+								/>
+							</div>
+						</>
+					)}
 				</>
 			)}
 		</div>

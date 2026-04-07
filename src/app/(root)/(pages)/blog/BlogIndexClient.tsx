@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Eye, MessagesSquare, Search, ThumbsUp } from "lucide-react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useBlogService } from "@/services/blogServie";
 import { BlogChat } from "@/types";
@@ -68,15 +69,27 @@ export default function BlogIndexClient() {
         <>
             <div className="max-w-7xl mx-auto px-5 pt-28 pb-20">
                 {/* Header */}
-                <div className="text-center mb-10">
+                <motion.div
+                    className="text-center mb-10"
+                    initial={{ opacity: 0, x: -40 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6 }}
+                >
                     <h1 className="text-4xl font-bold text-gray-800">Vet Konect Blog</h1>
                     <p className="text-gray-500 mt-2">
                         Latest insights on animal health, veterinary practice & innovation
                     </p>
-                </div>
+                </motion.div>
 
                 {/* Search */}
-                <div className="max-w-xl mx-auto mb-12">
+                <motion.div
+                    className="max-w-xl mx-auto mb-12"
+                    initial={{ opacity: 0, x: 40 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                >
                     <div className="flex items-center border rounded-xl overflow-hidden shadow-sm">
                         <input
                             value={search}
@@ -97,7 +110,7 @@ export default function BlogIndexClient() {
                             {search && ` matching "${search}"`}
                         </p>
                     )}
-                </div>
+                </motion.div>
 
                 {/* Loading */}
                 {isLoading && <BlogIndexSkeleton />}
@@ -123,17 +136,21 @@ export default function BlogIndexClient() {
 
                 {/* Blog Grid */}
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredBlogs.map((post) => {
+                    {filteredBlogs.map((post, index) => {
                         // Create clean preview text without HTML
                         const plainText = stripHtmlTags(post.content);
                         const previewText = plainText.slice(0, 120) + (plainText.length > 120 ? '...' : '');
 
                         return (
-                            <article
+                            <motion.article
                                 key={post.id}
                                 onClick={() => router.push(`/blog/${post.slug}`)}
                                 className="cursor-pointer relative bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition group"
                                 aria-label={`Read article: ${post.title}`}
+                                initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true, amount: 0.2 }}
+                                transition={{ duration: 0.55, delay: Math.min(index * 0.05, 0.3) }}
                             >
                                 {/* Image with hover effect */}
                                 <div className="relative h-48 w-full overflow-hidden">
@@ -199,21 +216,34 @@ export default function BlogIndexClient() {
                                         </div>
                                     </div>
                                 </div>
-                            </article>
+                            </motion.article>
                         );
                     })}
                 </div>
 
                 {/* Load more button (optional - if you implement pagination) */}
                 {!isLoading && (data as any)?.next_page_url && (
-                    <div className="text-center mt-12">
+                    <motion.div
+                        className="text-center mt-12"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                    >
                         <button onClick={handleLoadMore} className="px-6 py-3 bg-primary-400 text-white rounded-lg hover:bg-primary-600 transition">
                             Load More Articles
                         </button>
-                    </div>
+                    </motion.div>
                 )}
             </div>
-            <Footer />
+            <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.55 }}
+            >
+                <Footer />
+            </motion.div>
         </>
     );
 }
