@@ -12,14 +12,11 @@ import {
 	ChevronLeft,
 	ImageIcon,
 } from "lucide-react";
-import { VetProfileProps } from "../shared/VetProfile";
+import { VetProfileProps, resolveProfileImageSrc } from "../shared/VetProfile";
 import VetAccount from "./VetAction";
 import { Bg22, StarEmpty, StarFill } from "@/app/assets/icons";
 import { useRouter, useSearchParams } from "next/navigation";
-
-// Generic veterinarian placeholder image URL from Unsplash
-const GENERIC_VET_IMAGE =
-	"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+import Avatar from "react-avatar";
 
 interface VeterinarianProps {
 	handleContact?: (
@@ -72,6 +69,8 @@ const SelectedVet = ({
 		);
 	};
 
+	const profileImageSrc = selectedVet ? resolveProfileImageSrc(selectedVet.image) : null;
+
 	return (
 		<>
 			{selectedVet && (
@@ -110,15 +109,24 @@ const SelectedVet = ({
 						<div className="flex max-w-sm w-full justify-center px-4 relative md:px-0 m-auto flex-col items-center -mt-14">
 							<div className="flex relative">
 								<div className="w-24 h-24 rounded-full border-4 border-green-50 overflow-hidden">
-									<Image
-										src={
-											selectedVet.image.profile_image_url || GENERIC_VET_IMAGE
-										}
-										alt={selectedVet.name}
-										width={150}
-										height={150}
-										className="object-cover w-full h-full"
-									/>
+									{profileImageSrc ? (
+										<Image
+											src={profileImageSrc}
+											alt={selectedVet.name}
+											width={150}
+											height={150}
+											className="object-cover w-full h-full"
+										/>
+									) : (
+										<Avatar
+											name={selectedVet.name || "Vet Konect"}
+											maxInitials={2}
+											round
+											size="96"
+											textSizeRatio={2}
+											className="w-full h-full"
+										/>
+									)}
 								</div>
 								<span className="bg-green-50 h-4 w-4 border-2 border-white absolute bottom-5 right-0 rounded-full"></span>
 								<div className="rounded-full absolute bottom-3 -right-20 flex items-center gap-1">

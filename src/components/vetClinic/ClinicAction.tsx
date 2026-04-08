@@ -8,6 +8,7 @@ import ChatBox from "./ChatBox";
 import ReactStars from "react-stars";
 import { useRatingService } from "@/services/ratingService";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
+import { useAuthService } from "@/services/authService";
 
 interface VetClinicProps {
 	selectedClinic: ClinicProfileProps | null;
@@ -23,23 +24,33 @@ const ClinicAccount = ({
 	const { useGetVetClinicById } = useVeterinaryClinicService();
 	const id = selectedClinic?.id as any;
 
+
+	const { useCurrentUser } = useAuthService();
+	const { data: currentUser } = useCurrentUser(true);
+	const currentUserId = (currentUser as any)?.profile.user_id ?? (currentUser as any)?.data?.id;
+	const isOwnProfile = currentUserId && selectedClinic?.id && String(currentUserId) === selectedClinic?.userId && String(selectedClinic?.id);
+
+	
 	const [copied, setCopied] = useState<string | null>(null);
 	const [activeImage, setActiveImage] = useState<number | null>(null);
 	const { data: getVetClinic } = useGetVetClinicById(true, id);
 
-
-	const media = (getVetClinic as any)?.clinic?.user.media
+	const media = (getVetClinic as any)?.clinic?.user.media;
 
 	const { useRating } = useRatingService();
 
 	const ratingMutation = useRating();
 
+	const clampRating = (value: number) => Math.min(5, Math.max(0, value));
+
 	const ratingChanged = (newRating: any) => {
+		if (isOwnProfile) return;
+		const safeRating = clampRating(Number(newRating) || 0);
 		ratingMutation.mutate(
 			{
 				rateable_id: selectedClinic?.id,
 				rateable_type: "App\\Models\\VeterinaryClinic",
-				rating: newRating,
+				rating: safeRating,
 			},
 			{
 				onSuccess: () => {
@@ -278,16 +289,20 @@ const ClinicAccount = ({
 						{" "}
 						We would like for you to rate this user on a scale of 1 to 5{" "}
 					</p>
-					<div className="flex justify-center items-center mt-3">
-						<ReactStars
-							count={5}
-							value={selectedClinic?.rating || 0}
-							onChange={ratingChanged}
-							size={24}
-							color2={"#ffd700"}
-							half={false}
-						/>
-					</div>
+					{isOwnProfile ? (
+						<p className="text-sm mt-3 text-red-400">You cannot rate your own profile.</p>
+					) : (
+						<div className="flex justify-center items-center mt-3">
+							<ReactStars
+								count={5}
+								value={clampRating(Number(selectedClinic?.rating) || 0)}
+								onChange={ratingChanged}
+								size={24}
+								color2={"#ffd700"}
+								half={false}
+							/>
+						</div>
+					)}
 				</div>
 			)}
 		</div>

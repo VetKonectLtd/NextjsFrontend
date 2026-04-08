@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import VetProfile, { VetProfileProps } from '@/components/shared/VetProfile';
 import SelectedVet from '@/components/Veterinarian/SelectedVetDetail';
-import { Vet1, Vet2, Vet3, Vet4 } from '@/app/assets/images';
 import { ArrowLeft, ArrowRight, MapPin, Loader2 } from 'lucide-react';
 import { useVeterinaryService, transformVetDataToProps, createEmptyVetData } from '@/services/veterinaryService';
 import { GetNearestVetsRequest, ApiResponse } from '@/types';
@@ -35,9 +34,6 @@ const NearYou: React.FC<NearYouProps> = ({
 
   const { useGetNearestVets } = useVeterinaryService();
 
-  // Default images array for cycling through
-  const defaultImages = [Vet1, Vet2, Vet3, Vet4];
-
   // Prepare request for API call
   const apiRequest: GetNearestVetsRequest = userLocation ? {
     latitude: userLocation.latitude,
@@ -62,7 +58,7 @@ const NearYou: React.FC<NearYouProps> = ({
       if (responseData?.veterinary_doctors?.data && Array.isArray(responseData.veterinary_doctors.data)) {
         const vetData = responseData.veterinary_doctors.data;
         // console.log('API Response data:', vetData); // Debug log
-        const transformedVets = transformVetDataToProps(vetData, defaultImages);
+        const transformedVets = transformVetDataToProps(vetData);
         // console.log('Transformed vets:', transformedVets); // Debug log
         setVets(transformedVets);
         setError(null);
@@ -79,7 +75,7 @@ const NearYou: React.FC<NearYouProps> = ({
     } else if (!useRealData && !propVets) {
       // Use sample data for development
       const sampleData = createEmptyVetData();
-      const transformedData = transformVetDataToProps(sampleData.veterinary_doctors.data, defaultImages);
+      const transformedData = transformVetDataToProps(sampleData.veterinary_doctors.data);
       setVets(transformedData);
     }
   }, [apiResponse, apiError, apiLoading, userLocation, useRealData, propVets]);

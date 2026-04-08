@@ -11,9 +11,28 @@ import {
 } from '@/app/assets/icons';
 import { RecOverlay } from '@/app/assets/images';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
+import Avatar from 'react-avatar';
 
-// Generic veterinarian placeholder image URL from Unsplash
-const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+const isValidUrlValue = (value: unknown): value is string =>
+    typeof value === 'string' && value.trim() !== '' && value !== 'null' && value !== 'undefined';
+
+export const resolveProfileImageSrc = (image: StaticImageData | string | any): string | null => {
+    if (isValidUrlValue(image)) {
+        return image;
+    }
+
+    if (image && typeof image === 'object') {
+        if (isValidUrlValue(image.profile_image_url)) {
+            return image.profile_image_url;
+        }
+
+        if (isValidUrlValue(image.src)) {
+            return image.src;
+        }
+    }
+
+    return null;
+};
 
 
 export interface VetProfileProps {
@@ -56,6 +75,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
 
     const displayAddress = address || location || 'No address available';
     const truncatedAddress = displayAddress.length > 15 ? `${displayAddress.slice(0, 15)}...` : displayAddress;
+    const profileImageSrc = resolveProfileImageSrc(image);
 
 
     const renderStars = (rating: number) => {
@@ -87,13 +107,24 @@ const VetProfile: React.FC<VetProfileProps> = ({
             {/* Image Container with overlays */}
             <div className="relative">
                 <div onClick={handleViewProfile} className="aspect-[4/3] cursor-pointer relative overflow-hidden">
-                    <Image
-                        src={image?.profile_image_url || GENERIC_VET_IMAGE}
-                        alt={name}
-                        width={900}
-                        height={900}
-                        className="object-cover w-full h-full"
-                    />
+                    {profileImageSrc ? (
+                        <Image
+                            src={profileImageSrc}
+                            alt={name}
+                            width={900}
+                            height={900}
+                            className="object-cover w-full h-full"
+                        />
+                    ) : (
+                        <Avatar
+                            name={name || 'Vet Konect'}
+                            maxInitials={2}
+                            round={false}
+                            size="100%"
+                            textSizeRatio={2}
+                            className="w-full h-full"
+                        />
+                    )}
                     <div className="absolute inset-0">
                         <Image
                             src={RecOverlay}

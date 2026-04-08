@@ -11,10 +11,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Down } from "@/app/assets/icons";
 import Image from "next/image";
 
-// Generic veterinarian placeholder image URL from Unsplash
-const GENERIC_VET_IMAGE =
-	"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
-
 interface VeterinarianProps {
 	vets?: VetProfileProps[];
 	selectedLocation?: { latitude: number; longitude: number } | null;
@@ -83,7 +79,7 @@ const Veterinarian: React.FC<VeterinarianProps> = ({
 				location: location,
 				role: vet.role,
 				specialty: vet.specialty,
-				image: vet.user.profile || GENERIC_VET_IMAGE,
+				image: vet.user.profile || null,
 				address: vet.address,
 				rating: averageRating,
 				totalRatings: totalRatings,
