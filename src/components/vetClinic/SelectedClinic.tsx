@@ -122,10 +122,10 @@ const SelectedClinic = ({
 								<span className="bg-green-50 h-4 w-4 border-2 border-white absolute bottom-5 right-0 rounded-full"></span>
 								<div className="rounded-full absolute bottom-3 -right-20 flex items-center gap-1">
 									<p className="flex items-center gap-0.5">
-										{renderStars(selectedClinic.rating)}
+										{renderStars(selectedClinic.totalRatings)}
 									</p>
 									<span className="text-xs font-medium text-gray-55 font-nunito">
-										{selectedClinic.rating.toFixed(1)} of 5
+										{selectedClinic.totalRatings.toFixed(1)} of 5
 									</span>
 								</div>
 							</div>
