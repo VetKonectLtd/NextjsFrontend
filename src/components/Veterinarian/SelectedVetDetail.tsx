@@ -45,6 +45,7 @@ const SelectedVet = ({
 	refetchData,
 }: VeterinarianProps) => {
 
+	console.log("Selected Vet Data:", selectedVet); // Debug log to check the data structure
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -131,17 +132,17 @@ const SelectedVet = ({
 								<span className="bg-green-50 h-4 w-4 border-2 border-white absolute bottom-5 right-0 rounded-full"></span>
 								<div className="rounded-full absolute bottom-3 -right-20 flex items-center gap-1">
 									<p className="flex items-center gap-0.5">
-										{renderStars(selectedVet.rating)}
+										{renderStars(selectedVet.totalRatings)}
 									</p>
 									<span className="text-xs font-medium text-gray-55 font-nunito">
-										{selectedVet.rating} of 5
+										{selectedVet.totalRatings} of 5
 									</span>
 								</div>
 							</div>
 
 							<div className="text-center">
 								<h1 className="mt-3 text-lg font-semibold">
-									Dr. {selectedVet.name}
+									{selectedVet.role === "Veterinarian" ? "Dr." : " "} {selectedVet.name}
 								</h1>
 								<p className="text-sm mt-2 text-gray-500">{selectedVet.role}</p>
 							</div>

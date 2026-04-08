@@ -65,6 +65,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
     image,
     rating,
     address,
+    totalRatings,
     isAvailable,
     role,
     location,
@@ -168,10 +169,10 @@ const VetProfile: React.FC<VetProfileProps> = ({
                 <div className="absolute bottom-2 left-2">
                     <div className="rounded-full px-2 py-1 flex items-center gap-1">
                         <div className="flex items-center gap-0.5">
-                            {renderStars(rating)}
+                            {renderStars(totalRatings)}
                         </div>
                         <span className="text-xs font-medium text-white font-nunito">
-                            {rating} of 5
+                            {totalRatings} of 5
                         </span>
                     </div>
                 </div>
