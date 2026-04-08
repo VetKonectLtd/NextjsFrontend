@@ -9,9 +9,6 @@ import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParap
 import { VetParaprofessionalData, GetAllVetParaprofessionalResponse } from "@/types";
 import { address } from "framer-motion/client";
 
-// Generic veterinarian placeholder image URL from Unsplash
-const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
-
 interface VeterinaryParaprofessionalProps {
 	vets?: VetProfileProps[];
 	selectedLocation?: { latitude: number; longitude: number } | null;
@@ -59,7 +56,7 @@ const VeterinaryParaprofessional: React.FC<VeterinaryParaprofessionalProps> = ({
 				id: vpp.id.toString(),
 				name: fullName,
 				location: location,
-				image: vpp.user.profile || GENERIC_VET_IMAGE,
+				image: vpp.user.profile || null,
 				rating: averageRating,
 				role:vpp.role,
 				totalRatings: totalRatings,

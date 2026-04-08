@@ -9,7 +9,7 @@ import ReactStars from "react-stars";
 import { useRatingService } from "@/services/ratingService";
 import { useVeterinaryService } from "@/services/veterinaryService";
 import { useVeterinaryParaprofessionalService } from "@/services/veterinaryParaprofessional";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthService } from "@/services/authService";
 
 interface VeterinarianProps {
 	selectedVet: VetProfileProps | null;
@@ -28,17 +28,17 @@ const VetAccount = ({
 	const id = selectedVet?.id as any;
 	const role = selectedVet?.role as any;
 
-	const currentUser = useAuthStore((state) => state.user);
-	const currentUserId = currentUser?.id?.toString?.();
+	const { useCurrentUser } = useAuthService();
+	const { data: currentUser } = useCurrentUser(true);
+	const currentUserId =
+		(currentUser as any)?.profile?.user_id?.toString?.();
 	const isOwnAccount = currentUserId === selectedVet?.userId?.toString();
-
 
 	const { useGetVetDoctorById } = useVeterinaryService();
 	const { useGetVetParaById } = useVeterinaryParaprofessionalService();
 
-	const shouldFetchMedia = selectedAction === "media" && Boolean(id);
-	const { data: getVetDotors } = useGetVetDoctorById(shouldFetchMedia, id);
-	const { data: getVetPara } = useGetVetParaById(shouldFetchMedia, id);
+	const { data: getVetDotors } = useGetVetDoctorById(true, id);
+	const { data: getVetPara } = useGetVetParaById(true, id);
 	const [activeImage, setActiveImage] = useState<number | null>(null);
 
 	const media =
@@ -55,12 +55,16 @@ const VetAccount = ({
 			? "App\\Models\\VeterinaryDoctor"
 			: "App\\Models\\VeterinaryParaprofessional";
 
+	const clampRating = (value: number) => Math.min(5, Math.max(0, value));
+
 	const ratingChanged = (newRating: any) => {
+		const safeRating = clampRating(Number(newRating) || 0);
+
 		ratingMutation.mutate(
 			{
 				rateable_id: selectedVet?.id,
 				rateable_type: userType,
-				rating: newRating,
+				rating: safeRating,
 			},
 			{
 				onSuccess: () => {
@@ -295,7 +299,7 @@ const VetAccount = ({
 							<div className="flex justify-center items-center mt-3">
 								<ReactStars
 									count={5}
-									value={selectedVet?.rating || 0}
+									value={clampRating(Number(selectedVet?.rating) || 0)}
 									onChange={ratingChanged}
 									size={24}
 									color2={"#ffd700"}

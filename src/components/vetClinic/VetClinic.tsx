@@ -6,33 +6,32 @@ import VetProfileSkeleton from "@/components/shared/VetProfileSkeleton";
 import EmptyState from "@/components/shared/EmptyState";
 import SelectedClinic from "./SelectedClinic";
 import { useVeterinaryClinicService } from "@/services/veterinaryClinicService";
-import { VetClinicData, GetAllVetClinicResponse } from "@/types";
+import { GetAllVetClinicResponse } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-
-// Generic veterinarian placeholder image URL from Unsplash
-const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+import { Down } from "@/app/assets/icons";
+import Image from "next/image";
 
 interface VetClinicProps {
     clinics?: ClinicProfileProps[];
     selectedLocation?: { latitude: number; longitude: number } | null;
 }
 
-const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
+const VetClinic: React.FC<VetClinicProps> = ({ selectedLocation }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [allClinics, setAllClinics] = useState<VetClinicData[]>([]);
+    const [allClinics, setAllClinics] = useState<ClinicProfileProps[]>([]);
     const [selectedClinic, setSelectedClinic] = useState<ClinicProfileProps | null>(null);
     const [selectedAction, setSelectedAction] = useState<string>("default");
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const { useGetAllVetClinic, useGetClinicAndVetClinic } = useVeterinaryClinicService();
+    const { useGetClinicAndVetClinic } = useVeterinaryClinicService();
 
-    const { data: apiData, isLoading, error , refetch: refetchData} = useGetClinicAndVetClinic(true, currentPage);
+    const { data: apiData, isLoading, error, refetch: refetchData } = useGetClinicAndVetClinic(true, currentPage);
     console.log("clinicAndVetReq", apiData);
     // const { data: apiData, isLoading, error , refetch: refetchData} = useGetAllVetClinic(currentPage);
-    
+
     // Cast to actual response type since API returns data directly
-    const data:any = apiData as unknown as GetAllVetClinicResponse | undefined;
+    const data: any = apiData as unknown as GetAllVetClinicResponse | undefined;
 
 
     /*
@@ -41,199 +40,189 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
   ---------------------------------------------------
   */
 
-  const mergedClinics = useMemo(() => {
-    if (!data) return [];
+    const mergedClinics = useMemo<ClinicProfileProps[]>(() => {
+        if (!data) return [];
 
-    const clinics = data?.clinic?.data || [];
-    const vetClinics = data?.vetClinic?.data || [];
+        const clinics = data?.clinic?.data || [];
+        const vetClinics = data?.vetClinic?.data || [];
 
-    return [...clinics, ...vetClinics];
-  }, [data]);
+        const formattedClinics: ClinicProfileProps[] = clinics.map((clinic: any) => ({
+            id: `clinic-${clinic.id}`,
+            name: clinic.clinic_name,
+            location: clinic.location,
+            role: "Clinic",
+            specialty: clinic.clinic_speciality,
+            image: clinic.picture_url || null,
 
-  /*
-  ---------------------------------------------------
-  PAGINATION MERGE
-  ---------------------------------------------------
-  */
+            rating: 0,
+            totalRatings: 0,
 
-  useEffect(() => {
-    if (!mergedClinics.length) return;
+            address: clinic.location,
+            isAvailable: clinic.availability == 1,
+            isVerified: clinic.status === "confirm_pending" ? false : true,
 
-    setAllClinics((prev) => {
-      const newClinics = mergedClinics.filter(
-        (c) => !prev.some((p) => p.id === c.id)
-      );
+            email: clinic.email,
+            phone: clinic.phone_number,
+            userId: clinic.user_id,
 
-      return currentPage === 1 ? mergedClinics : [...prev, ...newClinics];
-    });
-  }, [mergedClinics, currentPage]);
+            latitude: clinic.latitude,
+            longitude: clinic.longitude,
 
-  
+            state: "",
+            country: "",
+        }));
 
-   /*
-  ---------------------------------------------------
-  TRANSFORM DATA
-  ---------------------------------------------------
-  */
+        const formattedVetClinics: ClinicProfileProps[] = vetClinics.map(
+            (clinic: any) => {
+                const totalRatings = clinic.ratings?.length || 0;
 
- const transformedClinics: ClinicProfileProps[] = useMemo(() => {
-  if (!data) return [];
+                const avgRating =
+                    totalRatings > 0
+                        ? clinic.ratings.reduce(
+                            (sum: number, r: any) => sum + (r.rating || 0),
+                            0
+                        ) / totalRatings
+                        : clinic.average_rating;
 
-  const clinics = data?.clinic?.data || [];
-  const vetClinics = data?.vetClinic?.data || [];
+                return {
+                    id: `vet-${clinic.id}`,
+                    name: clinic.name_of_clinic,
+                    location: clinic.address,
+                    role: clinic.role,
+                    specialty: clinic.specialty,
+                    image: clinic?.user?.profile?.profile_image_url || null,
 
-  const formattedClinics: ClinicProfileProps[] = clinics.map((clinic: any) => ({
-    id: `clinic-${clinic.id}`,
-    name: clinic.clinic_name,
-    location: clinic.location,
-    role: "Clinic",
-    specialty: clinic.clinic_speciality,
-    image: clinic.picture_url || GENERIC_VET_IMAGE,
+                    rating: avgRating,
+                    totalRatings,
 
-    rating: 0,
-    totalRatings: 0,
+                    address: clinic.address,
+                    isAvailable: clinic.availability == 1,
+                    isVerified: clinic.is_approved == 1,
 
-    address: clinic.location,
-    isAvailable: clinic.availability == 1,
-    isVerified: clinic.status === "confirm_pending" ? false : true,
+                    email: clinic?.user?.email,
+                    phone: clinic.contact_num,
+                    userId: clinic.user_id,
 
-    email: clinic.email,
-    phone: clinic.phone_number,
-    userId: clinic.user_id,
+                    latitude: clinic.latitude,
+                    longitude: clinic.longitude,
 
-    latitude: clinic.latitude,
-    longitude: clinic.longitude,
+                    state: clinic?.user?.state,
+                    country: clinic?.user?.country,
+                };
+            }
+        );
 
-    state: "",
-    country: "",
-  }));
+        return [...formattedClinics, ...formattedVetClinics];
+    }, [data]);
 
-  const formattedVetClinics: ClinicProfileProps[] = vetClinics.map(
-    (clinic: any) => {
-      const totalRatings = clinic.ratings?.length || 0;
+    /*
+    ---------------------------------------------------
+    PAGINATION MERGE
+    ---------------------------------------------------
+    */
 
-      const avgRating =
-        totalRatings > 0
-          ? clinic.ratings.reduce(
-              (sum: number, r: any) => sum + (r.rating || 0),
-              0
-            ) / totalRatings
-          : clinic.average_rating;
-          
-      return {
-        id: `vet-${clinic.id}`,
-        name: clinic.name_of_clinic,
-        location: clinic.address,
-        role: clinic.role,
-        specialty: clinic.specialty,
+    useEffect(() => {
+        if (!mergedClinics.length) return;
 
-        image:
-          clinic?.user?.profile?.profile_image_url ||
-          GENERIC_VET_IMAGE,
+        setAllClinics((prev) => {
+            const newClinics = mergedClinics.filter(
+                (c) => !prev.some((p) => p.id === c.id)
+            );
 
-        rating: avgRating,
-        totalRatings,
+            return currentPage === 1 ? mergedClinics : [...prev, ...newClinics];
+        });
+    }, [mergedClinics, currentPage]);
 
-        address: clinic.address,
-        isAvailable: clinic.availability == 1,
-        isVerified: clinic.is_approved == 1,
 
-        email: clinic?.user?.email,
-        phone: clinic.contact_num,
-        userId: clinic.user_id,
 
-        latitude: clinic.latitude,
-        longitude: clinic.longitude,
+    /*
+   ---------------------------------------------------
+   TRANSFORM DATA
+   ---------------------------------------------------
+   */
 
-        state: clinic?.user?.state,
-        country: clinic?.user?.country,
-      };
-    }
-  );
-
-  return [...formattedClinics, ...formattedVetClinics];
-}, [data]);
+    const transformedClinics: ClinicProfileProps[] = allClinics;
 
 
     // ---------------------------------------------------
-	// 1️⃣ FILTER VETS WITHIN 50KM RADIUS
-	// ---------------------------------------------------
-	const vetsWithinRadius = useMemo(() => {
-		if (!selectedLocation) return transformedClinics;
+    // 1️⃣ FILTER VETS WITHIN 50KM RADIUS
+    // ---------------------------------------------------
+    const vetsWithinRadius = useMemo(() => {
+        if (!selectedLocation) return transformedClinics;
 
-		const R = 6371;
-		const calculateDistance = (
-			lat1: number,
-			lon1: number,
-			lat2: number,
-			lon2: number,
-		) => {
-			const dLat = (lat2 - lat1) * (Math.PI / 180);
-			const dLon = (lon2 - lon1) * (Math.PI / 180);
+        const R = 6371;
+        const calculateDistance = (
+            lat1: number,
+            lon1: number,
+            lat2: number,
+            lon2: number,
+        ) => {
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
 
-			const a =
-				Math.sin(dLat / 2) ** 2 +
-				Math.cos((lat1 * Math.PI) / 180) *
-					Math.cos((lat2 * Math.PI) / 180) *
-					Math.sin(dLon / 2) ** 2;
+            const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos((lat1 * Math.PI) / 180) *
+                Math.cos((lat2 * Math.PI) / 180) *
+                Math.sin(dLon / 2) ** 2;
 
-			return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		};
+            return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        };
 
-		return transformedClinics.filter((clinic) => {
-			if (!clinic.latitude || !clinic.longitude) return false;
+        return transformedClinics.filter((clinic) => {
+            if (!clinic.latitude || !clinic.longitude) return false;
 
-			const dist = calculateDistance(
-				selectedLocation.latitude,
-				selectedLocation.longitude,
-				Number(clinic.latitude),
-				Number(clinic.longitude),
-			);
+            const dist = calculateDistance(
+                selectedLocation.latitude,
+                selectedLocation.longitude,
+                Number(clinic.latitude),
+                Number(clinic.longitude),
+            );
 
-			return dist <= 50;
-		});
-	}, [selectedLocation, transformedClinics]);
+            return dist <= 50;
+        });
+    }, [selectedLocation, transformedClinics]);
 
-	// ---------------------------------------------------
-	// 2️⃣ IF NO VET NEARBY → SEARCH NEARBY STATES
-	// ---------------------------------------------------
-	const vetsInNearbyStates = useMemo(() => {
-		if (!selectedLocation) return [];
+    // ---------------------------------------------------
+    // 2️⃣ IF NO VET NEARBY → SEARCH NEARBY STATES
+    // ---------------------------------------------------
+    const vetsInNearbyStates = useMemo(() => {
+        if (!selectedLocation) return [];
 
-		// get user current state based on geocode (assuming backend stores state)
-		const userState = transformedClinics.find(
-			(v) => v.latitude && v.longitude,
-		)?.state;
+        // get user current state based on geocode (assuming backend stores state)
+        const userState = transformedClinics.find(
+            (v) => v.latitude && v.longitude,
+        )?.state;
 
-		if (!userState) return [];
+        if (!userState) return [];
 
-		// find all vets NOT in the user state but in same country
-		const nearbyStates = transformedClinics.filter(
-			(v) => v.state !== userState && v.country === "Nigeria",
-		);
+        // find all vets NOT in the user state but in same country
+        const nearbyStates = transformedClinics.filter(
+            (v) => v.state !== userState && v.country === "Nigeria",
+        );
 
-		return nearbyStates;
-	}, [selectedLocation, transformedClinics]);
+        return nearbyStates;
+    }, [selectedLocation, transformedClinics]);
 
-	// ---------------------------------------------------
-	// 3️⃣ FINAL RESULT
-	// ---------------------------------------------------
-	const finalFilteredClinic =
-		selectedLocation && vetsWithinRadius.length > 0
-			? vetsWithinRadius
-			: selectedLocation && vetsWithinRadius.length === 0
-				? vetsInNearbyStates
-				: transformedClinics;
+    // ---------------------------------------------------
+    // 3️⃣ FINAL RESULT
+    // ---------------------------------------------------
+    const finalFilteredClinic =
+        selectedLocation && vetsWithinRadius.length > 0
+            ? vetsWithinRadius
+            : selectedLocation && vetsWithinRadius.length === 0
+                ? vetsInNearbyStates
+                : transformedClinics;
 
     useEffect(() => {
-            const vetId = searchParams.get("clinic");
-            if (vetId) {
-                const clinic = transformedClinics.find((v) => v.id === vetId);
-                if (clinic) {
-                    setSelectedClinic(clinic);
-                }
+        const vetId = searchParams.get("clinic");
+        if (vetId) {
+            const clinic = transformedClinics.find((v) => v.id === vetId);
+            if (clinic) {
+                setSelectedClinic(clinic);
             }
-        }, [searchParams, transformedClinics]);
+        }
+    }, [searchParams, transformedClinics]);
 
     const handleViewProfile = (id: string) => {
         const clinic = transformedClinics.find((v) => v.id === id) || null;
@@ -246,7 +235,7 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
         type: "phone" | "media" | "message" | "mail" | "location" | "share" | "rate",
     ) => {
         const clinic = transformedClinics.find((v) => v.id === id);
-        
+
         if (type === "phone" && clinic?.phone) {
             window.location.href = `tel:${clinic.phone}`;
         } else if (type === "mail" && clinic?.email) {
@@ -260,15 +249,15 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
         }
     };
 
-    
+
     const handleLoadMore = () => {
-    if (data?.clinic?.next_page_url || data?.vetClinic?.next_page_url) {
-        setCurrentPage((prev) => prev + 1);
-    }
-};
+        if (data?.clinic?.next_page_url || data?.vetClinic?.next_page_url) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
     const hasMorePages =
-    data?.clinic?.next_page_url || data?.vetClinic?.next_page_url;
+        data?.clinic?.next_page_url || data?.vetClinic?.next_page_url;
 
     return (
         <section
@@ -320,9 +309,16 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
                                 <button
                                     onClick={handleLoadMore}
                                     disabled={isLoading}
-                                    className="px-6 py-3 bg-primary-400 text-white rounded-lg font-medium hover:bg-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="mt-9 text-xs md:text-md flex items-center py-2 px-3 bg-gray-225 font-bold text-gray-55 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
                                 >
-                                    {isLoading ? "Loading..." : "Load More"}
+                                    {isLoading ? "Loading more..." : "Loading more"}{" "}
+                                    <Image
+                                        src={Down}
+                                        alt="down"
+                                        width={120}
+                                        height={120}
+                                        className="h-5 w-5 ml-3 animate-bounce object-cover"
+                                    />
                                 </button>
                             </div>
                         )}
@@ -330,14 +326,14 @@ const VetClinic: React.FC<VetClinicProps> = ({selectedLocation}) => {
                 )}
             </div>
 
-                <SelectedClinic
-                    handleContact={handleContact}
-                    selectedClinic={selectedClinic}
-                    selectedAction={selectedAction}
-                    setSelectedClinic={setSelectedClinic}
-                    refetchData={refetchData}
-                />
-        
+            <SelectedClinic
+                handleContact={handleContact}
+                selectedClinic={selectedClinic}
+                selectedAction={selectedAction}
+                setSelectedClinic={setSelectedClinic}
+                refetchData={refetchData}
+            />
+
         </section>
     );
 };

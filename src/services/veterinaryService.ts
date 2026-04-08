@@ -87,10 +87,7 @@ export const useVeterinaryService = () => {
 };
 
 // Helper function to transform API response to component props format
-export const transformVetDataToProps = (
-	apiVets: any[],
-	defaultImages: any[],
-) => {
+export const transformVetDataToProps = (apiVets: any[]) => {
 	return apiVets.map((vet, index) => {
 		// Handle both VeterinaryDoctor interface and actual API response structure
 		const fullName =
@@ -121,10 +118,7 @@ export const transformVetDataToProps = (
 			id: vet.id?.toString() || String(index),
 			name: fullName || "Unknown",
 			location: location || "Location not specified",
-			image:
-				vet.user?.profile ||
-				vet.image ||
-				defaultImages[index % defaultImages.length],
+			image: vet.user?.profile || vet.image || null,
 			rating: averageRating,
 			totalRatings: totalRatings,
 			isAvailable: vet.availability === 1 || vet.isAvailable === true,

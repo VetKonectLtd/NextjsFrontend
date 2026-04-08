@@ -14,13 +14,14 @@ import {
 } from '@/app/assets/icons';
 import { RecOverlay } from '@/app/assets/images';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
+import Avatar from 'react-avatar';
 
 export interface ClinicProfileProps {
     id: string;
     name: string;
     name_of_clinic?: string;
     location: string;
-    image: StaticImageData | string;
+    image: StaticImageData | string | any;
     rating: number;
     address?: string;
     totalRatings: number;
@@ -39,6 +40,27 @@ export interface ClinicProfileProps {
     onContact?: (id: string, type: 'phone' | 'message' | 'mail' | 'location' | 'share' | 'rate') => void;
 }
 
+const isValidUrlValue = (value: unknown): value is string =>
+    typeof value === 'string' && value.trim() !== '' && value !== 'null' && value !== 'undefined';
+
+export const resolveClinicImageSrc = (image: StaticImageData | string | any): string | null => {
+    if (isValidUrlValue(image)) {
+        return image;
+    }
+
+    if (image && typeof image === 'object') {
+        if (isValidUrlValue(image.profile_image_url)) {
+            return image.profile_image_url;
+        }
+
+        if (isValidUrlValue(image.src)) {
+            return image.src;
+        }
+    }
+
+    return null;
+};
+
 
 const ClinicProfile: React.FC<ClinicProfileProps> = ({
     id,
@@ -53,6 +75,8 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
     onViewProfile,
     onContact
 }) => {
+    const profileImageSrc = resolveClinicImageSrc(image);
+
     const renderStars = (rating: number) => {
         const hasRating = rating > 0;
 
@@ -84,12 +108,23 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
             {/* Image Container with overlays */}
             <div onClick={handleViewProfile} className=" cursor-pointer relative">
                 <div className="aspect-[4/3] relative">
-                    <Image
-                        src={image}
-                        alt={name}
-                        fill
-                        className="object-cover"
-                    />
+                    {profileImageSrc ? (
+                        <Image
+                            src={profileImageSrc}
+                            alt={name}
+                            fill
+                            className="object-cover"
+                        />
+                    ) : (
+                        <Avatar
+                            name={name || 'Vet Konect Clinic'}
+                            maxInitials={2}
+                            round={false}
+                            size="100%"
+                            textSizeRatio={2}
+                            className="w-full h-full"
+                        />
+                    )}
                     <div className="absolute inset-0">
                         <Image
                             src={RecOverlay}
