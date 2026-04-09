@@ -29,6 +29,11 @@ const testimonies = [
         videoId: "zYC7rZTb_Qc",
         thumbnail: `https://img.youtube.com/vi/zYC7rZTb_Qc/hqdefault.jpg`,
     },
+     {
+        id: 6,
+        videoId: "RaQZL0FgbZp5Hgnc",
+        thumbnail: `https://img.youtube.com/vi/RaQZL0FgbZp5Hgnc/hqdefault.jpg`,
+    }
 ];
 
 export default function TestimonySection() {
