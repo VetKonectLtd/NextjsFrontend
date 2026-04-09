@@ -31,8 +31,13 @@ const testimonies = [
     },
      {
         id: 6,
-        videoId: "RaQZL0FgbZp5Hgnc",
-        thumbnail: `https://img.youtube.com/vi/RaQZL0FgbZp5Hgnc/hqdefault.jpg`,
+        videoId: "RPmJUfHGJuE",
+        thumbnail: `https://img.youtube.com/vi/RPmJUfHGJuE/hqdefault.jpg`,
+    },
+    {
+        id: 7,
+        videoId: "Ou8TjDeG2Ug",
+        thumbnail: `https://img.youtube.com/vi/Ou8TjDeG2Ug/hqdefault.jpg`,
     }
 ];
 
