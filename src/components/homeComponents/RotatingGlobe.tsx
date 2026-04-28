@@ -123,7 +123,7 @@ const RotatingGlobe = () => {
           <img src={typeof globeImageTopLeft === 'string' ? globeImageTopLeft : globeImageTopLeft.src} alt="" className="w-16 h-16 object-contain" />
         </div>
         <div className="absolute" style={{ top: '15%', right: '25%', transform: 'translate(50%, -50%)' }}>
-          <img src={typeof globeImageTopRight === 'string' ? globeImageTopRight : globeImageTopRight.src} alt="" className="w-16 h-16 object-contain" />
+          <img src={typeof globeImageTopRight === 'string' ? globeImageTopRight : globeImageTopRight.src} alt="" className="w-32 h-32 object-contain" />
         </div>
         <div className="absolute" style={{ top: '50%', left: '15%', transform: 'translate(-50%, -50%)' }}>
           <img src={typeof globeImageMiddleLeft === 'string' ? globeImageMiddleLeft : globeImageMiddleLeft.src} alt="" className="w-20 h-20 object-contain" />
@@ -132,7 +132,7 @@ const RotatingGlobe = () => {
           <img src={typeof globeImageMiddleRight === 'string' ? globeImageMiddleRight : globeImageMiddleRight.src} alt="" className="w-20 h-20 object-contain" />
         </div>
         <div className="absolute" style={{ bottom: '20%', left: '25%', transform: 'translate(-50%, 50%)' }}>
-          <img src={typeof globeImageBottomLeft === 'string' ? globeImageBottomLeft : globeImageBottomLeft.src} alt="" className="w-16 h-16 object-contain" />
+          <img src={typeof globeImageBottomLeft === 'string' ? globeImageBottomLeft : globeImageBottomLeft.src} alt="" className="w-28 h-28 object-contain" />
         </div>
         <div className="absolute" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           <img src={typeof globeImageCenter === 'string' ? globeImageCenter : globeImageCenter.src} alt="" className="w-24 h-24 object-contain" />
