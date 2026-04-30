@@ -13,6 +13,7 @@ import globeImageTopRight from '../../app/assets/images/globeimagetopright.svg';
 
 import type { GlobeInstance } from 'globe.gl';
 
+
 const RotatingGlobe = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<GlobeInstance | null>(null);
