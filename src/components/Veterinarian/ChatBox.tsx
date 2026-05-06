@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState} from "react";
 import Image from "next/image";
 import { Smile, Link as LinkIcon, Send, X } from "lucide-react";
 import Picker from "@emoji-mart/react";
@@ -7,10 +7,8 @@ import data from "@emoji-mart/data";
 import { directMessageService } from "@/services/directMessageService";
 import { useForm } from "react-hook-form";
 import { MessageFormData } from "@/types";
-
-
-// Generic veterinarian placeholder image URL from Unsplash
-const GENERIC_VET_IMAGE = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop";
+import { resolveProfileImageSrc } from "../shared/VetProfile";
+import Avatar from "react-avatar";
 
 
 const ChatBox = ({ selectedVet }: any) => {
@@ -72,19 +70,30 @@ const ChatBox = ({ selectedVet }: any) => {
 		});
 	};
 
+	const profileImageSrc = resolveProfileImageSrc(selectedVet?.image);
+
 	return (
 		<div className="w-full border rounded-lg shadow-md bg-white relative">
 			{/* Header */}
 			<div className="flex justify-between border-b p-2">
 				<div className="flex w-full items-center gap-2">
 					<div className="w-7 h-7 rounded-full border border-gray-225 overflow-hidden">
-						<Image
-							src={selectedVet?.image.profile_image_url || GENERIC_VET_IMAGE}
-							alt={selectedVet?.name || "Vet"}
-							width={40}
-							height={40}
-							className="object-cover w-full h-full"
-						/>
+						{profileImageSrc ? (
+							<Image
+								src={profileImageSrc}
+								alt={selectedVet?.name || "Vet"}
+								width={40}
+								height={40}
+								className="object-cover w-full h-full"
+							/>
+						) : (
+							<Avatar
+								name={selectedVet?.name || "Vet"}
+								size="30"
+								maxInitials={2}
+								round
+							/>
+						)}
 					</div>
 					<div className="flex items-start text-left flex-col text-gray-55">
 						<p className="text-sm font-semibold">Dr. {selectedVet?.name}</p>
