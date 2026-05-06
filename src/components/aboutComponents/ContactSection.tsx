@@ -2,7 +2,13 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import {
+	Dialog,
+	DialogTrigger,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { FullMap } from "@/app/assets/images";
 import { GreenButton } from "@/app/assets/icons";
 import { Input } from "@/components/ui/input";
@@ -11,6 +17,8 @@ import { useContactService } from "@/services/contactService";
 import { Contact_us } from "@/types";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
+import { DialogDescription } from "../ui/dialog";
+import TermsPage from "../terms/terms";
 
 export default function ContactSection() {
 	const { useContactUs } = useContactService();
@@ -119,8 +127,24 @@ export default function ContactSection() {
 											htmlFor="agreeToTerms"
 											className="text-sm text-gray-600"
 										>
-											Confirm that you agree to our terms and conditions at
-											VetKonect
+											Confirm that you agree to our
+											<Dialog>
+												<DialogTrigger asChild>
+													<span className="text-primary-600 hover:underline cursor-pointer ml-1">
+														terms and conditions
+													</span>
+												</DialogTrigger>
+												<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg">
+													<DialogHeader>
+														<DialogTitle>Terms and Conditions</DialogTitle>
+														<DialogDescription>
+															{/* Render the terms content here */}
+															<TermsPage />
+														</DialogDescription>
+													</DialogHeader>
+												</DialogContent>
+											</Dialog>
+											at Vet Konect
 										</label>
 									</div>
 									{errors.agreeToTerms && (

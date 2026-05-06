@@ -24,7 +24,7 @@ export const navItems = [
 	{ id: 4, label: "Pets", icon: Pet, Dashboard, href: "/dashboard/pet" },
 	{ id: 5, label: "Livestock", icon: Cow, href: "/dashboard/livestock" },
 	{ id: 6, label: "Cases", icon: Cases, href: "/dashboard/cases" },
-	{ id: 7, label: "Clients", icon: Client, href: "/dashboard/client" },
+	// { id: 7, label: "Clients", icon: Client, href: "/dashboard/client" },
 	{ id: 8, label: "My Stores", icon: Store, href: "/dashboard/stores" },
 	{ id: 9, label: "Chat Forum", icon: Chat, href: "/chat-forum" },
 	{
@@ -69,9 +69,9 @@ export const navItems = [
 
 
 export const ROLE_NAV_ACCESS: Record<string, number[]> = {
-	"veterinary_paraprofessional": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13, 14,15,16],
-	"veterinary_clinic": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14,15,16],
-	"veterinary_doctor": [1, 2,3, 6, 7, 8, 9, 10, 11, 12, 13,14, 15,16],
+	"veterinary_paraprofessional": [1, 2,3, 6, 8, 9, 10, 11, 12, 13, 14,15,16],
+	"veterinary_clinic": [1, 2,3, 6,  8, 9, 10, 11, 12, 13,14,15,16],
+	"veterinary_doctor": [1, 2,3, 6, 8, 9, 10, 11, 12, 13,14, 15,16],
 	"livestock_farmer": [1, 2,3, 5, 8, 9, 10, 11, 12, 13,14,15, 16],
 	"pet_owner": [1, 2, 3,4, 8, 9, 10, 11, 12, 13,14,15,16], 
 	"vendor": [1, 2,3, 8,9, 10, 11, 12, 13, 14,15,16],       

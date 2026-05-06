@@ -3,17 +3,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import {
-	YounglanTalyoung,
 	Team1,
-	Team2,
 	EyaboGodwin,
 	Isa,
-	Lucy,
 	Abiodun,
 	Vivian,
-	Nelson,
-	Yusuf,
-	Fola,
 	Moturayo,
 	Godwin,
 	Jacob,
