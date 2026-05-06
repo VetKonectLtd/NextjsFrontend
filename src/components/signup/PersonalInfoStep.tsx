@@ -12,6 +12,16 @@ import {
 	Control,
 	UseFormSetValue,
 } from "react-hook-form";
+import {
+	Dialog,
+	DialogTrigger,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogClose,
+} from "@/components/ui/dialog";
+import TermsPage from "../terms/terms";
 
 interface PersonalInfoProps {
 	register: UseFormRegister<PersonalInfoForm>;
@@ -142,7 +152,7 @@ const PersonalInfoStep = ({
 					<p className="text-red-500 text-xs">{errors.phone_num.message}</p>
 				)}
 				
-				{/* Terms */}{" "}
+				{/* Terms */}
 				<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
 					
 					<input
@@ -160,10 +170,25 @@ const PersonalInfoStep = ({
 						htmlFor="agree-terms"
 						className="ml-4 text-sm font-normal cursor-pointer text-gray-55"
 					>
-						{" "}
-						Confirm that you agree to our terms and conditions at Vet
-						Konect{" "}
-					</label>{" "}
+						Confirm that you agree to our
+						<Dialog>
+							<DialogTrigger asChild>
+								<span className="text-primary-600 hover:underline cursor-pointer ml-1">
+									terms and conditions
+								</span>
+							</DialogTrigger>
+							<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg">
+								<DialogHeader>
+									<DialogTitle>Terms and Conditions</DialogTitle>
+									<DialogDescription>
+										{/* Render the terms content here */}
+										<TermsPage />
+									</DialogDescription>
+								</DialogHeader>
+							</DialogContent>
+						</Dialog>
+						at Vet Konect
+					</label>
 				</div>
 				{errors.agreeTerms && (
 					<p className="text-red-500 text-xs">{errors.agreeTerms.message}</p>

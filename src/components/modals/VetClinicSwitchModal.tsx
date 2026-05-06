@@ -6,6 +6,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogDescription,
+	DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import FormInput from "../form/FormInput";
@@ -22,6 +23,7 @@ import FormSelect from "../form/FormSelect";
 import { State } from "country-state-city";
 import TagInput from "../form/TagInput";
 import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
+import TermsPage from "../terms/terms";
 
 interface VetClinicSwitchModalProps {
 	open: boolean;
@@ -309,7 +311,24 @@ const VetClinicSwitchModal = ({
 							htmlFor="agree-terms"
 							className="ml-4 text-sm font-normal cursor-pointer text-gray-55"
 						>
-							Confirm that you agree to our terms and conditions at Vet Konect
+							Confirm that you agree to our
+						<Dialog>
+							<DialogTrigger asChild>
+								<span className="text-primary-600 hover:underline cursor-pointer ml-1">
+									terms and conditions
+								</span>
+							</DialogTrigger>
+							<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg">
+								<DialogHeader>
+									<DialogTitle>Terms and Conditions</DialogTitle>
+									<DialogDescription>
+										{/* Render the terms content here */}
+										<TermsPage />
+									</DialogDescription>
+								</DialogHeader>
+							</DialogContent>
+						</Dialog>
+						at Vet Konect
 						</label>
 					</div>
 
