@@ -4,13 +4,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
 import { CasesDownload, CasesLoadMore } from "@/app/assets/icons";
 import { casesService, Case, Comment } from "@/services/casesService";
 import { toast } from "sonner"; // Assuming sonner
 
 import { DateSelectionModal } from "@/components/modals/DateSelectionModal";
 import { User } from "lucide-react"; // Fallback avatar
+import Modal from "@/components/shared/Modal";
+import { X, ChevronLeft } from "lucide-react";
 
 const CaseDetailsPage = () => {
   const params = useParams();
@@ -29,6 +30,9 @@ const CaseDetailsPage = () => {
   // Download Report State
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+
+  // Image Modal State
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -139,6 +143,37 @@ const CaseDetailsPage = () => {
       }
   };
 
+  const openImageModal = () => {
+    setImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setImageModalOpen(false);
+  };
+
+  const DetailRow = ({ label, value, isLink = false }: { label: string; value?: string | number | null; isLink?: boolean }) => (
+    <div className="flex items-center mb-6">
+      <span className="text-[#1A1A1A] font-bold w-[200px] shrink-0">{label}:</span>
+      {isLink ? (
+        value && value === "View Image" ? (
+          <span
+            onClick={openImageModal}
+            className="text-[#0B6614] cursor-pointer hover:underline font-medium break-all"
+          >
+            {value}
+          </span>
+        ) : (
+          <span className="text-gray-600 font-normal break-words flex-1">{value || "N/A"}</span>
+        )
+      ) : (
+        <span className="text-gray-600 font-normal break-words flex-1">{value || "N/A"}</span>
+      )}
+    </div>
+  );
+  
+  // Show only first 5 comments initially, unless 'Load More' is clicked
+  const visibleComments = showAllComments ? comments : comments.slice(0, 5);
+
   if (loading) {
     return <div className="p-8 text-center text-gray-500">Loading case details...</div>;
   }
@@ -154,20 +189,6 @@ const CaseDetailsPage = () => {
     );
   }
 
-  const DetailRow = ({ label, value, isLink = false }: { label: string; value?: string | number | null; isLink?: boolean }) => (
-    <div className="flex items-center mb-6">
-      <span className="text-[#1A1A1A] font-bold w-[200px] shrink-0">{label}:</span>
-      {isLink ? (
-        <span className="text-[#0B6614] cursor-pointer hover:underline font-medium break-all">{value || "N/A"}</span>
-      ) : (
-        <span className="text-gray-600 font-normal break-words flex-1">{value || "N/A"}</span>
-      )}
-    </div>
-  );
-  
-  // Show only first 5 comments initially, unless 'Load More' is clicked
-  const visibleComments = showAllComments ? comments : comments.slice(0, 5);
-
   return (
     <div className="p-8 bg-[#FDFDFD] min-h-screen font-sans">
     
@@ -177,6 +198,26 @@ const CaseDetailsPage = () => {
         onDownload={performDownload}
         isLoading={isDownloading}
       />
+
+      {/* Image Modal */}
+      {isImageModalOpen && caseData.picture_url && (
+        <Modal onClose={closeImageModal}>
+          <div className="relative flex justify-center items-center">
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <img
+              src={caseData.picture_url}
+              alt="Case Image"
+              className="max-w-full max-h-screen"
+            />
+          </div>
+        </Modal>
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between mb-8">

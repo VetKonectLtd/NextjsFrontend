@@ -182,7 +182,7 @@ const Navbar = () => {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden md:flex items-center space-x-8">
+					<div className="hidden md:flex items-center space-x-5">
 						<Link
 							href="/about"
 							className={getLinkClasses("/about")}
@@ -191,6 +191,9 @@ const Navbar = () => {
 						</Link>
 						<Link href="/foundation" className={getLinkClasses("/foundation")}>
 							Foundation
+						</Link>
+						<Link href="/vetifypro" className={getLinkClasses("/vetifypro")}>
+							VetifyPro
 						</Link>
 						<Link
 							href="/dashboard/feed-calculator"
@@ -514,6 +517,16 @@ const Navbar = () => {
 							>
 								<HeartIcon className="w-6 h-6 mr-4" />
 								<span className="text-base font-medium">Foundation</span>
+							</Link>
+
+							{/* VetifyPro */}
+							<Link
+								href="/vetifypro"
+								onClick={closeMobileMenu}
+								className="flex items-center px-4 py-4 rounded-2xl text-gray-700 hover:bg-gray-150 hover:border hover:border-gray-225 hover:shadow-active-link transition-colors"
+							>
+								<HeartIcon className="w-6 h-6 mr-4" />
+								<span className="text-base font-medium">VetifyPro</span>
 							</Link>
 
 							{/* Feed Calculator */}
