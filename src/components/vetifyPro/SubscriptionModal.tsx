@@ -1,9 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, Shield, Clock, Headphones, CreditCard, ShieldCheck, Gem, Sparkle, Zap } from "lucide-react";
-import Image from "next/image";
-import { VetifyLogo } from "@/app/assets/images";
+import { X, Check, Headphones, ShieldCheck, Gem, Sparkle, Zap } from "lucide-react";
+
 
 interface SubscriptionModalProps {
   isOpen: boolean;
