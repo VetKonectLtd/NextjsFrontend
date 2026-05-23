@@ -96,4 +96,13 @@ export { default as Test2 } from './test2.jpeg';
 export { default as Test3 } from './test3.jpeg';
 export { default as Test4 } from './test4.jpeg';
 export { default as VetClinic } from './vetClinic.png';
+export { default as Animals } from './animal.png';
+export { default as VetifyProBg } from './vetifyprobg.png';
+export {default as Vetify1} from './vetify1.png';
+export {default as Vetify2} from './vetify2.png';
+export {default as Vetify3} from './vetify3.png';
+export {default as Vetify4} from './vetify4.png';
+export {default as VetifyLogo} from './vetifyLogo.png';
+export {default as VetifyVector} from './vetifyVector.png';
+export {default as VetifyFamily} from './vetifyFamily.png';
 
