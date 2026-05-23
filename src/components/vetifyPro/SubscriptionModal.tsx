@@ -31,13 +31,7 @@ export default function SubscriptionModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleBackdropClick}
-          className="fixed
-    inset-0
-    z-50
-    overflow-y-auto
-    bg-black/50
-    backdrop-blur-sm
-    p-4"
+          className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm p-4"
         >
           <div className="flex min-h-screen items-center justify-center py-8">
             <motion.div
@@ -45,14 +39,7 @@ export default function SubscriptionModal({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative
-    w-full
-    max-w-5xl
-    max-h-[90vh]
-    overflow-y-auto
-    rounded-3xl
-    bg-[#F6F8FF]
-    shadow-2xl"
+              className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl bg-[#F6F8FF] shadow-2xl"
             >
               {/* Close button */}
               <button
