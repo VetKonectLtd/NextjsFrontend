@@ -61,11 +61,11 @@ const AdProductForm = (preSelectedId: any) => {
 
   const getProduct = useGetProductByUserId(
     !!userId, // Only enable when userId is available
-    userId?.toString() || ""
+    userId?.toString() || "",
   );
 
   const ads = Array.isArray(
-    (getProduct.data as Record<string, any>)?.products?.data
+    (getProduct.data as Record<string, any>)?.products?.data,
   )
     ? (getProduct.data as Record<string, any>)?.products?.data
     : [];
@@ -113,7 +113,7 @@ const AdProductForm = (preSelectedId: any) => {
     if (!agreeToTerms) {
       setShowAgreeError(true);
       handleError(
-        "Please agree to the terms and conditions before proceeding."
+        "Please agree to the terms and conditions before proceeding.",
       );
       return;
     }

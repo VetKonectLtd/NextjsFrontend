@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Image, { StaticImageData } from 'next/image';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
+import Image, { StaticImageData } from "next/image";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface CallToActionProps {
   backgroundClass: string;
@@ -28,22 +28,24 @@ export default function CallToAction({
   // Animation variants for left and right sides
   const leftVariants = {
     hidden: { opacity: 0, x: -100 },
-    visible: { opacity: 1, x: 0 }
+    visible: { opacity: 1, x: 0 },
   };
 
   const rightVariants = {
     hidden: { opacity: 0, x: 100 },
-    visible: { opacity: 1, x: 0 }
+    visible: { opacity: 1, x: 0 },
   };
 
   const transitionConfig = {
-    duration: 0.8
+    duration: 0.8,
   };
 
   return (
     <section className={`py-16 ${backgroundClass}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex flex-col md:flex-row items-center gap-12 ${isReversed ? 'md:flex-row-reverse' : ''}`}>
+        <div
+          className={`flex flex-col md:flex-row items-center gap-12 ${isReversed ? "md:flex-row-reverse" : ""}`}
+        >
           <motion.div
             className="md:w-1/2 flex justify-center"
             variants={isReversed ? rightVariants : leftVariants}
@@ -92,10 +94,17 @@ export default function CallToAction({
             viewport={{ amount: 0.3 }}
             transition={transitionConfig}
           >
-            <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md mx-auto md:mx-0">{heading}</h2>
-            <p className="text-lg text-gray-600 max-w-md mx-auto md:mx-0">{description}</p>
+            <h2 className="text-4xl font-bold text-gray-900 font-nunito max-w-md mx-auto md:mx-0">
+              {heading}
+            </h2>
+            <p className="text-lg text-gray-600 max-w-md mx-auto md:mx-0">
+              {description}
+            </p>
             <div className="flex justify-center md:justify-start">
-              <Link href="/dashboard/vet-vendor" className="px-6 py-3 bg-transparent border border-primary-600 hover:bg-primary-600 hover:text-white text-primary-600 font-medium rounded-lg transition-colors duration-200 ">
+              <Link
+                href="/dashboard/vet-vendor"
+                className="px-6 py-3 bg-transparent border border-primary-600 hover:bg-primary-600 hover:text-white text-primary-600 font-medium rounded-lg transition-colors duration-200 "
+              >
                 Get Started
               </Link>
             </div>

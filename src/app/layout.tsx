@@ -1,15 +1,16 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { ReactQueryProvider } from '@/lib/react-query';
-import Navbar from '@/components/shared/Navbar';
-import { fontVariables } from '@/lib/fonts';
-import { Toaster } from '@/components/ui/sonner';
-import GoogleMapsScript from '@/components/shared/GoogleMapsScript';
-import Script from 'next/script';
+import type { Metadata } from "next";
+import "./globals.css";
+import { ReactQueryProvider } from "@/lib/react-query";
+import Navbar from "@/components/shared/Navbar";
+import { fontVariables } from "@/lib/fonts";
+import { Toaster } from "@/components/ui/sonner";
+import GoogleMapsScript from "@/components/shared/GoogleMapsScript";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
-    default: "Vet Konect | Digital Animal Care & Veterinary Services Across Africa",
+    default:
+      "Vet Konect | Digital Animal Care & Veterinary Services Across Africa",
     template: "%s | Vet Konect",
   },
 
@@ -58,10 +59,7 @@ export const metadata: Metadata = {
     title: "Vet Konect | Digital Animal Care Platform",
     description:
       "Quality animal care at your fingertips. Find vets, clinics, feeds, drugs, and disease alerts across Africa with Vet Konect.",
-    images: [
-      "/images/og-logo.png",
-
-    ],
+    images: ["/images/og-logo.png"],
   },
 
   // robots: {
@@ -77,15 +75,11 @@ export const metadata: Metadata = {
   // },
 };
 
-
-
 export default async function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
-
-
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
       {/* <Script id="google-translate-init"
@@ -128,12 +122,9 @@ export default async function RootLayout({
         {/* <div id="google_translate_element" className="hidden" /> */}
         <GoogleMapsScript />
         <ReactQueryProvider>
-
           <div className="flex flex-col min-h-full">
             <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
+            <main className="flex-grow">{children}</main>
           </div>
           <Toaster />
         </ReactQueryProvider>

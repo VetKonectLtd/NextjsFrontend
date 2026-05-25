@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
@@ -30,24 +28,29 @@ interface PlaceSuggestion {
 }
 
 const geocodeWithNominatim = async (
-  address: string
+  address: string,
 ): Promise<{ latitude: number | null; longitude: number | null }> => {
-
   const fetchCoords = async (query: string) => {
     const encoded = encodeURIComponent(query);
     const res = await fetch(
       `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1`,
-      { headers: { "Accept-Language": "en", "User-Agent": "VetKonect/1.0" } }
+      { headers: { "Accept-Language": "en", "User-Agent": "VetKonect/1.0" } },
     );
     const data = await res.json();
     if (data && data.length > 0) {
-      return { latitude: parseFloat(data[0].lat), longitude: parseFloat(data[0].lon) };
+      return {
+        latitude: parseFloat(data[0].lat),
+        longitude: parseFloat(data[0].lon),
+      };
     }
     return null;
   };
 
   // ✅ Split by comma OR just use the whole string as words
-  const commaParts = address.split(",").map((p) => p.trim()).filter(Boolean);
+  const commaParts = address
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
   const wordParts = address.split(/\s+/).filter(Boolean);
 
   // ✅ Build attempts
@@ -65,7 +68,7 @@ const geocodeWithNominatim = async (
 
   // 3. ✅ Extract capitalized words (likely place names) from the address
   const capitalizedWords = wordParts.filter(
-    (w) => w.length > 2 && w[0] === w[0].toUpperCase() && !/^\d/.test(w)
+    (w) => w.length > 2 && w[0] === w[0].toUpperCase() && !/^\d/.test(w),
   );
 
   // Try last 3 capitalized words → last 2 → last 1
@@ -125,7 +128,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
     }
 
     const existingScript = document.querySelector(
-      `script[src*="maps.googleapis.com"]`
+      `script[src*="maps.googleapis.com"]`,
     );
     if (existingScript) {
       existingScript.addEventListener("load", () => setScriptLoaded(true));
@@ -139,8 +142,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
     script.onload = () => {
       setScriptLoaded(true);
     };
-    script.onerror = () => {
-    };
+    script.onerror = () => {};
     document.head.appendChild(script);
   }, []);
 
@@ -154,7 +156,9 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
       }
 
       if (!scriptLoaded) {
-        console.warn("[Google Maps] Script not loaded yet, skipping suggestions");
+        console.warn(
+          "[Google Maps] Script not loaded yet, skipping suggestions",
+        );
         return;
       }
 
@@ -183,7 +187,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
                       p.structured_formatting?.secondary_text ||
                       p.description.split(",").slice(1).join(","),
                   },
-                }))
+                })),
               );
               setShowSuggestions(true);
             } else {
@@ -191,13 +195,13 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
               setShowSuggestions(false);
             }
             setIsLoading(false);
-          }
+          },
         );
       } catch (err) {
         setIsLoading(false);
       }
     }, 300),
-    [scriptLoaded]
+    [scriptLoaded],
   );
 
   // ✅ Helper to update native input display value
@@ -205,7 +209,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
     if (inputRef.current) {
       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        "value"
+        "value",
       )?.set;
       if (nativeInputValueSetter) {
         nativeInputValueSetter.call(inputRef.current, value);
@@ -219,7 +223,7 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
   const finalizeLocation = (
     address: string,
     lat: number | null,
-    lng: number | null
+    lng: number | null,
   ) => {
     console.log("[Location] Finalizing:", { address, lat, lng });
     setSelectedAddress(address);
@@ -235,13 +239,17 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
     if (!scriptLoaded) {
       // Google never loaded — go straight to Nominatim
       const fallback = await geocodeWithNominatim(suggestion.description);
-      finalizeLocation(suggestion.description, fallback.latitude, fallback.longitude);
+      finalizeLocation(
+        suggestion.description,
+        fallback.latitude,
+        fallback.longitude,
+      );
       return;
     }
 
     try {
       const service = new google.maps.places.PlacesService(
-        document.createElement("div")
+        document.createElement("div"),
       );
 
       service.getDetails(
@@ -250,7 +258,6 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
           fields: ["formatted_address", "geometry"],
         },
         async (place, status) => {
-
           const address = place?.formatted_address || suggestion.description;
           let lat = place?.geometry?.location?.lat() ?? null;
           let lng = place?.geometry?.location?.lng() ?? null;
@@ -265,17 +272,24 @@ const FormGooglePlacesCustom = <T extends FieldValues>({
           }
 
           finalizeLocation(address, lat, lng);
-        }
+        },
       );
     } catch (err) {
       // ✅ Google completely crashed — use Nominatim
       const fallback = await geocodeWithNominatim(suggestion.description);
-      finalizeLocation(suggestion.description, fallback.latitude, fallback.longitude);
+      finalizeLocation(
+        suggestion.description,
+        fallback.latitude,
+        fallback.longitude,
+      );
     }
   };
 
   // ✅ On blur — if user typed manually and no coords yet, geocode with Nominatim
-  const handleBlur = async (value: string, fieldOnChange: (v: string) => void) => {
+  const handleBlur = async (
+    value: string,
+    fieldOnChange: (v: string) => void,
+  ) => {
     setIsFocused(false);
     if (value && !coordsFetched) {
       const fallback = await geocodeWithNominatim(value);

@@ -1,8 +1,8 @@
 "use client";
 
 import {
-	AreaCoveredSection,
-	ContactSection,
+  AreaCoveredSection,
+  ContactSection,
 } from "@/components/aboutComponents";
 import AfriVetChroniclesSection from "@/components/initaitiveComponents/AfriVetChroniclesSection";
 import InitiativesHeroSection from "@/components/initaitiveComponents/InitiativesHeroSection";
@@ -13,23 +13,22 @@ import Wipi from "@/components/initaitiveComponents/Wipi";
 import { Footer } from "@/components/shared";
 
 export default function InitiativesPage() {
-	return (
-		<div className=" bg-white overflow-hidden">
-			<InitiativesHeroSection />
+  return (
+    <div className=" bg-white overflow-hidden">
+      <InitiativesHeroSection />
 
-			<VetkonectChampionProgram />
-			
-			<Vetkonectearning />
-			<VetDiary/>
-			<Wipi />
-			<AfriVetChroniclesSection/>
-			{/* Contact Section */}
-			
-			
-			<ContactSection />
+      <VetkonectChampionProgram />
 
-			{/* Footer */}
-			<Footer />
-		</div>
-	);
+      <Vetkonectearning />
+      <VetDiary />
+      <Wipi />
+      <AfriVetChroniclesSection />
+      {/* Contact Section */}
+
+      <ContactSection />
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
 }

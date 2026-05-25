@@ -4,7 +4,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function BlogReaderSkeleton() {
   return (
     <div className="max-w-4xl mx-auto px-5 pt-28 pb-24 animate-pulse">
-
       {/* Back Button */}
       <div className="mb-6">
         <Skeleton width={90} height={36} borderRadius={999} />

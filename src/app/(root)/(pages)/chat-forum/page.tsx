@@ -21,7 +21,6 @@ const ChatForum = () => {
     <>
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/40">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 pt-24 md:pt-28 pb-16 md:pb-20">
-
           {/* HEADER */}
           <div className="flex flex-col gap-5 mb-6 md:mb-8 md:flex-row md:items-center md:justify-between">
             {/* TEXT */}

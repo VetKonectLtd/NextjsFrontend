@@ -54,7 +54,8 @@ const PhoneInput = ({
     onChange({ phone, countryCode: country });
   };
 
-  const selectedCountry = countries.find((c) => c.code === countryCode) || countries[0];
+  const selectedCountry =
+    countries.find((c) => c.code === countryCode) || countries[0];
 
   return (
     <div className="relative w-full">
@@ -73,7 +74,9 @@ const PhoneInput = ({
         </select>
 
         {/* Country Code */}
-        <span className="px-1 pt-2 text-sm text-gray-600">+{selectedCountry.phoneCode}</span>
+        <span className="px-1 pt-2 text-sm text-gray-600">
+          +{selectedCountry.phoneCode}
+        </span>
 
         {/* Phone Input */}
         <input

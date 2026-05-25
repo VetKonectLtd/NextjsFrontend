@@ -18,6 +18,7 @@ Welcome to the VetKonnect codebase! This guide will help you understand the proj
 ## Project Overview
 
 VetKonnect is built with:
+
 - **Next.js 13** with App Router
 - **React 18** with TypeScript
 - **Tailwind CSS** for styling
@@ -63,8 +64,8 @@ All API URLs must be defined in `src/lib/api-constants.ts` before use:
 ```typescript
 // src/lib/api-constants.ts
 export const VETERINARY_ENDPOINTS = {
-  GET_ANIMALS: '/animals',
-  CREATE_ANIMAL: '/animals',
+  GET_ANIMALS: "/animals",
+  CREATE_ANIMAL: "/animals",
   UPDATE_ANIMAL: (id: string) => `/animals/${id}`,
   DELETE_ANIMAL: (id: string) => `/animals/${id}`,
 } as const;
@@ -76,13 +77,13 @@ Create dedicated service functions in `src/services/` for related API calls:
 
 ```typescript
 // src/services/animalService.ts
-import { VETERINARY_ENDPOINTS } from '@/lib/api-constants';
-import { useGet, usePost, usePut, useDelete } from '@/lib/hooks';
-import { Animal, CreateAnimalRequest } from '@/types';
+import { VETERINARY_ENDPOINTS } from "@/lib/api-constants";
+import { useGet, usePost, usePut, useDelete } from "@/lib/hooks";
+import { Animal, CreateAnimalRequest } from "@/types";
 
 // GET request
 export const useGetAnimals = () => {
-  return useGet<Animal[]>(['animals'], VETERINARY_ENDPOINTS.GET_ANIMALS);
+  return useGet<Animal[]>(["animals"], VETERINARY_ENDPOINTS.GET_ANIMALS);
 };
 
 // POST request
@@ -91,13 +92,13 @@ export const useCreateAnimal = () => {
     VETERINARY_ENDPOINTS.CREATE_ANIMAL,
     {
       onSuccess: (data) => {
-        console.log('Animal created:', data);
+        console.log("Animal created:", data);
       },
       onError: (error) => {
-        console.error('Failed to create animal:', error);
+        console.error("Failed to create animal:", error);
       },
-      invalidateQueries: [['animals']], // Refresh animals list
-    }
+      invalidateQueries: [["animals"]], // Refresh animals list
+    },
   );
 };
 
@@ -106,19 +107,16 @@ export const useUpdateAnimal = (id: string) => {
   return usePut<Animal, Partial<Animal>>(
     VETERINARY_ENDPOINTS.UPDATE_ANIMAL(id),
     {
-      invalidateQueries: [['animals'], ['animal', id]],
-    }
+      invalidateQueries: [["animals"], ["animal", id]],
+    },
   );
 };
 
 // DELETE request
 export const useDeleteAnimal = (id: string) => {
-  return useDelete(
-    VETERINARY_ENDPOINTS.DELETE_ANIMAL(id),
-    {
-      invalidateQueries: [['animals']],
-    }
-  );
+  return useDelete(VETERINARY_ENDPOINTS.DELETE_ANIMAL(id), {
+    invalidateQueries: [["animals"]],
+  });
 };
 ```
 
@@ -271,8 +269,8 @@ Create stores in `src/store/`:
 
 ```typescript
 // src/store/animalStore.ts
-import { create } from 'zustand';
-import { Animal } from '@/types';
+import { create } from "zustand";
+import { Animal } from "@/types";
 
 interface AnimalStore {
   selectedAnimal: Animal | null;
@@ -281,15 +279,15 @@ interface AnimalStore {
     status: string;
   };
   setSelectedAnimal: (animal: Animal | null) => void;
-  setFilters: (filters: Partial<AnimalStore['filters']>) => void;
+  setFilters: (filters: Partial<AnimalStore["filters"]>) => void;
   clearFilters: () => void;
 }
 
 export const useAnimalStore = create<AnimalStore>((set) => ({
   selectedAnimal: null,
   filters: {
-    species: '',
-    status: '',
+    species: "",
+    status: "",
   },
   setSelectedAnimal: (animal) => set({ selectedAnimal: animal }),
   setFilters: (newFilters) =>
@@ -299,8 +297,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   clearFilters: () =>
     set({
       filters: {
-        species: '',
-        status: '',
+        species: "",
+        status: "",
       },
     }),
 }));
@@ -315,7 +313,7 @@ import { useGetAnimals } from '@/services/animalService';
 
 export default function AnimalsList() {
   const { filters, setFilters, selectedAnimal, setSelectedAnimal } = useAnimalStore();
-  
+
   // TanStack Query automatically handles caching, background updates, etc.
   const { data: animals, isLoading } = useGetAnimals();
 
@@ -337,7 +335,7 @@ export default function AnimalsList() {
 
       {/* Render filtered animals */}
       {filteredAnimals?.map(animal => (
-        <div 
+        <div
           key={animal.id}
           onClick={() => setSelectedAnimal(animal)}
           className={selectedAnimal?.id === animal.id ? 'bg-blue-100' : ''}
@@ -361,7 +359,7 @@ const useSearchStore = create<{
   searchTerm: string;
   setSearchTerm: (term: string) => void;
 }>((set) => ({
-  searchTerm: '',
+  searchTerm: "",
   setSearchTerm: (term) => set({ searchTerm: term }),
 }));
 
@@ -380,12 +378,13 @@ Place images in `src/app/assets/images/` and export them:
 
 ```typescript
 // src/app/assets/images/index.ts
-export { default as VetKonnectLogo } from './vetkonectLogo.svg';
-export { default as HeroImage } from './hero-image.jpg';
-export { default as DefaultAvatar } from './default-avatar.png';
+export { default as VetKonnectLogo } from "./vetkonectLogo.svg";
+export { default as HeroImage } from "./hero-image.jpg";
+export { default as DefaultAvatar } from "./default-avatar.png";
 ```
 
 Usage:
+
 ```typescript
 import { VetKonnectLogo, HeroImage } from '@/app/assets/images';
 import Image from 'next/image';
@@ -406,12 +405,13 @@ Place icons in `src/app/assets/icons/` and export them:
 
 ```typescript
 // src/app/assets/icons/index.ts
-export { default as PlusIcon } from './plus.svg';
-export { default as EditIcon } from './edit.svg';
-export { default as DeleteIcon } from './delete.svg';
+export { default as PlusIcon } from "./plus.svg";
+export { default as EditIcon } from "./edit.svg";
+export { default as DeleteIcon } from "./delete.svg";
 ```
 
 Usage:
+
 ```typescript
 import { PlusIcon, EditIcon } from '@/app/assets/icons';
 import Image from 'next/image';
@@ -436,8 +436,8 @@ Export everything from the main assets index:
 
 ```typescript
 // src/app/assets/index.ts
-export * from './images';
-export * from './icons';
+export * from "./images";
+export * from "./icons";
 ```
 
 ## TypeScript Types
@@ -451,19 +451,19 @@ Create separate files for different domains in `src/types/`:
 export interface Animal {
   id: string;
   name: string;
-  species: 'dog' | 'cat' | 'bird' | 'other';
+  species: "dog" | "cat" | "bird" | "other";
   breed: string;
   age: number;
   weight: number;
   ownerId: string;
-  status: 'healthy' | 'sick' | 'recovering';
+  status: "healthy" | "sick" | "recovering";
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateAnimalRequest {
   name: string;
-  species: Animal['species'];
+  species: Animal["species"];
   breed: string;
   age: number;
   weight: number;
@@ -482,7 +482,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'admin' | 'veterinarian' | 'assistant';
+  role: "admin" | "veterinarian" | "assistant";
   createdAt: string;
   updatedAt: string;
 }
@@ -492,7 +492,7 @@ export interface CreateUserRequest {
   password: string;
   firstName: string;
   lastName: string;
-  role: User['role'];
+  role: User["role"];
 }
 ```
 
@@ -502,10 +502,10 @@ Export all types from the main index:
 
 ```typescript
 // src/types/index.ts
-export * from './animal';
-export * from './user';
-export * from './appointment';
-export * from './api';
+export * from "./animal";
+export * from "./user";
+export * from "./appointment";
+export * from "./api";
 
 // Common utility types
 export interface ApiResponse<T> {
@@ -539,16 +539,16 @@ module.exports = {
       colors: {
         // Primary brand colors
         primary: {
-          50: '#f0fdf4',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
+          50: "#f0fdf4",
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
         },
         // Custom colors for specific use cases
-        'light-green': '#E9F6B2',
-        'gradient-start': '#B2F6B9',
-        'gradient-middle': '#FFE1A6',
-        'gradient-end': '#E9F6B2',
+        "light-green": "#E9F6B2",
+        "gradient-start": "#B2F6B9",
+        "gradient-middle": "#FFE1A6",
+        "gradient-end": "#E9F6B2",
       },
     },
   },
@@ -568,7 +568,7 @@ export function CustomButton() {
 
 export function GradientHeader() {
   return (
-    <div 
+    <div
       className="h-32 bg-gradient-to-r from-gradient-start via-gradient-middle to-gradient-end"
     >
       <h1 className="text-2xl font-bold text-gray-800">Welcome</h1>
@@ -598,33 +598,33 @@ export function AnimalList({ animals, onAnimalSelect }: Props) {
   // Hooks at the top
   const [searchTerm, setSearchTerm] = useState('');
   const { user } = useAuthStore();
-  
+
   // Derived state
-  const filteredAnimals = useMemo(() => 
-    animals.filter(animal => 
+  const filteredAnimals = useMemo(() =>
+    animals.filter(animal =>
       animal.name.toLowerCase().includes(searchTerm.toLowerCase())
     ), [animals, searchTerm]
   );
-  
+
   // Event handlers
   const handleSearch = useCallback((term: string) => {
     setSearchTerm(term);
   }, []);
-  
+
   // Early returns
   if (!animals.length) {
     return <div>No animals found</div>;
   }
-  
+
   // Main render
   return (
     <div className="space-y-4">
       <SearchInput onSearch={handleSearch} />
       {filteredAnimals.map(animal => (
-        <AnimalCard 
-          key={animal.id} 
-          animal={animal} 
-          onClick={() => onAnimalSelect(animal)} 
+        <AnimalCard
+          key={animal.id}
+          animal={animal}
+          onClick={() => onAnimalSelect(animal)}
         />
       ))}
     </div>

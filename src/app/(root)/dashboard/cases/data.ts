@@ -72,7 +72,8 @@ export const cases: CaseData[] = [
     clinicName: "VTH, University of Ibadan",
     veterinarianName: "Dr Waywealth",
     imageTaken: "View Image",
-    fullHistory: "Lörem ipsum linat telen. Krotyrat dösam emedan megar, huruvida polyr. Niväsm negisk niligen. Multiren. Ipär dias och spebylig vasam hexalalig. Gäbens neogen. Mödat gyngar.\nNer difir myse. Hämyrade klimatsäkra ir krotiv inte begt. Tempomani hexagyn även om matbil. Tridost sper kontrav. Gäng podeng fastän runat vuvins. Semiledes sevar, reng koldioxidsänka om raktiga. Pin filasm somön i vidonat.\nLanera supramöda, pest samt diasm reass. Soss spektiga, väpp enar hånire. Os ultradade i epigt tågösk. Hemitesat nahet. Dåda apfälla avussade. Ståpaddling ninde tånat har koska. Slöjböter pissade de astrons. Du kan vara drabbad.\nUdönar olig för morotsmobb renede. Dida tinde och hynas, möbelhund. Sehet uda, fronta, deception. Decidodesk hyperstat hypogänade till androlog. Egoktigt nöras det vill säga ultragt, mögåska. Prefiledade enade, och dolig. Pende orad även om lanade nutt maledes. Du kan vara drabbad.\nPladore agflation håbessade. Ekofoni. Seskade kontrahyrade ett krod vaska monoktig. Demiosmos pseudovision men..."
+    fullHistory:
+      "Lörem ipsum linat telen. Krotyrat dösam emedan megar, huruvida polyr. Niväsm negisk niligen. Multiren. Ipär dias och spebylig vasam hexalalig. Gäbens neogen. Mödat gyngar.\nNer difir myse. Hämyrade klimatsäkra ir krotiv inte begt. Tempomani hexagyn även om matbil. Tridost sper kontrav. Gäng podeng fastän runat vuvins. Semiledes sevar, reng koldioxidsänka om raktiga. Pin filasm somön i vidonat.\nLanera supramöda, pest samt diasm reass. Soss spektiga, väpp enar hånire. Os ultradade i epigt tågösk. Hemitesat nahet. Dåda apfälla avussade. Ståpaddling ninde tånat har koska. Slöjböter pissade de astrons. Du kan vara drabbad.\nUdönar olig för morotsmobb renede. Dida tinde och hynas, möbelhund. Sehet uda, fronta, deception. Decidodesk hyperstat hypogänade till androlog. Egoktigt nöras det vill säga ultragt, mögåska. Prefiledade enade, och dolig. Pende orad även om lanade nutt maledes. Du kan vara drabbad.\nPladore agflation håbessade. Ekofoni. Seskade kontrahyrade ett krod vaska monoktig. Demiosmos pseudovision men...",
   },
   {
     id: "2",
@@ -104,6 +105,6 @@ export const cases: CaseData[] = [
     clinicAddress: "15, Farm Road, Ogun State, Nigeria",
     clinicName: "Agricultural Development Center",
     veterinarianName: "Dr Adebayo",
-    imageTaken: "View image"
-  }
+    imageTaken: "View image",
+  },
 ];

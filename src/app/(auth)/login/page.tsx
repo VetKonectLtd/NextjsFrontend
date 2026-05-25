@@ -18,7 +18,6 @@ export default function LoginPage() {
   const { useLogin, setAuthCookie } = useAuthService();
   const loginMutation = useLogin();
 
-
   // Get all possible redirect parameters - but we'll prioritize returnUrl
   const returnUrlParam = searchParams.get("returnUrl");
   const redirectParam = searchParams.get("redirect"); // For backward compatibility
@@ -36,7 +35,7 @@ export default function LoginPage() {
       returnUrl: returnUrlParam,
       redirect: redirectParam,
       from: fromParam,
-      invite: inviteCode
+      invite: inviteCode,
     });
     console.log("🔐 Initial redirect set to:", initialRedirect);
   }, []);
@@ -106,7 +105,6 @@ export default function LoginPage() {
     });
   };
 
-
   const handleGoogleLogin = () => {
     // Store the final redirect URL where we want to go after Google OAuth completes
     sessionStorage.setItem("google-oauth-redirect", redirectTo);
@@ -131,7 +129,6 @@ export default function LoginPage() {
     // Redirect to Google OAuth
     window.location.href = url;
   };
-
 
   return (
     <div
@@ -244,7 +241,9 @@ export default function LoginPage() {
             if (redirectParam) params.set("redirect", redirectParam);
             if (fromParam) params.set("from", fromParam);
 
-            router.push(`/signup${params.toString() ? `?${params.toString()}` : ''}`);
+            router.push(
+              `/signup${params.toString() ? `?${params.toString()}` : ""}`,
+            );
           }}
         >
           Create Account

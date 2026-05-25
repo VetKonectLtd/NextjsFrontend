@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-  const API_AI_URL = process.env.NEXT_PUBLIC_AI_URL;
+const API_AI_URL = process.env.NEXT_PUBLIC_AI_URL;
 
 class ApiClient {
   private baseUrl: string;
@@ -63,11 +63,11 @@ class ApiClient {
       // Handle 401 Unauthorized - Only auto-redirect if enabled
       if (response.status === 401) {
         console.warn("401 Unauthorized for endpoint:", endpoint);
-        
+
         if (this.shouldHandleAuthRedirects) {
           this.handleUnauthorized();
         }
-        
+
         // Throw a specific error that components can catch
         throw new Error(
           data.error || data.message || "Unauthorized - Please login again",
@@ -174,12 +174,15 @@ class ApiClient {
   }
 
   // Generic CRUD operations with optional auth handling
-  async get<T>(endpoint: string, disableAuthRedirect = false): Promise<ApiResponse<T>> {
+  async get<T>(
+    endpoint: string,
+    disableAuthRedirect = false,
+  ): Promise<ApiResponse<T>> {
     const previousSetting = this.shouldHandleAuthRedirects;
     if (disableAuthRedirect) {
       this.disableAuthRedirects();
     }
-    
+
     try {
       return await this.request<T>(endpoint);
     } finally {
@@ -189,14 +192,18 @@ class ApiClient {
     }
   }
 
-  async post<T>(endpoint: string, data: any, disableAuthRedirect = false): Promise<ApiResponse<T>> {
+  async post<T>(
+    endpoint: string,
+    data: any,
+    disableAuthRedirect = false,
+  ): Promise<ApiResponse<T>> {
     const body = data instanceof FormData ? data : JSON.stringify(data);
     const previousSetting = this.shouldHandleAuthRedirects;
-    
+
     if (disableAuthRedirect) {
       this.disableAuthRedirects();
     }
-    
+
     try {
       return await this.request<T>(endpoint, {
         method: "POST",
@@ -209,13 +216,17 @@ class ApiClient {
     }
   }
 
-  async put<T>(endpoint: string, data: any, disableAuthRedirect = false): Promise<ApiResponse<T>> {
+  async put<T>(
+    endpoint: string,
+    data: any,
+    disableAuthRedirect = false,
+  ): Promise<ApiResponse<T>> {
     const previousSetting = this.shouldHandleAuthRedirects;
-    
+
     if (disableAuthRedirect) {
       this.disableAuthRedirects();
     }
-    
+
     try {
       return await this.request<T>(endpoint, {
         method: "PUT",
@@ -228,13 +239,17 @@ class ApiClient {
     }
   }
 
-  async patch<T>(endpoint: string, data: any, disableAuthRedirect = false): Promise<ApiResponse<T>> {
+  async patch<T>(
+    endpoint: string,
+    data: any,
+    disableAuthRedirect = false,
+  ): Promise<ApiResponse<T>> {
     const previousSetting = this.shouldHandleAuthRedirects;
-    
+
     if (disableAuthRedirect) {
       this.disableAuthRedirects();
     }
-    
+
     try {
       return await this.request<T>(endpoint, {
         method: "PATCH",
@@ -247,13 +262,16 @@ class ApiClient {
     }
   }
 
-  async delete<T>(endpoint: string, disableAuthRedirect = false): Promise<ApiResponse<T>> {
+  async delete<T>(
+    endpoint: string,
+    disableAuthRedirect = false,
+  ): Promise<ApiResponse<T>> {
     const previousSetting = this.shouldHandleAuthRedirects;
-    
+
     if (disableAuthRedirect) {
       this.disableAuthRedirects();
     }
-    
+
     try {
       return await this.request<T>(endpoint, {
         method: "DELETE",

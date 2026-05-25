@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface Country {
   code: string;
@@ -10,20 +10,47 @@ interface Country {
 }
 
 const countries: Country[] = [
-  { code: 'GH', name: 'Ghana', description: 'Comprehensive veterinary services across all regions' },
-  { code: 'BF', name: 'Burkina Faso', description: 'Supporting livestock and pet care nationwide' },
-  { code: 'TG', name: 'Togo', description: 'Quality animal healthcare from coast to interior' },
-  { code: 'CM', name: 'Cameroon', description: 'Serving diverse ecosystems and animal populations' },
-  { code: 'ZA', name: 'South Africa', description: 'Advanced veterinary care across provinces' },
-  { code: 'NG', name: 'Nigeria', description: 'Leading animal healthcare in West Africa' },
-  { code: 'KE', name: 'Kenya', description: 'Excellence in wildlife and domestic animal care' },
+  {
+    code: "GH",
+    name: "Ghana",
+    description: "Comprehensive veterinary services across all regions",
+  },
+  {
+    code: "BF",
+    name: "Burkina Faso",
+    description: "Supporting livestock and pet care nationwide",
+  },
+  {
+    code: "TG",
+    name: "Togo",
+    description: "Quality animal healthcare from coast to interior",
+  },
+  {
+    code: "CM",
+    name: "Cameroon",
+    description: "Serving diverse ecosystems and animal populations",
+  },
+  {
+    code: "ZA",
+    name: "South Africa",
+    description: "Advanced veterinary care across provinces",
+  },
+  {
+    code: "NG",
+    name: "Nigeria",
+    description: "Leading animal healthcare in West Africa",
+  },
+  {
+    code: "KE",
+    name: "Kenya",
+    description: "Excellence in wildlife and domestic animal care",
+  },
 ];
 
-export default function AreaCoveredSection({title}:any) {
+export default function AreaCoveredSection({ title }: any) {
   return (
     <section className="py-16 bg-offwhite">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Section Heading */}
         <motion.div
           className="text-center mb-12"
@@ -53,23 +80,23 @@ export default function AreaCoveredSection({title}:any) {
                   delay: index * 0.1,
                   type: "spring",
                   stiffness: 120,
-                  damping: 12
-                }
+                  damping: 12,
+                },
               }}
               viewport={{ amount: 0.3 }}
-              whileHover={{ 
-                y: -10, 
+              whileHover={{
+                y: -10,
                 scale: 1.05,
-                transition: { duration: 0.3 }
+                transition: { duration: 0.3 },
               }}
             >
               {/* Flag Container */}
-              <motion.div 
+              <motion.div
                 className="relative w-20 h-20 lg:w-24 lg:h-24 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden mb-4"
-                whileHover={{ 
-                  borderColor: '#0B6614',
-                  boxShadow: '0 10px 30px rgba(11, 102, 20, 0.3)',
-                  transition: { duration: 0.3 }
+                whileHover={{
+                  borderColor: "#0B6614",
+                  boxShadow: "0 10px 30px rgba(11, 102, 20, 0.3)",
+                  transition: { duration: 0.3 },
                 }}
               >
                 <Image
@@ -79,7 +106,7 @@ export default function AreaCoveredSection({title}:any) {
                   height={96}
                   className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
                 />
-                
+
                 {/* Overlay effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-green-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
@@ -96,7 +123,6 @@ export default function AreaCoveredSection({title}:any) {
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );

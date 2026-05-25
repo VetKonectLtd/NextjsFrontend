@@ -4,7 +4,7 @@ import { z } from "zod";
 export const caseFormSchema = z.object({
   // Step 1: Basic Case Details
   caseTitle: z.string().min(1, "Case title is required"),
-  
+
   // Client Details
   clientName: z.string().min(1, "Client name is required"),
   clientPhoneNumber: z.string().min(1, "Client phone number is required"),
@@ -20,10 +20,15 @@ export const caseFormSchema = z.object({
   breed: z.string().optional(),
   numberOfLivestock: z.number().optional(),
   age: z.number().min(0, "Age must be positive").optional(),
-  numberOfWorkers: z.number().min(0, "Number of workers must be positive").optional(),
-  sex: z.enum(["Male", "Female"], {
-    required_error: "Please select sex",
-  }).optional(),
+  numberOfWorkers: z
+    .number()
+    .min(0, "Number of workers must be positive")
+    .optional(),
+  sex: z
+    .enum(["Male", "Female"], {
+      required_error: "Please select sex",
+    })
+    .optional(),
   petNumber: z.string().optional(),
   location: z.string().optional(),
   otherDetails: z.string().optional(),
@@ -31,16 +36,22 @@ export const caseFormSchema = z.object({
   // Step 3: Disease Records
   dateOccurred: z.string().min(1, "Date occurred is required"),
   history: z.string().optional(),
-  clinicalSigns: z.array(z.string()).min(1, "At least one clinical sign is required"),
+  clinicalSigns: z
+    .array(z.string())
+    .min(1, "At least one clinical sign is required"),
   tentativeDiagnosis: z.string().optional(),
   differentialDiagnosis: z.string().optional(),
   diseaseClassification: z.string().optional(),
-  labConfirmed: z.enum(["Yes", "No"], {
-    required_error: "Please select lab confirmation status",
-  }).optional(),
-  mortality: z.enum(["None", "Low", "Medium", "High"], {
-    required_error: "Please select mortality level",
-  }).optional(),
+  labConfirmed: z
+    .enum(["Yes", "No"], {
+      required_error: "Please select lab confirmation status",
+    })
+    .optional(),
+  mortality: z
+    .enum(["None", "Low", "Medium", "High"], {
+      required_error: "Please select mortality level",
+    })
+    .optional(),
   treatmentRegimen: z.string().optional(),
 
   // Step 4: Clinic Location
@@ -97,7 +108,7 @@ export const speciesOptions = [
 export const livestockTypes = [
   "Poultry",
   "Cattle",
-  "Swine", 
+  "Swine",
   "Goats",
   "Sheep",
   "Fish",
@@ -107,7 +118,7 @@ export const livestockTypes = [
 // Disease classification options
 export const diseaseClassificationOptions = [
   "Infectious Disease",
-  "Parasitic Disease", 
+  "Parasitic Disease",
   "Nutritional Disorder",
   "Metabolic Disorder",
   "Genetic Disorder",
@@ -120,20 +131,40 @@ export const diseaseClassificationOptions = [
 
 // Validation helpers for conditional fields
 export const validateStep1 = (data: Partial<CaseFormData>) => {
-  return !!(data.caseTitle && data.clientName && data.clientPhoneNumber && data.petOrFarm);
+  return !!(
+    data.caseTitle &&
+    data.clientName &&
+    data.clientPhoneNumber &&
+    data.petOrFarm
+  );
 };
 
 export const validateStep2 = (data: Partial<CaseFormData>) => {
   if (data.petOrFarm === "Pet") {
-    return !!(data.petName && data.species && data.breed && data.age && data.sex);
+    return !!(
+      data.petName &&
+      data.species &&
+      data.breed &&
+      data.age &&
+      data.sex
+    );
   } else if (data.petOrFarm === "Farm") {
-    return !!(data.farmName && data.typeOfLivestock && data.numberOfLivestock && data.numberOfWorkers);
+    return !!(
+      data.farmName &&
+      data.typeOfLivestock &&
+      data.numberOfLivestock &&
+      data.numberOfWorkers
+    );
   }
   return false;
 };
 
 export const validateStep3 = (data: Partial<CaseFormData>) => {
-  return !!(data.dateOccurred && data.clinicalSigns && data.clinicalSigns.length > 0);
+  return !!(
+    data.dateOccurred &&
+    data.clinicalSigns &&
+    data.clinicalSigns.length > 0
+  );
 };
 
 export const validateStep4 = (data: Partial<CaseFormData>) => {

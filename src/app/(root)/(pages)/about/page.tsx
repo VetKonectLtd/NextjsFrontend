@@ -1,9 +1,9 @@
 import {
-	AboutSection,
-	OurValuesSection,
-	AreaCoveredSection,
-	TeamMembersSection,
-	ContactSection,
+  AboutSection,
+  OurValuesSection,
+  AreaCoveredSection,
+  TeamMembersSection,
+  ContactSection,
 } from "@/components/aboutComponents";
 import AdvisoryAndActivities from "@/components/aboutComponents/AdvisoryAndActivities";
 import PartnershipSection from "@/components/aboutComponents/PartnershipSection";
@@ -13,49 +13,49 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-	title: "About Us",
-	description: "Learn more about our organization and our mission.",
-	openGraph: {
-		title: "About Us | Vet Konect",
-		description: "Learn more about our organization and our mission.",
-		url: "https://vetkonect.com/about",
-		images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
-		type: "website",
-	},
-	twitter: {
-		card: 'summary_large_image',
-		title: "About Us | Vet Konect",
-		description: "Learn more about our organization and our mission.",
-		images: [`https://www.vetkonect.com/images/og-logo.png`],
-	},
+  title: "About Us",
+  description: "Learn more about our organization and our mission.",
+  openGraph: {
+    title: "About Us | Vet Konect",
+    description: "Learn more about our organization and our mission.",
+    url: "https://vetkonect.com/about",
+    images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us | Vet Konect",
+    description: "Learn more about our organization and our mission.",
+    images: [`https://www.vetkonect.com/images/og-logo.png`],
+  },
 };
 
 export default function AboutPage() {
-	return (
-		<div className=" bg-white overflow-hidden">
-			{/* About Section */}
-			<AboutSection />
+  return (
+    <div className=" bg-white overflow-hidden">
+      {/* About Section */}
+      <AboutSection />
 
-			{/* Our Values Section */}
-			<OurValuesSection />
+      {/* Our Values Section */}
+      <OurValuesSection />
 
-			{/* Area Covered Section */}
-			<AreaCoveredSection title="Area Covered on Map" />
+      {/* Area Covered Section */}
+      <AreaCoveredSection title="Area Covered on Map" />
 
-			{/* Team Members Section */}
-			<TeamMembersSection />
+      {/* Team Members Section */}
+      <TeamMembersSection />
 
-			<AdvisoryAndActivities />
+      <AdvisoryAndActivities />
 
-			<PartnershipSection />
-			<SupportsSection />
+      <PartnershipSection />
+      <SupportsSection />
 
-			{/* Contact Section */}
+      {/* Contact Section */}
 
-			<ContactSection />
+      <ContactSection />
 
-			{/* Footer */}
-			<Footer />
-		</div>
-	);
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
 }

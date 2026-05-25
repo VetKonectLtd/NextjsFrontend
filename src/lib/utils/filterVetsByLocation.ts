@@ -3,11 +3,9 @@ interface Location {
   longitude: number;
 }
 
-export function filterVetsByLocation<T extends { latitude?: any; longitude?: any }>(
-  vets: T[],
-  userLocation?: Location,
-  radiusKm = 50
-): T[] {
+export function filterVetsByLocation<
+  T extends { latitude?: any; longitude?: any },
+>(vets: T[], userLocation?: Location, radiusKm = 50): T[] {
   if (!userLocation) return vets;
 
   const toRad = (value: number) => (value * Math.PI) / 180;
@@ -17,10 +15,7 @@ export function filterVetsByLocation<T extends { latitude?: any; longitude?: any
     const vetLat = Number(vet.latitude);
     const vetLng = Number(vet.longitude);
 
-    if (
-      Number.isNaN(vetLat) ||
-      Number.isNaN(vetLng)
-    ) {
+    if (Number.isNaN(vetLat) || Number.isNaN(vetLng)) {
       return false;
     }
 

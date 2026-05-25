@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Check,
-  Minus,
-  Plus,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Minus, Plus } from "lucide-react";
 import { useSubscriptionService } from "@/services/subsciptionService";
 
 const plans = [
@@ -35,18 +29,19 @@ const plans = [
       "Guided prescriptions",
       "24/7 emergency triage via WhatsApp",
     ],
-  }
+  },
 ];
 
 export default function PricingCarousel() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const {useGetUserSubscription, useInitiateSubscription}= useSubscriptionService();
+  const { useGetUserSubscription, useInitiateSubscription } =
+    useSubscriptionService();
 
-  const {data:subscriptionPlan }  = useGetUserSubscription( true);
+  const { data: subscriptionPlan } = useGetUserSubscription(true);
   const subscriptionMutation = useInitiateSubscription();
 
- const plans = (subscriptionPlan as any)?.subscriptions.data || [];
+  const plans = (subscriptionPlan as any)?.subscriptions.data || [];
 
   const next = () => {
     setDirection(1);
@@ -60,21 +55,19 @@ export default function PricingCarousel() {
 
   const handleSelectPlan = () => {
     subscriptionMutation.mutate(
-      {subscription_beta_id: plans[index].id},
+      { subscription_beta_id: plans[index].id },
       {
-					onSuccess: (data: any) => {
-						if (data?.authorization_url) {
-							window.location.href = data.authorization_url;
-						}
-					},
-				},
+        onSuccess: (data: any) => {
+          if (data?.authorization_url) {
+            window.location.href = data.authorization_url;
+          }
+        },
+      },
     );
-  }
-  
+  };
 
   return (
     <div className="md:max-w-7xl w-11/12 pt-2 mx-auto  flex flex-col items-center justify-between py-6">
-
       {/* CARD */}
       <div className="relative w-full max-w-sm overflow-hidden mt-6">
         <AnimatePresence mode="wait" custom={direction}>
@@ -85,7 +78,7 @@ export default function PricingCarousel() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-          > 
+          >
             <PlanCard plan={plans[index]} handleSelectPlan={handleSelectPlan} />
           </motion.div>
         </AnimatePresence>
@@ -115,23 +108,30 @@ function PlanCard({ plan, handleSelectPlan }: any) {
   return (
     <div className="border-2 border-primary-400 rounded-2xl p-6 bg-white">
       <h3 className="text-lg font-semibold">{plan?.subscription_title}</h3>
-      <p className="text-sm text-gray-500">{plan?.date_option == "Months" ? "Monthly" : plan?.date_option} Price</p>
+      <p className="text-sm text-gray-500">
+        {plan?.date_option == "Months" ? "Monthly" : plan?.date_option} Price
+      </p>
 
-      <p className="text-3xl font-bold my-4">  ₦ {plan?.price?.toLocaleString()}</p>
+      <p className="text-3xl font-bold my-4">
+        {" "}
+        ₦ {plan?.price?.toLocaleString()}
+      </p>
 
       <ul className="space-y-2">
         {plan?.features.map((feature: string) => (
           <li key={feature} className="flex items-center gap-2 text-sm">
             <div className="bg-gray-200 rounded-full p-2">
-
-            <Check className="text-primary-400" size={16} />
+              <Check className="text-primary-400" size={16} />
             </div>
             {feature}
           </li>
         ))}
       </ul>
 
-      <button onClick={handleSelectPlan} className="mt-6 w-full bg-primary-400 text-white py-2 rounded-lg">
+      <button
+        onClick={handleSelectPlan}
+        className="mt-6 w-full bg-primary-400 text-white py-2 rounded-lg"
+      >
         SELECT PLAN
       </button>
     </div>

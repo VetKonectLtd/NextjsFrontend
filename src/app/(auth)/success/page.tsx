@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 const SuccessPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const formType = searchParams.get("form");
   const token = searchParams.get("token");
   const redirect = searchParams.get("redirect");
@@ -27,17 +27,17 @@ const SuccessPage = () => {
       });
 
       localStorage.setItem("auth-token", token);
-      
+
       // Remove token from URL for security
       const cleanUrl = `/success?form=${formType || "Login"}`;
       window.history.replaceState({}, "", cleanUrl);
 
       // Set flag to indicate successful login
       sessionStorage.setItem("justLoggedIn", "true");
-      
+
       // Determine where to redirect
       let targetUrl = "/dashboard";
-      
+
       // Priority 1: Check if coming from comment
       if (from === "comment") {
         const storedRedirect = sessionStorage.getItem("redirect-after-login");
@@ -52,7 +52,9 @@ const SuccessPage = () => {
       }
       // Priority 3: Check for stored Google login redirect
       else {
-        const googleRedirect = sessionStorage.getItem("redirect-after-google-login");
+        const googleRedirect = sessionStorage.getItem(
+          "redirect-after-google-login",
+        );
         if (googleRedirect) {
           targetUrl = googleRedirect;
           sessionStorage.removeItem("redirect-after-google-login");
@@ -78,12 +80,14 @@ const SuccessPage = () => {
         return (
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Login successful! Redirecting...</p>
+            <p className="mt-4 text-gray-600">
+              Login successful! Redirecting...
+            </p>
           </div>
         );
     }
   };
-  
+
   return (
     <div
       style={{ backgroundImage: `url(${AuthBg.src})` }}

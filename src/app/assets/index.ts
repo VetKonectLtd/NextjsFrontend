@@ -1,5 +1,5 @@
 // Export all images
-export {} from './images';
+export {} from "./images";
 
 // Export all icons
-export {} from './icons';
+export {} from "./icons";

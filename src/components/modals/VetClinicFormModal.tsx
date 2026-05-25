@@ -1,9 +1,9 @@
 import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import FormInput from "../form/FormInput";
@@ -23,234 +23,234 @@ import TagInput from "../form/TagInput";
 import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 const VeterinarianFormModal = ({
-	progressOpen,
-	setOpen,
-	setProgressOpen,
+  progressOpen,
+  setOpen,
+  setProgressOpen,
 }: any) => {
-	const [selectedTags, setSelectedTags] = useState<string[]>([]);
-	const [successOpen, setSuccessOpen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [successOpen, setSuccessOpen] = useState(false);
 
-	const { useAddVetClinic } = useVeterinaryClinicService();
-	const { useCurrentUser } = useAuthService();
-	const { coordinates } = useGeolocation();
+  const { useAddVetClinic } = useVeterinaryClinicService();
+  const { useCurrentUser } = useAuthService();
+  const { coordinates } = useGeolocation();
 
-	const addVetClinicMutation = useAddVetClinic();
-	const { data: user } = useCurrentUser(true);
+  const addVetClinicMutation = useAddVetClinic();
+  const { data: user } = useCurrentUser(true);
 
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		control,
-		formState: { errors, isValid },
-	} = useForm<VetClinic>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors, isValid },
+  } = useForm<VetClinic>();
 
-	const [selectedLocation, setSelectedLocation] = useState<{
-		latitude: number;
-		longitude: number;
-	} | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
-	useEffect(() => {
-		if (selectedLocation) {
-			setValue("latitude", String(selectedLocation.latitude as any));
-			setValue("longitude", String(selectedLocation.longitude as any));
-		}
-		if (user) {
-			setValue(
-				"user_id",
-				(user as Record<string, any>)?.data?.profile?.user?.id,
-			);
-		}
-	}, [setValue, selectedLocation, user]);
+  useEffect(() => {
+    if (selectedLocation) {
+      setValue("latitude", String(selectedLocation.latitude as any));
+      setValue("longitude", String(selectedLocation.longitude as any));
+    }
+    if (user) {
+      setValue(
+        "user_id",
+        (user as Record<string, any>)?.data?.profile?.user?.id,
+      );
+    }
+  }, [setValue, selectedLocation, user]);
 
-	const onSubmit = (data: VetClinic) => {
-		if (Array.isArray(data.specialty)) {
-			data.specialty = data.specialty.join(", ");
-		}
-		addVetClinicMutation.mutate(data, {
-			onSuccess: () => {
-				setProgressOpen(false);
-				setSuccessOpen(true);
-			},
-		});
-	};
+  const onSubmit = (data: VetClinic) => {
+    if (Array.isArray(data.specialty)) {
+      data.specialty = data.specialty.join(", ");
+    }
+    addVetClinicMutation.mutate(data, {
+      onSuccess: () => {
+        setProgressOpen(false);
+        setSuccessOpen(true);
+      },
+    });
+  };
 
-	const handleBack = () => {
-		setOpen(true);
-		setProgressOpen(false);
-	};
+  const handleBack = () => {
+    setOpen(true);
+    setProgressOpen(false);
+  };
 
-	return (
-		<>
-			<Dialog open={progressOpen} onOpenChange={setProgressOpen}>
-				<DialogContent className="max-w-sm rounded-lg max-h-[90vh] overflow-y-auto">
-					<DialogHeader>
-						<div className="text-center px-7 m-auto">
-							<DialogTitle className="font-extrabold text-2xl">
-								Select Category
-							</DialogTitle>
-							<DialogDescription>
-								Choose a user category that best explains your user type.
-							</DialogDescription>
-						</div>
-					</DialogHeader>
+  return (
+    <>
+      <Dialog open={progressOpen} onOpenChange={setProgressOpen}>
+        <DialogContent className="max-w-sm rounded-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="text-center px-7 m-auto">
+              <DialogTitle className="font-extrabold text-2xl">
+                Select Category
+              </DialogTitle>
+              <DialogDescription>
+                Choose a user category that best explains your user type.
+              </DialogDescription>
+            </div>
+          </DialogHeader>
 
-					<div className="flex items-center max-w-1/2 m-auto text-center justify-center gap-2 mb-8">
-						{progressItem(Icon1, "Account Details", 0)}
-						<Image
-							src={Arrow}
-							alt="arrow"
-							className="object-contain w-3 h-3 filter-green"
-						/>
-						{progressItem(Icon2, "Personal Info", 1)}
-						<Image
-							src={Arrow}
-							alt="arrow"
-							className="object-contain w-3 h-3 filter-gray"
-						/>
-						{progressItem(Icon3, "Verify Account", 2)}
-					</div>
-					<form className="space-y-1">
-						<FormInput
-							label="Practicing License Number"
-							type="text"
-							focusLabel="Practicing License Number (Required) :"
-							isRequired
-							error={errors.practice_license_num?.message}
-							{...register("practice_license_num", {
-								required: "Practicing License number is required",
-							})}
-						/>
-						<p className="text-sm font-normal">
-							Type <span className="font-medium">Awaiting</span> if License
-							number is not available
-						</p>
-						<FormInput
-							label="Name of Clinic/Animal Hospital"
-							type="text"
-							focusLabel="Name of Clinic/Animal Hospital:"
-							isRequired
-							error={errors.clinic_name?.message}
-							{...register("clinic_name", {
-								required: "Clinic name is required",
-							})}
-						/>
+          <div className="flex items-center max-w-1/2 m-auto text-center justify-center gap-2 mb-8">
+            {progressItem(Icon1, "Account Details", 0)}
+            <Image
+              src={Arrow}
+              alt="arrow"
+              className="object-contain w-3 h-3 filter-green"
+            />
+            {progressItem(Icon2, "Personal Info", 1)}
+            <Image
+              src={Arrow}
+              alt="arrow"
+              className="object-contain w-3 h-3 filter-gray"
+            />
+            {progressItem(Icon3, "Verify Account", 2)}
+          </div>
+          <form className="space-y-1">
+            <FormInput
+              label="Practicing License Number"
+              type="text"
+              focusLabel="Practicing License Number (Required) :"
+              isRequired
+              error={errors.practice_license_num?.message}
+              {...register("practice_license_num", {
+                required: "Practicing License number is required",
+              })}
+            />
+            <p className="text-sm font-normal">
+              Type <span className="font-medium">Awaiting</span> if License
+              number is not available
+            </p>
+            <FormInput
+              label="Name of Clinic/Animal Hospital"
+              type="text"
+              focusLabel="Name of Clinic/Animal Hospital:"
+              isRequired
+              error={errors.clinic_name?.message}
+              {...register("clinic_name", {
+                required: "Clinic name is required",
+              })}
+            />
 
-						<Controller
-							name="specialty"
-							control={control}
-							rules={{ required: "At least one tag is required" }}
-							render={({ field }) => (
-								<TagSelect
-									label="Specialty"
-									focusLabel="Specialty Required :"
-									isRequired
-									options={[
-										"Small Animal",
-										"Large Animal",
-										"Exotic",
-										"Wildlife",
-										"Others",
-									]}
-									error={errors.specialty?.message}
-									onChange={(tags) => field.onChange(tags)}
-								/>
-							)}
-						/>
+            <Controller
+              name="specialty"
+              control={control}
+              rules={{ required: "At least one tag is required" }}
+              render={({ field }) => (
+                <TagSelect
+                  label="Specialty"
+                  focusLabel="Specialty Required :"
+                  isRequired
+                  options={[
+                    "Small Animal",
+                    "Large Animal",
+                    "Exotic",
+                    "Wildlife",
+                    "Others",
+                  ]}
+                  error={errors.specialty?.message}
+                  onChange={(tags) => field.onChange(tags)}
+                />
+              )}
+            />
 
-						<Controller
-							name="list_them"
-							control={control}
-							rules={{ required: "List them is required" }}
-							render={({ field }) => (
-								<TagInput
-									label="List them"
-									focusLabel="List them (Required) :"
-									isRequired
-									error={errors.list_them?.message}
-									onChange={(tags) => field.onChange(tags)}
-								/>
-							)}
-						/>
+            <Controller
+              name="list_them"
+              control={control}
+              rules={{ required: "List them is required" }}
+              render={({ field }) => (
+                <TagInput
+                  label="List them"
+                  focusLabel="List them (Required) :"
+                  isRequired
+                  error={errors.list_them?.message}
+                  onChange={(tags) => field.onChange(tags)}
+                />
+              )}
+            />
 
-						<FormInput
-							label="Phone"
-							type="tel"
-							focusLabel="Phone (Required) :"
-							isRequired
-							error={errors.contact_num?.message}
-							{...register("contact_num", {
-								required: "Phone number is required",
-							})}
-						/>
+            <FormInput
+              label="Phone"
+              type="tel"
+              focusLabel="Phone (Required) :"
+              isRequired
+              error={errors.contact_num?.message}
+              {...register("contact_num", {
+                required: "Phone number is required",
+              })}
+            />
 
-						<FormGooglePlacesCustom
-							name="address"
-							control={control}
-							label="Address"
-							focusLabel="Address (Required):"
-							isRequired
-							error={errors.address?.message}
-							onLocationSelect={(loc: any) => setSelectedLocation(loc)}
-						/>
+            <FormGooglePlacesCustom
+              name="address"
+              control={control}
+              label="Address"
+              focusLabel="Address (Required):"
+              isRequired
+              error={errors.address?.message}
+              onLocationSelect={(loc: any) => setSelectedLocation(loc)}
+            />
 
-						<div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
-							{" "}
-							<input
-								id="agree-terms"
-								type="checkbox"
-								{...register("agreeTerms", {
-									required: "You must agree to the terms and conditions",
-								})}
-								className="h-5 w-5 text-primary-400 cursor-pointer accent-primary-400 focus:ring-primary-400 border-gray-300 rounded"
-							/>
-							<label
-								htmlFor="agree-terms"
-								className="ml-4 text-sm font-normal cursor-pointer text-gray-55"
-							>
-								{" "}
-								Confirm that you agree to our terms and conditions at Vet
-								Konect{" "}
-							</label>{" "}
-						</div>
+            <div className="flex items-center border cursor-pointer bg-white border-gray-55 rounded-sm py-1 px-4">
+              {" "}
+              <input
+                id="agree-terms"
+                type="checkbox"
+                {...register("agreeTerms", {
+                  required: "You must agree to the terms and conditions",
+                })}
+                className="h-5 w-5 text-primary-400 cursor-pointer accent-primary-400 focus:ring-primary-400 border-gray-300 rounded"
+              />
+              <label
+                htmlFor="agree-terms"
+                className="ml-4 text-sm font-normal cursor-pointer text-gray-55"
+              >
+                {" "}
+                Confirm that you agree to our terms and conditions at Vet
+                Konect{" "}
+              </label>{" "}
+            </div>
 
-						<div className="flex flex-col mt-4 gap-3">
-							<Button
-								type="submit"
-								onClick={handleSubmit(onSubmit)}
-								disabled={addVetClinicMutation.isLoading}
-								className="w-full py-6 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
-							>
-								{addVetClinicMutation.isLoading ? (
-									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-										Processing...
-									</>
-								) : (
-									"Proceed"
-								)}
-							</Button>
+            <div className="flex flex-col mt-4 gap-3">
+              <Button
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+                disabled={addVetClinicMutation.isLoading}
+                className="w-full py-6 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
+              >
+                {addVetClinicMutation.isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                    Processing...
+                  </>
+                ) : (
+                  "Proceed"
+                )}
+              </Button>
 
-							<Button
-								type="button"
-								onClick={handleBack}
-								className="flex-1 py-3 text-gray-55 font-medium rounded-lg bg-[#FFDAB0] hover:bg-[#ffdab0ef] transition"
-							>
-								Back
-							</Button>
-						</div>
-					</form>
-				</DialogContent>
-			</Dialog>
-			<SuccessModal
-				successOpen={successOpen}
-				message={
-					"Your Vet Konect account upgrade has been initiated. Kindly exercise patience, you will be contacted soon."
-				}
-				setSuccessOpen={setSuccessOpen}
-			/>
-		</>
-	);
+              <Button
+                type="button"
+                onClick={handleBack}
+                className="flex-1 py-3 text-gray-55 font-medium rounded-lg bg-[#FFDAB0] hover:bg-[#ffdab0ef] transition"
+              >
+                Back
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+      <SuccessModal
+        successOpen={successOpen}
+        message={
+          "Your Vet Konect account upgrade has been initiated. Kindly exercise patience, you will be contacted soon."
+        }
+        setSuccessOpen={setSuccessOpen}
+      />
+    </>
+  );
 };
 
 export default VeterinarianFormModal;

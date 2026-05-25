@@ -1,9 +1,7 @@
-
 export default function Terms() {
   return (
     <div className="py-3 min-h-screen">
       <div className="max-w-4xl mx-auto px-3 py-10">
-        
         {/* Header */}
         <div className="mb-14 border-b pb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -22,7 +20,6 @@ export default function Terms() {
         </div>
 
         <div className="space-y-16 text-gray-700 leading-relaxed text-[15px]">
-          
           {/* Section 1 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
@@ -61,7 +58,6 @@ export default function Terms() {
             </h2>
 
             <div className="space-y-10">
-              
               {/* Veterinarians */}
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
@@ -116,8 +112,8 @@ export default function Terms() {
                     risk.
                   </li>
                   <li>
-                    Must seek immediate physical veterinary care when advised
-                    by a professional.
+                    Must seek immediate physical veterinary care when advised by
+                    a professional.
                   </li>
                 </ul>
               </div>
@@ -128,9 +124,7 @@ export default function Terms() {
                   2.4 Livestock Farmers
                 </h3>
                 <ul className="list-disc ml-6 space-y-2">
-                  <li>
-                    Must maintain accurate herd or flock health records.
-                  </li>
+                  <li>Must maintain accurate herd or flock health records.</li>
                   <li>
                     Are responsible for implementing professional advice
                     appropriately.
@@ -269,7 +263,6 @@ export default function Terms() {
               agreed to be legally bound by this User Policy & Terms of Service.
             </p>
           </section>
-
         </div>
       </div>
     </div>

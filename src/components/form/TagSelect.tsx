@@ -53,7 +53,7 @@ const TagSelect: React.FC<TagSelectProps> = ({
           <option value="" disabled hidden>
             {""}
           </option>
-          {options.map((opt, i:any) => (
+          {options.map((opt, i: any) => (
             <option key={i} value={opt}>
               {opt}
             </option>

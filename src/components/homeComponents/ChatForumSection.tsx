@@ -1,32 +1,37 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ChatLikes, ChatMessage1, ChatMessage2, ChatImage } from '@/app/assets/images';
-import Link from 'next/link';
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import {
+  ChatLikes,
+  ChatMessage1,
+  ChatMessage2,
+  ChatImage,
+} from "@/app/assets/images";
+import Link from "next/link";
 
 export default function ChatForumSection() {
   // Animation variants for left and right sides
   const leftVariants = {
     hidden: { opacity: 0, x: -100 },
-    visible: { opacity: 1, x: 0 }
+    visible: { opacity: 1, x: 0 },
   };
 
   const rightVariants = {
     hidden: { opacity: 0, x: 100 },
-    visible: { opacity: 1, x: 0 }
+    visible: { opacity: 1, x: 0 },
   };
 
   // Chat animation variants - sequential appearance and disappearance
   const chatVariants = {
     hidden: { opacity: 0, scale: 0.8, y: 20 },
     visible: { opacity: 1, scale: 1, y: 0 },
-    exit: { opacity: 0, scale: 0.8, y: -20 }
+    exit: { opacity: 0, scale: 0.8, y: -20 },
   };
 
   const transitionConfig = {
-    duration: 0.8
+    duration: 0.8,
   };
 
   return (
@@ -34,7 +39,7 @@ export default function ChatForumSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center gap-12">
           {/* Content Section */}
-          <motion.div 
+          <motion.div
             className="md:w-1/2 space-y-6 text-center md:text-left"
             variants={leftVariants}
             initial="hidden"
@@ -46,17 +51,21 @@ export default function ChatForumSection() {
               Chat Forum
             </h2>
             <p className="text-lg text-gray-600 max-w-md mx-auto md:mx-0">
-              Join a growing community of animal owners and animal health professionals.
+              Join a growing community of animal owners and animal health
+              professionals.
             </p>
             <div className="flex justify-center md:justify-start">
-              <Link href="/dashboard/chat-forum" className="px-6 py-3 border border-primary-600 bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-medium rounded-lg transition-colors duration-200">
+              <Link
+                href="/dashboard/chat-forum"
+                className="px-6 py-3 border border-primary-600 bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-medium rounded-lg transition-colors duration-200"
+              >
                 Get Started
               </Link>
             </div>
           </motion.div>
 
           {/* Animated Chat Section */}
-          <motion.div 
+          <motion.div
             className="md:w-1/2 flex justify-center"
             variants={rightVariants}
             initial="hidden"
@@ -67,10 +76,10 @@ export default function ChatForumSection() {
             <div className="relative h-80 w-80">
               {/* Circular Chat Image */}
               <div className="relative h-full w-full rounded-full overflow-hidden border-4 border-primary-100">
-                <Image 
-                  src={ChatImage} 
-                  alt="Chat Forum" 
-                  fill 
+                <Image
+                  src={ChatImage}
+                  alt="Chat Forum"
+                  fill
                   className="object-cover"
                   priority
                 />
@@ -83,14 +92,14 @@ export default function ChatForumSection() {
                 animate={{
                   opacity: [0, 1, 1, 0],
                   scale: [0.8, 1, 1, 0.8],
-                  y: [20, 0, 0, -20]
+                  y: [20, 0, 0, -20],
                 }}
                 transition={{
                   duration: 1.2,
                   delay: 0.5,
                   repeat: Infinity,
                   repeatDelay: 4,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               >
                 <Image
@@ -107,14 +116,14 @@ export default function ChatForumSection() {
                 animate={{
                   opacity: [0, 1, 1, 0],
                   scale: [0.8, 1, 1, 0.8],
-                  y: [20, 0, 0, -20]
+                  y: [20, 0, 0, -20],
                 }}
                 transition={{
                   duration: 1.2,
                   delay: 1.8,
                   repeat: Infinity,
                   repeatDelay: 4,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               >
                 <Image
@@ -131,14 +140,14 @@ export default function ChatForumSection() {
                 animate={{
                   opacity: [0, 1, 1, 0],
                   scale: [0.8, 1, 1, 0.8],
-                  y: [20, 0, 0, -20]
+                  y: [20, 0, 0, -20],
                 }}
                 transition={{
                   duration: 1.2,
                   delay: 3.1,
                   repeat: Infinity,
                   repeatDelay: 4,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               >
                 <Image

@@ -77,7 +77,7 @@ const PlanSelector = ({
               >
                 {Array.from(
                   { length: currentPlan.duration },
-                  (_, i) => i + 1
+                  (_, i) => i + 1,
                 ).map((n) => (
                   <button
                     key={n}

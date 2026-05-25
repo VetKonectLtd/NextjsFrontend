@@ -35,7 +35,7 @@ const FormSelect = ({
 
   const filteredOptions = searchable
     ? options.filter((opt) =>
-        opt.label.toLowerCase().includes(search.toLowerCase())
+        opt.label.toLowerCase().includes(search.toLowerCase()),
       )
     : options;
 

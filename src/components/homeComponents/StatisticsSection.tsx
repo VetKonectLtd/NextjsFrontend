@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { motion, useInView, useAnimation } from 'framer-motion';
-import { LemonBg, BrownBg, YellowBg, CreamBg, PinkBg } from '@/app/assets/images';
+import { useState } from "react";
+import Image from "next/image";
+import { motion, useInView, useAnimation } from "framer-motion";
+import {
+  LemonBg,
+  BrownBg,
+  YellowBg,
+  CreamBg,
+  PinkBg,
+} from "@/app/assets/images";
 
 interface StatisticItem {
   id: number;
@@ -19,48 +25,48 @@ const statistics: StatisticItem[] = [
   {
     id: 1,
     value: 3,
-    suffix: 'k+',
-    title: 'Number of',
-    subtitle: 'Veterinarians',
+    suffix: "k+",
+    title: "Number of",
+    subtitle: "Veterinarians",
     background: LemonBg,
-    textColor: 'text-gray-900'
+    textColor: "text-gray-900",
   },
   {
     id: 2,
     value: 15,
-    suffix: 'k+',
-    title: 'Social media',
-    subtitle: 'presence',
+    suffix: "k+",
+    title: "Social media",
+    subtitle: "presence",
     background: BrownBg,
-    textColor: 'text-white'
+    textColor: "text-white",
   },
   {
     id: 3,
     value: 200,
-    suffix: '',
-    title: 'Vendor store &',
-    subtitle: 'Vet Clinic',
+    suffix: "",
+    title: "Vendor store &",
+    subtitle: "Vet Clinic",
     background: YellowBg,
-    textColor: 'text-gray-900'
+    textColor: "text-gray-900",
   },
   {
     id: 4,
     value: 4,
-    suffix: 'k+',
-    title: 'Mobile app',
-    subtitle: 'downloads',
+    suffix: "k+",
+    title: "Mobile app",
+    subtitle: "downloads",
     background: CreamBg,
-    textColor: 'text-gray-900'
+    textColor: "text-gray-900",
   },
   {
     id: 5,
     value: 140,
-    suffix: 'k+',
-    title: 'Pet Owners &',
-    subtitle: 'livestock Farmers',
+    suffix: "k+",
+    title: "Pet Owners &",
+    subtitle: "livestock Farmers",
     background: PinkBg,
-    textColor: 'text-gray-900'
-  }
+    textColor: "text-gray-900",
+  },
 ];
 
 interface CounterProps {
@@ -74,29 +80,29 @@ function Counter({ end, suffix, duration }: CounterProps) {
   const controls = useAnimation();
 
   const formatNumber = (num: number) => {
-    if (suffix === 'm+') {
+    if (suffix === "m+") {
       return (num / 1000000).toFixed(1);
-    } else if (suffix === 'k+') {
+    } else if (suffix === "k+") {
       return (num / 1).toFixed(1);
     }
     return num.toString();
   };
 
   return (
-    <motion.span 
+    <motion.span
       className="text-2xl md:text-4xl font-black font-nunito"
       onViewportEnter={() => {
         setDisplayCount(0);
         controls.start({
           scale: [1, 1.1, 1],
-          transition: { duration: 0.3 }
+          transition: { duration: 0.3 },
         });
       }}
       onAnimationStart={() => {
         const start = 0;
         const increment = end / (duration * 60); // 60fps
         let current = start;
-        
+
         const timer = setInterval(() => {
           current += increment;
           if (current >= end) {
@@ -105,13 +111,14 @@ function Counter({ end, suffix, duration }: CounterProps) {
           } else {
             setDisplayCount(Math.floor(current));
           }
-        }, 1000/60);
+        }, 1000 / 60);
 
         return () => clearInterval(timer);
       }}
       animate={controls}
     >
-      {formatNumber(displayCount)}{suffix}
+      {formatNumber(displayCount)}
+      {suffix}
     </motion.span>
   );
 }
@@ -125,14 +132,14 @@ export default function StatisticsSection() {
             <motion.div
               key={stat.id}
               initial={{ opacity: 0, y: 50 }}
-              whileInView={{ 
-                opacity: 1, 
+              whileInView={{
+                opacity: 1,
                 y: 0,
-                transition: { 
-                  duration: 0.6, 
+                transition: {
+                  duration: 0.6,
                   delay: index * 0.1,
-                  ease: "easeOut"
-                }
+                  ease: "easeOut",
+                },
               }}
               viewport={{ once: true, amount: 0.3 }}
               className="relative h-36 md:h-48 flex flex-col items-center justify-center text-center p-4 md:p-6 rounded-2xl md:rounded-3xl overflow-hidden"

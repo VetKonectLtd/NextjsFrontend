@@ -2,19 +2,22 @@ import Footer from "@/components/shared/Footer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Privacy Policy",
-	description: "Learn more about our privacy practices and how we protect your information.",
+  title: "Privacy Policy",
+  description:
+    "Learn more about our privacy practices and how we protect your information.",
   openGraph: {
     title: "Privacy Policy | Vet Konect",
-    description: "Learn more about our privacy practices and how we protect your information.",
+    description:
+      "Learn more about our privacy practices and how we protect your information.",
     url: "https://vetkonect.com/privacy",
     images: [{ url: "https://www.vetkonect.com/images/og-logo.png" }],
     type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: "Privacy Policy | Vet Konect",
-    description: "Learn more about our privacy practices and how we protect your information.",
+    description:
+      "Learn more about our privacy practices and how we protect your information.",
     images: [`https://www.vetkonect.com/images/og-logo.png`],
   },
 };
@@ -23,7 +26,6 @@ export default function PrivacyPolicy() {
   return (
     <div className="bg-gray-50 py-6 min-h-screen">
       <div className="max-w-4xl mx-auto px-6 py-20">
-        
         {/* Header */}
         <div className="mb-14 border-b pb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -42,7 +44,6 @@ export default function PrivacyPolicy() {
         </div>
 
         <div className="space-y-16 text-gray-700 leading-relaxed text-[15px]">
-          
           {/* Section 1 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
@@ -51,9 +52,9 @@ export default function PrivacyPolicy() {
             <p>
               By accessing or using Vet Konect, you consent to the data
               practices described in this Privacy Policy. We process your
-              information in accordance with applicable data protection laws
-              and industry best practices to ensure confidentiality, integrity,
-              and availability of your data.
+              information in accordance with applicable data protection laws and
+              industry best practices to ensure confidentiality, integrity, and
+              availability of your data.
             </p>
           </section>
 
@@ -70,14 +71,14 @@ export default function PrivacyPolicy() {
 
             <ul className="list-disc ml-6 space-y-3">
               <li>
-                <strong>Account Information:</strong> Name, email address,
-                phone number, and location data to connect you with relevant
+                <strong>Account Information:</strong> Name, email address, phone
+                number, and location data to connect you with relevant
                 veterinary professionals.
               </li>
               <li>
-                <strong>Professional Information:</strong> For veterinarians
-                and para-professionals, professional certifications, clinic
-                details, licensing information, and registration numbers.
+                <strong>Professional Information:</strong> For veterinarians and
+                para-professionals, professional certifications, clinic details,
+                licensing information, and registration numbers.
               </li>
               <li>
                 <strong>Animal & Farm Data:</strong> Species, breed, age,
@@ -86,8 +87,8 @@ export default function PrivacyPolicy() {
               </li>
               <li>
                 <strong>Technical Information:</strong> Device type, operating
-                system, IP address, and system logs collected automatically
-                when you access our services.
+                system, IP address, and system logs collected automatically when
+                you access our services.
               </li>
             </ul>
           </section>
@@ -100,9 +101,9 @@ export default function PrivacyPolicy() {
 
             <ul className="list-disc ml-6 space-y-3">
               <li>
-                <strong>Service Facilitation:</strong> To connect pet owners
-                and livestock farmers with licensed veterinary professionals
-                and verified vendors.
+                <strong>Service Facilitation:</strong> To connect pet owners and
+                livestock farmers with licensed veterinary professionals and
+                verified vendors.
               </li>
               <li>
                 <strong>Tool Functionality:</strong> To power features such as
@@ -130,8 +131,8 @@ export default function PrivacyPolicy() {
 
             <ul className="list-disc ml-6 space-y-3">
               <li>
-                <strong>Secure Storage:</strong> All data is stored securely
-                and accessible only to authorized personnel with legitimate
+                <strong>Secure Storage:</strong> All data is stored securely and
+                accessible only to authorized personnel with legitimate
                 operational need.
               </li>
               <li>
@@ -198,9 +199,9 @@ export default function PrivacyPolicy() {
                 serve third-party targeted advertisements.
               </li>
               <li>
-                <strong>Local Storage:</strong> Secure local storage may be
-                used solely to maintain login sessions and user preferences so
-                that you do not need to re-enter credentials upon each visit.
+                <strong>Local Storage:</strong> Secure local storage may be used
+                solely to maintain login sessions and user preferences so that
+                you do not need to re-enter credentials upon each visit.
               </li>
             </ul>
           </section>
@@ -219,7 +220,6 @@ export default function PrivacyPolicy() {
               the platform.
             </p>
           </section>
-
         </div>
       </div>
 

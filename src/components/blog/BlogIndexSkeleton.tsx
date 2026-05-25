@@ -18,7 +18,10 @@ export default function BlogIndexSkeleton() {
       {/* Blog Grid */}
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, idx) => (
-          <div key={idx} className="bg-white border rounded-2xl overflow-hidden shadow-sm animate-pulse">
+          <div
+            key={idx}
+            className="bg-white border rounded-2xl overflow-hidden shadow-sm animate-pulse"
+          >
             {/* Image */}
             <Skeleton height={192} />
 

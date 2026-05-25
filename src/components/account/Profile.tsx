@@ -26,7 +26,7 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
   const activeRoleId: number | undefined = apiUser?.active_role_id;
 
   const activeRoleName: string | undefined = (apiUser?.roles || [])?.find(
-    (r: any) => r?.pivot?.role_id === activeRoleId
+    (r: any) => r?.pivot?.role_id === activeRoleId,
   )?.name;
   const backendRoleRaw: string | undefined =
     activeRoleName || (user as any)?.role;
@@ -47,7 +47,7 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
       pet_owner: "pet_owner",
       livestock_farmer: "livestock_farmer",
       farmer: "livestock_farmer",
-      basic_user: "basic_user"
+      basic_user: "basic_user",
     };
     return map[r] || r;
   };
@@ -60,7 +60,7 @@ const Profile = ({ userRole, initialEditMode = false }: ProfileProps) => {
       "vendor",
       "livestock_farmer",
       "pet_owner",
-      "basic_user"
+      "basic_user",
     ]);
     const vetGroup = new Set([
       "vertinary_doctor",

@@ -16,32 +16,32 @@ The project uses the following Google Fonts:
 Fonts are configured in `src/lib/fonts.ts` using Next.js's built-in Google Fonts optimization:
 
 ```typescript
-import { Inter, Poppins, Open_Sans, Nunito } from 'next/font/google';
+import { Inter, Poppins, Open_Sans, Nunito } from "next/font/google";
 
 export const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-poppins',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
+  display: "swap",
 });
 
 export const openSans = Open_Sans({
-  subsets: ['latin'],
-  variable: '--font-open-sans',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+  display: "swap",
 });
 
 export const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['300', '400', '600', '700', '800'],
-  variable: '--font-nunito',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["300", "400", "600", "700", "800"],
+  variable: "--font-nunito",
+  display: "swap",
 });
 ```
 
@@ -127,6 +127,7 @@ So you can use them directly in Tailwind classes:
 ## Typography Scale
 
 ### Headings (Poppins or Nunito)
+
 - H1: `text-4xl md:text-5xl lg:text-6xl font-bold`
 - H2: `text-3xl md:text-4xl lg:text-5xl font-semibold`
 - H3: `text-2xl md:text-3xl lg:text-4xl font-semibold`
@@ -135,6 +136,7 @@ So you can use them directly in Tailwind classes:
 - H6: `text-base md:text-lg lg:text-xl font-medium`
 
 ### Body Text (Inter)
+
 - Large: `text-lg leading-relaxed`
 - Base: `text-base leading-relaxed`
 - Small: `text-sm leading-relaxed`
@@ -151,6 +153,7 @@ So you can use them directly in Tailwind classes:
 ## Font Loading Optimization
 
 All fonts are configured with:
+
 - `display: 'swap'` - Ensures text remains visible during font loading
 - `preload: true` - Prioritizes critical font loading
 - `fallback` - Provides system font fallbacks
@@ -165,11 +168,11 @@ export default function HomePage() {
       <h1 className="font-nunito text-5xl font-bold text-gray-900">
         Welcome to VetKonnect
       </h1>
-      
+
       <p className="font-inter text-lg text-gray-700 mt-4">
         Making animal care available and accessible to everyone everywhere.
       </p>
-      
+
       <button className="font-open-sans font-medium bg-primary-600 text-white px-6 py-3 rounded-lg mt-6">
         Get Started
       </button>
