@@ -23,7 +23,7 @@ export default function SubscriptionModal({
   onSubscribe,
 }: SubscriptionModalProps) {
   if (!isOpen) return null;
-
+  
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -40,13 +40,13 @@ export default function SubscriptionModal({
           onClick={handleBackdropClick}
           className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm p-4"
         >
-          <div className="flex min-h-screen items-center justify-center py-8">
+          <div className="flex items-center justify-center">
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl bg-[#F6F8FF] shadow-2xl"
+              className="relative w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-3xl bg-[#F6F8FF] shadow-2xl"
             >
               {/* Close button */}
               <button
@@ -61,7 +61,7 @@ export default function SubscriptionModal({
                 <div className="p-8 my-16">
                   <div className="flex w-52 rounded-full px-3 items-center gap-2 mb-4 bg-[#B3FFC44D] text-[#0B6614]">
                     <span>
-                      <Sparkle size={15} color="#0B6614" />{" "}
+                      <Sparkle size={15} color="#0B6614" fill="#0B6614" />{" "}
                     </span>{" "}
                     VetifyPro Access
                   </div>

@@ -2,35 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Check, Minus, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { useSubscriptionService } from "@/services/subsciptionService";
 
-const plans = [
-  {
-    subscription_title: "Basic Farm Care Plan",
-    price: "₦3,000",
-    date_option: "Monthly",
-    period: "Monthly",
-    features: [
-      "4 professional vet tele-medicine consultations per month",
-      "Weekly farm health and management tips",
-      "Priority matching for animal health professions",
-      "24/7 Customer Support",
-    ],
-  },
-  {
-    name: "Essential Pet Care Plan",
-    price: "₦2,000",
-    period: "Monthly",
-    features: [
-      "2 tele-vet consultations per month (including video consultation)",
-      "Vaccination and deworming reminders",
-      "Feeding guides (local and affordable options)",
-      "Guided prescriptions",
-      "24/7 emergency triage via WhatsApp",
-    ],
-  },
-];
 
 export default function PricingCarousel() {
   const [index, setIndex] = useState(0);
