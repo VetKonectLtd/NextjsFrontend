@@ -8,150 +8,147 @@ import { ButtonBg, Map } from "@/app/assets/icons/vet-vendor";
 import { Product } from "@/types";
 
 type ProductCardProps = Product & {
-	onViewProduct?: (id: string) => void;
+  onViewProduct?: (id: string) => void;
 };
 
 const StoreProductCard = ({
-	product_name,
-	price,
-	images_url,
-	average_rating,
-	location,
-	availability,
-	id,
-	available_unit,
-	onViewProduct,
+  product_name,
+  price,
+  images_url,
+  average_rating,
+  location,
+  availability,
+  id,
+  available_unit,
+  onViewProduct,
 }: ProductCardProps) => {
-	const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
-	const handleViewProduct = () => {
-		if (onViewProduct && id) {
-			onViewProduct(id);
-		}
-	};
+  const handleViewProduct = () => {
+    if (onViewProduct && id) {
+      onViewProduct(id);
+    }
+  };
 
+  const images = Array.isArray(images_url) ? images_url : [];
 
+  const nextImage = () => {
+    if (images.length > 0) {
+      setIndex((prev) => (prev + 1) % images.length);
+    }
+  };
 
-	const images = Array.isArray(images_url) ? images_url : [];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextImage();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
 
+  return (
+    <div className="bg-white rounded-2xl shadow-md flex flex-col relative overflow-hidden">
+      {/* Image slider */}
+      <div className="relative w-full h-[140px]">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.1, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={images[index]}
+              alt={product_name}
+              fill
+              className="object-cover"
+              onClick={nextImage}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
+          </motion.div>
+        </AnimatePresence>
 
-	const nextImage = () => {
-		if (images.length > 0) {
-			setIndex((prev) => (prev + 1) % images.length);
-		}
-	};
+        {/* Rating */}
+        <div className="absolute top-2 left-2 text-white text-xs rounded-md px-2 py-1 flex items-center gap-1">
+          ⭐ {average_rating} of 5
+        </div>
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			nextImage();
-		}, 3000);
-		return () => clearInterval(interval);
-	}, [images.length]);
+        {/* Price */}
+        <div className="absolute bottom-2 right-2 text-white font-bold rounded-md">
+          ₦ {Number(price)?.toLocaleString() || "0.00"}
+        </div>
 
-	return (
-		<div className="bg-white rounded-2xl shadow-md flex flex-col relative overflow-hidden">
-			{/* Image slider */}
-			<div className="relative w-full h-[140px]">
-				<AnimatePresence initial={false} mode="wait">
-					<motion.div
-						key={index}
-						initial={{ opacity: 0, x: 100 }}
-						animate={{ opacity: 1, x: 0 }}
-						exit={{ opacity: 0, x: -100 }}
-						transition={{ duration: 0.1, ease: "easeInOut" }}
-						className="absolute inset-0"
-					>
-						<Image
-							src={images[index]}
-							alt={product_name}
-							fill
-							className="object-cover"
-							onClick={nextImage}
-						/>
-						<div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
-					</motion.div>
-				</AnimatePresence>
+        {/* Indicator dots */}
+        <div className="absolute bottom-2 left-2 flex justify-center gap-1">
+          {images.map((_, i) => (
+            <motion.button
+              key={i}
+              onClick={() => setIndex(i)}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                index === i
+                  ? "bg-white scale-125"
+                  : "bg-transparent border hover:bg-white/75"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
 
-				{/* Rating */}
-				<div className="absolute top-2 left-2 text-white text-xs rounded-md px-2 py-1 flex items-center gap-1">
-					⭐ {average_rating} of 5
-				</div>
+      {/* Details */}
+      <div className="p-3">
+        <div className="flex">
+          <span className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
+            {product_name.length > 18
+              ? `${product_name.slice(0, 18)}...`
+              : product_name}
+          </span>
+        </div>
+        <span className="flex items-center text-xs text-gray-500 mt-1">
+          <Image
+            src={Map}
+            alt="Location"
+            width={10}
+            height={10}
+            className="mr-2"
+          />
+          <span className="ml-1">{location}</span>
+        </span>
 
-				{/* Price */}
-				<div className="absolute bottom-2 right-2 text-white font-bold rounded-md">
-					₦ {Number(price)?.toLocaleString() || '0.00'}
-				</div>
+        <div className="flex items-center justify-between mt-3">
+          <span className="text-xs text-gray-55 font-medium">
+            {available_unit} Units
+          </span>
+          <button
+            style={{ backgroundImage: `url(${ButtonBg.src})` }}
+            onClick={handleViewProduct}
+            className="rounded-xl bg-cover bg-center bg-no-repeat p-2 flex items-center justify-center"
+          >
+            <ArrowRight size={20} color="#fff" />
+          </button>
+        </div>
 
-				{/* Indicator dots */}
-				<div className="absolute bottom-2 left-2 flex justify-center gap-1">
-					{images.map((_, i) => (
-						<motion.button
-							key={i}
-							onClick={() => setIndex(i)}
-							whileHover={{ scale: 1.2 }}
-							whileTap={{ scale: 0.9 }}
-							className={`w-2 h-2 rounded-full transition-all duration-200 ${
-								index === i
-									? "bg-white scale-125"
-									: "bg-transparent border hover:bg-white/75"
-							}`}
-						/>
-					))}
-				</div>
-			</div>
+        <div className="flex items-center justify-center shadow-md bg-[#F1F1F1] rounded-lg px-4 mt-3 py-2 mb-4">
+          <span className="text-gray-55 text-center text-sm">
+            {Number(available_unit) > 0 ? (
+              <div className="flex items-center rounded-lg  text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 inline-block animate-pulse" />
 
-			{/* Details */}
-			<div className="p-3">
-				<div className="flex">
-					<span className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
-						{product_name.length > 18
-							? `${product_name.slice(0, 18)}...`
-							: product_name}
-					</span>
-				</div>
-				<span className="flex items-center text-xs text-gray-500 mt-1">
-					<Image
-						src={Map}
-						alt="Location"
-						width={10}
-						height={10}
-						className="mr-2"
-					/>
-					<span className="ml-1">{location}</span>
-				</span>
-
-				<div className="flex items-center justify-between mt-3">
-					<span className="text-xs text-gray-55 font-medium">
-						{available_unit} Units
-					</span>
-					<button
-						style={{ backgroundImage: `url(${ButtonBg.src})` }}
-						onClick={handleViewProduct}
-						className="rounded-xl bg-cover bg-center bg-no-repeat p-2 flex items-center justify-center"
-					>
-						<ArrowRight size={20} color="#fff" />
-					</button>
-				</div>
-
-				<div className="flex items-center justify-center shadow-md bg-[#F1F1F1] rounded-lg px-4 mt-3 py-2 mb-4">
-					<span className="text-gray-55 text-center text-sm">
-						{Number(available_unit) > 0 ? (
-							<div className="flex items-center rounded-lg  text-xs font-medium">
-								<span className="w-2 h-2 rounded-full bg-green-500 mr-2 inline-block animate-pulse" />
-
-								<span>Available - ({available_unit} Units)</span>
-							</div>
-						) : (
-							<div className="flex items-center  rounded-lg  text-xs font-medium">
-								<span className="w-2 h-2  animate-pulse rounded-full bg-red-700 mr-2 inline-block" />
-								<span>Sold Out</span>
-							</div>
-						)}
-					</span>
-				</div>
-			</div>
-		</div>
-	);
+                <span>Available - ({available_unit} Units)</span>
+              </div>
+            ) : (
+              <div className="flex items-center  rounded-lg  text-xs font-medium">
+                <span className="w-2 h-2  animate-pulse rounded-full bg-red-700 mr-2 inline-block" />
+                <span>Sold Out</span>
+              </div>
+            )}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default StoreProductCard;

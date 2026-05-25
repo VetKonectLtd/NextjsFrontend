@@ -12,7 +12,12 @@ type Props = {
   placeholder?: string;
 };
 
-export default function ForumTextEditor({ value, onChange, border, placeholder }: Props) {
+export default function ForumTextEditor({
+  value,
+  onChange,
+  border,
+  placeholder,
+}: Props) {
   const editor = useEditor({
     immediatelyRender: false, // 👈 REQUIRED for Next.js App Router
     extensions: [
@@ -23,7 +28,6 @@ export default function ForumTextEditor({ value, onChange, border, placeholder }
         orderedList: {
           HTMLAttributes: { class: "list-decimal ml-6 my-2" },
         },
-
       }),
       Placeholder.configure({
         placeholder,

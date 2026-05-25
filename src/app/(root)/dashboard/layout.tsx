@@ -5,20 +5,20 @@ import FloatingNavButton from "@/components/shared/FloatingNavButton";
 import { ReactNode, useEffect } from "react";
 
 export default function DashboardLayout({
-	children,
+  children,
 }: Readonly<{ children: ReactNode }>) {
-	useEffect(() => {
-		const token = localStorage.getItem("auth-token");
-		if (token) {
-			localStorage.removeItem("signup-email");
-		}
-	}, []);
-	return (
-		<div className="flex w-full mt-20 pt-2 min-h-screen">
-			<Sidebar />
-			<CategoryModal />
-			<FloatingNavButton />
-			<div className="flex-grow md:ml-16">{children}</div>
-		</div>
-	);
+  useEffect(() => {
+    const token = localStorage.getItem("auth-token");
+    if (token) {
+      localStorage.removeItem("signup-email");
+    }
+  }, []);
+  return (
+    <div className="flex w-full mt-20 pt-2 min-h-screen">
+      <Sidebar />
+      <CategoryModal />
+      <FloatingNavButton />
+      <div className="flex-grow md:ml-16">{children}</div>
+    </div>
+  );
 }

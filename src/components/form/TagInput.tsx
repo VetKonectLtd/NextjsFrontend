@@ -10,7 +10,7 @@ interface TagInputProps {
   error?: string;
   value?: string[];
   onChange?: (tags: string[]) => void;
-  name?: string;      // RHF
+  name?: string; // RHF
   onBlur?: () => void; // RHF
 }
 

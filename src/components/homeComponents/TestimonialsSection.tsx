@@ -1,10 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image, { StaticImageData } from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { Atohunse, DATSU, Jacob, Test2, Test3, Test4 } from '@/app/assets/images';
+import { useState } from "react";
+import Image, { StaticImageData } from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  Atohunse,
+  DATSU,
+  Jacob,
+  Test2,
+  Test3,
+  Test4,
+} from "@/app/assets/images";
 
 interface Testimonial {
   id: number;
@@ -19,56 +26,64 @@ const testimonials: Testimonial[] = [
     id: 1,
     name: "Dr Undo Jacob Fater",
     location: "Benue, Nigeria",
-    testimonial: "Vet Konect platform has made it so much easier for me to connect with farmers and pet owners. It’s rewarding to be part of a platform that truly brings animal health professionals and animal owners together.",
-    avatar: Jacob
+    testimonial:
+      "Vet Konect platform has made it so much easier for me to connect with farmers and pet owners. It’s rewarding to be part of a platform that truly brings animal health professionals and animal owners together.",
+    avatar: Jacob,
   },
   {
     id: 2,
     name: "Gideon Datsu",
     location: "Benue, Nigeria",
-    testimonial: "Vet Konect has brought Veterinarians and VPPs together , easing access to animal health in close and distance settleme.",
-    avatar: DATSU
+    testimonial:
+      "Vet Konect has brought Veterinarians and VPPs together , easing access to animal health in close and distance settleme.",
+    avatar: DATSU,
   },
   {
     id: 3,
     name: "Atohunse Khaosarat Omoshalewa",
     location: "Oyo, Nigeria",
-    testimonial: "Vet Konect is an excellent source of poultry knowledge, offering educational content with visuals and live sessions. Their responsive app provides fast, reliable answers to all my poultry questions, making it my go-to resource.",
-    avatar: Atohunse
-  },{
+    testimonial:
+      "Vet Konect is an excellent source of poultry knowledge, offering educational content with visuals and live sessions. Their responsive app provides fast, reliable answers to all my poultry questions, making it my go-to resource.",
+    avatar: Atohunse,
+  },
+  {
     id: 4,
     name: "Mr. Paul Tilekaa Agu ",
     location: "Benue, Nigeria",
-    testimonial: "I honestly lack words to express my appreciation and gratitude to the Vetkonect Group for the wonderful Financial Support Project they have brought to us here. You're actually God sent to come uplift me and my Farm from the pit of total confusion. You make me to have a story and testimony to give tomorrow. God will bless you and this project, and you will grow and prosper. Amen",
-    avatar: Test2
+    testimonial:
+      "I honestly lack words to express my appreciation and gratitude to the Vetkonect Group for the wonderful Financial Support Project they have brought to us here. You're actually God sent to come uplift me and my Farm from the pit of total confusion. You make me to have a story and testimony to give tomorrow. God will bless you and this project, and you will grow and prosper. Amen",
+    avatar: Test2,
   },
   {
     id: 5,
     name: "Mrs. Ruth Semaka Mne",
     location: "Benue, Nigeria",
-    testimonial: "Good evening all,  I truly appreciate vet konect team for  all the opportunities given to me firstly the WIPI program and now this loan, I'm grateful. Special thanks to Dr Ray, you are truly one in a million. God bless.",
-    avatar: Test3
-  },{
+    testimonial:
+      "Good evening all,  I truly appreciate vet konect team for  all the opportunities given to me firstly the WIPI program and now this loan, I'm grateful. Special thanks to Dr Ray, you are truly one in a million. God bless.",
+    avatar: Test3,
+  },
+  {
     id: 6,
     name: "Mr. ANTHONY CHIBUISI NLEWEDUM",
     location: "Benue, Nigeria",
-    testimonial: "I want to sincerely thank the VetKonect team for their support in securing the inputs and also paying the balance which will serve as running capital. Thank you VetKonect",
-    avatar: Test4
-  }
+    testimonial:
+      "I want to sincerely thank the VetKonect team for their support in securing the inputs and also paying the balance which will serve as running capital. Thank you VetKonect",
+    avatar: Test4,
+  },
 ];
 
 export default function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextTestimonial = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+    setCurrentIndex((prevIndex) =>
+      prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1,
     );
   };
 
   const prevTestimonial = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1,
     );
   };
 
@@ -86,7 +101,7 @@ export default function TestimonialsSection() {
               Testimonials
             </h2>
           </div>
-          
+
           {/* Navigation Arrows - Desktop only */}
           <div className="hidden md:flex items-center gap-4">
             <button
@@ -112,7 +127,6 @@ export default function TestimonialsSection() {
             What are people saying about vet konect
           </p>
         </div>
-
 
         {/* Testimonial Card */}
         <div className="max-w-2xl mx-auto mb-6">
@@ -143,7 +157,7 @@ export default function TestimonialsSection() {
                 <blockquote className="text-gray-600 text-base md:text-lg leading-relaxed mb-4 md:mb-6">
                   "{testimonials[currentIndex].testimonial}"
                 </blockquote>
-                
+
                 <div className="space-y-1">
                   <h4 className="text-lg md:text-xl font-bold text-gray-900 font-nunito">
                     {testimonials[currentIndex].name}
@@ -164,9 +178,9 @@ export default function TestimonialsSection() {
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                index === currentIndex 
-                  ? 'bg-gray-800' 
-                  : 'bg-gray-300 hover:bg-gray-400'
+                index === currentIndex
+                  ? "bg-gray-800"
+                  : "bg-gray-300 hover:bg-gray-400"
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />

@@ -1,8 +1,8 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { parseCookies, setCookie } from 'nookies';
+"use client";
+import { useEffect, useState } from "react";
+import { parseCookies, setCookie } from "nookies";
 
-const COOKIE_NAME = 'googtrans';
+const COOKIE_NAME = "googtrans";
 
 interface LanguageDescriptor {
   name: string;
@@ -32,7 +32,7 @@ const LanguageSwitcher = () => {
         const existing = cookies[COOKIE_NAME];
 
         let lang =
-          existing?.split('/')?.[2] ??
+          existing?.split("/")?.[2] ??
           window.__GOOGLE_TRANSLATION_CONFIG__.defaultLanguage;
 
         setCurrentLanguage(lang);
@@ -53,8 +53,9 @@ const LanguageSwitcher = () => {
   };
 
   const currentLangTitle =
-    languageConfig.languages.find((l: LanguageDescriptor) => l.name === currentLanguage)?.title ??
-    currentLanguage.toUpperCase();
+    languageConfig.languages.find(
+      (l: LanguageDescriptor) => l.name === currentLanguage,
+    )?.title ?? currentLanguage.toUpperCase();
 
   return (
     <div className="relative notranslate">
@@ -63,11 +64,9 @@ const LanguageSwitcher = () => {
         onClick={() => setOpen(!open)}
         className="flex items-center cursor-pointer transition-colors text-gray-800 hover:text-green-600"
       >
-        <span className="text-sm font-medium">
-          {currentLangTitle}
-        </span>
+        <span className="text-sm font-medium">{currentLangTitle}</span>
         <svg
-          className={`w-4 h-4 ml-1 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 ml-1 transition-transform ${open ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -83,13 +82,19 @@ const LanguageSwitcher = () => {
 
       {/* Dropdown */}
       {open && (
-        <div style={{ position: "fixed" }} className="absolute right-5 mt-2 w-28 bg-white border rounded-md shadow-md z-[9999]">
+        <div
+          style={{ position: "fixed" }}
+          className="absolute right-5 mt-2 w-28 bg-white border rounded-md shadow-md z-[9999]"
+        >
           {languageConfig.languages.map((ld: LanguageDescriptor) => (
             <div
               key={ld.name}
               onClick={() => switchLanguage(ld.name)}
-              className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${currentLanguage === ld.name ? 'text-green-600 font-medium' : 'text-gray-700'
-                }`}
+              className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
+                currentLanguage === ld.name
+                  ? "text-green-600 font-medium"
+                  : "text-gray-700"
+              }`}
             >
               {ld.title}
             </div>

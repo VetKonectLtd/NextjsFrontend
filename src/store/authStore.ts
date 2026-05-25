@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { AuthState, User } from '@/types';
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { AuthState, User } from "@/types";
 
 interface SignupFormData {
   email: string;
@@ -40,18 +40,18 @@ export const useAuthStore = create<AuthStore>()(
             set({ isLoading: true, error: null });
             // This is where you would typically make an API call
             // For now, we'll just simulate a successful login with a mock user
-            const mockUser: User = { 
-              id: '1', 
-              email: credentials.email, 
-              first_name: 'Test User',
-              last_name: 'Test User',
-              phone_num: '1234567890',
-              country: 'US',
-              state: 'CA',
-              password_algorithm: 'bcrypt',
+            const mockUser: User = {
+              id: "1",
+              email: credentials.email,
+              first_name: "Test User",
+              last_name: "Test User",
+              phone_num: "1234567890",
+              country: "US",
+              state: "CA",
+              password_algorithm: "bcrypt",
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
-              role: 'user',
+              role: "user",
             };
             set({
               user: mockUser,
@@ -61,7 +61,7 @@ export const useAuthStore = create<AuthStore>()(
             });
           } catch (error) {
             set({
-              error: error instanceof Error ? error.message : 'Login failed',
+              error: error instanceof Error ? error.message : "Login failed",
               isLoading: false,
             });
             throw error;
@@ -71,18 +71,18 @@ export const useAuthStore = create<AuthStore>()(
         signup: async (credentials) => {
           try {
             set({ isLoading: true, error: null });
-            
+
             // This is where you would typically make an API call
             // For now, we'll just simulate a successful signup with a mock user
-            // const mockUser: User = { 
-            //   id: '1', 
-            //   email: credentials.email, 
+            // const mockUser: User = {
+            //   id: '1',
+            //   email: credentials.email,
             //   name: credentials.name,
             //   role: 'user',
             //   createdAt: new Date().toISOString(),
             //   updatedAt: new Date().toISOString()
             // };
-            
+
             set({
               // user: mockUser,
               isAuthenticated: true,
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthStore>()(
             });
           } catch (error) {
             set({
-              error: error instanceof Error ? error.message : 'Signup failed',
+              error: error instanceof Error ? error.message : "Signup failed",
               isLoading: false,
             });
             throw error;
@@ -119,8 +119,8 @@ export const useAuthStore = create<AuthStore>()(
 
         logout: () => {
           // Clear auth token from localStorage
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('auth-token');
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("auth-token");
           }
           set({
             user: null,
@@ -130,13 +130,13 @@ export const useAuthStore = create<AuthStore>()(
         },
       }),
       {
-        name: 'auth-storage',
+        name: "auth-storage",
         partialize: (state) => ({
           user: state.user,
           isAuthenticated: state.isAuthenticated,
         }),
-      }
+      },
     ),
-    { name: 'auth-store' }
-  )
+    { name: "auth-store" },
+  ),
 );

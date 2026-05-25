@@ -1,8 +1,15 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, Headphones, ShieldCheck, Gem, Sparkle, Zap } from "lucide-react";
-
+import {
+  X,
+  Check,
+  Headphones,
+  ShieldCheck,
+  Gem,
+  Sparkle,
+  Zap,
+} from "lucide-react";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -13,7 +20,7 @@ interface SubscriptionModalProps {
 export default function SubscriptionModal({
   isOpen,
   onClose,
-  onSubscribe
+  onSubscribe,
 }: SubscriptionModalProps) {
   if (!isOpen) return null;
 
@@ -53,40 +60,57 @@ export default function SubscriptionModal({
                 {/* Left side - Benefits */}
                 <div className="p-8 my-16">
                   <div className="flex w-52 rounded-full px-3 items-center gap-2 mb-4 bg-[#B3FFC44D] text-[#0B6614]">
-                    <span><Sparkle size={15} color="#0B6614" /> </span> VetifyPro Access
+                    <span>
+                      <Sparkle size={15} color="#0B6614" />{" "}
+                    </span>{" "}
+                    VetifyPro Access
                   </div>
 
-                  <h3 className="text-3xl font-medium mb-4">Subscribe to <br /> <span className="text-[#0B6614]">VetifyPro</span></h3>
+                  <h3 className="text-3xl font-medium mb-4">
+                    Subscribe to <br />{" "}
+                    <span className="text-[#0B6614]">VetifyPro</span>
+                  </h3>
                   <p className="text-black text-sm mb-8 leading-relaxed">
-                    Unlock the full power of VetifyPro and elevate
-                    your clinical confidence with AI-driven support
-                    built for veterinarians.
+                    Unlock the full power of VetifyPro and elevate your clinical
+                    confidence with AI-driven support built for veterinarians.
                   </p>
 
                   <div className="space-y-6">
                     <div className="flex items-start gap-3">
-                      <ShieldCheck size={20} className="mt-0.5 text-[#0B6614] flex-shrink-0" />
+                      <ShieldCheck
+                        size={20}
+                        className="mt-0.5 text-[#0B6614] flex-shrink-0"
+                      />
                       <div>
-                        <h4 className="font-semibold mb-1">Secure & Reliable</h4>
+                        <h4 className="font-semibold mb-1">
+                          Secure & Reliable
+                        </h4>
                         <p className="text-black text-sm">
-                          Your data and payments are protected with industry-standard security.
+                          Your data and payments are protected with
+                          industry-standard security.
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <Zap size={20} className="mt-0.5 text-[#0B6614] flex-shrink-0" />
+                      <Zap
+                        size={20}
+                        className="mt-0.5 text-[#0B6614] flex-shrink-0"
+                      />
                       <div>
                         <h4 className="font-semibold mb-1">Instant Access</h4>
                         <p className="text-black text-sm">
-                          Get immediate full access to VetifyPro
-                          after successful subscription.
+                          Get immediate full access to VetifyPro after
+                          successful subscription.
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <Headphones size={20} className="mt-0.5 text-[#0B6614] flex-shrink-0" />
+                      <Headphones
+                        size={20}
+                        className="mt-0.5 text-[#0B6614] flex-shrink-0"
+                      />
                       <div>
                         <h4 className="font-semibold mb-1">Here to Help</h4>
                         <p className="text-black text-sm">
@@ -103,7 +127,9 @@ export default function SubscriptionModal({
                     <Gem size={30} className="text-[#0B6614]" />
                   </div>
 
-                  <h2 className="text-2xl text-center font-bold text-gray-900 mb-4 mt-3">VetifyPro Access</h2>
+                  <h2 className="text-2xl text-center font-bold text-gray-900 mb-4 mt-3">
+                    VetifyPro Access
+                  </h2>
 
                   <div className="mb-6 flex flex-col text-center text-[#0B6614]">
                     <span className="text-4xl font-bold">$15</span>
@@ -120,10 +146,14 @@ export default function SubscriptionModal({
                     ].map((feature, index) => (
                       <div key={index} className="flex items-center">
                         <div className="bg-[#0B6614] mr-3 border border-[#0B6614] rounded-full w-6 h-6 flex items-center justify-center">
-
-                          <Check size={14} className="text-white flex-shrink-0" />
+                          <Check
+                            size={14}
+                            className="text-white flex-shrink-0"
+                          />
                         </div>
-                        <span className="text-black font-medium text-sm">{feature}</span>
+                        <span className="text-black font-medium text-sm">
+                          {feature}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -136,12 +166,12 @@ export default function SubscriptionModal({
                   </button>
 
                   <p className="text-center flex items-center justify-center gap-1 text-sm text-gray-700">
-                    <span className="font-semibold text-gray-900"><ShieldCheck size={14} /></span>
+                    <span className="font-semibold text-gray-900">
+                      <ShieldCheck size={14} />
+                    </span>
                     Cancel anytime. No long-term commitment.
                   </p>
-
                 </div>
-
               </div>
               <div className="flex items-center justify-center font-semibold pb-3 gap-4 text-sm text-gray-800">
                 <div className="flex items-center gap-1">

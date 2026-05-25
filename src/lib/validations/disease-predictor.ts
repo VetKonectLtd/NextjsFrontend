@@ -1,5 +1,5 @@
 import { z } from "zod";
-import {useDiseasePredict}  from "@/services/diseasePredictService"
+import { useDiseasePredict } from "@/services/diseasePredictService";
 
 // Base schema for disease predictor
 export const diseasePredictorSchema = z.object({
@@ -9,8 +9,6 @@ export const diseasePredictorSchema = z.object({
 });
 
 export type DiseasePredictorFormData = z.infer<typeof diseasePredictorSchema>;
-
-
 
 // Animal species options
 export const animalSpeciesOptions = [
@@ -25,7 +23,7 @@ export const animalSpeciesOptions = [
 // Available symptoms for selection
 export const availableSymptoms = [
   "Loss of Appetite",
-  "Weight Loss", 
+  "Weight Loss",
   "Diarrhea",
   "Inflammation",
   "Rashes",

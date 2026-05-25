@@ -9,124 +9,124 @@ import EmptyState from "../shared/EmptyState";
 import { Hand } from "@/app/assets/icons";
 
 export default function DirectMessage() {
-	const { useGetChatList } = directMessageService();
+  const { useGetChatList } = directMessageService();
 
-	const getChatList = useGetChatList(true);
+  const getChatList = useGetChatList(true);
 
-	const messages: any = getChatList.data || [];
+  const messages: any = getChatList.data || [];
 
-	const [selectedVet, setSelectedVet] = useState<any | null>(null);
-	const [showChat, setShowChat] = useState(false);
-	const [showDetails, setShowDetails] = useState(false);
-	const [message, setMessage] = useState("");
-	const [selectedAction, setSelectedAction] = useState("product");
+  const [selectedVet, setSelectedVet] = useState<any | null>(null);
+  const [showChat, setShowChat] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [message, setMessage] = useState("");
+  const [selectedAction, setSelectedAction] = useState("product");
 
-	const handleContact = (id: string, type: string) => setSelectedAction(type);
+  const handleContact = (id: string, type: string) => setSelectedAction(type);
 
-	return (
-		<div className="min-h-screen ">
-			{/* GRID LAYOUT FOR DESKTOP */}
-			<div className="hidden md:grid md:grid-cols-3 gap-4">
-				{getChatList.isLoading ? (
-					<ChatListSkeleton />
-				) : !messages.length ? (
-					<EmptyState
-						title="No Messages Yet"
-						image={Hand}
-						description="Start a conversation with a vet or vendor.  
+  return (
+    <div className="min-h-screen ">
+      {/* GRID LAYOUT FOR DESKTOP */}
+      <div className="hidden md:grid md:grid-cols-3 gap-4">
+        {getChatList.isLoading ? (
+          <ChatListSkeleton />
+        ) : !messages.length ? (
+          <EmptyState
+            title="No Messages Yet"
+            image={Hand}
+            description="Start a conversation with a vet or vendor.  
 				When you contact someone, your chats will appear here."
-					/>
-				) : (
-					<ChatList
-						messages={messages}
-						getChatList={getChatList}
-						selectedVet={selectedVet}
-						onSelectVet={(vet) => setSelectedVet(vet)}
-					/>
-				)}
+          />
+        ) : (
+          <ChatList
+            messages={messages}
+            getChatList={getChatList}
+            selectedVet={selectedVet}
+            onSelectVet={(vet) => setSelectedVet(vet)}
+          />
+        )}
 
-				{messages.length > 0 &&
-					(selectedVet ? (
-						<>
-							<ChatWindow
-								selectedVet={selectedVet}
-								message={message}
-								key={selectedVet.id}
-								onBack={() => {}}
-								onMessageChange={setMessage}
-								onOpenVetDetails={() => {}}
-							/>
-							<VetDetails
-								selectedVet={selectedVet}
-								selectedAction={selectedAction}
-								onBack={() => {}}
-								handleContact={handleContact}
-							/>
-						</>
-					) : (
-						<div className="col-span-2 flex items-center justify-center">
-							<p className="text-gray-500">Select a chat to start messaging</p>
-						</div>
-					))}
-			</div>
+        {messages.length > 0 &&
+          (selectedVet ? (
+            <>
+              <ChatWindow
+                selectedVet={selectedVet}
+                message={message}
+                key={selectedVet.id}
+                onBack={() => {}}
+                onMessageChange={setMessage}
+                onOpenVetDetails={() => {}}
+              />
+              <VetDetails
+                selectedVet={selectedVet}
+                selectedAction={selectedAction}
+                onBack={() => {}}
+                handleContact={handleContact}
+              />
+            </>
+          ) : (
+            <div className="col-span-2 flex items-center justify-center">
+              <p className="text-gray-500">Select a chat to start messaging</p>
+            </div>
+          ))}
+      </div>
 
-			{/* RESPONSIVE MOBILE VIEW */}
-			<div className="md:hidden flex flex-col">
-				{/* Chat List (default view) */}
+      {/* RESPONSIVE MOBILE VIEW */}
+      <div className="md:hidden flex flex-col">
+        {/* Chat List (default view) */}
 
-				{/* Empty state full screen on mobile */}
-				{!showChat &&
-					!showDetails &&
-					!getChatList.isLoading &&
-					!messages.length && (
-						<div className="flex items-center justify-center min-h-screen px-4">
-							<EmptyState
-								title="No Messages Yet"
-								image={Hand}
-								description="Start a conversation with a vet or vendor. When you contact someone, your chats will appear here."
-							/>
-						</div>
-					)}
+        {/* Empty state full screen on mobile */}
+        {!showChat &&
+          !showDetails &&
+          !getChatList.isLoading &&
+          !messages.length && (
+            <div className="flex items-center justify-center min-h-screen px-4">
+              <EmptyState
+                title="No Messages Yet"
+                image={Hand}
+                description="Start a conversation with a vet or vendor. When you contact someone, your chats will appear here."
+              />
+            </div>
+          )}
 
-				{/* Skeleton while loading */}
-				{!showChat && !showDetails && getChatList.isLoading && (
-					<ChatListSkeleton />
-				)}
+        {/* Skeleton while loading */}
+        {!showChat && !showDetails && getChatList.isLoading && (
+          <ChatListSkeleton />
+        )}
 
-				{/* Chat list */}
-				{!showChat && !showDetails && messages.length > 0 && (
-					<ChatList
-						getChatList={getChatList}
-						messages={messages}
-						selectedVet={selectedVet}
-						onSelectVet={(vet) => {
-							setSelectedVet(vet);
-							setShowChat(true);
-						}}
-					/>
-				)}
+        {/* Chat list */}
+        {!showChat && !showDetails && messages.length > 0 && (
+          <ChatList
+            getChatList={getChatList}
+            messages={messages}
+            selectedVet={selectedVet}
+            onSelectVet={(vet) => {
+              setSelectedVet(vet);
+              setShowChat(true);
+            }}
+          />
+        )}
 
-				{/* Chat window */}
-				{showChat && !showDetails && (
-					<ChatWindow
-						selectedVet={selectedVet}
-						message={message}
-						onBack={() => setShowChat(false)}
-						onMessageChange={setMessage}
-						onOpenVetDetails={() => setShowDetails(true)}
-					/>
-				)}
+        {/* Chat window */}
+        {showChat && !showDetails && (
+          <ChatWindow
+            selectedVet={selectedVet}
+            message={message}
+            onBack={() => setShowChat(false)}
+            onMessageChange={setMessage}
+            onOpenVetDetails={() => setShowDetails(true)}
+          />
+        )}
 
-				{/* Vet details */}
-				{showDetails && (
-					<VetDetails
-						selectedVet={selectedVet}
-						selectedAction={selectedAction}
-						onBack={() => setShowDetails(false)}
-						handleContact={handleContact}
-					/>
-				)}
-			</div>
-		</div>
-	);
+        {/* Vet details */}
+        {showDetails && (
+          <VetDetails
+            selectedVet={selectedVet}
+            selectedAction={selectedAction}
+            onBack={() => setShowDetails(false)}
+            handleContact={handleContact}
+          />
+        )}
+      </div>
+    </div>
+  );
 }

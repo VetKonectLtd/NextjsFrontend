@@ -4,25 +4,23 @@ import { useHandleSuccess, useHandleError } from "@/lib/hooks/useToastHandlers";
 import { SupportTicket } from "@/types";
 
 export const useSupportService = () => {
-    const handleSuccess = useHandleSuccess();
-    const handleError = useHandleError();
+  const handleSuccess = useHandleSuccess();
+  const handleError = useHandleError();
 
-    const useSupportComplian = () => {
-        return usePost<{ support: SupportTicket }>(
-            SUPPORT.SUPPORT_TICKET,
-            {
-                onSuccess: (response: any) => {
-                    handleSuccess(response.message || "Support ticket submitted successfully!");
-                },
-                onError: (error) => {
-                    handleError(error.message || "failed");
-                },
-            },
+  const useSupportComplian = () => {
+    return usePost<{ support: SupportTicket }>(SUPPORT.SUPPORT_TICKET, {
+      onSuccess: (response: any) => {
+        handleSuccess(
+          response.message || "Support ticket submitted successfully!",
         );
-    };
- 
+      },
+      onError: (error) => {
+        handleError(error.message || "failed");
+      },
+    });
+  };
 
-    return {
-       useSupportComplian,
-    };
+  return {
+    useSupportComplian,
+  };
 };

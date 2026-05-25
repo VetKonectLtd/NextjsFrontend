@@ -15,359 +15,359 @@ import ForumTextEditor from "../ChatForum/editor/ForumTextEditor";
 import FormGooglePlacesCustom from "../form/FormGooglePlacesCustom";
 
 type ProductFormProps = {
-	mode: "create" | "edit";
-	product?: Product;
-	storeId: string;
+  mode: "create" | "edit";
+  product?: Product;
+  storeId: string;
 };
 
 export default function ProductForm({
-	mode,
-	product,
-	storeId,
+  mode,
+  product,
+  storeId,
 }: ProductFormProps) {
-	const router = useRouter();
-	const [available, setAvailable] = useState(product?.availability ?? false);
-	const [previews, setPreviews] = useState<string[]>(product?.images_url || []);
+  const router = useRouter();
+  const [available, setAvailable] = useState(product?.availability ?? false);
+  const [previews, setPreviews] = useState<string[]>(product?.images_url || []);
 
-	const categoryOptions = [
-		{ value: "Pet", label: "Pet" },
-		{ value: "Feeds", label: "Feeds" },
-		{ value: "Livestock", label: "Livestock" },
-		{ value: "Drugs", label: "Drugs" },
-		{ value: "Tool and Materials", label: "Tool and Materials" },
-	];
+  const categoryOptions = [
+    { value: "Pet", label: "Pet" },
+    { value: "Feeds", label: "Feeds" },
+    { value: "Livestock", label: "Livestock" },
+    { value: "Drugs", label: "Drugs" },
+    { value: "Tool and Materials", label: "Tool and Materials" },
+  ];
 
-	const { useAddProduct, useUpdateProduct } = useProductService();
-	const productMutation = useAddProduct();
-	const updateProductMutation = useUpdateProduct(
-		(product as Record<string, any>)?.id,
-	);
+  const { useAddProduct, useUpdateProduct } = useProductService();
+  const productMutation = useAddProduct();
+  const updateProductMutation = useUpdateProduct(
+    (product as Record<string, any>)?.id,
+  );
 
-	const {
-		register,
-		control,
-		handleSubmit,
-		getValues,
-		clearErrors,
-		setValue,
-		reset,
-		formState: { errors },
-	} = useForm<Product>();
+  const {
+    register,
+    control,
+    handleSubmit,
+    getValues,
+    clearErrors,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<Product>();
 
-	useEffect(() => {
-		if (mode === "edit" && product) {
-			reset({
-				product_name: product?.product_name,
-				category: product?.category,
-				description: product?.description,
-				tags: product?.tags?.map((t: string) => (t as any)?.name) || [],
-				location: product?.location,
-				price: product?.price,
-				available_unit: product?.available_unit,
-				availability: product?.availability,
-				images: [],
-			});
-		}
-	}, [mode, product, reset]);
+  useEffect(() => {
+    if (mode === "edit" && product) {
+      reset({
+        product_name: product?.product_name,
+        category: product?.category,
+        description: product?.description,
+        tags: product?.tags?.map((t: string) => (t as any)?.name) || [],
+        location: product?.location,
+        price: product?.price,
+        available_unit: product?.available_unit,
+        availability: product?.availability,
+        images: [],
+      });
+    }
+  }, [mode, product, reset]);
 
-	const countries = Country.getAllCountries().map((c) => ({
-		value: c.isoCode,
-		label: `${c.name}`,
-	}));
+  const countries = Country.getAllCountries().map((c) => ({
+    value: c.isoCode,
+    label: `${c.name}`,
+  }));
 
-	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = Array.from(e.target.files || []);
-		const allowedFiles = files.slice(0, 3 - previews.length);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const allowedFiles = files.slice(0, 3 - previews.length);
 
-		const existingImages = getValues("images") || [];
+    const existingImages = getValues("images") || [];
 
-		allowedFiles.forEach((file) => {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setPreviews((prev) => [...prev, reader.result as string]);
-			};
-			reader.readAsDataURL(file);
-		});
-		setValue("images", [...existingImages, ...allowedFiles], {
-			shouldValidate: true,
-		});
-	};
+    allowedFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+    setValue("images", [...existingImages, ...allowedFiles], {
+      shouldValidate: true,
+    });
+  };
 
-	const handleRemoveImage = (idx: number) => {
-		setPreviews((prev) => prev.filter((_, i) => i !== idx));
+  const handleRemoveImage = (idx: number) => {
+    setPreviews((prev) => prev.filter((_, i) => i !== idx));
 
-		const existingImages = getValues("images") || [];
-		const updatedImages = existingImages.filter((_, i) => i !== idx);
-		setValue("images", updatedImages, { shouldValidate: true });
-	};
+    const existingImages = getValues("images") || [];
+    const updatedImages = existingImages.filter((_, i) => i !== idx);
+    setValue("images", updatedImages, { shouldValidate: true });
+  };
 
-	const onSubmit = (data: Product) => {
-		const formData: any = new FormData();
-		formData.append("product_name", data.product_name);
-		formData.append("store_id", storeId);
-		data.tags.forEach((tag) => formData.append("tags[]", tag));
-		formData.append("category", data.category);
-		formData.append("description", data.description);
-		formData.append("price", data.price);
-		formData.append("available_unit", data.available_unit);
-		formData.append("availability", available);
-		formData.append("location", data.location);
+  const onSubmit = (data: Product) => {
+    const formData: any = new FormData();
+    formData.append("product_name", data.product_name);
+    formData.append("store_id", storeId);
+    data.tags.forEach((tag) => formData.append("tags[]", tag));
+    formData.append("category", data.category);
+    formData.append("description", data.description);
+    formData.append("price", data.price);
+    formData.append("available_unit", data.available_unit);
+    formData.append("availability", available);
+    formData.append("location", data.location);
 
-		data.images?.forEach((file) => formData.append("images[]", file));
+    data.images?.forEach((file) => formData.append("images[]", file));
 
-		if (mode === "create") {
-			productMutation.mutate(formData, {
-				onSuccess: (res: any) =>
-					router.push(
-						`/dashboard/stores/${storeId}/products/${res.product.id}`,
-					),
-			});
-		} else {
-			updateProductMutation.mutate(formData, {
-				onSuccess: (res: any) =>
-					router.push(
-						`/dashboard/stores/${storeId}/products/${res.product.id}`,
-					),
-			});
-		}
-	};
+    if (mode === "create") {
+      productMutation.mutate(formData, {
+        onSuccess: (res: any) =>
+          router.push(
+            `/dashboard/stores/${storeId}/products/${res.product.id}`,
+          ),
+      });
+    } else {
+      updateProductMutation.mutate(formData, {
+        onSuccess: (res: any) =>
+          router.push(
+            `/dashboard/stores/${storeId}/products/${res.product.id}`,
+          ),
+      });
+    }
+  };
 
-	const handleBack = () => {
-		router.back();
-	};
+  const handleBack = () => {
+    router.back();
+  };
 
-	return (
-		<div className="w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
-			<div
-				onClick={handleBack}
-				className="flex items-center text-sm text-gray-55 hover:text-green-50 ml-4 mt-4"
-			>
-				<span className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-1 mr-3">
-					<ChevronLeft className="w-5 h-5" />
-				</span>{" "}
-				Back
-			</div>
-			<div className="max-w-lg px-3 mt-5 mx-auto">
-				<div>
-					<h1 className="text-3xl font-bold text-gray-55 text-center">
-						Product Details
-					</h1>
-					<p className="text-gray-500 text-sm w-1/2 m-auto text-center mb-6">
-						You can add a new Item to your product list
-					</p>
-				</div>
+  return (
+    <div className="w-11/12 mt-3 m-auto shadow-md border rounded-lg border-gray-225 bg-white">
+      <div
+        onClick={handleBack}
+        className="flex items-center text-sm text-gray-55 hover:text-green-50 ml-4 mt-4"
+      >
+        <span className="bg-white border cursor-pointer border-gray-225 shadow-md rounded-full p-1 mr-3">
+          <ChevronLeft className="w-5 h-5" />
+        </span>{" "}
+        Back
+      </div>
+      <div className="max-w-lg px-3 mt-5 mx-auto">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-55 text-center">
+            Product Details
+          </h1>
+          <p className="text-gray-500 text-sm w-1/2 m-auto text-center mb-6">
+            You can add a new Item to your product list
+          </p>
+        </div>
 
-				<div>
-					<form className="space-y-1">
-						<FormInput
-							label="Product Title"
-							type="text"
-							focusLabel="Product Title:"
-							isRequired
-							{...register("product_name", {
-								required: "Product title is required",
-							})}
-							error={errors.product_name?.message}
-						/>
+        <div>
+          <form className="space-y-1">
+            <FormInput
+              label="Product Title"
+              type="text"
+              focusLabel="Product Title:"
+              isRequired
+              {...register("product_name", {
+                required: "Product title is required",
+              })}
+              error={errors.product_name?.message}
+            />
 
-						<Controller
-							name="category"
-							control={control}
-							rules={{ required: "Category is required" }}
-							render={({ field }) => (
-								<FormSelect
-									label="Category"
-									focusLabel="Category"
-									value={field.value || ""}
-									onChange={(val) => field.onChange(val)}
-									options={categoryOptions}
-									searchable
-								/>
-							)}
-						/>
-						{errors.category && (
-							<p className="text-red-500 text-xs mt-1">
-								{errors.category.message}
-							</p>
-						)}
+            <Controller
+              name="category"
+              control={control}
+              rules={{ required: "Category is required" }}
+              render={({ field }) => (
+                <FormSelect
+                  label="Category"
+                  focusLabel="Category"
+                  value={field.value || ""}
+                  onChange={(val) => field.onChange(val)}
+                  options={categoryOptions}
+                  searchable
+                />
+              )}
+            />
+            {errors.category && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.category.message}
+              </p>
+            )}
 
-						<Controller
-							name="description"
-							control={control}
-							rules={{ required: "Description is required" }}
-							render={({ field }) => (
-								<ForumTextEditor
-									value={field.value || ""}
-									onChange={field.onChange}
-									placeholder="Product Description"
-									border="border-[#1D2432] border rounded-md focus:ring-2 focus:ring-primary-400 focus:border-transparent"
-								/>
-							)}
-						/>
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: "Description is required" }}
+              render={({ field }) => (
+                <ForumTextEditor
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  placeholder="Product Description"
+                  border="border-[#1D2432] border rounded-md focus:ring-2 focus:ring-primary-400 focus:border-transparent"
+                />
+              )}
+            />
 
-						<Controller
-							name="tags"
-							control={control}
-							rules={{ required: "At least one tag is required" }}
-							render={({ field }) => (
-								<TagInput
-									value={field.value || []}
-									onChange={field.onChange}
-									label="Product Tags"
-									focusLabel="Product Tags:"
-									isRequired
-									error={errors.tags?.message as string}
-								/>
-							)}
-						/>
+            <Controller
+              name="tags"
+              control={control}
+              rules={{ required: "At least one tag is required" }}
+              render={({ field }) => (
+                <TagInput
+                  value={field.value || []}
+                  onChange={field.onChange}
+                  label="Product Tags"
+                  focusLabel="Product Tags:"
+                  isRequired
+                  error={errors.tags?.message as string}
+                />
+              )}
+            />
 
+            <FormGooglePlacesCustom
+              name="location"
+              control={control}
+              label="Location"
+              focusLabel="Location (Required):"
+              isRequired
+              error={errors.location?.message}
+            />
 
-						<FormGooglePlacesCustom
-							name="location"
-							control={control}
-							label="Location"
-							focusLabel="Location (Required):"
-							isRequired
-							error={errors.location?.message}
-						/>
+            <FormInput
+              label="Price in Naira"
+              type="number"
+              focusLabel="Price in Naira:"
+              isRequired
+              {...register("price", {
+                required: "Price is required",
+                valueAsNumber: true,
+                min: { value: 1, message: "Price must be at least 1" },
+              })}
+              error={errors.price?.message}
+            />
 
-						<FormInput
-							label="Price in Naira"
-							type="number"
-							focusLabel="Price in Naira:"
-							isRequired
-							{...register("price", {
-								required: "Price is required",
-								valueAsNumber: true,
-								min: { value: 1, message: "Price must be at least 1" },
-							})}
-							error={errors.price?.message}
-						/>
+            {/* Availability toggle */}
+            <div className="flex w-11/12 m-auto items-center py-5 justify-between">
+              <span className="text-sm font-medium text-gray-700">
+                Availability Status - {available ? "Open" : "Closed"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setAvailable(!available)}
+                className="w-9 h-4 p-1 flex items-center border border-primary-400 rounded-full transition"
+              >
+                <span
+                  className={`w-3 h-3 bg-primary-400 rounded-full shadow transform transition ${
+                    available ? "translate-x-4" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
 
-						{/* Availability toggle */}
-						<div className="flex w-11/12 m-auto items-center py-5 justify-between">
-							<span className="text-sm font-medium text-gray-700">
-								Availability Status - {available ? "Open" : "Closed"}
-							</span>
-							<button
-								type="button"
-								onClick={() => setAvailable(!available)}
-								className="w-9 h-4 p-1 flex items-center border border-primary-400 rounded-full transition"
-							>
-								<span
-									className={`w-3 h-3 bg-primary-400 rounded-full shadow transform transition ${available ? "translate-x-4" : "translate-x-0"
-										}`}
-								/>
-							</button>
-						</div>
+            {/* Units */}
+            <FormInput
+              label="Available Units"
+              type="number"
+              focusLabel="Available Units:"
+              isRequired
+              {...register("available_unit", {
+                required: "Available units is required",
+                valueAsNumber: true,
+                min: { value: 1, message: "Units must be at least 1" },
+              })}
+              error={errors.available_unit?.message}
+            />
 
-						{/* Units */}
-						<FormInput
-							label="Available Units"
-							type="number"
-							focusLabel="Available Units:"
-							isRequired
-							{...register("available_unit", {
-								required: "Available units is required",
-								valueAsNumber: true,
-								min: { value: 1, message: "Units must be at least 1" },
-							})}
-							error={errors.available_unit?.message}
-						/>
-
-						<div className="flex flex-col">
-							{previews.length > 0 ? (
-								<>
-									<div className="w-full h-[150px] border-2 border-gray-200 rounded-md overflow-hidden mb-2 flex items-center justify-center">
-										<Image
-											src={previews[0]}
-											alt="Preview"
-											width={200}
-											height={150}
-											className="object-cover w-full h-full"
-										/>
-									</div>
-									{/* Thumbnails */}
-									<div className="flex gap-3">
-										{previews.map((img, idx) => (
-											<div key={idx} className="flex flex-col items-center">
-												<div className="w-[100px] h-[70px] border-2 border-gray-200 rounded-md overflow-hidden flex items-center justify-center mb-1">
-													<Image
-														src={img}
-														alt={`Preview ${idx + 1}`}
-														width={100}
-														height={70}
-														className="object-cover w-full h-full"
-													/>
-												</div>
-												<button
-													type="button"
-													onClick={() => handleRemoveImage(idx)}
-													className="text-xs text-gray-55 underline"
-												>
-													Remove Image
-												</button>
-											</div>
-										))}
-									</div>
-								</>
-							) : (
-								<>
-									<label
-										htmlFor="store-image-upload"
-										className="w-full h-[150px] flex flex-col items-center justify-center border border-gray-55 rounded-md cursor-pointer mb-2"
-									>
-										<span className="text-gray-400 text-sm">
-											Click to upload images
-										</span>
-									</label>
-									<input
-										id="store-image-upload"
-										type="file"
-										accept="image/*"
-										multiple
-										onChange={(e) => {
-											handleImageUpload(e);
-											clearErrors("images");
-										}}
-										className="hidden"
-									/>
-								</>
-							)}
-						</div>
-						<div className=" pt-8">
-							<button
-								type="submit"
-								onClick={handleSubmit(onSubmit)}
-								disabled={
-									mode === "create"
-										? productMutation.isLoading
-										: updateProductMutation.isLoading
-								}
-								className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
-							>
-								{mode === "create" ? (
-									productMutation.isLoading ? (
-										<>
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-											Processing...
-										</>
-									) : (
-										"Add"
-									)
-								) : updateProductMutation.isLoading ? (
-									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-										Updating...
-									</>
-								) : (
-									"Update"
-								)}
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	);
+            <div className="flex flex-col">
+              {previews.length > 0 ? (
+                <>
+                  <div className="w-full h-[150px] border-2 border-gray-200 rounded-md overflow-hidden mb-2 flex items-center justify-center">
+                    <Image
+                      src={previews[0]}
+                      alt="Preview"
+                      width={200}
+                      height={150}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  {/* Thumbnails */}
+                  <div className="flex gap-3">
+                    {previews.map((img, idx) => (
+                      <div key={idx} className="flex flex-col items-center">
+                        <div className="w-[100px] h-[70px] border-2 border-gray-200 rounded-md overflow-hidden flex items-center justify-center mb-1">
+                          <Image
+                            src={img}
+                            alt={`Preview ${idx + 1}`}
+                            width={100}
+                            height={70}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="text-xs text-gray-55 underline"
+                        >
+                          Remove Image
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <label
+                    htmlFor="store-image-upload"
+                    className="w-full h-[150px] flex flex-col items-center justify-center border border-gray-55 rounded-md cursor-pointer mb-2"
+                  >
+                    <span className="text-gray-400 text-sm">
+                      Click to upload images
+                    </span>
+                  </label>
+                  <input
+                    id="store-image-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      handleImageUpload(e);
+                      clearErrors("images");
+                    }}
+                    className="hidden"
+                  />
+                </>
+              )}
+            </div>
+            <div className=" pt-8">
+              <button
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+                disabled={
+                  mode === "create"
+                    ? productMutation.isLoading
+                    : updateProductMutation.isLoading
+                }
+                className="w-full py-3 mt-6 rounded-md text-white text-base font-semibold bg-primary-400 disabled:bg-[#666666] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2 flex items-center justify-center gap-2"
+              >
+                {mode === "create" ? (
+                  productMutation.isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                      Processing...
+                    </>
+                  ) : (
+                    "Add"
+                  )
+                ) : updateProductMutation.isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                    Updating...
+                  </>
+                ) : (
+                  "Update"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }

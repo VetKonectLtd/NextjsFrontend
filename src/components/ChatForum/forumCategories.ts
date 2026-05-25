@@ -1,4 +1,3 @@
-
 export const forumCategories = [
   "Pet Health & Wellness",
   "Dog Care & Medicine",

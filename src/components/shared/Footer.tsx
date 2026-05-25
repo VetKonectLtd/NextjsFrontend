@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { use, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { VetKonnectLogo } from '@/app/assets/images';
-import { 
-  Send, 
-  Facebook, 
-  Instagram, 
-  LinkedIn, 
-  Pinterest, 
-  X, 
-  YouTube 
-} from '@/app/assets/icons';
-import { useContactService } from '@/services/contactService';
+import { use, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { VetKonnectLogo } from "@/app/assets/images";
+import {
+  Send,
+  Facebook,
+  Instagram,
+  LinkedIn,
+  Pinterest,
+  X,
+  YouTube,
+} from "@/app/assets/icons";
+import { useContactService } from "@/services/contactService";
 
 interface SocialLink {
   name: string;
@@ -28,42 +28,61 @@ interface QuickLink {
 }
 
 const socialLinks: SocialLink[] = [
-  { name: 'LinkedIn', icon: LinkedIn, href: 'https://www.linkedin.com/company/vet-konect/' },
-  { name: 'X', icon: X, href: 'https://x.com/Vetkonectng' },
-  { name: 'Facebook', icon: Facebook, href: 'https://www.facebook.com/vetkonect?rdid=P9itvbCuYYOmIgRI&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19nt7iWBwZ%2F#' },
-  { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/vetkonect_official/' },
-  { name: 'YouTube', icon: YouTube, href: 'https://www.youtube.com/@vetkonect?si=Fvnr3o8iEsd5-QOA' },
-  { name: 'Tiktok', icon: Pinterest, href: 'https://www.tiktok.com/@vetkonectafrica?is_from_webapp=1&sender_device=pc' },
+  {
+    name: "LinkedIn",
+    icon: LinkedIn,
+    href: "https://www.linkedin.com/company/vet-konect/",
+  },
+  { name: "X", icon: X, href: "https://x.com/Vetkonectng" },
+  {
+    name: "Facebook",
+    icon: Facebook,
+    href: "https://www.facebook.com/vetkonect?rdid=P9itvbCuYYOmIgRI&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19nt7iWBwZ%2F#",
+  },
+  {
+    name: "Instagram",
+    icon: Instagram,
+    href: "https://www.instagram.com/vetkonect_official/",
+  },
+  {
+    name: "YouTube",
+    icon: YouTube,
+    href: "https://www.youtube.com/@vetkonect?si=Fvnr3o8iEsd5-QOA",
+  },
+  {
+    name: "Tiktok",
+    icon: Pinterest,
+    href: "https://www.tiktok.com/@vetkonectafrica?is_from_webapp=1&sender_device=pc",
+  },
 ];
 
 const quickLinks: QuickLink[] = [
-  { name: 'About Us', href: '/about' },
-  { name: 'Feed Calculator', href: '/dashboard/feed-calculator' },
-  { name: 'Disease Predictor', href: '/dashboard/disease-predictor' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Chat Forum', href: '/chat-forum' },
+  { name: "About Us", href: "/about" },
+  { name: "Feed Calculator", href: "/dashboard/feed-calculator" },
+  { name: "Disease Predictor", href: "/dashboard/disease-predictor" },
+  { name: "Blog", href: "/blog" },
+  { name: "Chat Forum", href: "/chat-forum" },
 ];
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const currentYear = new Date().getFullYear();
-  const {useAddToNewletter}= useContactService();
+  const { useAddToNewletter } = useContactService();
 
   const AddToNewsletterMutation = useAddToNewletter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    AddToNewsletterMutation.mutate({email});
-    setEmail('');
+    AddToNewsletterMutation.mutate({ email });
+    setEmail("");
   };
 
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-          
           {/* Logo and Company Info */}
-          <motion.div 
+          <motion.div
             className="space-y-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -71,10 +90,10 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
           >
             <div className="flex items-center space-x-2">
-              <Image 
-                src={VetKonnectLogo} 
-                alt="VetKonnect Logo" 
-                width={32} 
+              <Image
+                src={VetKonnectLogo}
+                alt="VetKonnect Logo"
+                width={32}
                 height={32}
                 className="w-8 h-8"
               />
@@ -82,7 +101,7 @@ export default function Footer() {
                 Vet Konect
               </span>
             </div>
-            
+
             <div className="space-y-2 text-sm text-gray-600">
               <p>Makurdi, Nigeria.</p>
               <p>admin@vetkonect.com | +2347078340106</p>
@@ -94,13 +113,13 @@ export default function Footer() {
                 <motion.a
                   key={social.name}
                   href={social.href}
-                  target='_blank'
+                  target="_blank"
                   className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-colors duration-200"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Image 
-                    src={social.icon} 
+                  <Image
+                    src={social.icon}
                     alt={social.name}
                     width={16}
                     height={16}
@@ -116,7 +135,7 @@ export default function Footer() {
           </motion.div>
 
           {/* Quick Links */}
-          <motion.div 
+          <motion.div
             className="space-y-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +148,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <Link 
+                  <Link
                     href={link.href}
                     className="text-gray-600 hover:text-primary-600 transition-colors duration-200 text-sm"
                   >
@@ -141,7 +160,7 @@ export default function Footer() {
           </motion.div>
 
           {/* Newsletter Subscription */}
-          <motion.div 
+          <motion.div
             className="space-y-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -164,10 +183,10 @@ export default function Footer() {
                   // whileHover={{ scale: 1.05 }}
                   // whileTap={{ scale: 0.95 }}
                 >
-                  <Image 
-                    src={Send} 
-                    alt="Submit" 
-                    width={16} 
+                  <Image
+                    src={Send}
+                    alt="Submit"
+                    width={16}
                     height={16}
                     className="w-4 h-4 filter"
                   />
@@ -175,27 +194,26 @@ export default function Footer() {
                 </motion.button>
               </form>
             </div>
-            
+
             <p className="text-xs text-gray-500 leading-relaxed">
               Subscribe to our newsletter for update on our initiatives
             </p>
-            
+
             <div className="space-y-2 text-xs">
-              <Link 
-                href="/privacy" 
+              <Link
+                href="/privacy"
                 className="text-gray-500 hover:text-primary-600 transition-colors duration-200 block"
               >
                 Privacy Policy
               </Link>
-              <Link 
-                href="/terms-condition" 
+              <Link
+                href="/terms-condition"
                 className="text-gray-500 hover:text-primary-600 transition-colors duration-200 block"
               >
                 Terms & Conditions
               </Link>
             </div>
           </motion.div>
-
         </div>
       </div>
     </footer>

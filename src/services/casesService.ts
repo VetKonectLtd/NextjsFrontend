@@ -68,7 +68,7 @@ export interface Case {
   disabled: string; // Added, "0"
   created_at: string;
   updated_at: string;
-  
+
   // User relationship
   user?: {
     id: number;
@@ -78,11 +78,11 @@ export interface Case {
     activeRoleName: string | null;
     active_role: any | null;
     profile: {
-        id: number;
-        user_id: string;
-        profile_image: string;
-        profile_image_url: string;
-        cover_page_image_url: string | null;
+      id: number;
+      user_id: string;
+      profile_image: string;
+      profile_image_url: string;
+      cover_page_image_url: string | null;
     } | null;
   };
 }
@@ -134,11 +134,11 @@ export interface Comment {
     active_role: any | null;
     // Profile missing in comment user response, keeping optional for safety
     profile?: {
-        id: number;
-        user_id: string;
-        profile_image: string;
-        profile_image_url: string;
-        cover_page_image_url: string | null;
+      id: number;
+      user_id: string;
+      profile_image: string;
+      profile_image_url: string;
+      cover_page_image_url: string | null;
     } | null;
   };
   replies?: Comment[];
@@ -157,7 +157,7 @@ export const casesService = {
         formData.append(key, value);
       } else if (value === null || value === undefined) {
         // Send empty string for null/undefined values so the field is present
-        formData.append(key, '');
+        formData.append(key, "");
       } else {
         // Handle strings, numbers, etc.
         formData.append(key, String(value));
@@ -168,12 +168,16 @@ export const casesService = {
   },
 
   // GET {{baseURL}}/api/v3/get-user-cases
-  getUserCases: async (page: number = 1): Promise<ApiResponse<CasesResponse>> => {
+  getUserCases: async (
+    page: number = 1,
+  ): Promise<ApiResponse<CasesResponse>> => {
     return apiClient.get(`/v3/get-user-cases?page=${page}`);
   },
 
   // GET {{baseURL}}/api/v3/get-case_by-id/{id}/case
-  getCaseById: async (id: string | number): Promise<ApiResponse<{ case: Case }>> => {
+  getCaseById: async (
+    id: string | number,
+  ): Promise<ApiResponse<{ case: Case }>> => {
     return apiClient.get(`/v3/get-case_by-id/${id}/case`);
   },
 
@@ -188,7 +192,9 @@ export const casesService = {
   },
 
   // GET {{baseURL}}/api/v3/get-comments/{caseId}/case
-  getComments: async (caseId: string | number): Promise<ApiResponse<{ comments: Comment[] }>> => {
+  getComments: async (
+    caseId: string | number,
+  ): Promise<ApiResponse<{ comments: Comment[] }>> => {
     return apiClient.get(`/v3/get-comments/${caseId}/case`);
   },
 
@@ -207,23 +213,27 @@ export const casesService = {
     const getCookie = (name: string) => {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop()?.split(';').shift();
-    }
+      if (parts.length === 2) return parts.pop()?.split(";").shift();
+    };
     const token = getCookie("auth-token"); // Assuming cookie name from apiClient
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"}/v3/filter-case?from=${from}&to=${to}`, {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"}/v3/filter-case?from=${from}&to=${to}`,
+      {
         method: "GET",
         headers: {
-            // "Content-Type": "application/json", // Not needed for GET
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json" // Prefer excel
+          // "Content-Type": "application/json", // Not needed for GET
+          Authorization: `Bearer ${token}`,
+          Accept:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json", // Prefer excel
         },
-    });
+      },
+    );
 
     if (!response.ok) {
-        throw new Error("Failed to download report");
+      throw new Error("Failed to download report");
     }
 
     return response.blob();
-  }
+  },
 };

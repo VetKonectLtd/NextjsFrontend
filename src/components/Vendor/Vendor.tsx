@@ -20,7 +20,7 @@ const Vendor: React.FC<VendorProps> = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [allVendors, setAllVendors] = useState<VendorData[]>([]);
   const [selectedVendor, setSelectedVendor] = useState<VetProfileProps | null>(
-    null
+    null,
   );
   const [selectedAction, setSelectedAction] = useState<string>("default");
 
@@ -78,7 +78,7 @@ const Vendor: React.FC<VendorProps> = () => {
       const location =
         `${vendor.user.state || ""}, ${vendor.user.country || ""}`.replace(
           /^,\s*|,\s*$/g,
-          ""
+          "",
         );
 
       return {
@@ -105,7 +105,14 @@ const Vendor: React.FC<VendorProps> = () => {
 
   const handleContact = (
     id: string,
-    type: "phone" | "media" | "message" | "mail" | "location" | "share" | "rate"
+    type:
+      | "phone"
+      | "media"
+      | "message"
+      | "mail"
+      | "location"
+      | "share"
+      | "rate",
   ) => {
     const vendor = transformedVendors.find((v) => v.id === id);
 

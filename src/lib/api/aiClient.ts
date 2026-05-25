@@ -11,7 +11,9 @@ class AiClient {
 
   private buildUrl(endpoint: string) {
     if (endpoint.startsWith("http")) {
-      throw new Error("Use relative paths only. Base URL is handled internally.");
+      throw new Error(
+        "Use relative paths only. Base URL is handled internally.",
+      );
     }
     return `${this.baseUrl}${endpoint}`;
   }

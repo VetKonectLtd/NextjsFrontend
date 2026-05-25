@@ -39,12 +39,12 @@ const ProductDetailsPage = ({
 
   const nextImage = () =>
     setCurrentImageIndex((p) =>
-      p === product.images_url.length - 1 ? 0 : p + 1
+      p === product.images_url.length - 1 ? 0 : p + 1,
     );
 
   const prevImage = () =>
     setCurrentImageIndex((p) =>
-      p === 0 ? product.images_url.length - 1 : p - 1
+      p === 0 ? product.images_url.length - 1 : p - 1,
     );
 
   return (
@@ -202,8 +202,7 @@ const ProductDetailsPage = ({
               router.push(`/dashboard/ad-promotion?productId=${product?.id}`)
             }
             className="w-full flex items-center justify-center gap-2 bg-primary-400  text-white py-3 rounded-xl font-semibold shadow-sm"
-          
-		 >
+          >
             <Megaphone size={18} />
             Promote Product
           </button>
@@ -225,9 +224,7 @@ const ProductDetailsPage = ({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 40 }}
             >
-              <h3 className="text-lg font-semibold mb-2">
-                Delete Product?
-              </h3>
+              <h3 className="text-lg font-semibold mb-2">Delete Product?</h3>
               <p className="text-sm text-gray-500 mb-6">
                 This product will be permanently removed.
               </p>

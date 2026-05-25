@@ -45,7 +45,7 @@ export default function FeedCalculatorPage() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [calculationResult, setCalculationResult] = useState<any>(null);
   const router = useRouter();
-  
+
   // Feed calculator API hook
   const feedCalculatorMutation = useFeedCalculator();
 
@@ -128,32 +128,34 @@ export default function FeedCalculatorPage() {
           if (responseData) {
             try {
               // Format API response for display
-              const formattedResult = formatApiResponseForDisplay(responseData as FeedCalculatorResponse);
+              const formattedResult = formatApiResponseForDisplay(
+                responseData as FeedCalculatorResponse,
+              );
               setCalculationResult(formattedResult);
               setShowResults(true);
             } catch (formatError) {
-              console.error('Error formatting response:', formatError);
+              console.error("Error formatting response:", formatError);
               // console.log('Response data:', responseData);
 
               // Fallback: show raw response data
               const fallbackData = responseData as any;
               setCalculationResult({
-                feedAmount: fallbackData.feed_required || 'N/A',
+                feedAmount: fallbackData.feed_required || "N/A",
                 formData: data,
               });
               setShowResults(true);
             }
           } else {
-            console.error('No response data received');
+            console.error("No response data received");
           }
         },
         onError: (error) => {
-          console.error('Feed calculation failed:', error);
+          console.error("Feed calculation failed:", error);
           // Optionally show fallback or keep form open
-        }
+        },
       });
     } catch (error) {
-      console.error('Error transforming form data:', error);
+      console.error("Error transforming form data:", error);
     }
   };
 
@@ -171,8 +173,6 @@ export default function FeedCalculatorPage() {
     setSelectedBirdsType(value);
     form.setValue("birdsType", value);
   };
-
-
 
   const handleRestart = () => {
     setShowResults(false);
@@ -203,13 +203,17 @@ export default function FeedCalculatorPage() {
         <div className="space-y-4 mb-8">
           <div className="text-center">
             <p className="text-gray-500 text-sm">Livestock Category</p>
-            <p className="font-semibold text-gray-900">{formData.livestockCategory}</p>
+            <p className="font-semibold text-gray-900">
+              {formData.livestockCategory}
+            </p>
           </div>
 
           {formData.birdsType && (
             <div className="text-center">
               <p className="text-gray-500 text-sm">Birds Type</p>
-              <p className="font-semibold text-gray-900">{formData.birdsType}</p>
+              <p className="font-semibold text-gray-900">
+                {formData.birdsType}
+              </p>
             </div>
           )}
 
@@ -223,35 +227,45 @@ export default function FeedCalculatorPage() {
           {formData.numberOfBirds && (
             <div className="text-center">
               <p className="text-gray-500 text-sm">Number of Birds</p>
-              <p className="font-semibold text-gray-900">{formData.numberOfBirds}</p>
+              <p className="font-semibold text-gray-900">
+                {formData.numberOfBirds}
+              </p>
             </div>
           )}
 
           {formData.numberOfWeeks && (
             <div className="text-center">
               <p className="text-gray-500 text-sm">Number of Weeks</p>
-              <p className="font-semibold text-gray-900">{formData.numberOfWeeks}</p>
+              <p className="font-semibold text-gray-900">
+                {formData.numberOfWeeks}
+              </p>
             </div>
           )}
 
           {formData.sizeOfFish && (
             <div className="text-center">
               <p className="text-gray-500 text-sm">Size of Fish</p>
-              <p className="font-semibold text-gray-900">{formData.sizeOfFish}</p>
+              <p className="font-semibold text-gray-900">
+                {formData.sizeOfFish}
+              </p>
             </div>
           )}
 
           {formData.numberOfFish && (
             <div className="text-center">
               <p className="text-gray-500 text-sm">Number of Fish</p>
-              <p className="font-semibold text-gray-900">{formData.numberOfFish}</p>
+              <p className="font-semibold text-gray-900">
+                {formData.numberOfFish}
+              </p>
             </div>
           )}
 
           {formData.numberOfPigs && (
             <div className="text-center">
               <p className="text-gray-500 text-sm">Number of Pigs</p>
-              <p className="font-semibold text-gray-900">{formData.numberOfPigs}</p>
+              <p className="font-semibold text-gray-900">
+                {formData.numberOfPigs}
+              </p>
             </div>
           )}
         </div>
@@ -259,7 +273,9 @@ export default function FeedCalculatorPage() {
         {/* Action Buttons */}
         <div className="space-y-3">
           <Button
-            onClick={() => router.push("/dashboard/vet-vendor?category=Market+Place")}
+            onClick={() =>
+              router.push("/dashboard/vet-vendor?category=Market+Place")
+            }
             className="w-full bg-orange-200 hover:bg-orange-300 text-gray-800 py-3 rounded-lg font-medium transition-colors"
           >
             Contact a Vendor
@@ -327,13 +343,13 @@ export default function FeedCalculatorPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {feedTypeOptions[selectedBirdsType as keyof typeof feedTypeOptions]?.map(
-                          (option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          )
-                        )}
+                        {feedTypeOptions[
+                          selectedBirdsType as keyof typeof feedTypeOptions
+                        ]?.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -350,12 +366,15 @@ export default function FeedCalculatorPage() {
                 <FormItem>
                   <FormLabel>
                     Number of Weeks (Required)
-                    {selectedBirdsType === "Broilers" && " - Minimum of 3 Weeks"}
+                    {selectedBirdsType === "Broilers" &&
+                      " - Minimum of 3 Weeks"}
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder={selectedBirdsType === "Broilers" ? "12" : "Enter weeks"}
+                      placeholder={
+                        selectedBirdsType === "Broilers" ? "12" : "Enter weeks"
+                      }
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                       className="w-full"
@@ -486,7 +505,10 @@ export default function FeedCalculatorPage() {
         ) : (
           <div className="bg-white border-gray-225 border rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 {/* Livestock Category */}
                 <FormField
                   control={form.control}
@@ -525,7 +547,9 @@ export default function FeedCalculatorPage() {
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                   disabled={!isFormValid() || feedCalculatorMutation.isPending}
                 >
-                  {feedCalculatorMutation.isPending ? 'Calculating...' : 'Submit'}
+                  {feedCalculatorMutation.isPending
+                    ? "Calculating..."
+                    : "Submit"}
                 </Button>
               </form>
             </Form>

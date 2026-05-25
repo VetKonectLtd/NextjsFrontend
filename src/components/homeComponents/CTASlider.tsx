@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import CallToAction from './CallToAction';
+import React, { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import CallToAction from "./CallToAction";
 
 interface CTAData {
   backgroundClass: string;
@@ -72,7 +72,7 @@ const CTASlider: React.FC<CTASliderProps> = ({ ctaData }) => {
                     showOpenStatus={cta.showOpenStatus}
                     showLocationIcon={cta.showLocationIcon}
                   />
-                  
+
                   {/* Navigation Controls - Inside CTA background */}
                   <div className="flex flex-col items-center pb-8 px-4">
                     {/* Indicator Dots */}
@@ -83,8 +83,8 @@ const CTASlider: React.FC<CTASliderProps> = ({ ctaData }) => {
                           onClick={() => setCurrentSlide(dotIndex)}
                           className={`w-3 h-3 rounded-full transition-all duration-200 ${
                             dotIndex === currentSlide
-                              ? 'bg-green-600'
-                              : 'bg-gray-300 hover:bg-gray-400'
+                              ? "bg-green-600"
+                              : "bg-gray-300 hover:bg-gray-400"
                           }`}
                           aria-label={`Go to slide ${dotIndex + 1}`}
                         />

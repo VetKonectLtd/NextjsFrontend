@@ -1,10 +1,16 @@
-
 "use client";
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Download, Eye, MessagesSquare, Share2, ThumbsUp } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Eye,
+  MessagesSquare,
+  Share2,
+  ThumbsUp,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBlogService } from "@/services/blogServie";
 import { timeAgo } from "@/components/shared/TimeFormat";
@@ -91,7 +97,7 @@ export default function BlogReaderClient({ slug }: BlogReaderClientProps) {
         0,
         0,
         canvas.width,
-        pageCanvas.height
+        pageCanvas.height,
       );
 
       const pageImgData = pageCanvas.toDataURL("image/png");
@@ -107,7 +113,7 @@ export default function BlogReaderClient({ slug }: BlogReaderClientProps) {
         marginLeft,
         marginTop,
         usableWidth,
-        pageImgHeight
+        pageImgHeight,
       );
 
       currentY += pageHeightPx;

@@ -1,17 +1,30 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import VetProfile, { VetProfileProps } from '@/components/shared/VetProfile';
-import SelectedVet from '@/components/Veterinarian/SelectedVetDetail';
-import { ArrowLeft, ArrowRight, MapPin, Loader2 } from 'lucide-react';
-import { useVeterinaryService, transformVetDataToProps, createEmptyVetData } from '@/services/veterinaryService';
-import { GetNearestVetsRequest, ApiResponse } from '@/types';
-
+import React, { useState, useRef, useEffect } from "react";
+import VetProfile, { VetProfileProps } from "@/components/shared/VetProfile";
+import SelectedVet from "@/components/Veterinarian/SelectedVetDetail";
+import { ArrowLeft, ArrowRight, MapPin, Loader2 } from "lucide-react";
+import {
+  useVeterinaryService,
+  transformVetDataToProps,
+  createEmptyVetData,
+} from "@/services/veterinaryService";
+import { GetNearestVetsRequest, ApiResponse } from "@/types";
 
 interface NearYouProps {
   vets?: VetProfileProps[];
   onViewProfile?: (id: string) => void;
-  onContact?: (id: string, type: 'phone' | 'media' | 'message' | 'mail' | 'location' | 'share' | 'rate') => void;
+  onContact?: (
+    id: string,
+    type:
+      | "phone"
+      | "media"
+      | "message"
+      | "mail"
+      | "location"
+      | "share"
+      | "rate",
+  ) => void;
   userLocation?: { latitude: number; longitude: number };
   useRealData?: boolean; // Flag to determine whether to use real API or sample data
 }
@@ -21,32 +34,38 @@ const NearYou: React.FC<NearYouProps> = ({
   onViewProfile,
   onContact,
   userLocation,
-  useRealData = false
+  useRealData = false,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [vets, setVets] = useState<VetProfileProps[]>(propVets || []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedVet, setSelectedVet] = useState<VetProfileProps | null>(null);
-  const [selectedAction, setSelectedAction] = useState<string>('default');
+  const [selectedAction, setSelectedAction] = useState<string>("default");
   const carouselRef = useRef<HTMLDivElement>(null);
-
 
   const { useGetNearestVets } = useVeterinaryService();
 
   // Prepare request for API call
-  const apiRequest: GetNearestVetsRequest = userLocation ? {
-    latitude: userLocation.latitude,
-    longitude: userLocation.longitude,
-    radius: 50,
-    limit: 20,
-    page: 1,
-  } : { latitude: 0, longitude: 0 };
+  const apiRequest: GetNearestVetsRequest = userLocation
+    ? {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        radius: 50,
+        limit: 20,
+        page: 1,
+      }
+    : { latitude: 0, longitude: 0 };
 
   // Use the useGet hook for API call
-  const { data: apiResponse, error: apiError, isLoading: apiLoading, refetch } = useGetNearestVets(
+  const {
+    data: apiResponse,
+    error: apiError,
+    isLoading: apiLoading,
+    refetch,
+  } = useGetNearestVets(
     apiRequest,
-    useRealData && !!userLocation && !propVets // Only enabled when conditions are met
+    useRealData && !!userLocation && !propVets, // Only enabled when conditions are met
   );
 
   // Effect to handle API response and set vets data
@@ -55,7 +74,10 @@ const NearYou: React.FC<NearYouProps> = ({
       // Handle both wrapped response (apiResponse.data) and direct response (apiResponse)
       const responseData = (apiResponse as any)?.data || (apiResponse as any);
 
-      if (responseData?.veterinary_doctors?.data && Array.isArray(responseData.veterinary_doctors.data)) {
+      if (
+        responseData?.veterinary_doctors?.data &&
+        Array.isArray(responseData.veterinary_doctors.data)
+      ) {
         const vetData = responseData.veterinary_doctors.data;
         // console.log('API Response data:', vetData); // Debug log
         const transformedVets = transformVetDataToProps(vetData);
@@ -63,7 +85,11 @@ const NearYou: React.FC<NearYouProps> = ({
         setVets(transformedVets);
         setError(null);
       } else if (apiError) {
-        setError(typeof apiError === 'string' ? apiError : 'Failed to load veterinary doctors');
+        setError(
+          typeof apiError === "string"
+            ? apiError
+            : "Failed to load veterinary doctors",
+        );
         setVets([]); // Clear vets on error, don't show sample data
       } else if (apiResponse && !responseData?.veterinary_doctors?.data) {
         // Response exists but no data
@@ -75,11 +101,12 @@ const NearYou: React.FC<NearYouProps> = ({
     } else if (!useRealData && !propVets) {
       // Use sample data for development
       const sampleData = createEmptyVetData();
-      const transformedData = transformVetDataToProps(sampleData.veterinary_doctors.data);
+      const transformedData = transformVetDataToProps(
+        sampleData.veterinary_doctors.data,
+      );
       setVets(transformedData);
     }
   }, [apiResponse, apiError, apiLoading, userLocation, useRealData, propVets]);
-
 
   // Calculate how many slides we can show (4 columns per slide)
   const itemsPerSlide = 4;
@@ -100,24 +127,34 @@ const NearYou: React.FC<NearYouProps> = ({
       // Find the vet and set it as selected
       const vet = vets.find((v) => v.id === id) || null;
       setSelectedVet(vet);
-      setSelectedAction('default');
+      setSelectedAction("default");
     }
   };
 
-  const handleContact = (id: string, type: 'phone' | 'media' | 'message' | 'mail' | 'location' | 'share' | 'rate') => {
+  const handleContact = (
+    id: string,
+    type:
+      | "phone"
+      | "media"
+      | "message"
+      | "mail"
+      | "location"
+      | "share"
+      | "rate",
+  ) => {
     if (onContact) {
       onContact(id, type);
     } else {
       const vet = vets.find((v) => v.id === id);
 
-      if (type === 'phone' && vet?.phone) {
+      if (type === "phone" && vet?.phone) {
         window.location.href = `tel:${vet.phone}`;
-      } else if (type === 'mail' && vet?.email) {
+      } else if (type === "mail" && vet?.email) {
         window.location.href = `mailto:${vet.email}`;
-      } else if (type === 'message') {
+      } else if (type === "message") {
         // Open vet profile and navigate to message section
         handleViewProfile(id);
-        setSelectedAction('message');
+        setSelectedAction("message");
       } else {
         // Set the selected vet and action
         if (vet) {
@@ -128,22 +165,29 @@ const NearYou: React.FC<NearYouProps> = ({
     }
   };
 
-  
   return (
     <section>
-      <div className={`flex gap-6 transition-all duration-300 ${selectedVet ? 'lg:flex-row' : 'flex-col'}`}>
-        <div className={`transition-all duration-300 ${selectedVet ? 'lg:w-1/2 md:block hidden' : 'w-full'}`}>
+      <div
+        className={`flex gap-6 transition-all duration-300 ${selectedVet ? "lg:flex-row" : "flex-col"}`}
+      >
+        <div
+          className={`transition-all duration-300 ${selectedVet ? "lg:w-1/2 md:block hidden" : "w-full"}`}
+        >
           {/* Header with Navigation */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
             <div className="text-center lg:text-left mb-6 lg:mb-0">
               <div className="flex items-center justify-center lg:justify-start gap-2 mb-2.5">
                 <MapPin className="w-4 h-4 text-gray-500" />
                 <p className="text-gray-500 text-base font-nunito">
-                  {useRealData ? 'Veterinarians near your location' : 'You can see the list of most contacted veterinarians around you'}
+                  {useRealData
+                    ? "Veterinarians near your location"
+                    : "You can see the list of most contacted veterinarians around you"}
                 </p>
               </div>
               <h2 className="text-3xl font-black text-gray-900 font-nunito">
-                {useRealData ? 'Nearby Veterinarians' : 'Most Contacted Nearby Vet'}
+                {useRealData
+                  ? "Nearby Veterinarians"
+                  : "Most Contacted Nearby Vet"}
               </h2>
             </div>
 
@@ -152,10 +196,11 @@ const NearYou: React.FC<NearYouProps> = ({
               <button
                 onClick={prevSlide}
                 disabled={currentSlide === 0}
-                className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 ${currentSlide === 0
-                  ? 'text-gray-300 cursor-not-allowed bg-white shadow-sm'
-                  : 'text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80'
-                  }`}
+                className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 ${
+                  currentSlide === 0
+                    ? "text-gray-300 cursor-not-allowed bg-white shadow-sm"
+                    : "text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
+                }`}
                 aria-label="Previous slide"
               >
                 <ArrowLeft className="w-6 h-6" strokeWidth={2.5} />
@@ -164,10 +209,11 @@ const NearYou: React.FC<NearYouProps> = ({
               <button
                 onClick={nextSlide}
                 disabled={currentSlide === totalSlides - 1 || totalSlides <= 1}
-                className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 ${currentSlide === totalSlides - 1 || totalSlides <= 1
-                  ? 'text-gray-300 cursor-not-allowed bg-white shadow-sm'
-                  : 'text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80'
-                  }`}
+                className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-200 ${
+                  currentSlide === totalSlides - 1 || totalSlides <= 1
+                    ? "text-gray-300 cursor-not-allowed bg-white shadow-sm"
+                    : "text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
+                }`}
                 aria-label="Next slide"
               >
                 <ArrowRight className="w-6 h-6" strokeWidth={2.5} />
@@ -180,7 +226,9 @@ const NearYou: React.FC<NearYouProps> = ({
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center gap-3">
                 <Loader2 className="w-6 h-6 animate-spin text-green-600" />
-                <p className="text-gray-600 font-nunito">Loading veterinarians...</p>
+                <p className="text-gray-600 font-nunito">
+                  Loading veterinarians...
+                </p>
               </div>
             </div>
           )}
@@ -189,8 +237,12 @@ const NearYou: React.FC<NearYouProps> = ({
           {!isLoading && vets.length === 0 && (
             <div className="text-center py-12">
               <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No veterinarians found</h3>
-              <p className="text-gray-500 mb-4">We couldn't find any veterinarians in your area.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No veterinarians found
+              </h3>
+              <p className="text-gray-500 mb-4">
+                We couldn't find any veterinarians in your area.
+              </p>
               {userLocation && (
                 <button
                   onClick={() => refetch()}
@@ -215,15 +267,12 @@ const NearYou: React.FC<NearYouProps> = ({
                   }}
                 >
                   {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                    <div
-                      key={slideIndex}
-                      className="w-full flex-shrink-0"
-                    >
+                    <div key={slideIndex} className="w-full flex-shrink-0">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {vets
                           .slice(
                             slideIndex * itemsPerSlide,
-                            (slideIndex + 1) * itemsPerSlide
+                            (slideIndex + 1) * itemsPerSlide,
                           )
                           .map((vet) => (
                             <VetProfile
@@ -250,18 +299,22 @@ const NearYou: React.FC<NearYouProps> = ({
                     }}
                   >
                     {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                      <div
-                        key={slideIndex}
-                        className="w-full flex-shrink-0"
-                      >
-                        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4" style={{ scrollSnapType: 'x mandatory' }}>
+                      <div key={slideIndex} className="w-full flex-shrink-0">
+                        <div
+                          className="flex gap-4 overflow-x-auto scrollbar-hide pb-4"
+                          style={{ scrollSnapType: "x mandatory" }}
+                        >
                           {vets
                             .slice(
                               slideIndex * itemsPerSlide,
-                              (slideIndex + 1) * itemsPerSlide
+                              (slideIndex + 1) * itemsPerSlide,
                             )
                             .map((vet) => (
-                              <div key={vet.id} className="flex-shrink-0 w-[calc(66.666%-8px)]" style={{ scrollSnapAlign: 'start' }}>
+                              <div
+                                key={vet.id}
+                                className="flex-shrink-0 w-[calc(66.666%-8px)]"
+                                style={{ scrollSnapAlign: "start" }}
+                              >
                                 <VetProfile
                                   {...vet}
                                   isAvailable={vet.isAvailable}
@@ -287,10 +340,11 @@ const NearYou: React.FC<NearYouProps> = ({
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentSlide
-                      ? 'bg-green-600'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                      }`}
+                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                      index === currentSlide
+                        ? "bg-green-600"
+                        : "bg-gray-300 hover:bg-gray-400"
+                    }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}
@@ -302,10 +356,11 @@ const NearYou: React.FC<NearYouProps> = ({
               <button
                 onClick={prevSlide}
                 disabled={currentSlide === 0}
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 ${currentSlide === 0
-                  ? 'text-gray-300 cursor-not-allowed bg-white shadow-sm'
-                  : 'text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80'
-                  }`}
+                className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 ${
+                  currentSlide === 0
+                    ? "text-gray-300 cursor-not-allowed bg-white shadow-sm"
+                    : "text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
+                }`}
                 aria-label="Previous slide"
               >
                 <ArrowLeft className="w-5 h-5" strokeWidth={2.5} />
@@ -314,10 +369,11 @@ const NearYou: React.FC<NearYouProps> = ({
               <button
                 onClick={nextSlide}
                 disabled={currentSlide === totalSlides - 1 || totalSlides <= 1}
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 ${currentSlide === totalSlides - 1 || totalSlides <= 1
-                  ? 'text-gray-300 cursor-not-allowed bg-white shadow-sm'
-                  : 'text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80'
-                  }`}
+                className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 ${
+                  currentSlide === totalSlides - 1 || totalSlides <= 1
+                    ? "text-gray-300 cursor-not-allowed bg-white shadow-sm"
+                    : "text-gray-600 bg-white hover:bg-gray-50 active:bg-gray-100 shadow-custom hover:shadow-custom/80"
+                }`}
                 aria-label="Next slide"
               >
                 <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
@@ -333,10 +389,11 @@ const NearYou: React.FC<NearYouProps> = ({
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentSlide
-                      ? 'bg-green-600'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                      }`}
+                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                      index === currentSlide
+                        ? "bg-green-600"
+                        : "bg-gray-300 hover:bg-gray-400"
+                    }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}

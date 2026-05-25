@@ -20,7 +20,7 @@ const MediaPanel = () => {
         name: file.name,
         url: URL.createObjectURL(file),
       })),
-    [files]
+    [files],
   );
 
   const onPickFiles = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
