@@ -90,12 +90,12 @@ export default function VetifyProPage() {
     const [isLoading, setIsLoading] = useState(false);
     const { useGetUserSubscription, useInitiateSubscription } =
         useSubscriptionService();
-    const { data: subscriptionPlan } = useGetUserSubscription(true);
+    // const { data: subscriptionPlan } = useGetUserSubscription(true);
     const subscriptionMutation = useInitiateSubscription();
 
-    const plans = (subscriptionPlan as any)?.subscriptions.data || [];
+    // const plans = (subscriptionPlan as any)?.subscriptions.data || [];
 
-    console.log("User subscription data:", plans);
+    // console.log("User subscription data:", plans);
 
 
     const handleConfirmSubscription = () => {
@@ -159,9 +159,9 @@ export default function VetifyProPage() {
                         </div>
 
                         {/* Right — hero visual */}
-                        <div className="relative rounded-2xl overflow-hidden min-h-[340px] animate-fade-in-right">
+                        <div className="relative rounded-2xl overflow-hidden md:min-h-[340px] animate-fade-in-right">
                             <iframe
-                                className="rounded-2xl"
+                                className="rounded-2xl w-full h-full object-cover aspect-video"
                                 width="590"
                                 height="330"
                                 src="https://www.youtube-nocookie.com/embed/-4ufTh_RKCk?si=i8g7qAxSMSmarv6a"
@@ -174,7 +174,7 @@ export default function VetifyProPage() {
 
                 {/* ── INFO BANNER ──────────────────────────────────── */}
                 <section className="max-w-7xl mx-auto px-6 pb-16 animate-fade-in-bottom">
-                    <div className="bg-[#575CEE] text-white rounded-3xl px-10 md:px-14 grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
+                    <div className="bg-[#575CEE] text-white rounded-3xl px-6 pt-2 md:px-14 grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
                         <div className="text-base md:text-lg font-medium">
                             <p className="mt-3 mb-4">
                                 VetifyPro combines a hands-free AI scribe, real-time clinical
@@ -223,10 +223,10 @@ export default function VetifyProPage() {
                                 key={i}
                                 className="bg-white border shadow-xl border-gray-200 rounded-2xl p-7 hover:shadow-lg hover:shadow-violet-100 hover:-translate-y-1 transition-all duration-200 group"
                             >
-                                <h3 className="text-xl font-extrabold text-gray-900 mb-2.5 leading-snug">
+                                <h3 className="md:text-xl text-lg font-extrabold text-gray-900 mb-2.5 leading-snug">
                                     {f.title}
                                 </h3>
-                                <p className="text-base font-normal text-gray-500 leading-relaxed">
+                                <p className="md:text-base text-sm font-normal text-gray-500 leading-relaxed">
                                     {f.body}
                                 </p>
                             </div>
@@ -236,11 +236,11 @@ export default function VetifyProPage() {
 
                 {/* ── SHOWCASE ROW 1 ───────────────────────────────── */}
                 <section className="max-w-7xl mx-auto px-6 pb-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Scribe */}
                         <div className="p-8 flex flex-col gap-6 animate-fade-in-left">
                             <div>
-                                <h3 className="text-2xl text-center font-extrabold text-gray-900 mt-2 leading-snug">
+                                <h3 className="md:text-2xl text-lg text-center font-extrabold text-gray-900 mt-2 leading-snug">
                                     Hands-Free Scribe &amp;
                                     <br />
                                     Real Time Clinical Notes
@@ -258,7 +258,7 @@ export default function VetifyProPage() {
                         {/* Recommendations */}
                         <div className="p-8 flex flex-col gap-6 animate-fade-in-right">
                             <div>
-                                <h3 className="text-2xl text-center font-extrabold text-gray-900 mt-2 leading-snug">
+                                <h3 className="md:text-2xl text-lg text-center font-extrabold text-gray-900 mt-2 leading-snug">
                                     Detailed, Case-Specific
                                     <br />
                                     Recommendations
@@ -277,14 +277,14 @@ export default function VetifyProPage() {
 
                 {/* ── DESCRIPTION TEXT ─────────────────────────────── */}
                 <section className="max-w-7xl mx-auto px-6 pb-12 animate-fade-in-bottom">
-                    <div className="bg-white shadow-xl border-4 border-gray-100 rounded-3xl p-10 md:p-12">
-                        <p className="text-lg text-[#1E1E1E] leading-relaxed">
+                    <div className="bg-white shadow-xl border-4 border-gray-100 rounded-3xl p-5 md:p-12">
+                        <p className="md:text-lg text-sm text-[#1E1E1E] leading-relaxed">
                             VetifyPro is an AI Clinical Assistant designed to reduce diagnostic
                             uncertainty and strengthen the confidence of every veterinarian on
                             your team, whether in a fast-paced clinic, a sole-charge shift, or
                             an emergency situation.
                         </p>
-                        <p className="text-lg mt-7 text-[#1E1E1E] leading-relaxed">
+                        <p className="md:text-lg text-sm mt-7 text-[#1E1E1E] leading-relaxed">
                             VetifyPro supports a wide range of species, from companion animals
                             and horses to livestock, camels, and beyond. Continuously updated to
                             reflect the latest veterinary literature, and with customisable
@@ -298,11 +298,11 @@ export default function VetifyProPage() {
 
                 {/* ── SHOWCASE ROW 2 ───────────────────────────────── */}
                 <section className="max-w-7xl mx-auto px-6 pb-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* AI Chat */}
                         <div className="p-8 flex flex-col gap-6 animate-fade-in-left">
                             <div className="w-3/4 m-auto">
-                                <h3 className="text-2xl text-center font-extrabold text-black mt-2 leading-snug">
+                                <h3 className="md:text-2xl text-lg text-center font-extrabold text-black mt-2 leading-snug">
                                     AI-Chat for On-the-Spot Queries
                                 </h3>
                             </div>
@@ -319,7 +319,7 @@ export default function VetifyProPage() {
                         {/* Dual summaries */}
                         <div className="p-8 flex flex-col gap-6 animate-fade-in-right">
                             <div className="w-3/4 m-auto">
-                                <h3 className="text-2xl text-center font-extrabold text-black mt-2 leading-snug">
+                                <h3 className="md:text-2xl text-lg text-center font-extrabold text-black mt-2 leading-snug">
                                     Instantly Generate both Vet &amp; Client Summaries
                                 </h3>
                             </div>
@@ -343,10 +343,10 @@ export default function VetifyProPage() {
                         className="relative bg-center bg-no-repeat bg-cover border rounded-3xl p-10 md:p-16 overflow-hidden"
                     >
                         <div className="max-w-3xl relative z-10">
-                            <h2 className="text-4xl md:text-5xl mb-4 font-extrabold tracking-tight leading-tight text-gray-900">
+                            <h2 className="text-3xl md:text-5xl mb-4 font-extrabold tracking-tight leading-tight text-gray-900">
                                 Nova Vet Family
                             </h2>
-                            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-[#0B6614] mb-5">
+                            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight text-[#0B6614] mb-5">
                                 Member Benefits
                             </h2>
 
@@ -355,7 +355,7 @@ export default function VetifyProPage() {
                                 <div className="w-5 h-1 bg-[#0B6614] rounded-full" />
                             </div>
 
-                            <p className="text-lg font-medium text-black leading-relaxed mb-8">
+                            <p className="md:text-lg text-sm font-medium text-black leading-relaxed mb-8">
                                 Nova Vet Family members receive full, unrestricted access to
                                 <strong className="text-[#0B6614] ml-1"> VetifyPro</strong>.<br />
                                 Experience the immediate benefits of this powerful tool and
