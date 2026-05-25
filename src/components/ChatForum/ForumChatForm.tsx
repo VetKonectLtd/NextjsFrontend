@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -31,6 +30,8 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
   const [preview, setPreview] = useState<string | null>(
     chat?.image_url || null,
   );
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [customCategory, setCustomCategory] = useState<string>("");
   const router = useRouter();
   const { useAddForum, useUpdateForum } = useForumService();
   const addForumMutation = useAddForum();
@@ -72,6 +73,15 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
         category: chat.category,
         content: chat.content,
       });
+
+      if (chat.category && !forumCategories.includes(chat.category)) {
+        setIsCustom(true);
+        setSelectedCategory("Others");
+        setCustomCategory(chat.category);
+      } else {
+        setIsCustom(false);
+        setSelectedCategory(chat.category || "");
+      }
 
       setPreview(chat.image_url || null);
     }
@@ -164,15 +174,17 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
               render={({ field }) => (
                 <>
                   <Select
-                    value={field.value}
+                      value={selectedCategory || field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
 
                       if (value === "Others") {
                         setIsCustom(true);
-                        setValue("category", ""); // clear previous value
+                          setSelectedCategory("Others");
+                          setCustomCategory("");
                       } else {
                         setIsCustom(false);
+                          setSelectedCategory(value);
                       }
                     }}
                   >
@@ -198,9 +210,13 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
                       type="text"
                       placeholder="Enter custom category"
                       className="border shadow-sm w-full p-4 rounded-md border-gray-225 mt-2"
-                      {...register("category", {
-                        required: "Custom category is required",
-                      })}
+                      value={customCategory}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setCustomCategory(value);
+                        setValue("category", value, { shouldValidate: true });
+                        clearErrors("category");
+                      }}
                     />
                   )}
                 </>
