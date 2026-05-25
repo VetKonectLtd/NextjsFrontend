@@ -122,7 +122,7 @@ export default function SubscriptionModal({
                 </div>
 
                 {/* Right side - Pricing & Features */}
-                <div className="m-16 p-5 relative border-8 border-gray-200 rounded-3xl  ">
+                <div className="md:m-16 mx-3 p-5 relative border-8 border-gray-200 rounded-3xl  ">
                   <div className="flex absolute -top-6 mx-auto right-0 left-0 h-12 w-12 bg-white items-center rounded-full justify-center ">
                     <Gem size={30} className="text-[#0B6614]" />
                   </div>
@@ -165,7 +165,7 @@ export default function SubscriptionModal({
                     Subscribe With Vet Konect
                   </button>
 
-                  <p className="text-center flex items-center justify-center gap-1 text-sm text-gray-700">
+                  <p className="flex items-center justify-center text-sm text-gray-700">
                     <span className="font-semibold text-gray-900">
                       <ShieldCheck size={14} />
                     </span>
@@ -173,7 +173,7 @@ export default function SubscriptionModal({
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center font-semibold pb-3 gap-4 text-sm text-gray-800">
+              <div className="flex flex-wrap items-center justify-center font-semibold pb-3 md:py-1 py-9 gap-4 text-sm text-gray-800">
                 <div className="flex items-center gap-1">
                   <span>Secure payments</span>
                 </div>
