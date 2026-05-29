@@ -107,7 +107,7 @@ const ProductDetailsPage = ({
                     : "border-gray-200"
                 }`}
               >
-                <Image src={img} alt="" fill className="object-cover" />
+                <Image src={img} alt="Store product image in carousel" fill className="object-cover" />
               </button>
             ))}
           </div>
@@ -124,7 +124,7 @@ const ProductDetailsPage = ({
                 </h1>
 
                 <div className="flex items-center text-gray-500 text-sm mb-3">
-                  <Image src={Map} alt="Location" width={14} height={14} />
+                  <Image src={Map} alt="Location map icon for store address and directions" width={14} height={14} />
                   <span className="ml-2">{product?.location}</span>
                 </div>
 

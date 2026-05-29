@@ -3,11 +3,8 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
 import {
-  Message,
   StarFill,
   StarEmpty,
-  Green,
-  Red,
   Verified,
   Marker,
   GreenButton,
@@ -163,7 +160,7 @@ const ClinicProfile: React.FC<ClinicProfileProps> = ({
         {isVerified && (
           <div className="absolute bottom-2 right-2">
             <div className="rounded-full p-1 shadow-sm">
-              <Image src={Verified} alt="verified" className="w-6 h-6" />
+              <Image src={Verified} alt="Veterinary clinic verified badge icon" className="w-6 h-6" />
             </div>
           </div>
         )}

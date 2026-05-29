@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, PlusIcon } from "lucide-react";
+import { Check, PlusIcon } from "lucide-react";
 import { Ads, Cases, Search, Store } from "@/app/assets/icons/sidebar";
 import { Cow } from "@/app/assets/icons/vet-vendor";
 import Image from "next/image";
@@ -185,7 +185,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <Image src={Arrow} alt="arrow" width={20} height={20} />
+            <Image src={Arrow} alt="Arrow icon for navigation and dashboard actions" width={20} height={20} />
           </Link>
         ))}
       </div>
