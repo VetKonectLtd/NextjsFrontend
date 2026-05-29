@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Vet Konect is Africa’s all-in-one digital animal health platform connecting pet owners, livestock farmers, veterinarians, and clinics to trusted care, feeds, veterinary drugs, AI disease prediction, and real-time disease alerts.",
+    "Africa’s digital animal health platform connecting animal owners to animal care,  and social protection via mobile connectivity.",
 
   applicationName: "Vet Konect",
   generator: "Next.js",

@@ -132,12 +132,12 @@ export default function VetVendorPage() {
         {/* {activeCategory == "Vendor" && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
 						<Link href="#">
-							<Image src={Cart} alt="Cart" width={36} height={36} />
+							<Image src={Cart} alt="Shopping cart icon for veterinary products and e-commerce" width={36} height={36} />
 						</Link>
 
 						<div className="flex items-center gap-4">
 							<Link href="/dashboard/messages">
-								<Image src={Message} alt="Chat" width={36} height={36} />
+								<Image src={Message} alt="Message chat icon for veterinary vendor communication" width={36} height={36} />
 							</Link>
 							<button className="px-5 py-2 rounded-lg border border-primary-400 text-primary-400 font-medium bg-white">
 								Sell
@@ -151,14 +151,14 @@ export default function VetVendorPage() {
 					activeCategory === "Vet Clinic") && (
 					<div className="flex items-center justify-between md:w-auto w-full md:gap-4">
 						<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
-							<Image src={Bar} alt="Cart" width={36} height={36} />
+							<Image src={Bar} alt="Bar chart icon for vendor sales analytics and statistics" width={36} height={36} />
 						</Link>
 						<div className="flex items-center gap-4">
 							<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
-								<Image src={Bar2} alt="Chat" width={36} height={36} />
+								<Image src={Bar2} alt="Bar chart icon for analytics visualization and performance metrics" width={36} height={36} />
 							</Link>
 							<Link href="#" className="p-2 bg-white shadow-md rounded-xl">
-								<Image src={Map2} alt="Chat" width={36} height={36} />
+								<Image src={Map2} alt="Map location icon for veterinary vendor store locator" width={36} height={36} />
 							</Link>
 						</div>
 					</div>

@@ -88,14 +88,9 @@ const FEATURES = [
 export default function VetifyProPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { useGetUserSubscription, useInitiateSubscription } =
+    const { useInitiateSubscription } =
         useSubscriptionService();
-    // const { data: subscriptionPlan } = useGetUserSubscription(true);
     const subscriptionMutation = useInitiateSubscription();
-
-    // const plans = (subscriptionPlan as any)?.subscriptions.data || [];
-
-    // console.log("User subscription data:", plans);
 
 
     const handleConfirmSubscription = () => {

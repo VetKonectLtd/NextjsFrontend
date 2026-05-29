@@ -166,7 +166,7 @@ export default function ReaderCommentSection({ id }: { id: string }) {
       {/* Add Comment */}
       <div className="flex items-start gap-3 mb-10">
         <div className="w-10 h-10 rounded-full border overflow-hidden">
-          <Image src={DEFAULT_AVATAR} alt="me" width={40} height={40} />
+          <Image src={DEFAULT_AVATAR} alt="Current user avatar for blog comment" width={40} height={40} />
         </div>
 
         <div className="flex-1 bg-gray-50 border rounded-xl px-4 py-3">

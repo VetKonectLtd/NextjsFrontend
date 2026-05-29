@@ -166,7 +166,7 @@ const VetProfile: React.FC<VetProfileProps> = ({
         {isVerified && (
           <div className="absolute bottom-2 right-2">
             <div className="rounded-full p-1 shadow-sm">
-              <Image src={Verified} alt="verified" className="w-6 h-6" />
+              <Image src={Verified} alt="Veterinarian verified badge icon" className="w-6 h-6" />
             </div>
           </div>
         )}

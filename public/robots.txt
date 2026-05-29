@@ -1,0 +1,18 @@
+# Allow all crawlers — recommended default for production
+# If you have a sitemap, update the URL below to the absolute path of your sitemap
+
+User-agent: *
+Disallow:
+
+# Uncomment and set the sitemap URL if you have one (e.g. https://yourdomain.com/sitemap.xml)
+Sitemap: https://vetkonect.com/sitemap.xml
+
+# Notes:
+# - Place this file in the `public/` folder so Next.js serves it at https://yourdomain.com/robots.txt
+# - For environments you want to block (staging), serve a different robots.txt that disallows all crawlers
+#   Example for staging: replace contents with:
+#
+#   User-agent: *
+#   Disallow: /
+#
+# - After deploying, check the file is reachable at /robots.txt and verify in Google Search Console.
