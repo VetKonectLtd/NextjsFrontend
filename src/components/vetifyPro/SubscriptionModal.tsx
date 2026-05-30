@@ -23,7 +23,7 @@ export default function SubscriptionModal({
   onSubscribe,
 }: SubscriptionModalProps) {
   if (!isOpen) return null;
-  
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
