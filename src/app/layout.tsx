@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     siteName: "Vet Konect",
     title: "Vet Konect | Re-imagining Animal Care Across Africa",
     description:
-      "Connecting animal owners across Africa to veterinarians, clinics, feeds, drugs, secure payments, AI disease prediction, and real-time animal health alerts — all in one trusted platform.",
+      "Africa’s digital animal health platform connecting animal owners to animal care,  and social protection via mobile connectivity.",
     images: [
       {
         url: `/images/og-logo.png`,
