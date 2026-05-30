@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { useSubscriptionService } from "@/services/subsciptionService";
 
-
 export default function PricingCarousel() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);

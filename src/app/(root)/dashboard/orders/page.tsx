@@ -88,7 +88,12 @@ export default function OrderHistoryTable() {
           </div>
 
           <div className="bg-gray-50 border cursor-pointer border-gray-200 rounded-md px-3 py-2 flex items-center justify-center">
-            <Image src={Filter} alt="Filter icon for order sorting and search" width={18} height={18} />
+            <Image
+              src={Filter}
+              alt="Filter icon for order sorting and search"
+              width={18}
+              height={18}
+            />
           </div>
         </div>
       </div>
