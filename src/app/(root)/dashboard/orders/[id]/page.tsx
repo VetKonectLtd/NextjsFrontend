@@ -223,7 +223,12 @@ export default function OrderDetailsPage({
 
             {/* Warning */}
             <div className="flex items-center text-xs text-gray-500 gap-3">
-              <Image src={Warning} alt="Warning alert icon for order status" width={18} height={18} />
+              <Image
+                src={Warning}
+                alt="Warning alert icon for order status"
+                width={18}
+                height={18}
+              />
               Please make sure you confirm delivery after receiving the item.
             </div>
 
