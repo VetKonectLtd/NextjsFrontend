@@ -175,7 +175,12 @@ export default function ProductDetailsPage({
                         : "border-gray-200"
                     }`}
                   >
-                    <Image src={img} alt="Product image in gallery carousel" fill className="object-cover" />
+                    <Image
+                      src={img}
+                      alt="Product image in gallery carousel"
+                      fill
+                      className="object-cover"
+                    />
                   </button>
                 ))}
               </div>
