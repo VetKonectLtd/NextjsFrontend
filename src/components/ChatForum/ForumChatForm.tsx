@@ -174,17 +174,17 @@ const ForumChatForm = ({ mode, chat }: ForumChatFormProps) => {
               render={({ field }) => (
                 <>
                   <Select
-                      value={selectedCategory || field.value}
+                    value={selectedCategory || field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
 
                       if (value === "Others") {
                         setIsCustom(true);
-                          setSelectedCategory("Others");
-                          setCustomCategory("");
+                        setSelectedCategory("Others");
+                        setCustomCategory("");
                       } else {
                         setIsCustom(false);
-                          setSelectedCategory(value);
+                        setSelectedCategory(value);
                       }
                     }}
                   >

@@ -185,7 +185,12 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <Image src={Arrow} alt="Arrow icon for navigation and dashboard actions" width={20} height={20} />
+            <Image
+              src={Arrow}
+              alt="Arrow icon for navigation and dashboard actions"
+              width={20}
+              height={20}
+            />
           </Link>
         ))}
       </div>
