@@ -6,6 +6,7 @@ import { fontVariables } from "@/lib/fonts";
 import { Toaster } from "@/components/ui/sonner";
 import GoogleMapsScript from "@/components/shared/GoogleMapsScript";
 import Script from "next/script";
+import { GoogleTagManager } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: {
@@ -82,6 +83,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
+     <GoogleTagManager gtmId="GTM-TL8RLQ49" />
       {/* <Script id="google-translate-init"
         dangerouslySetInnerHTML={{
           __html: `
