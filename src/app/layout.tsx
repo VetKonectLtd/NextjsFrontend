@@ -84,6 +84,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
      <GoogleTagManager gtmId="GTM-TL8RLQ49" />
+     
       {/* <Script id="google-translate-init"
         dangerouslySetInnerHTML={{
           __html: `
